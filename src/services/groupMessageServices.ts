@@ -19,27 +19,7 @@ export async function getGroups(userDetailsDocID: string) {
   }
 }
 
-export async function getCurrentGroups(
-  userDetailsDocID: string,
-): Promise<IGroup[]> {
-  const userDetails = (await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDUsers,
-    userDetailsDocID,
-  )) as IUserDetails;
-  let groupsArray: string[] = JSON.parse(userDetails.groups);
-  if (groupsArray.length === 0) {
-    await addUserToGlobalChat(userDetails.$id);
-    return await getCurrentGroups(userDetails.$id);
-  }
-  const { documents } = await api.listDocuments(
-    Server.databaseID,
-    Server.collectionIDGroups,
-    [Query.equal("$id", [...groupsArray])],
-  );
 
-  return documents as IGroup[];
-}
 
 export async function getGroupMessages(groupID: string) {
   const { documents } = await api.listDocuments(

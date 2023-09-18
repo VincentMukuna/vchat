@@ -8,7 +8,6 @@ import { useAppSelector } from "../../context/AppContext";
 import { getChats } from "../../services/chatMessageServices";
 import useSWR, { useSWRConfig } from "swr";
 import {
-  getCurrentGroups,
   getGroups,
 } from "../../services/groupMessageServices";
 import { ClipLoader } from "react-spinners";
@@ -30,13 +29,7 @@ async function getConversations(userDetailsDocID: string) {
   let conversations: (IGroup | IChat)[];
 
   let chatDocs = await getChats(userDetailsDocID);
-  let groupDocs = await getCurrentGroups(userDetailsDocID);
-  console.log(`Now getting via search...`);
-  console.time("search");
-  let groups = await getGroups(userDetailsDocID);
-  console.log(`search Done`, groups);
-  console.timeEnd("search");
-
+  let groupDocs = await getGroups(userDetailsDocID);
   conversations = [...chatDocs, ...groupDocs].sort(compareUpdatedAt);
   return conversations;
 }
@@ -44,7 +37,6 @@ async function getConversations(userDetailsDocID: string) {
 const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   const { setActivePage } = useAppSelector();
-  const { cache } = useSWRConfig();
 
   if (!currentUser || !currentUserDetails) return null;
 
