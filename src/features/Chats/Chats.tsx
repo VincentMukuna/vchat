@@ -31,11 +31,11 @@ async function getConversations(userDetailsDocID: string) {
 
   let chatDocs = await getChats(userDetailsDocID);
   let groupDocs = await getCurrentGroups(userDetailsDocID);
-  // console.log(`Now getting via search...`);
-  // console.time("search");
-  // let groups = await getGroups(userDetailsDocID);
-  // console.log(`search Done`, groups);
-  // console.timeEnd("search");
+  console.log(`Now getting via search...`);
+  console.time("search");
+  let groups = await getGroups(userDetailsDocID);
+  console.log(`search Done`, groups);
+  console.timeEnd("search");
 
   conversations = [...chatDocs, ...groupDocs].sort(compareUpdatedAt);
   return conversations;
