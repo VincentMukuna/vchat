@@ -1,8 +1,8 @@
 @tailwind base;
 /* Firefox */
 * {
-  scrollbar-width: thin;
-  scrollbar-color: red;
+  scrollbar-width: 12px;
+  scrollbar-track-color: transparent;
 }
 
 /* Chrome, Edge, and Safari */
