@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import ChatHeader from "../Chats/ChatHeader";
-import Input from "../Chats/Input";
-import Messages from "../Chats/Messages";
+import ChatHeader from "./ChatHeader";
+import Input from "./Input";
+import Messages from "./Messages";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
 import { useChatsContext } from "../../context/ChatsContext";

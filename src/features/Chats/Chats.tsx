@@ -1,12 +1,11 @@
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Chat from "./Conversation";
 import { IChat, IGroup, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
-import { AppwriteException } from "appwrite";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
 import { useAppSelector } from "../../context/AppContext";
-import { getChatDoc, getChats } from "../../services/chatMessageServices";
+import { getChats } from "../../services/chatMessageServices";
 import useSWR, { useSWRConfig } from "swr";
 import {
   getCurrentGroups,
