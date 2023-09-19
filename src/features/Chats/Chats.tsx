@@ -7,9 +7,7 @@ import { Server } from "../../utils/config";
 import { useAppSelector } from "../../context/AppContext";
 import { getChats } from "../../services/chatMessageServices";
 import useSWR, { useSWRConfig } from "swr";
-import {
-  getGroups,
-} from "../../services/groupMessageServices";
+import { getGroups } from "../../services/groupMessageServices";
 import { ClipLoader } from "react-spinners";
 
 function compareUpdatedAt(a: any, b: any) {
@@ -38,6 +36,8 @@ const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   const { setActivePage } = useAppSelector();
 
+  const { cache } = useSWRConfig();
+
   if (!currentUser || !currentUserDetails) return null;
 
   // Local state to store chats data
@@ -52,13 +52,11 @@ const Chats = () => {
     isLoading,
     isValidating,
     mutate,
-  } = useSWR(
-    () => {
-      return currentUserDetails.$id;
-    },
-    getConversations,
-    {},
-  );
+  } = useSWR(currentUserDetails.$id, getConversations, {
+    keepPreviousData: true,
+    revalidateOnMount: true,
+    revalidateIfStale: true,
+  });
 
   // Update local chats data when the data is refreshed
   useEffect(() => {
@@ -72,13 +70,14 @@ const Chats = () => {
     const unsubscribe = api.subscribe<IUserDetails>(
       `databases.${Server.databaseID}.collections.${Server.collectionIDUsers}.documents.${currentUserDetails.$id}`,
       (response) => {
+        console.log(response.payload);
         // If the contact details have been updated, refresh the user details
         if (
           response.payload.changeLog === "addcontact" ||
           response.payload.changeLog === "deletecontact"
         ) {
           console.log("change in contacts");
-          mutate(currentUserDetails.$id);
+          mutate();
         }
       },
     );

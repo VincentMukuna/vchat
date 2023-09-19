@@ -13,26 +13,29 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { getCurrentUserDetails } from "../../services/userServices";
 import { logUserOut } from "../../services/sessionServices";
 import { useNavigate } from "react-router-dom";
+import Avatar from "../../components/Avatar";
 
 const Navbar = () => {
   const { currentUser, currentUserDetails, setCurrentUserDetails } = useAuth();
-  if (!currentUser) return null;
-  const { activePage, setActivePage } = useAppSelector();
+  if (!currentUser || !currentUserDetails) return null;
 
   const navigate = useNavigate();
 
   return (
-    <nav className="relative flex items-center justify-center w-full h-full gap-16 py-2 md:flex-col md:w-16 shrink-0 bg-primary-main">
+    <nav className="box-content bottom-0 flex items-center justify-center w-full gap-16 p-1 py-2 rounded-t-md bg-gray3 md:h-full md:flex-col md:w-16 shrink-0">
       <div className="hidden md:flex">
-        <Tabs.Trigger value="Profile" className="my-1 ">
-          <img
-            onClick={() => {
-              getCurrentUserDetails(currentUser).then((deets) => {
-                setCurrentUserDetails(deets);
-              });
-            }}
-            src={currentUserDetails?.avatarURL || avatarFallback}
-            className="mt-2 rounded-full w-[52px] h-[52px]"
+        <Tabs.Trigger
+          value="Profile"
+          className="my-1 "
+          onClick={() => {
+            getCurrentUserDetails(currentUser).then((deets) => {
+              setCurrentUserDetails(deets);
+            });
+          }}
+        >
+          <Avatar
+            name={currentUserDetails.name}
+            src={currentUserDetails.avatarURL}
           />
         </Tabs.Trigger>
       </div>

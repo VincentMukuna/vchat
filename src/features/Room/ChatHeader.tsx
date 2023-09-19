@@ -1,7 +1,8 @@
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
-
 import { useChatsContext } from "../../context/ChatsContext";
 import { useAuth } from "../../context/AuthContext";
+//@ts-ignore
+import { ArrowLeftIcon } from "@heroicons/react/24/solid";
+import Avatar from "../../components/Avatar";
 
 function ChatHeader() {
   const { recepient, setSelectedChat, setRecepient, selectedChat } =
@@ -17,32 +18,25 @@ function ChatHeader() {
     );
 
   return (
-    <section className="flex items-center w-full px-2 py-10 text-white h-14 bg-primary-main">
-      <button aria-label="closeChat">
-        <ArrowLeftIcon
-          onClick={() => {
-            setSelectedChat(undefined);
-            setRecepient(undefined);
-          }}
-          className="flex w-10 h-10 p-2 mr-2 text-gray-400 rounded-full cursor-pointer hover:scale-[0.8] "
-        />
+    <section className="flex items-center w-full gap-3 px-2 py-10 dark:text-gray1 h-14 dark:bg-dark-blue2 bg-gray2 text-dark-gray2">
+      <button
+        aria-label="closeChat"
+        onClick={() => {
+          setSelectedChat(undefined);
+          setRecepient(undefined);
+        }}
+        className="md:hidden flex text-center items-center justify-center w-10 h-10 mr-2  rounded-full cursor-pointer hover:scale-[0.8] text-xl"
+      >
+        <ArrowLeftIcon className="w-6 h-6 text" />
       </button>
-      <img
-        src={
-          isGroup
-            ? selectedChat.groupAvtarURL
-            : isPersonal
-            ? currentUserDetails?.avatarURL
-            : recepient?.avatarURL
-        }
-        alt={`${
+      <Avatar
+        name={
           isGroup
             ? selectedChat.groupName
             : isPersonal
-            ? "Your"
-            : recepient?.name
-        }'s profile photo`}
-        className="mr-2 rounded-full w-11 h-11"
+            ? "You"
+            : recepient?.name || " "
+        }
       />
       <div className="relative flex flex-col ">
         <span className="text-lg font-semibold tracking-wide">
@@ -52,7 +46,7 @@ function ChatHeader() {
             ? "You"
             : recepient?.name}
         </span>
-        <span className="relative text-xs text-gray-400 left-2">
+        <span className="relative text-xs tracking-wide text-dark-gray5 dark:text-gray6">
           {isGroup ? selectedChat.description : recepient?.about || "about"}
         </span>
       </div>

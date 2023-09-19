@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { ImageIcon } from "@radix-ui/react-icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";

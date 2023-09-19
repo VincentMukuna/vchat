@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
 import { useAuth } from "../../context/AuthContext";
@@ -12,6 +12,8 @@ import {
   getCurrentUserDetails,
   getUserDetails,
 } from "../../services/userServices";
+import Avatar from "../../components/Avatar";
+import { getFormattedDateTime } from "../../services/dateServices";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -19,21 +21,20 @@ interface MessageProps {
 }
 
 function Message({ message, onDelete }: MessageProps) {
-  const { currentUser, currentUserDetails } = useAuth();
-  if (!currentUser) return;
+  const { currentUserDetails } = useAuth();
+  if (!currentUserDetails) return;
   const { recepient } = useChatsContext();
   const [attachments, setAttachments] = useState<URL[] | []>([]);
   const [showHoverCard, setShowHoverCard] = useState(false);
 
   const isGroupMessage = !!message?.groupID;
 
-  let mine = message.senderID === currentUser.$id;
-  const avatar = isGroupMessage
-    ? null
-    : mine
-    ? currentUserDetails?.avatarURL
-    : recepient?.avatarURL;
+  let mine = message.senderID === currentUserDetails.$id;
 
+  const { data: senderDetails } = useSWR(() => {
+    if (mine || message.senderID === currentUserDetails.$id) return null;
+    else return message.senderID;
+  });
   const getMessageAttachments = () => {
     message.attachments.forEach(async (attachmentID) => {
       try {
@@ -44,12 +45,6 @@ function Message({ message, onDelete }: MessageProps) {
       }
     });
   };
-
-  const { data: senderDetails, error } = useSWR(
-    isGroupMessage && !mine && message.senderID,
-    getCurrentUserDetails,
-    {},
-  );
 
   const setReadMessage = async () => {
     if (!message.$id) return;
@@ -72,6 +67,7 @@ function Message({ message, onDelete }: MessageProps) {
     isGroupMessage || mine || message.read || setReadMessage();
     message.attachments?.length && getMessageAttachments();
   }, []);
+
   return (
     <article
       onMouseEnter={() => setShowHoverCard(true)}
@@ -79,12 +75,12 @@ function Message({ message, onDelete }: MessageProps) {
       tabIndex={0}
       className={`relative   flex ${
         mine ? "flex-row-reverse" : ""
-      } items-center focus:outline-1 focus:outline-slate-600 `}
+      } items-end focus:outline-1 focus:outline-slate-600 transition-all`}
     >
-      <img
-        src={senderDetails?.avatarURL || avatar || avatarFallback}
-        alt="profile picture"
-        className="self-end w-8 h-8 mb-1 rounded-full"
+      <Avatar
+        src={mine ? currentUserDetails?.avatarURL : null}
+        name={mine ? currentUserDetails.name : (senderDetails?.name as string)}
+        size="small"
       />
 
       <div
@@ -99,11 +95,18 @@ function Message({ message, onDelete }: MessageProps) {
           {message.body}
         </div>
         <div
-          className={`flex flex-row-reverse w-full text-[10px] ${
-            mine ? "text-gray-800" : "text-gray-300"
+          className={`flex flex-row-reverse text-[9px] tracking-wider md:text-[10px] gap-1 ${
+            mine ? "text-gray-500" : "text-gray-400 "
           }`}
         >
-          19:00 PM
+          {"@ " + getFormattedDateTime(message.$createdAt)}
+          <span className="overflow-hidden text-elipsis whitespace-nowrap  max-w-[5rem] text-ellipsis ">
+            {!isGroupMessage
+              ? null
+              : mine
+              ? "You"
+              : (senderDetails?.name as string)}
+          </span>
         </div>
       </div>
 

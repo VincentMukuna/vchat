@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { PaperPlaneIcon } from "@radix-ui/react-icons";
 import { sendChatMessage } from "../../services/chatMessageServices";
 import { useChatsContext } from "../../context/ChatsContext";
 import { IChatMessage, IGroupMessage } from "../../interfaces";
@@ -13,8 +12,8 @@ import toast from "react-hot-toast";
 type InputProps = {};
 
 const Input = ({}: InputProps) => {
-  const { currentUser } = useAuth();
-  if (!currentUser) return;
+  const { currentUser, currentUserDetails } = useAuth();
+  if (!currentUserDetails) return;
   const [sending, setSending] = useState(false);
   const { selectedChat, recepient } = useChatsContext();
   const [messageBody, setMessageBody] = useState("");
@@ -23,7 +22,7 @@ const Input = ({}: InputProps) => {
 
   const isGroup = !!selectedChat?.groupName;
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.style.height = "auto";
     e.target.style.height = e.target.scrollHeight + "px";
     setMessageBody(e.target.value);
@@ -42,7 +41,7 @@ const Input = ({}: InputProps) => {
         $permissions: [""],
         $updatedAt: new Date().toISOString(),
         attachments: [],
-        senderID: currentUser.$id,
+        senderID: currentUserDetails.$id,
         body: messageBody,
         groupID: selectedChat.$id,
       };
@@ -51,10 +50,8 @@ const Input = ({}: InputProps) => {
         groupID: message.groupID,
         senderID: message.senderID,
       });
-      toast.promise(promise, {
-        loading: "sending message",
-        error: (e) => `Error sending ${e.message} `,
-        success: "Sent",
+      promise.catch((e) => {
+        toast.error(`Error sending ${e.message} `);
       });
       promise.finally(() => {
         setSending(false);
@@ -77,8 +74,8 @@ const Input = ({}: InputProps) => {
       $id: ID.unique(),
       $permissions: [""],
       $updatedAt: new Date().toISOString(),
-      senderID: currentUser.$id,
-      recepientID: recepient.userID,
+      senderID: currentUserDetails.$id,
+      recepientID: recepient.$id,
       body: messageBody,
       read: false,
       chatID: selectedChat.$id,
@@ -91,15 +88,14 @@ const Input = ({}: InputProps) => {
 
     let promise = sendChatMessage(selectedChat.$id, {
       messageBody: messageBody,
-      recepientID: recepient.userID,
-      senderID: currentUser.$id,
+      recepientID: recepient.$id,
+      senderID: currentUserDetails.$id,
     });
 
-    toast.promise(promise, {
-      loading: "sending message",
-      error: (e) => `Error sending ${e.message} `,
-      success: "Sent",
+    promise.catch((e) => {
+      toast.error(`Error sending ${e.message} `);
     });
+
     promise.finally(() => {
       setSending(false);
       setMessageBody("");
@@ -110,11 +106,8 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="bottom-0 end-0 start-0">
-      <form
-        onSubmit={handleSubmit}
-        className="flex self-stretch w-full bg-neutral-800"
-      >
+    <footer className="bottom-0 overflow-hidden bg-gray8 end-0 start-0 shrink-0">
+      <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
         <div className="flex items-center w-full gap-3 p-3">
           <div className="flex gap-6 px-2">
             <svg
@@ -123,7 +116,7 @@ const Input = ({}: InputProps) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6 text-white"
+              className="w-6 h-6 "
             >
               <path
                 strokeLinecap="round"
@@ -137,7 +130,7 @@ const Input = ({}: InputProps) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6 text-white -rotate-45"
+              className="w-6 h-6 -rotate-45"
             >
               <path
                 strokeLinecap="round"
@@ -147,26 +140,24 @@ const Input = ({}: InputProps) => {
             </svg>
           </div>
 
-          <textarea
+          <input
             placeholder="Type a message"
             className="w-[80%] py-2  bg-transparent focus:outline-none caret-secondary-main
-             placeholder:text-slate-400 text-slate-200 rounded  resize-none max-h-[100px]
+             placeholder:text-slate-800  rounded  resize-none max-h-[100px]
              invalid:border invalid:border-red-300"
             value={messageBody}
             spellCheck={true}
             onChange={handleChange}
             onBlur={handleChange}
-            rows={1}
             maxLength={1500}
-          ></textarea>
+          ></input>
           {messageBody && (
             <button
               type="submit"
               disabled={sending}
-              className="flex items-center gap-3 p-2 mr-3 text-base font-bold bg-red-300 rounded"
+              className="flex items-center gap-3 p-2 mr-3 text-base font-bold rounded bg-dark-indigo4"
             >
               Send
-              <PaperPlaneIcon />
             </button>
           )}
         </div>

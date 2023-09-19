@@ -10,6 +10,7 @@ import { useChatsContext } from "../../context/ChatsContext";
 import useSWR, { mutate } from "swr";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import { toast } from "react-hot-toast";
+import Avatar from "../../components/Avatar";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -58,36 +59,36 @@ const Chat = ({ conversation }: IChatProps) => {
         setRecepient(contactDetails);
         setSelectedChat(conversation);
       }}
-      className={`flex items-start gap-3 px-2 py-3 rounded-md cursor-pointer hover:bg-slate-700 ${
-        isActive ? "bg-slate-600" : ""
+      className={`transition-all flex items-start gap-3 px-2 py-3 rounded-md cursor-pointer hover:bg-slate-100 ${
+        isActive ? "bg-slate-200" : ""
       }`}
     >
-      <img
-        src={
+      <Avatar
+        name={
           isGroup
-            ? conversation.groupAvtarURL || avatarFallback
-            : contactDetails?.avatarURL || avatarFallback
+            ? conversation.groupName
+            : isPersonal
+            ? "You"
+            : contactDetails?.name || " "
         }
-        alt="profile picture"
-        className="w-16 h-16 mx-2 rounded-full shrink-0"
       />
 
       <div className="flex flex-col gap-1 overflow-hidden shrink text-ellipsis">
-        <span className="text-lg font-semibold tracking-wider text-gray-200 ">
+        <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] ">
           {isGroup
             ? conversation.groupName
             : isPersonal
             ? "You"
             : contactDetails?.name}
         </span>
-        <span className="overflow-hidden text-sm font-normal tracking-wide text-gray-400 whitespace-nowrap text-ellipsis ">
+        <span className="overflow-hidden text-sm font-normal tracking-wide whitespace-nowrap text-ellipsis ">
           {isGroup
-            ? conversation.groupName
+            ? conversation.description
             : contactDetails?.about || "Hi there! I am using VChat"}
         </span>
       </div>
       <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 ">
-        <span className="relative flex text-xs text-slate-400">
+        <span className="relative flex text-xs ">
           {getFormatedDate(conversation.$updatedAt)}
         </span>
         {!isGroup && showHoverCard && (

@@ -3,6 +3,7 @@ import { IUserDetails } from "../../interfaces";
 import { addContact } from "../../services/userServices";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import Avatar from "../../components/Avatar";
 
 function User({ user }: { user: IUserDetails }) {
   const { currentUserDetails, refreshUserDetails } = useAuth();
@@ -29,16 +30,12 @@ function User({ user }: { user: IUserDetails }) {
       onClick={handleClick}
       className="flex items-center gap-2 px-2 py-2 rounded-md cursor-pointer hover:bg-slate-600"
     >
-      <img
-        src={user.avatarURL}
-        alt="profile picture"
-        className="w-10 h-10 rounded-full "
-      />
+      <Avatar name={user.name} />
       <div className="flex flex-col justify-center 0">
-        <span className="font-normaltracking-wide text-md text-slate-200">
+        <span className="text-lg font-semibold ]tracking-wide ">
           {isPersonal ? "You" : user.name}
         </span>
-        <span className="text-xs italic text-gray-300">{user.about}</span>
+        <span className="text-sm italic ">{user.about}</span>
       </div>
     </article>
   );

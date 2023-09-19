@@ -1,4 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+import {
+  blueDark,
+  indigo,
+  indigoDark,
+  gray,
+  grayDark,
+  tomato,
+  tomatoDark,
+  brownDark,
+} from "@radix-ui/colors";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -8,22 +18,15 @@ export default {
       },
 
       colors: {
-        primary: {
-          main: "#0D0B22",
-          shaded: "#151328",
-          light: "#1F1C3D",
+        dark: {
+          ...blueDark,
+          ...indigoDark,
+          ...tomatoDark,
+          ...grayDark,
         },
-        secondary: {
-          main: "#8C5959",
-          alt: "#67856C",
-        },
-        light: {
-          light: "#212529bf",
-          dark: "#aaa",
-        },
-        bgmain: {
-          dark: "",
-        },
+        ...indigo,
+        ...tomato,
+        ...gray,
       },
     },
   },

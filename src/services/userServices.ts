@@ -11,12 +11,14 @@ export async function getSession() {
     console.log("No active session: ");
   }
 }
+
 export async function getUserDetails(detailsDocID: string) {
-  return (await api.getDocument(
+  let userDoc = (await api.getDocument(
     Server.databaseID,
     Server.collectionIDUsers,
     detailsDocID,
   )) as IUserDetails;
+  return userDoc;
 }
 export async function getCurrentUserDetails(
   user: Models.User<Models.Preferences>,

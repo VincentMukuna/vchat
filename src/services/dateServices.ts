@@ -1,4 +1,10 @@
-import { format, isThisWeek, isToday, isYesterday } from "date-fns";
+import {
+  format,
+  isThisMinute,
+  isThisWeek,
+  isToday,
+  isYesterday,
+} from "date-fns";
 export function getFormatedDate(timestamp: string) {
   let date = new Date(timestamp);
 
@@ -15,4 +21,13 @@ export function getFormatedDate(timestamp: string) {
 
 export function getFormattedDateTime(timestamp: string) {
   let date = new Date(timestamp);
+  if (isThisMinute(date)) {
+    return "Now";
+  }
+  if (isToday(date)) {
+    return format(date, "HH:mm");
+  }
+  if (isYesterday(date)) {
+    return "Yesterday " + format(date, "HH: mm");
+  }
 }

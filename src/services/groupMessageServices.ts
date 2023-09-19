@@ -11,7 +11,6 @@ export async function getGroups(userDetailsDocID: string) {
       Server.collectionIDGroups,
       [Query.search("groupMembers", userDetailsDocID)],
     );
-    console.log(documents);
     return documents as IGroup[];
   } catch (error) {
     console.log("Error getting via search...", error);
@@ -19,13 +18,11 @@ export async function getGroups(userDetailsDocID: string) {
   }
 }
 
-
-
 export async function getGroupMessages(groupID: string) {
   const { documents } = await api.listDocuments(
     Server.databaseID,
     Server.collectionIDGroupMessages,
-    [Query.equal("groupID", groupID)],
+    [Query.equal("groupID", groupID), Query.orderDesc("$createdAt")],
   );
   return documents as IGroupMessage[];
 }
