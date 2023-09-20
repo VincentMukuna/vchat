@@ -1,4 +1,3 @@
-import { ExclamationTriangleIcon, ImageIcon } from "@radix-ui/react-icons";
 import { useRef, useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
