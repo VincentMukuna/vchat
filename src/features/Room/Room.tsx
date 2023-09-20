@@ -56,14 +56,15 @@ function Room() {
       });
       return;
     } else {
-      let promise = deleteChatMessage(
-        selectedChat.$id,
-        message as IChatMessage,
-      );
       await mutate(messages?.filter((msg) => msg.$id !== message.$id), {
         revalidate: false,
         rollbackOnError: true,
       });
+      let promise = deleteChatMessage(
+        selectedChat.$id,
+        message as IChatMessage,
+      );
+
       toast.promise(promise, {
         success: "Deleted successfully",
         loading: "Deleting... ",

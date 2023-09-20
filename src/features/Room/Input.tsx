@@ -45,10 +45,16 @@ const Input = ({}: InputProps) => {
         body: messageBody,
         groupID: selectedChat.$id,
       };
+      await mutate(
+        selectedChat.$id,
+        [message, ...cache.get(selectedChat.$id)?.data],
+        { revalidate: false },
+      );
       let promise = sendGroupMessage(selectedChat.$id, {
         body: message.body,
         groupID: message.groupID,
         senderID: message.senderID,
+        attachments: null,
       });
       promise.catch((e) => {
         toast.error(`Error sending ${e.message} `);
@@ -56,12 +62,6 @@ const Input = ({}: InputProps) => {
       promise.finally(() => {
         setSending(false);
       });
-
-      await mutate(
-        selectedChat.$id,
-        [message, ...cache.get(selectedChat.$id)?.data],
-        { revalidate: false },
-      );
 
       return;
     }

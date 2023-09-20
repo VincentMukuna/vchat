@@ -1,4 +1,4 @@
-import { AppwriteException, Query } from "appwrite";
+import { AppwriteException, Permission, Query, Role } from "appwrite";
 import { Server } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
@@ -33,6 +33,7 @@ export async function sendGroupMessage(
     senderID: string;
     body: string;
     groupID: string;
+    attachments: string[] | null;
   },
 ) {
   await api.createDocument(
