@@ -37,7 +37,7 @@ const Input = ({}: InputProps) => {
         $collectionId: Server.collectionIDGroupMessages,
         $databaseId: Server.databaseID,
         $createdAt: new Date().toISOString(),
-        $id: ID.unique(),
+        $id: new Date().toISOString(),
         $permissions: [""],
         $updatedAt: new Date().toISOString(),
         attachments: [],
@@ -56,9 +56,6 @@ const Input = ({}: InputProps) => {
         senderID: message.senderID,
         attachments: null,
       });
-      promise.catch((e) => {
-        toast.error(`Error sending ${e.message} `);
-      });
       promise.finally(() => {
         setSending(false);
       });
@@ -71,7 +68,7 @@ const Input = ({}: InputProps) => {
       $collectionId: Server.collectionIDChatMessages,
       $databaseId: Server.databaseID,
       $createdAt: new Date().toISOString(),
-      $id: ID.unique(),
+      $id: new Date().toISOString(),
       $permissions: [""],
       $updatedAt: new Date().toISOString(),
       senderID: currentUserDetails.$id,
@@ -90,10 +87,6 @@ const Input = ({}: InputProps) => {
       messageBody: messageBody,
       recepientID: recepient.$id,
       senderID: currentUserDetails.$id,
-    });
-
-    promise.catch((e) => {
-      toast.error(`Error sending ${e.message} `);
     });
 
     promise.finally(() => {

@@ -36,18 +36,25 @@ export async function sendGroupMessage(
     attachments: string[] | null;
   },
 ) {
-  await api.createDocument(
-    Server.databaseID,
-    Server.collectionIDGroupMessages,
-    message,
-  );
-  await api.updateDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
-    groupID,
-    { changeLog: "newtext" },
-  );
-  return sendGroupMessage;
+  console.log(message);
+  try {
+    await api.createDocument(
+      Server.databaseID,
+      Server.collectionIDGroupMessages,
+      {
+        ...message,
+      },
+    );
+    console.log("Message uploaded");
+    await api.updateDocument(
+      Server.databaseID,
+      Server.collectionIDGroups,
+      groupID,
+      { changeLog: "newtext" },
+    );
+  } catch (error) {
+    console.log(`Error sending group message `, error);
+  }
 }
 
 export async function deleteGroupMessage(groupID: string, messageID: string) {

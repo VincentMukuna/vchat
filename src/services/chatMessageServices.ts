@@ -23,7 +23,7 @@ export async function sendChatMessage(
   };
 
   try {
-    let msgDoc = await api.createDocument(
+    await api.createDocument(
       Server.databaseID,
       Server.collectionIDChatMessages,
       message,
@@ -35,10 +35,8 @@ export async function sendChatMessage(
       chatID,
       { changeLog: "newtext" },
     );
-    return msgDoc as IChatMessage;
   } catch (error) {
-    console.log((error as AppwriteException).message);
-    throw error;
+    console.log("Error sending chat message ", error);
   }
 }
 export async function getChatMessages(chatID: string) {
