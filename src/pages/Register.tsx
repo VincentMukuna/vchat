@@ -3,6 +3,8 @@ import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import FormInput from "../components/FormInput";
 import { registerNewUser } from "../services/registerUserService";
+import { ClipLoader } from "react-spinners";
+import { blueDark } from "@radix-ui/colors";
 
 function Register() {
   const navigate = useNavigate();
@@ -14,8 +16,7 @@ function Register() {
     password2: "",
     avatar: undefined,
   });
-
-  const [showToast, setShowToast] = useState(false);
+  const [registering, setRegistering] = useState(false);
   const timerRef = useRef(0);
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
@@ -45,16 +46,14 @@ function Register() {
 
   return (
     <>
-      <div className="flex items-center justify-center w-full h-screen overflow-y-auto bg-primary-main">
-        <div className=" bg-primary-shaded py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
-          <h1 className="text-xl font-bold tracking-wide text-slate-300">
-            VChat
-          </h1>
-          <h2 className="mt-1 text-xs text-slate-400">Register</h2>
+      <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
+        <div className=" py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
+          <h1 className="text-xl font-bold tracking-wide text-gray12">VChat</h1>
+          <h2 className="mt-1 text-xs text-gray11">Register</h2>
 
           <form
             onSubmit={handleSubmit}
-            className="flex flex-col w-full gap-8 mt-10"
+            className="flex flex-col w-full gap-6 mt-10"
           >
             <FormInput
               id="email"
@@ -83,16 +82,21 @@ function Register() {
 
             <button
               type="submit"
-              className="w-full py-2 mt-4 text-sm font-bold tracking-wide bg-secondary-main text-slate-100 "
+              className="w-full py-2 mt-4 text-sm font-bold tracking-wide bg-secondary-main text-slate-100 dark:bg-dark-tomato4 bg-dark-blue1"
             >
               Register
+              <ClipLoader
+                size={28}
+                color={blueDark.blue12}
+                loading={registering}
+              />
             </button>
           </form>
-          <div className="mt-3 text-xs text-gray-400">
+          <div className="mt-3 text-xs text-dark-blue4">
             You do have an account?{" "}
             <Link
               to="/login"
-              className="font-semibold underline text-secondary-main "
+              className="font-semibold underline text-dark-tomato4 "
             >
               Login
             </Link>

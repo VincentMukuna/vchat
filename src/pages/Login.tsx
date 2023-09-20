@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { logUserIn } from "../services/sessionServices";
 import { ClipLoader } from "react-spinners";
+import FormInput from "../components/FormInput";
+import { blueDark, gray, tomato, tomatoDark } from "@radix-ui/colors";
+import toast from "react-hot-toast";
+import { AppwriteException } from "appwrite";
 
 function Login() {
   const navigate = useNavigate();
@@ -32,96 +36,69 @@ function Login() {
       setCurrentUserDetails(userDetails);
       navigate("/");
     } catch (error) {
-      console.log("Error logging in");
+      toast.error("Error logging in: " + (error as AppwriteException).message, {
+        style: {
+          border: ` 0.5px solid ${blueDark.blue1} `,
+          backgroundColor: `${blueDark.blue1}`,
+          color: `${gray.gray1}`,
+        },
+      });
     } finally {
       setLoggingIn(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-primary-shaded">
-      <div className="bg-primary-light/40 py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
-        <h1 className="text-xl font-bold tracking-wide text-gray-100">VChat</h1>
-        <h2 className="mt-1 text-xs text-slate-500">Log In</h2>
+    <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
+      <div className="py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
+        <h1 className="text-xl font-bold tracking-wide text-dark-blue1 dark:text-dark-blue12">
+          VChat
+        </h1>
+        <h2 className="mt-1 text-xs text-slate-500 dark:text-dark-blue12/50">
+          Log In
+        </h2>
 
-        <form onSubmit={handleSubmit} className="w-full mt-12">
-          <div className="relative mb-8 ">
-            <input
-              name="email"
-              id="email"
-              value={credentials.email}
-              onChange={handleInputChange}
-              type="email"
-              placeholder="email"
-              className="block border-b-[1px] border-slate-400 text-md  text-gray-100 px-2 py-2  w-full bg-inherit
-                focus:outline-none
-                focus:border
-                focus:rounded-md
-                focus:mt-4
-                placeholder-transparent peer  
-                transition-all              
-                "
-            />
-            <label
-              htmlFor="email"
-              className="absolute transition-all -top-4 text-sm text-gray-400
-              peer-focus:top-[-1.6rem]
-              peer-focus:bg-inherit
-              peer-focus:px-1 
-              peer-focus:text-indigo-300 
-              peer-focus:text-sm
-              peer-placeholder-shown:top-3.5
-              
-              "
-            >
-              Email
-            </label>
-          </div>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col w-full gap-8 mt-12"
+        >
+          <FormInput
+            id="email"
+            label="Email"
+            name="email"
+            onChange={handleInputChange}
+            type="email"
+            value={credentials.email}
+          />
 
-          <div className="relative mb-8">
-            <input
-              name="password"
-              id="password"
-              value={credentials.password}
-              onChange={handleInputChange}
-              type="password"
-              placeholder="password"
-              className="block border-b-[1px] border-slate-400 text-md  text-gray-100 px-2 py-2  w-full bg-inherit
-                focus:outline-none
-                focus:border
-                focus:rounded-md
-                focus:mt-12
-                placeholder-transparent peer transition-all "
-            />
-            <label
-              htmlFor="password"
-              className="absolute transition-all -top-4 text-sm text-gray-400
-              peer-focus:top-[-1.6rem]
-              peer-focus:bg-inherit
-              peer-focus:px-1 
-              peer-focus:text-indigo-300 
-              peer-focus:text-sm
-              peer-placeholder-shown:top-3.5"
-            >
-              Password
-            </label>
-          </div>
+          <FormInput
+            id="password"
+            label="Password"
+            name="password"
+            onChange={handleInputChange}
+            type="password"
+            value={credentials.password}
+          />
 
           <button
             type="submit"
-            className="relative items-center justify-center w-full py-2 mt-4 text-sm font-bold tracking-wide h-11 bg-secondary-main text-slate-100"
+            className="relative items-center justify-center w-full py-2 mt-4 text-sm font-bold tracking-wide h-11 dark:bg-dark-tomato4 bg-dark-blue1 text-gray1"
           >
             Log In
             <div className="absolute right-3 top-2">
-              <ClipLoader size={28} color="#151328" loading={loggingIn} />
+              <ClipLoader
+                size={28}
+                color={blueDark.blue12}
+                loading={loggingIn}
+              />
             </div>
           </button>
         </form>
-        <div className="mt-3 text-xs text-gray-400">
+        <div className="mt-3 text-xs text-dark-blue4">
           Do not have an account?{" "}
           <Link
             to="/register"
-            className="font-semibold underline text-secondary-main "
+            className="font-semibold underline text-dark-tomato4 "
           >
             Register
           </Link>{" "}

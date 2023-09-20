@@ -11,16 +11,13 @@ export async function logUserIn(credentials?: {
     //check if there is a session
     try {
       let user = await api.getAccount();
-      console.log("Active session: ");
       let userDetails = (await api.getDocument(
         Server.databaseID,
         Server.collectionIDUsers,
         user.prefs.detailsDocID,
       )) as IUserDetails;
       return { user, userDetails };
-    } catch (error) {
-      console.log("No active session: ");
-    }
+    } catch (error) {}
     //If there's no session create one
     if (!credentials) {
       throw new Error("No credentials");
