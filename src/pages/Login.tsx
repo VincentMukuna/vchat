@@ -51,10 +51,10 @@ function Login() {
   return (
     <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
       <div className="py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
-        <h1 className="text-xl font-bold tracking-wide text-dark-blue1 dark:text-dark-blue12">
+        <h1 className="text-xl font-bold tracking-wider text-dark-blue1 dark:text-indigo2">
           VChat
         </h1>
-        <h2 className="mt-1 text-xs text-slate-500 dark:text-dark-blue12/50">
+        <h2 className="mt-1 text-xs tracking-wide text-slate-500 dark:text-indigo2/60">
           Log In
         </h2>
 
@@ -94,11 +94,11 @@ function Login() {
             </div>
           </button>
         </form>
-        <div className="mt-3 text-xs text-dark-blue4">
-          Do not have an account?{" "}
+        <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
+          Do not have an account?
           <Link
             to="/register"
-            className="font-semibold underline text-dark-tomato4 "
+            className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
           >
             Register
           </Link>{" "}

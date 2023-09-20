@@ -48,8 +48,12 @@ function Register() {
     <>
       <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
         <div className=" py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
-          <h1 className="text-xl font-bold tracking-wide text-gray12">VChat</h1>
-          <h2 className="mt-1 text-xs text-gray11">Register</h2>
+          <h1 className="text-xl font-bold tracking-wider text-gray12 dark:text-indigo2">
+            VChat
+          </h1>
+          <h2 className="mt-1 text-xs tracking-wide text-gray11 dark:text-indigo2/60">
+            Register
+          </h2>
 
           <form
             onSubmit={handleSubmit}
@@ -92,11 +96,11 @@ function Register() {
               />
             </button>
           </form>
-          <div className="mt-3 text-xs text-dark-blue4">
-            You do have an account?{" "}
+          <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
+            You do have an account?{"   "}
             <Link
               to="/login"
-              className="font-semibold underline text-dark-tomato4 "
+              className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
             >
               Login
             </Link>
