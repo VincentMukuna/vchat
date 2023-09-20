@@ -22,7 +22,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="box-content bottom-0 flex items-center justify-center w-full gap-16 p-1 py-2 rounded-t-md bg-gray3 md:h-full md:flex-col md:w-16 shrink-0">
+    <nav className="box-content bottom-0 flex items-center justify-center w-full gap-16 p-1 py-2 dark:text-indigo4 bg-gray3 dark:bg-dark-indigo2 md:h-full md:flex-col md:w-16 shrink-0">
       <div className="hidden md:flex">
         <Tabs.Trigger
           value="Profile"
@@ -42,27 +42,27 @@ const Navbar = () => {
       <div className="flex gap-4 md:flex-col">
         <Tabs.Trigger
           value="Chats"
-          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 text-secondary-main hover:text-black"
+          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black"
         >
           <ChatIcon className="w-8 h-8" />
         </Tabs.Trigger>
         <Tabs.Trigger
           value="Users"
-          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 text-secondary-main hover:text-black"
+          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black"
         >
           <UserIcon className="w-8 h-8 " />
         </Tabs.Trigger>
 
         <Tabs.Trigger
           value="Settings"
-          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 text-secondary-main hover:text-black"
+          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black"
         >
           <WheelIcon className="w-8 h-8" />
         </Tabs.Trigger>
       </div>
 
       <div className="flex-col hidden gap-6 mt-auto mb-4 md:flex">
-        <div className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 text-secondary-main hover:text-black">
+        <div className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black">
           <SunIcon className="w-8 h-8" />
         </div>
 
@@ -72,7 +72,7 @@ const Navbar = () => {
               navigate("/login");
             })
           }
-          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 text-secondary-main hover:text-black"
+          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black"
         >
           <LogOutIcon className="w-8 h-8 " />
         </div>

@@ -16,6 +16,7 @@ import {
 } from "../../services/groupMessageServices";
 import useSWR from "swr";
 import toast from "react-hot-toast";
+import Profile from "../Profile/Profile";
 
 function Room() {
   const { selectedChat, recepient } = useChatsContext();
@@ -102,7 +103,7 @@ function Room() {
   }
   if (!selectedChat) {
     return (
-      <div className="flex flex-col items-center justify-center h-full text-lg text-gray-400">
+      <div className="flex flex-col items-center justify-center w-full h-full text-lg text-gray-400">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -127,11 +128,18 @@ function Room() {
     return <p>Loading...</p>;
   } else
     return (
-      <main className="flex flex-col h-full transition-all grow shrink-0">
-        <ChatHeader />
-        <Messages messages={messages} onDelete={handleDeleteMessage} />
-        <Input />
-      </main>
+      <>
+        <main className="flex flex-col h-full transition-all grow shrink-0">
+          <ChatHeader />
+          <Messages messages={messages} onDelete={handleDeleteMessage} />
+          <Input />
+        </main>
+        <aside
+          className={`hidden max-w-[20rem] grow basis-40 transition-all xl:flex`}
+        >
+          profile
+        </aside>
+      </>
     );
 }
 

@@ -59,8 +59,8 @@ const Chat = ({ conversation }: IChatProps) => {
         setRecepient(contactDetails);
         setSelectedChat(conversation);
       }}
-      className={`transition-all flex items-start gap-3 px-2 py-3 rounded-md cursor-pointer hover:bg-slate-100 ${
-        isActive ? "bg-slate-200" : ""
+      className={`transition-all flex items-start gap-3 px-2 py-3 rounded-md cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
+        isActive ? "bg-slate-200 dark:bg-dark-slate3" : ""
       }`}
     >
       <Avatar
@@ -74,7 +74,7 @@ const Chat = ({ conversation }: IChatProps) => {
       />
 
       <div className="flex flex-col gap-1 overflow-hidden shrink text-ellipsis">
-        <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] ">
+        <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] dark:text-gray1">
           {isGroup
             ? conversation.groupName
             : isPersonal
@@ -87,8 +87,8 @@ const Chat = ({ conversation }: IChatProps) => {
             : contactDetails?.about || "Hi there! I am using VChat"}
         </span>
       </div>
-      <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 ">
-        <span className="relative flex text-xs ">
+      <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray8 ">
+        <span className="relative flex text-xs tracking-tight ">
           {getFormatedDate(conversation.$updatedAt)}
         </span>
         {!isGroup && showHoverCard && (

@@ -17,7 +17,7 @@ const Sidebar = () => {
   if (!currentUserDetails) return;
 
   return (
-    <aside className="bg-gray1 grow grid grid-rows-[80px_1fr]  bg-primary-shaded shrink-0 basis-96 px-2 w-full h-full  md:max-w-[22rem]">
+    <aside className="bg-gray2 dark:bg-dark-blue2/[0.998] dark:text-gray2 grow grid grid-rows-[80px_1fr] shrink-0 basis-96 px-2 w-full h-full  md:max-w-[25rem]">
       <div className="flex items-center justify-between gap-4 px-8 py-4 text-lg font-bold tracking-wider ">
         <span className="flex justify-center w-full ">{activePage}</span>
         <div></div>

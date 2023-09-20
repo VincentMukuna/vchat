@@ -8,6 +8,8 @@ import {
   tomato,
   tomatoDark,
   brownDark,
+  slateDark,
+  mauveDark,
 } from "@radix-ui/colors";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -23,6 +25,8 @@ export default {
           ...indigoDark,
           ...tomatoDark,
           ...grayDark,
+          ...slateDark,
+          ...mauveDark,
         },
         ...indigo,
         ...tomato,

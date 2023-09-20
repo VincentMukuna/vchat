@@ -9,7 +9,7 @@ interface MessagesProps {
 function Messages({ messages, onDelete }: MessagesProps) {
   return (
     <div className="relative self-stretch overflow-y-auto grow">
-      <div className="flex flex-col-reverse h-full p-2 overflow-y-scroll transition-all bg-gray5">
+      <div className="flex flex-col-reverse h-full p-2 overflow-y-scroll transition-all bg-dark-mauve12 dark:bg-dark-blue1">
         {messages.length > 0 ? (
           messages.map((message, i) => (
             <Message

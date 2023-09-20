@@ -87,8 +87,8 @@ function Message({ message, onDelete }: MessageProps) {
         className={`flex flex-col
             px-5 py-2 m-2 ${
               mine
-                ? "bg-slate-300 rounded-br-none"
-                : "bg-slate-700 rounded-bl-none text-gray-100"
+                ? "bg-slate-300 dark:bg-dark-mauve68 dark:text-black rounded-br-none"
+                : "bg-slate-700 dark:bg-dark-slate5 dark:text-dark-gray12 rounded-bl-none text-gray-100"
             } rounded-3xl w-fit max-w-[400px] break-words`}
       >
         <div className="font-normal leading-relaxed tracking-wide">

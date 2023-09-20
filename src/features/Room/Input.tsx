@@ -106,7 +106,7 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="bottom-0 overflow-hidden bg-gray8 end-0 start-0 shrink-0">
+    <footer className="bottom-0 m-4 overflow-hidden rounded-full dark:text-dark-blue12 bg-gray8 dark:bg-dark-blue3 end-0 start-0 shrink-0">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
         <div className="flex items-center w-full gap-3 p-3">
           <div className="flex gap-6 px-2">
@@ -143,7 +143,8 @@ const Input = ({}: InputProps) => {
           <input
             placeholder="Type a message"
             className="w-[80%] py-2  bg-transparent focus:outline-none caret-secondary-main
-             placeholder:text-slate-800  rounded  resize-none max-h-[100px]
+             placeholder:text-slate-800 placeholder:dark:text-indigo-50  rounded  resize-none max-h-[100px]
+             dark:text-gray1
              invalid:border invalid:border-red-300"
             value={messageBody}
             spellCheck={true}
@@ -155,7 +156,7 @@ const Input = ({}: InputProps) => {
             <button
               type="submit"
               disabled={sending}
-              className="flex items-center gap-3 p-2 mr-3 text-base font-bold rounded bg-dark-indigo4"
+              className="flex items-center gap-3 p-2 mr-3 text-base font-medium tracking-wider rounded bg-dark-indigo4 dark:text-white"
             >
               Send
             </button>

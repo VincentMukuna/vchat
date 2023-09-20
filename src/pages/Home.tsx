@@ -26,7 +26,7 @@ function Home() {
 
         <Sidebar />
         <div
-          className={`transition-opacity absolute bg-gray2 inset-0 md:relative grow ${
+          className={`flex transition-opacity absolute bg-gray2 dark:bg-dark-blue1 inset-0 md:relative grow ${
             selectedChat ? "z-10" : "invisible md:visible"
           }`}
         >
