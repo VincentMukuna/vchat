@@ -36,7 +36,6 @@ export async function sendGroupMessage(
     attachments: string[] | null;
   },
 ) {
-  console.log(message);
   try {
     await api.createDocument(
       Server.databaseID,
