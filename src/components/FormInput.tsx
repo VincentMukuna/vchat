@@ -25,7 +25,7 @@ const FormInput = ({ value, label, onChange, type, name, id }: inputProps) => {
           value={value}
           onChange={onChange}
           type={type}
-          className="px-2 py-2 bg-transparent border-b-[0.5px] invalid:bg-dark-tomato12 invalid:border-dark-tomato10  border-b-dark-blue3 focus:outline-none dark:focus:border-dark-blue5 focus:border-dark-blue8 transition-[border] dark:text-white text-dark-blue1"
+          className="px-2 py-2 bg-transparent border-b-[0.5px]  invalid:border-dark-tomato10 dark:invalid:border-tomato10  border-b-dark-blue3 focus:outline-none dark:focus:border-dark-blue5 focus:border-dark-blue8 transition-[border] dark:text-white text-dark-blue1"
         />
       </label>
     </div>
