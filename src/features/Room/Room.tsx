@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import ChatHeader from "./ChatHeader";
 import Input from "./Input";
 import Messages from "./Messages";
@@ -15,8 +15,6 @@ import {
   getGroupMessages,
 } from "../../services/groupMessageServices";
 import useSWR from "swr";
-import toast from "react-hot-toast";
-import Profile from "../Profile/Profile";
 
 function Room() {
   const { selectedChat, recepient } = useChatsContext();
