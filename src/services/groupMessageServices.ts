@@ -44,15 +44,14 @@ export async function sendGroupMessage(
         ...message,
       },
     );
-    console.log("Message uploaded");
     await api.updateDocument(
       Server.databaseID,
       Server.collectionIDGroups,
       groupID,
       { changeLog: "newtext" },
     );
-  } catch (error) {
-    console.log(`Error sending group message `, error);
+  } catch (error: any) {
+    console.log(`Error sending group message `, error.message);
   }
 }
 

@@ -73,7 +73,7 @@ const Chat = ({ conversation }: IChatProps) => {
         }
       />
 
-      <div className="flex flex-col gap-1 overflow-hidden shrink text-ellipsis">
+      <div className="flex flex-col overflow-hidden shrink text-ellipsis">
         <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] dark:text-gray1">
           {isGroup
             ? conversation.groupName
@@ -81,7 +81,7 @@ const Chat = ({ conversation }: IChatProps) => {
             ? "You"
             : contactDetails?.name}
         </span>
-        <span className="overflow-hidden text-sm font-normal tracking-wide whitespace-nowrap text-ellipsis ">
+        <span className="overflow-hidden font-sans text-sm font-normal whitespace-nowrap text-ellipsis dark:text-gray6">
           {isGroup
             ? conversation.description
             : contactDetails?.about || "Hi there! I am using VChat"}

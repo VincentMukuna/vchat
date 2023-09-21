@@ -22,7 +22,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="box-content bottom-0 flex items-center justify-center w-full gap-16 p-1 py-2 dark:text-indigo4 bg-gray3 dark:bg-dark-indigo2 md:h-full md:flex-col md:w-16 shrink-0">
+    <nav className="box-content bottom-0 flex items-center justify-center w-full gap-16 p-1 py-2 dark:text-dark-slate11 bg-gray3 dark:bg-dark-indigo2 md:h-full md:flex-col md:w-16 shrink-0">
       <div className="hidden md:flex">
         <Tabs.Trigger
           value="Profile"

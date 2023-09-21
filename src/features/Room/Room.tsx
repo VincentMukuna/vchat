@@ -46,7 +46,11 @@ function Room() {
         revalidate: false,
         rollbackOnError: true,
       });
-      await deleteGroupMessage(selectedChat.$id, message.$id);
+      try {
+        await deleteGroupMessage(selectedChat.$id, message.$id);
+      } catch (error: any) {
+        console.log("Error deleting message! ", error.message);
+      }
 
       return;
     } else {

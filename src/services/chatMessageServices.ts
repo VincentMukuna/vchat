@@ -35,8 +35,8 @@ export async function sendChatMessage(
       chatID,
       { changeLog: "newtext" },
     );
-  } catch (error) {
-    console.log("Error sending chat message ", error);
+  } catch (error: any) {
+    console.log("Error sending chat message ", error.message);
   }
 }
 export async function getChatMessages(chatID: string) {
