@@ -44,33 +44,19 @@ function Room() {
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
     if (isGroup) {
-      let promise = deleteGroupMessage(selectedChat.$id, message.$id);
-      await mutate(messages?.filter((msg) => msg.$id !== message.$id), {
+      mutate(messages?.filter((msg) => msg.$id !== message.$id), {
         revalidate: false,
         rollbackOnError: true,
       });
-      toast.promise(promise, {
-        success: "Deleted successfully",
-        loading: "Deleting... ",
-        error: (error) => `Error deleting message ${error?.message}`,
-      });
+      await deleteGroupMessage(selectedChat.$id, message.$id);
+
       return;
     } else {
-      await mutate(messages?.filter((msg) => msg.$id !== message.$id), {
+      mutate(messages?.filter((msg) => msg.$id !== message.$id), {
         revalidate: false,
         rollbackOnError: true,
       });
-      let promise = deleteChatMessage(
-        selectedChat.$id,
-        message as IChatMessage,
-      );
-
-      toast.promise(promise, {
-        success: "Deleted successfully",
-        loading: "Deleting... ",
-        error: (error) => `Error deleting message ${error?.message}`,
-      });
-      return;
+      await deleteChatMessage(selectedChat.$id, message as IChatMessage);
     }
   };
   useEffect(() => {
