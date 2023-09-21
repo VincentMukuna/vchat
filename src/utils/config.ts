@@ -15,7 +15,7 @@ export const Server = {
   bucketIDGroupAvatars: "650501eb3c46e8cea2b0",
   bucketIDAttachments: "64d2846c6ba20730422c",
 
-  functionIDFuncs: "64fde861b589a24d786b",
+  functionIDFuncs: "664fde861b589a24d786b",
 
   documentIDGlobalChat: "650053648227be1533ad",
 };
