@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoutes from "./routes/PrivateRoutes";
-
+import { Analytics } from "@vercel/analytics/react";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import { AuthProvider } from "./context/AuthContext";
@@ -13,7 +13,7 @@ import { SWRConfig } from "swr/_internal";
 
 function App() {
   return (
-    <div>
+    <>
       <ErrorBoundary>
         <Router>
           <Toaster
@@ -39,7 +39,8 @@ function App() {
           </SWRConfig>
         </Router>
       </ErrorBoundary>
-    </div>
+      <Analytics />
+    </>
   );
 }
 
