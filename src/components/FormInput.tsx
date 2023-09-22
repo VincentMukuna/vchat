@@ -16,7 +16,7 @@ const FormInput = ({ value, label, onChange, type, name, id }: inputProps) => {
     <div className="relative text-md dark:text-dark-blue1 ">
       <label
         htmlFor={id}
-        className="flex flex-col tracking-wider text-indigo-200 text-dark-blue3/50 dark:text-gray8 focus-within:text-dark-gray3 dark:focus-within:text-gray5"
+        className="flex flex-col tracking-wider text-dark-blue3/80 dark:text-gray8 focus-within:text-dark-gray3 dark:focus-within:text-gray5"
       >
         {label}
         <input
