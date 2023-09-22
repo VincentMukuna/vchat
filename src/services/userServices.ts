@@ -63,35 +63,13 @@ export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
 ) {
-  let exec = await api.executeFunction(Server.functionIDFuncs, {
-    action: "add contact",
-    params: {
-      adderDetailsID,
-      addeeDetailsID,
-    },
+  await api.createDocument(Server.databaseID, Server.collectionIDChats, {
+    participants: [adderDetailsID, addeeDetailsID],
   });
-  let response = JSON.parse(exec.response);
-  if (!response.ok) {
-    throw Error(response.message);
-  }
 }
 
-export async function deleteContact(
-  deleterDetailsID: string,
-  deleteeDetailsID: string,
-) {
-  let exec = await api.executeFunction(Server.functionIDFuncs, {
-    action: "delete contact",
-    params: {
-      deleterDetailsID,
-      deleteeDetailsID,
-    },
-  });
-  let response = JSON.parse(exec.response);
-
-  if (!response.ok) {
-    throw Error(response.message);
-  }
+export async function deleteContact(chatID: string) {
+  await api.deleteDocument(Server.databaseID, Server.collectionIDChats, chatID);
 }
 
 export async function updateUserDetails(
@@ -109,26 +87,24 @@ export async function updateUserDetails(
 export async function deleteUserAvatar(userDetailsID: string) {
   let details = await getUserDetails(userDetailsID);
   if (details.avatarID) {
-    await api.deleteFile(Server.bucketIDAvatars, details.avatarID);
-    await updateUserDetails(userDetailsID, { avatarID: null, avatarURL: null });
+    await api.deleteFile(Server.bucketIDUserAvatars, details.avatarID);
+    await updateUserDetails(userDetailsID, { avatarID: null });
   }
 }
 
 export async function uploadUserAvatar(userDetailsID: string, avatar: File) {
-  if (avatar.size > 10_000_000) {
-    throw new Error("Avatar cannot be larger than 10MB ");
+  if (avatar.size > 5_000_000) {
+    throw new Error("Avatar cannot be larger than 5MB ");
   }
-  let res = await api.createFile(Server.bucketIDAvatars, avatar);
-  let url = api.getFile(Server.bucketIDAvatars, res.$id);
+  let res = await api.createFile(Server.bucketIDUserAvatars, avatar);
   return await updateUserDetails(userDetailsID, {
     avatarID: res.$id,
-    avatarURL: url,
   });
 }
 
 export async function updateUserAvatar(userDetailsID: string, avatar: File) {
-  if (avatar.size > 10_000_000)
-    throw new Error("Avatar cannot be larger than 10MB ");
+  if (avatar.size > 5_000_000)
+    throw new Error("Avatar cannot be larger than 5MB ");
   await deleteUserAvatar(userDetailsID);
   return await uploadUserAvatar(userDetailsID, avatar);
 }

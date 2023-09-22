@@ -3,6 +3,7 @@ import { useAuth } from "../../context/AuthContext";
 //@ts-ignore
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Avatar from "../../components/Avatar";
+import { IUserDetails } from "../../interfaces";
 
 function ChatHeader() {
   const { recepient, setSelectedChat, setRecepient, selectedChat } =
@@ -10,11 +11,12 @@ function ChatHeader() {
   if (!selectedChat) return;
   const { currentUserDetails } = useAuth();
 
-  const isGroup = !!selectedChat?.groupName;
+  const isGroup = !!selectedChat?.groupMessages;
   const isPersonal =
     !isGroup &&
     selectedChat.participants.every(
-      (id: string) => id === currentUserDetails?.$id,
+      (participant: IUserDetails) =>
+        participant.$id === currentUserDetails?.$id,
     );
 
   return (
@@ -32,7 +34,7 @@ function ChatHeader() {
       <Avatar
         name={
           isGroup
-            ? selectedChat.groupName
+            ? selectedChat.name
             : isPersonal
             ? "You"
             : recepient?.name || " "
@@ -40,11 +42,7 @@ function ChatHeader() {
       />
       <div className="relative flex flex-col ">
         <span className="text-lg font-semibold tracking-wide">
-          {isGroup
-            ? selectedChat.groupName
-            : isPersonal
-            ? "You"
-            : recepient?.name}
+          {isGroup ? selectedChat.name : isPersonal ? "You" : recepient?.name}
         </span>
         <span className="relative text-xs tracking-wide text-dark-gray5 dark:text-gray6">
           {isGroup ? selectedChat.description : recepient?.about || "about"}

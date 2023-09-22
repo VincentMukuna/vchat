@@ -22,11 +22,11 @@ const Chat = ({ conversation }: IChatProps) => {
   const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
   const [showHoverCard, setShowHoverCard] = useState(false);
 
-  const isGroup = !!conversation?.groupName;
+  const isGroup = !!conversation?.groupMessages;
   const isPersonal =
     !isGroup &&
     conversation.participants.every(
-      (id: string) => id === currentUserDetails.$id,
+      (participant: IUserDetails) => participant.$id === currentUserDetails.$id,
     );
 
   //only fetch data only if conversation is not a group chat or a personal chat
@@ -66,7 +66,7 @@ const Chat = ({ conversation }: IChatProps) => {
       <Avatar
         name={
           isGroup
-            ? conversation.groupName
+            ? conversation.name
             : isPersonal
             ? "You"
             : contactDetails?.name || " "
@@ -76,7 +76,7 @@ const Chat = ({ conversation }: IChatProps) => {
       <div className="flex flex-col overflow-hidden shrink text-ellipsis">
         <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] dark:text-gray1">
           {isGroup
-            ? conversation.groupName
+            ? conversation.name
             : isPersonal
             ? "You"
             : contactDetails?.name}
@@ -147,10 +147,7 @@ const Chat = ({ conversation }: IChatProps) => {
                       e.stopPropagation();
 
                       if (contactDetails) {
-                        let promise = deleteContact(
-                          currentUserDetails.$id,
-                          contactDetails.$id,
-                        );
+                        let promise = deleteContact(conversation.$id);
                         // promise.then(() => mutate(currentUserDetails.$id));
 
                         toast.promise(promise, {

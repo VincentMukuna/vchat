@@ -11,28 +11,24 @@ async function createDetailsFile(user: Models.User<Models.Preferences>) {
     {
       userID: user.$id,
       name: user.name,
-      changeLog: "created",
     },
-    [Permission.write(Role.users()), Permission.read(Role.users())],
   )) as IUserDetails;
   await api.updatePrefs({ detailsDocID: userDeets.id });
   return userDeets;
 }
 export async function addUserToGlobalChat(userDetailsID: string) {
-  console.log("Executing add to global chat function...");
+  console.log("Adding to global chat...");
   console.time("globalchat");
   try {
-    let exec = await api.executeFunction(Server.functionIDFuncs, {
-      action: "add to global chat",
-      params: {
-        userDetailsID,
-      },
-    });
-    console.log("add to global chat: ", JSON.parse(exec.response).message);
+    return (await api.updateDocument(
+      Server.databaseID,
+      Server.collectionIDUsers,
+      userDetailsID,
+      { groups: [Server.documentIDGlobalChat] },
+    )) as IUserDetails;
   } catch (error) {
-    console.log("Error adding user to global chat...");
+    throw new Error("Error adding user to global chat...");
   }
-  console.timeEnd("globalchat");
 }
 
 type registerProps = {
@@ -59,7 +55,7 @@ export async function registerNewUser({
       console.log("Updating preferences...");
       user = await api.updatePrefs({ detailsDocID: userDeets.$id });
       console.log(`Adding to global chat...`);
-      addUserToGlobalChat(userDeets.$id);
+      userDeets = await addUserToGlobalChat(userDeets.$id);
     } catch (error) {
       console.log(
         "Error creating details file: ",

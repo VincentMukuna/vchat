@@ -5,9 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
 import { useAppSelector } from "../../context/AppContext";
-import { getChats } from "../../services/chatMessageServices";
 import useSWR, { useSWRConfig } from "swr";
-import { getGroups } from "../../services/groupMessageServices";
 import { ClipLoader } from "react-spinners";
 
 function compareUpdatedAt(a: any, b: any) {
@@ -23,15 +21,6 @@ function compareUpdatedAt(a: any, b: any) {
   }
 }
 
-async function getConversations(userDetailsDocID: string) {
-  let conversations: (IGroup | IChat)[];
-
-  let chatDocs = await getChats(userDetailsDocID);
-  let groupDocs = await getGroups(userDetailsDocID);
-  conversations = [...chatDocs, ...groupDocs].sort(compareUpdatedAt);
-  return conversations;
-}
-
 const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   const { setActivePage } = useAppSelector();
@@ -44,6 +33,22 @@ const Chats = () => {
   const [localConversations, setLocalConversations] = useState<
     (IChat | IGroup)[]
   >([]);
+
+  async function getConversations(userDetailsDocID: string) {
+    let conversations: (IGroup | IChat)[] = [];
+
+    let chatDocs = currentUserDetails?.chats;
+    if (chatDocs) {
+      conversations = [...conversations, ...chatDocs];
+    }
+    let groupDocs = currentUserDetails?.groups;
+    if (groupDocs) {
+      conversations = [...conversations, ...groupDocs];
+    }
+    conversations.sort(compareUpdatedAt);
+    console.log(conversations);
+    return conversations;
+  }
 
   // Fetch chats data using useSWR
   let {
@@ -72,13 +77,7 @@ const Chats = () => {
       (response) => {
         console.log(response.payload);
         // If the contact details have been updated, refresh the user details
-        if (
-          response.payload.changeLog === "addcontact" ||
-          response.payload.changeLog === "deletecontact"
-        ) {
-          console.log("change in contacts");
-          mutate();
-        }
+        mutate();
       },
     );
 

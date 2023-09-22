@@ -1,7 +1,8 @@
 import { Models } from "appwrite";
+import IChat from "./chat";
 
 export default interface IChatMessage extends Models.Document {
-  chatID: string;
+  chat: IChat | string;
   senderID: string;
   recepientID: string;
   body: string;

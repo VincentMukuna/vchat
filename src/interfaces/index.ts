@@ -1,31 +1,30 @@
 import IUserDetails from "./userDetails";
-import IChatMessage from "./chatMessag";
+import IChatMessage from "./chatMessage";
 import IChat from "./chat";
 import { Models } from "appwrite";
 type IContactList = Map<string, string>;
 
 type changeLogTypes =
   | "addmember"
-  | "makeadmin"
-  | "unmakeadmin"
+  | "addadmin"
+  | "newtext"
+  | "removeadmin"
   | "removemember"
-  | "editname"
-  | "editdescription"
+  | "changedetails"
   | "editavatar"
   | "edittext"
   | "deletetext"
   | "created";
 interface IGroup extends Models.Document {
-  groupName: string;
+  name: string;
   description: string;
-  groupAvatarID: string | null;
-  groupAvtarURL: any;
-  admins: string;
-  groupMembers: string;
+  avatarID: string | null;
+  admins: string[];
+  members: IUserDetails[];
   changeLog: changeLogTypes;
 }
 interface IGroupMessage extends Models.Document {
-  groupID: string;
+  group: [IGroup] | string;
   senderID: string;
   body: string;
   attachments: string[];
