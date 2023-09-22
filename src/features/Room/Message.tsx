@@ -38,7 +38,10 @@ function Message({ message, onDelete }: MessageProps) {
   const getMessageAttachments = () => {
     message.attachments.forEach(async (attachmentID) => {
       try {
-        let response = api.getFile(Server.bucketIDAttachments, attachmentID);
+        let response = api.getFile(
+          Server.bucketIDChatAttachments,
+          attachmentID,
+        );
         setAttachments([...attachments, response]);
       } catch (error) {
         console.log("ATTACHMENT ERROR: ", error);

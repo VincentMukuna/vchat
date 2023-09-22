@@ -43,7 +43,7 @@ const Input = ({}: InputProps) => {
         attachments: [],
         senderID: currentUserDetails.$id,
         body: messageBody,
-        groupID: selectedChat.$id,
+        group: selectedChat.$id,
       };
       await mutate(
         selectedChat.$id,
@@ -52,7 +52,7 @@ const Input = ({}: InputProps) => {
       );
       let promise = sendGroupMessage(selectedChat.$id, {
         body: message.body,
-        groupID: message.groupID,
+        group: message.groupID,
         senderID: message.senderID,
         attachments: null,
       });
@@ -75,7 +75,7 @@ const Input = ({}: InputProps) => {
       recepientID: recepient.$id,
       body: messageBody,
       read: false,
-      chatID: selectedChat.$id,
+      chat: selectedChat.$id,
     } as IChatMessage;
     await mutate(
       selectedChat.$id,

@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import Avatar from "../../components/Avatar";
 
 function User({ user }: { user: IUserDetails }) {
-  const { currentUserDetails, refreshUserDetails } = useAuth();
+  const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const isPersonal = user.$id === currentUserDetails.$id;
 

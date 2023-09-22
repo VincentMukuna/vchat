@@ -100,8 +100,8 @@ function Login() {
             to="/register"
             className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
           >
-            Register
-          </Link>{" "}
+            {" Register "}
+          </Link>
           here
         </div>
       </div>

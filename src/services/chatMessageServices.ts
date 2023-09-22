@@ -14,7 +14,7 @@ export async function sendChatMessage(
   sentMessage: sendMessageProps,
 ) {
   let message = {
-    chatID,
+    chat: chatID,
     senderID: sentMessage.senderID,
     recepientID: sentMessage.recepientID,
     body: sentMessage.messageBody,
@@ -29,12 +29,9 @@ export async function sendChatMessage(
       message,
     );
     //change last message id in chats db
-    await api.updateDocument(
-      Server.databaseID,
-      Server.collectionIDChats,
-      chatID,
-      { changeLog: "newtext" },
-    );
+    api.updateDocument(Server.databaseID, Server.collectionIDChats, chatID, {
+      changeLog: "newtext",
+    });
   } catch (error: any) {
     console.log("Error sending chat message ", error.message);
   }
@@ -46,40 +43,6 @@ export async function getChatMessages(chatID: string) {
     [Query.equal("chatID", chatID), Query.orderDesc("$createdAt")],
   );
   return documents as IChatMessage[];
-}
-
-export async function getChatMessage(messageID: string) {
-  let msgDoc = await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDChatMessages,
-    messageID,
-  );
-  return msgDoc as IChatMessage;
-}
-export async function getChats(userDetailsID: string) {
-  try {
-    let currentUserDetails = (await api.getDocument(
-      Server.databaseID,
-      Server.collectionIDUsers,
-      userDetailsID,
-    )) as IUserDetails;
-    // Get contact list and chats list using useMemo
-    const contactList = new Map<string, string>(
-      Object.entries(JSON.parse(currentUserDetails.contacts)),
-    );
-    const chatsList = Array.from(contactList.values());
-    if (chatsList.length === 0) return [];
-
-    let { documents } = await api.listDocuments(
-      Server.databaseID,
-      Server.collectionIDChats,
-      [Query.equal("$id", [...chatsList])],
-    );
-    return documents as IChat[];
-  } catch (error) {
-    console.log("Eror fetching chats: ", (error as AppwriteException).message);
-    throw error;
-  }
 }
 
 export async function clearChatMessages(chatID: string) {
@@ -109,7 +72,7 @@ export async function getChatDoc(chatID: string) {
 }
 
 export async function deleteChatMessage(chatID: string, message: IChatMessage) {
-  api.deleteDocument(
+  await api.deleteDocument(
     Server.databaseID,
     Server.collectionIDChatMessages,
     message.$id,

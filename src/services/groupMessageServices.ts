@@ -1,30 +1,31 @@
-import { AppwriteException, Permission, Query, Role } from "appwrite";
+import { Query } from "appwrite";
 import { Server } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
-import { addUserToGlobalChat } from "./registerUserService";
 
 export async function getGroups(userDetailsDocID: string) {
   try {
-    const { documents } = await api.listDocuments(
+    let deets = (await api.getDocument(
       Server.databaseID,
-      Server.collectionIDGroups,
-      [Query.search("groupMembers", userDetailsDocID)],
-    );
-    return documents as IGroup[];
-  } catch (error) {
-    console.log("Error getting via search...", error);
+      Server.collectionIDUsers,
+      userDetailsDocID,
+    )) as IUserDetails;
+    return deets.groups;
+  } catch (error: any) {
+    console.log("Error getting groups ", error.message);
     throw error;
   }
 }
 
 export async function getGroupMessages(groupID: string) {
-  const { documents } = await api.listDocuments(
+  let groupDoc = await api.getDocument(
     Server.databaseID,
-    Server.collectionIDGroupMessages,
-    [Query.equal("groupID", groupID), Query.orderDesc("$createdAt")],
+    Server.collectionIDGroups,
+    groupID,
   );
-  return documents as IGroupMessage[];
+  console.log("group doc ", groupDoc);
+  let messages = groupDoc.groupMessages;
+  return messages as IGroupMessage[];
 }
 
 export async function sendGroupMessage(
@@ -32,7 +33,7 @@ export async function sendGroupMessage(
   message: {
     senderID: string;
     body: string;
-    groupID: string;
+    group: string;
     attachments: string[] | null;
   },
 ) {
@@ -61,12 +62,9 @@ export async function deleteGroupMessage(groupID: string, messageID: string) {
     Server.collectionIDGroupMessages,
     messageID,
   );
-  await api.updateDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
-    groupID,
-    { changeLog: "deletetext" },
-  );
+  api.updateDocument(Server.databaseID, Server.collectionIDGroups, groupID, {
+    changeLog: "deletetext",
+  });
 }
 
 export async function getGroupDetails(groupID: string) {
@@ -85,35 +83,33 @@ export async function updateGroupDetails(
     Server.databaseID,
     Server.collectionIDGroups,
     groupID,
+    details,
   )) as IGroup;
 }
 
 export async function deleteGroupAvatar(groupID: string) {
   let details = await getGroupDetails(groupID);
-  if (details.groupAvatarID) {
+  if (details.avatarID) {
     await api.deleteFile(Server.bucketIDGroupAvatars, details.groupAvatarID);
     await updateGroupDetails(groupID, {
-      groupAvatarID: null,
-      groupAvatarURL: null,
+      avatarID: null,
     });
   }
 }
 
 export async function uploadGroupAvatar(groupID: string, groupAvatar: File) {
-  if (groupAvatar.size > 10_000_000) {
-    throw new Error("Avatar cannot be larger than 10MB ");
+  if (groupAvatar.size > 5_000_000) {
+    throw new Error("Avatar cannot be larger than 5MB ");
   }
-  let res = await api.createFile(Server.bucketIDAvatars, groupAvatar);
-  let url = api.getFile(Server.bucketIDAvatars, res.$id);
+  let res = await api.createFile(Server.bucketIDGroupAvatars, groupAvatar);
   return await updateGroupDetails(groupID, {
-    groupAvatarID: res.$id,
-    groupAvatarURL: url,
+    avatarID: res.$id,
   });
 }
 
 export async function updateUserAvatar(groupID: string, groupAvatar: File) {
-  if (groupAvatar.size > 10_000_000)
-    throw new Error("Avatar cannot be larger than 10MB ");
+  if (groupAvatar.size > 5_000_000)
+    throw new Error("Avatar cannot be larger than 5MB ");
   await deleteGroupAvatar(groupID);
   return await uploadGroupAvatar(groupID, groupAvatar);
 }

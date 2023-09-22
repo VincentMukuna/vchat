@@ -1,9 +1,9 @@
 import { Models } from "appwrite";
-import { IUserPrefs } from ".";
+import { IChat, IGroup, IUserPrefs } from ".";
 type changeLogTypes =
-  | "addcontact"
-  | "deletecontact"
-  | "addgroup"
+  | "newchat"
+  | "deletechat"
+  | "newgroup"
   | "removegroup"
   | "editdetails";
 export default interface IUserDetails extends Models.Document {
@@ -11,13 +11,14 @@ export default interface IUserDetails extends Models.Document {
   userID: string;
   avatarID: string | null;
   about: string;
-  contacts: string;
-  groups: string;
+  location: string;
   avatarURL: any;
   status: "Online" | "Offline" | "Typing";
   lastSeen: string;
   statusUpdates: string;
   prefs: IUserPrefs;
   email: string;
+  groups: IGroup[];
+  chats: IChat[];
   changeLog: changeLogTypes;
 }

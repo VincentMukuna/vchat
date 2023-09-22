@@ -10,6 +10,7 @@ import {
   getUserDetails,
 } from "../services/userServices";
 import { logUserIn } from "../services/sessionServices";
+import api from "../services/api";
 
 type AuthProviderProps = {
   children: React.JSX.Element;
