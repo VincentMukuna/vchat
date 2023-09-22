@@ -92,10 +92,13 @@ const Chat = ({ conversation }: IChatProps) => {
           {getFormatedDate(conversation.$updatedAt)}
         </span>
         {!isGroup && showHoverCard && (
-          <DropdownMenu.Root>
+          <DropdownMenu.Root modal={false}>
             <DropdownMenu.Trigger>
               <div
-                onClick={() => setShowHoverCard(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowHoverCard(true);
+                }}
                 onMouseLeave={(e) => {
                   e.stopPropagation();
                 }}
@@ -117,16 +120,20 @@ const Chat = ({ conversation }: IChatProps) => {
               </div>
             </DropdownMenu.Trigger>
             <DropdownMenu.Portal>
-              <DropdownMenu.Content className="flex flex-col overflow-hidden bg-gray-500 rounded">
+              <DropdownMenu.Content className="z-30 flex flex-col overflow-hidden bg-gray-500 rounded">
                 <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
                       let promise = clearChatMessages(conversation.$id);
                       toast.promise(promise, {
-                        loading: "clearing chat messages",
-                        success: "cleared",
-                        error: "Error clearing messages",
+                        loading: "Clearing chat messages...",
+                        success: "Cleared",
+                        error:
+                          "Whoops! Cannot clear this chat's messages at the moment. Try again later",
+                      });
+                      promise.then(() => {
+                        mutate(selectedChat?.$id);
                       });
                     }}
                     className="w-full"

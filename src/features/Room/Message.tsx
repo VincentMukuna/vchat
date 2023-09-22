@@ -82,20 +82,21 @@ function Message({ message, onDelete }: MessageProps) {
         name={mine ? currentUserDetails.name : (senderDetails?.name as string)}
         size="small"
       />
-
-      <div
-        className={`flex flex-col
+      <div className="flex flex-col ">
+        <div
+          className={`flex flex-col
             px-5 py-2 m-2 ${
               mine
                 ? "bg-slate-300 dark:bg-dark-mauve68 dark:text-black rounded-br-none"
                 : "bg-slate-700 dark:bg-dark-slate5 dark:text-dark-gray12 rounded-bl-none text-gray-100"
             } rounded-3xl w-fit max-w-[400px] break-words`}
-      >
-        <div className="font-normal leading-relaxed tracking-wide">
-          {message.body}
+        >
+          <p className="font-normal leading-relaxed tracking-wide">
+            {message.body}
+          </p>
         </div>
         <div
-          className={`flex flex-row-reverse text-[9px] tracking-wider md:text-[10px] gap-1 ${
+          className={`flex mx-3 flex-row-reverse text-[9px] tracking-wider md:text-[10px] gap-1 ${
             mine ? "text-gray-500" : "text-gray-400 "
           }`}
         >

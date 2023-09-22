@@ -83,18 +83,15 @@ export async function getChats(userDetailsID: string) {
 }
 
 export async function clearChatMessages(chatID: string) {
-  try {
-    api.executeFunction(Server.functionIDFuncs, {
-      action: "delete contact",
-      params: {
-        chatID: chatID,
-      },
-    });
-  } catch (error) {
-    console.log(
-      "Error deleting chat messages",
-      (error as AppwriteException).message,
-    );
+  let exec = await api.executeFunction(Server.functionIDFuncs, {
+    action: "clear chat messages",
+    params: {
+      chatID: chatID,
+    },
+  });
+  let response = JSON.parse(exec.response);
+  if (!response.ok) {
+    throw new Error(response.message);
   }
 }
 
