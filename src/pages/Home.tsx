@@ -19,14 +19,14 @@ function Home() {
       value={activePage}
       orientation="vertical"
     >
-      <div className="absolute inset-0 flex flex-col-reverse overflow-hidden md:flex-row">
+      <div className="absolute inset-0 flex flex-col-reverse w-screen h-screen overflow-hidden md:flex-row">
         <Tabs.List aria-label="App navigation">
           <Navbar />
         </Tabs.List>
 
         <Sidebar />
         <div
-          className={`flex transition-opacity absolute bg-gray2 dark:bg-dark-blue1 inset-0 md:relative grow ${
+          className={`absolute flex transition-opacity w-screen h-screen  bg-gray2 dark:bg-dark-blue1 inset-0 md:relative grow ${
             selectedChat ? "z-10" : "invisible md:visible"
           }`}
         >

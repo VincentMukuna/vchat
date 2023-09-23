@@ -13,7 +13,7 @@ const FormInput = ({ value, label, onChange, type, name, id }: inputProps) => {
   const input = useRef();
 
   return (
-    <div className="relative text-md dark:text-dark-blue1 ">
+    <div className="relative mb-3 text-md dark:text-dark-blue1">
       <label
         htmlFor={id}
         className="flex flex-col tracking-wider text-dark-blue3/80 dark:text-gray8 focus-within:text-dark-gray3 dark:focus-within:text-gray5"

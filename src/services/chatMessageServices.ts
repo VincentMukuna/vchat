@@ -81,3 +81,13 @@ export async function deleteChatMessage(chatID: string, message: IChatMessage) {
     changeLog: "deletetext",
   });
 }
+
+export async function getUserChats(userDetailsID: string) {
+  let deets = (await api.getDocument(
+    Server.databaseID,
+    Server.collectionIDUsers,
+    userDetailsID,
+  )) as IUserDetails;
+  let chats = deets.chats;
+  return chats;
+}

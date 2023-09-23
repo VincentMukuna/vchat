@@ -59,7 +59,7 @@ const Chat = ({ conversation }: IChatProps) => {
         setRecepient(contactDetails);
         setSelectedChat(conversation);
       }}
-      className={`transition-all flex items-start gap-3 px-2 py-3 rounded-md cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
+      className={`transition-all flex items-start px-2 py-3 rounded-md cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
         isActive ? "bg-slate-200 dark:bg-dark-slate3" : ""
       }`}
     >
@@ -73,7 +73,7 @@ const Chat = ({ conversation }: IChatProps) => {
         }
       />
 
-      <div className="flex flex-col overflow-hidden shrink text-ellipsis">
+      <div className="flex flex-col ml-2 overflow-hidden shrink text-ellipsis">
         <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] dark:text-gray1">
           {isGroup
             ? conversation.name
