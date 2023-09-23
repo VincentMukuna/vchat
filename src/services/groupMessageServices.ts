@@ -23,8 +23,19 @@ export async function getGroupMessages(groupID: string) {
     Server.collectionIDGroups,
     groupID,
   );
-  console.log("group doc ", groupDoc);
-  let messages = groupDoc.groupMessages;
+  let messages = groupDoc.groupMessages as IGroupMessage[];
+
+  if (messages.length > 1) {
+    messages.sort((a, b) => {
+      if (a.$createdAt < b.$createdAt) {
+        return 1;
+      } else if (a.$createdAt > b.$createdAt) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
   return messages as IGroupMessage[];
 }
 
@@ -38,7 +49,7 @@ export async function sendGroupMessage(
   },
 ) {
   try {
-    await api.createDocument(
+    let msg = await api.createDocument(
       Server.databaseID,
       Server.collectionIDGroupMessages,
       {

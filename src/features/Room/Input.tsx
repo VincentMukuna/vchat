@@ -20,7 +20,7 @@ const Input = ({}: InputProps) => {
 
   let { mutate, cache } = useSWRConfig();
 
-  const isGroup = !!selectedChat?.groupName;
+  const isGroup = !!(selectedChat?.$collectionId === "groups");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.style.height = "auto";
@@ -33,6 +33,7 @@ const Input = ({}: InputProps) => {
     setSending(true);
     setMessageBody("");
     if (isGroup) {
+      console.log("Sending group message");
       let message: IGroupMessage = {
         $collectionId: Server.collectionIDGroupMessages,
         $databaseId: Server.databaseID,
@@ -52,7 +53,7 @@ const Input = ({}: InputProps) => {
       );
       let promise = sendGroupMessage(selectedChat.$id, {
         body: message.body,
-        group: message.groupID,
+        group: message.group as string,
         senderID: message.senderID,
         attachments: null,
       });

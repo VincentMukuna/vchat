@@ -18,9 +18,8 @@ import useSWR from "swr";
 
 function Room() {
   const { selectedChat, recepient } = useChatsContext();
-  console.log(selectedChat);
 
-  const isGroup = !!selectedChat?.groupMessages;
+  const isGroup = !!(selectedChat?.$collectionId === "groups");
 
   const getRoomMessages = async () => {
     if (isGroup) {

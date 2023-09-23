@@ -2,6 +2,7 @@ import { AppwriteException, Query } from "appwrite";
 import { IChat, IChatMessage, IUserDetails } from "../interfaces";
 import { Server } from "../utils/config";
 import api from "./api";
+import { compareUpdatedAt } from "../features/Chats/Chats";
 type sendMessageProps = {
   senderID: string;
   recepientID: string;
@@ -37,12 +38,20 @@ export async function sendChatMessage(
   }
 }
 export async function getChatMessages(chatID: string) {
-  const { documents } = await api.listDocuments(
-    Server.databaseID,
-    Server.collectionIDChatMessages,
-    [Query.equal("chatID", chatID), Query.orderDesc("$createdAt")],
-  );
-  return documents as IChatMessage[];
+  const chatDoc = await getChatDoc(chatID);
+  let chatMessages = chatDoc?.chatMessages;
+  if (chatMessages.length > 1) {
+    chatMessages.sort((a, b) => {
+      if (a.$createdAt < b.$createdAt) {
+        return 1;
+      } else if (a.$createdAt > b.$createdAt) {
+        return -1;
+      } else {
+        return 0;
+      }
+    });
+  }
+  return chatMessages as IChatMessage[];
 }
 
 export async function clearChatMessages(chatID: string) {
@@ -88,6 +97,16 @@ export async function getUserChats(userDetailsID: string) {
     Server.collectionIDUsers,
     userDetailsID,
   )) as IUserDetails;
-  let chats = deets.chats;
-  return chats;
+  let chatIDs = deets.chats.map((chat) => chat.$id);
+  let chats: IChat[] = [];
+  if (chatIDs.length > 0) {
+    let { documents } = await api.listDocuments(
+      Server.databaseID,
+      Server.collectionIDChats,
+      [Query.equal("$id", [...chatIDs])],
+    );
+    chats = documents as IChat[];
+  }
+
+  return chats as IChat[];
 }

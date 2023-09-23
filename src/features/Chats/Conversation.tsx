@@ -25,7 +25,7 @@ const Chat = ({ conversation }: IChatProps) => {
   const isGroup = !!conversation?.groupMessages;
   const isPersonal =
     !isGroup &&
-    conversation.participants.every(
+    conversation.participants?.every(
       (participant: IUserDetails) => participant.$id === currentUserDetails.$id,
     );
 
