@@ -55,10 +55,7 @@ function Register() {
             Register
           </h2>
 
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col w-full gap-6 mt-10"
-          >
+          <form onSubmit={handleSubmit} className="flex flex-col w-full mt-10">
             <FormInput
               id="email"
               name="email"

@@ -58,10 +58,7 @@ function Login() {
           Log In
         </h2>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col w-full gap-8 mt-12"
-        >
+        <form onSubmit={handleSubmit} className="flex flex-col w-full mt-12">
           <FormInput
             id="email"
             label="Email"

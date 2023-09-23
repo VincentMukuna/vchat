@@ -7,6 +7,11 @@ import { Server } from "../../utils/config";
 import { useAppSelector } from "../../context/AppContext";
 import useSWR, { useSWRConfig } from "swr";
 import { ClipLoader } from "react-spinners";
+import {
+  getChatMessages,
+  getUserChats,
+} from "../../services/chatMessageServices";
+import { getGroups } from "../../services/groupMessageServices";
 
 function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);
@@ -32,21 +37,20 @@ const Chats = () => {
   // Local state to store chats data
   const [localConversations, setLocalConversations] = useState<
     (IChat | IGroup)[]
-  >([]);
+  >(
+    [...currentUserDetails.chats, ...currentUserDetails.groups].sort(
+      compareUpdatedAt,
+    ),
+  );
 
   async function getConversations(userDetailsDocID: string) {
     let conversations: (IGroup | IChat)[] = [];
 
-    let chatDocs = currentUserDetails?.chats;
-    if (chatDocs) {
-      conversations = [...conversations, ...chatDocs];
-    }
-    let groupDocs = currentUserDetails?.groups;
-    if (groupDocs) {
-      conversations = [...conversations, ...groupDocs];
-    }
+    let chatDocs = await getUserChats(userDetailsDocID);
+    let groupDocs = await getGroups(userDetailsDocID);
+
+    conversations = [...chatDocs, ...groupDocs];
     conversations.sort(compareUpdatedAt);
-    console.log(conversations);
     return conversations;
   }
 

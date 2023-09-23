@@ -63,8 +63,12 @@ export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
 ) {
+  //Only add one chat Id if its a personal chat
   await api.createDocument(Server.databaseID, Server.collectionIDChats, {
-    participants: [adderDetailsID, addeeDetailsID],
+    participants:
+      adderDetailsID === addeeDetailsID
+        ? [addeeDetailsID]
+        : [adderDetailsID, addeeDetailsID],
   });
 }
 
