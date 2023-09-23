@@ -21,6 +21,7 @@ interface IGroup extends Models.Document {
   avatarID: string | null;
   admins: string[];
   members: (IUserDetails | string)[];
+  groupMessages: IChatMessage[];
   changeLog: changeLogTypes;
 }
 interface IGroupMessage extends Models.Document {

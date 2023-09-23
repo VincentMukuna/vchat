@@ -128,18 +128,9 @@ export async function createGroup(groupDetails: IInitGroup) {
   );
 }
 
-export async function getGroupDoc(groupID: string) {
-  let groupDoc = (await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
-    groupID,
-  )) as IGroup;
-  return groupDoc;
-}
-
 export async function addMembers(groupID: string, membersID: string[]) {
   try {
-    let groupDoc = await getGroupDoc(groupID);
+    let groupDoc = await getGroupDetails(groupID);
     let newMembers = [...groupDoc.members, ...membersID] as string[];
     await updateGroupDetails(groupDoc.$id, {
       members: newMembers,
@@ -149,7 +140,7 @@ export async function addMembers(groupID: string, membersID: string[]) {
 }
 
 export async function removeMembers(groupID: string, membersID: string[]) {
-  let groupDoc = await getGroupDoc(groupID);
+  let groupDoc = await getGroupDetails(groupID);
   let newMembers = groupDoc.members.filter((member) => {
     return !membersID.includes((member as IUserDetails).$id);
   });
@@ -158,4 +149,27 @@ export async function removeMembers(groupID: string, membersID: string[]) {
     members: newMembers,
     changeLog: "removemember",
   });
+}
+
+export async function clearGroupMessageAttachments(groupID: string) {
+  let attachments: string[] = [];
+  let groupDoc = await getGroupDetails(groupID);
+  attachments = groupDoc.groupMessages.reduce(
+    (a: any, message) => [...a, ...message.attachments],
+    [],
+  );
+
+  attachments.forEach((attachment) => {
+    api.deleteFile(Server.bucketIDGroupAttachments, attachment);
+  });
+}
+
+export async function deleteGroup(groupID: string) {
+  await deleteGroupAvatar(groupID);
+  clearGroupMessageAttachments(groupID);
+  await api.deleteDocument(
+    Server.databaseID,
+    Server.collectionIDGroups,
+    groupID,
+  );
 }
