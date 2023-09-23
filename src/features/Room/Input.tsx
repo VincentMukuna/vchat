@@ -33,7 +33,6 @@ const Input = ({}: InputProps) => {
     setSending(true);
     setMessageBody("");
     if (isGroup) {
-      console.log("Sending group message");
       let message: IGroupMessage = {
         $collectionId: Server.collectionIDGroupMessages,
         $databaseId: Server.databaseID,
