@@ -71,7 +71,8 @@ function getSize(size: string) {
   switch (size) {
     case "small":
       return "w-8 h-8 text-xl";
-
+    case "large":
+      return "w-36 h-36 text-[4.5rem] left-1 ";
     default:
       return "w-12 h-12 text-3xl";
   }
@@ -88,7 +89,13 @@ const Avatar = ({ src, name, className, size = "medium" }: AvatarProps) => {
   const initials = getCapitalizedInitials(name);
 
   if (src) {
-    return <img src={src} alt={`${name}'s profile picture`} />;
+    return (
+      <img
+        src={src}
+        alt={`${name}'s profile picture`}
+        className={`${getSize(size)} rounded-full`}
+      />
+    );
   } else {
     const bgColor = calculateBackgroundColor(name);
     return (

@@ -3,12 +3,15 @@ import { useAuth } from "../../context/AuthContext";
 //@ts-ignore
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import Avatar from "../../components/Avatar";
-import { IUserDetails } from "../../interfaces";
+import { IGroup, IUserDetails } from "../../interfaces";
+import { getGroupDetails } from "../../services/groupMessageServices";
+import useSWR from "swr";
+import { getChatDoc } from "../../services/chatMessageServices";
 
 function ChatHeader() {
   const { recepient, setSelectedChat, setRecepient, selectedChat } =
     useChatsContext();
-  if (!selectedChat) return;
+  if (selectedChat === undefined) return null;
   const { currentUserDetails } = useAuth();
 
   const isGroup = !!selectedChat?.groupMessages;
@@ -29,7 +32,7 @@ function ChatHeader() {
         }}
         className="md:hidden flex text-center items-center justify-center w-10 h-10 mr-2  rounded-full cursor-pointer hover:scale-[0.8] text-xl"
       >
-        <ArrowLeftIcon className="w-6 h-6 text" />
+        <ArrowLeftIcon className="w-6 h-6 " />
       </button>
       <Avatar
         name={

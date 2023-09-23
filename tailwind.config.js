@@ -7,7 +7,7 @@ import {
   grayDark,
   tomato,
   tomatoDark,
-  brownDark,
+  grassDark,
   slateDark,
   mauveDark,
 } from "@radix-ui/colors";
@@ -27,6 +27,7 @@ export default {
           ...grayDark,
           ...slateDark,
           ...mauveDark,
+          ...grassDark,
         },
         ...indigo,
         ...tomato,

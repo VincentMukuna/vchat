@@ -13,7 +13,7 @@ import {
 } from "../../services/chatMessageServices";
 import { getGroups } from "../../services/groupMessageServices";
 
-function compareUpdatedAt(a: any, b: any) {
+export function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);
   const dateB = new Date(b.$updatedAt);
 
@@ -47,6 +47,7 @@ const Chats = () => {
     let conversations: (IGroup | IChat)[] = [];
 
     let chatDocs = await getUserChats(userDetailsDocID);
+
     let groupDocs = await getGroups(userDetailsDocID);
 
     conversations = [...chatDocs, ...groupDocs];
