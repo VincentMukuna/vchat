@@ -113,3 +113,49 @@ export async function updateUserAvatar(groupID: string, groupAvatar: File) {
   await deleteGroupAvatar(groupID);
   return await uploadGroupAvatar(groupID, groupAvatar);
 }
+
+type IInitGroup = {
+  name: string;
+  description: string;
+  members: string[];
+  admins?: string[];
+};
+export async function createGroup(groupDetails: IInitGroup) {
+  await api.createDocument(
+    Server.databaseID,
+    Server.collectionIDGroups,
+    groupDetails,
+  );
+}
+
+export async function getGroupDoc(groupID: string) {
+  let groupDoc = (await api.getDocument(
+    Server.databaseID,
+    Server.collectionIDGroups,
+    groupID,
+  )) as IGroup;
+  return groupDoc;
+}
+
+export async function addMembers(groupID: string, membersID: string[]) {
+  try {
+    let groupDoc = await getGroupDoc(groupID);
+    let newMembers = [...groupDoc.members, ...membersID] as string[];
+    await updateGroupDetails(groupDoc.$id, {
+      members: newMembers,
+      changeLog: "addmember",
+    });
+  } catch (error) {}
+}
+
+export async function removeMembers(groupID: string, membersID: string[]) {
+  let groupDoc = await getGroupDoc(groupID);
+  let newMembers = groupDoc.members.filter((member) => {
+    return !membersID.includes((member as IUserDetails).$id);
+  });
+
+  await updateGroupDetails(groupID, {
+    members: newMembers,
+    changeLog: "removemember",
+  });
+}
