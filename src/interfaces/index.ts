@@ -20,7 +20,8 @@ interface IGroup extends Models.Document {
   description: string;
   avatarID: string | null;
   admins: string[];
-  members: IUserDetails[];
+  members: (IUserDetails | string)[];
+  groupMessages: IChatMessage[];
   changeLog: changeLogTypes;
 }
 interface IGroupMessage extends Models.Document {
