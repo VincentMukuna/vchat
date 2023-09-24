@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ChatHeader from "./ChatHeader";
 import Input from "./Input";
 import Messages from "./Messages";
@@ -15,9 +15,11 @@ import {
   getGroupMessages,
 } from "../../services/groupMessageServices";
 import useSWR from "swr";
+import RoomDetails from "./RoomDetails";
 
 function Room() {
   const { selectedChat, recepient } = useChatsContext();
+  const [showDetails, setShowDetails] = useState(false);
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
 
@@ -126,7 +128,7 @@ function Room() {
         <aside
           className={`hidden max-w-[20rem] grow basis-40 transition-all xl:flex`}
         >
-          profile
+          <RoomDetails />
         </aside>
       </>
     );
