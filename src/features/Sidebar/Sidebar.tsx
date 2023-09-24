@@ -11,7 +11,7 @@ import Settings from "../Settings/Settings";
 import { addUserToGlobalChat } from "../../services/registerUserService";
 import { useMemo } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
-import NewGroupForm from "../Groups/NewGroupForm";
+import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { useState } from "react";
 const Sidebar = () => {
   const { activePage, setActivePage } = useAppSelector();
@@ -38,7 +38,7 @@ const Sidebar = () => {
             </Dialog.Trigger>
             <Dialog.Portal>
               <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
-              <Dialog.Content className="z-50 fixed overflow-x-hidden overflow-y-autoflex flex-col  py-3 px-3 md:px-8 rounded-md text-white top-[50%] -translate-x-1/2 -translate-y-1/2 w-[94vw] left-[50%] max-w-[25rem] md:max-w-[900px] max-h-[85vh] bg-dark-blue2 md:min-w-min">
+              <Dialog.Content className="z-50 fixed overflow-x-hidden overflow-y-autoflex flex-col  py-3 px-3 md:px-8 rounded-md text-white top-[50%] -translate-x-1/2 -translate-y-1/2 w-[94vw] left-[50%] max-w-[25rem] md:max-w-[500px] max-h-[85vh] bg-dark-blue2 md:min-w-min">
                 <Dialog.Title className="flex w-full m-0 text-xl font-bold leading-10 text-white">
                   New Group
                 </Dialog.Title>
