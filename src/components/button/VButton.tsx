@@ -20,9 +20,9 @@ const VButton = ({
   function getButtonStyles() {
     switch (variant) {
       case "ghost":
-        return "px-12 py-2 rounded text-tomato10 hover:border-[1px] border-tomato11 transition-all hover:bg-tomato12/20";
+        return "px-4 py-2 rounded text-tomato10 font-bold tracking-wider   transition-all ";
       default:
-        return "px-12 py-2 rounded bg-dark-blue6 w-fit";
+        return "px-8 py-2 rounded bg-dark-indigo5 font-bold tracking-wider text-[13px] w-fit text-white dark-text-gray1";
     }
   }
   return (
