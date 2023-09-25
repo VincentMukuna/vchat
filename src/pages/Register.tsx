@@ -24,6 +24,7 @@ function Register() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setRegistering(true);
     try {
       const { user, userDeets } = await registerNewUser({
         email: credentials.email,
@@ -35,6 +36,8 @@ function Register() {
       navigate("/");
     } catch (error) {
       console.log("Error registering");
+    } finally {
+      setRegistering(false);
     }
   }
 
