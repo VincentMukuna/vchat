@@ -1,23 +1,33 @@
+import { indigoDark } from "@radix-ui/colors";
 import React from "react";
 
-const GroupDetailsForm =() => (
+interface GroupDetailsProps {
+  description: string;
+  name: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+}
+
+const GroupDetailsForm = ({
+  name,
+  onChange,
+  description,
+}: GroupDetailsProps) => (
   <fieldset className="flex flex-col gap-3 space-y-2">
     <div className="relative flex flex-col-reverse gap-2 transition-[height]">
       <input
         max={30}
         type="text"
         id="name"
+        name="name"
         required
-        value={groupDetails.name}
-        onChange={(e) =>
-          setGroupDetails({ ...groupDetails, name: e.target.value })
-        }
+        value={name}
+        onChange={onChange}
         placeholder="Group Name"
-        className="p-2 bg-transparent border-2 rounded w-80 placeholder:text-gray9 placeholder:text-sm peer border-dark-indigo4 focus:outline-none focus:border-dark-indigo7 "
+        className={`p-2 bg-transparent shadow-dark-gray3 focus:shadow-[0_0_0_2px] dark:shadow-dark-indigo4 rounded shadow-[0_0_0_1px] dark:focus:shadow-[0_0_0_2px] dark:focus:shadow-dark-indigo6 placeholder:text-gray9 placeholder:text-sm peer border-dark-indigo4 focus:outline-none focus:border-dark-indigo7 `}
       />
       <label
         htmlFor="name"
-        className="text-sm tracking-wider transition-[height] -top-3 left-1 peer-focus:text-gray5 text-gray8 "
+        className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
       >
         Name :
       </label>
@@ -27,20 +37,16 @@ const GroupDetailsForm =() => (
         max={50}
         type="text"
         required
+        name="description"
         id="description"
-        value={groupDetails.description}
-        onChange={(e) =>
-          setGroupDetails({
-            ...groupDetails,
-            description: e.target.value,
-          })
-        }
+        value={description}
+        onChange={onChange}
         placeholder="Few words to describe this group's purpose"
-        className="p-2 bg-transparent border-2 rounded w-80 placeholder:text-gray9 placeholder:text-sm peer border-dark-indigo4 focus:outline-none focus:border-dark-indigo7 "
+        className={`p-2 bg-transparent shadow-dark-gray3 focus:shadow-[0_0_0_2px] dark:shadow-dark-indigo4 rounded shadow-[0_0_0_1px] dark:focus:shadow-[0_0_0_2px] dark:focus:shadow-dark-indigo6 placeholder:text-gray9 placeholder:text-sm peer border-dark-indigo4 focus:outline-none focus:border-dark-indigo7 `}
       />
       <label
-        htmlFor="descrription"
-        className="text-sm tracking-wider peer-focus:text-gray5 text-gray8 "
+        htmlFor="description"
+        className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
       >
         Description :
       </label>

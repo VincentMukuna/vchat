@@ -13,6 +13,7 @@ import { useMemo } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { useState } from "react";
+import { UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
 const Sidebar = () => {
   const { activePage, setActivePage } = useAppSelector();
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
@@ -31,18 +32,28 @@ const Sidebar = () => {
             <Dialog.Trigger asChild>
               <button
                 type="button"
-                className="p-2 text-sm font-normal rounded bg-dark-tomato9 whitespace-nowrap"
+                className="flex p-2 text-sm font-normal rounded dark:text-gray8"
+                title="New group"
               >
-                Add group
+                <UserGroupIcon className="w-6 h-6" />
+                <PlusIcon className="relative w-4 h-4 right-1" />
               </button>
             </Dialog.Trigger>
             <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50" />
-              <Dialog.Content className="z-50 fixed overflow-x-hidden overflow-y-autoflex flex-col  py-3 px-3 md:px-8 rounded-md text-white top-[50%] -translate-x-1/2 -translate-y-1/2 w-[94vw] left-[50%] max-w-[25rem] md:max-w-[500px] max-h-[85vh] bg-dark-blue2 md:min-w-min">
-                <Dialog.Title className="flex w-full m-0 text-xl font-bold leading-10 text-white">
+              <Dialog.Overlay className="fixed inset-0 z-50 dark:bg-black/50 bg-dark-gray1/30" />
+              <Dialog.Content className="z-50 fixed overflow-x-hidden overflow-y-autoflex flex-col  py-3 px-3 md:px-8 rounded-md  top-[50%] -translate-x-1/2 -translate-y-1/2 w-[94vw] left-[50%] max-w-[25rem] md:max-w-[500px] max-h-[85vh] dark:bg-dark-blue2 bg-gray1 md:min-w-min">
+                <Dialog.Title className="flex w-full m-0 text-xl font-bold leading-10 dark:text-white text-dark-gray3">
                   New Group
                 </Dialog.Title>
-                <Dialog.Description className="mt-1 mb-6 text-[14px] text-gray6 leading-4">
+                <Dialog.Close asChild>
+                  <button
+                    title="Cancel"
+                    className=" absolute top-[10px] right-[10px] text-black hover:bg-dark-blue8 rounded-full p-1 hover:shadow-[0_0_0_1px]"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                </Dialog.Close>
+                <Dialog.Description className="mt-1 mb-6 text-[14px] dark:text-gray6 text-dark-gray6 leading-4 ">
                   Create a new group chat.
                 </Dialog.Description>
                 <NewGroupForm
