@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+
+import { Config } from "tailwindcss";
 import {
   blueDark,
   indigo,
@@ -11,7 +13,12 @@ import {
   slateDark,
   mauveDark,
 } from "@radix-ui/colors";
+/**
+ * @type Config
+ */
 export default {
+  darkMode: ["class", ".chakra-ui-dark"],
+
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {

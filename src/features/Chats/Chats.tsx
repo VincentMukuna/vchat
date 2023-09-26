@@ -12,6 +12,7 @@ import {
   getUserChats,
 } from "../../services/chatMessageServices";
 import { getGroups } from "../../services/groupMessageServices";
+import { SimpleGrid, Stack } from "@chakra-ui/react";
 
 export function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);
@@ -137,11 +138,11 @@ const Chats = () => {
     );
   } else {
     return (
-      <div className="h-full p-2 overflow-x-hidden overflow-y-auto">
+      <Stack>
         {localConversations?.map((conversation) => (
           <Chat key={conversation.$id} conversation={conversation} />
         ))}
-      </div>
+      </Stack>
     );
   }
 };

@@ -3,7 +3,9 @@ import { IUserDetails } from "../../interfaces";
 import { addContact } from "../../services/userServices";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
-import Avatar from "../../components/Avatar";
+import { Avatar } from "@chakra-ui/react";
+import api from "../../services/api";
+import { Server } from "../../utils/config";
 
 function User({ user }: { user: IUserDetails }) {
   const { currentUserDetails } = useAuth();
@@ -30,7 +32,15 @@ function User({ user }: { user: IUserDetails }) {
       onClick={handleClick}
       className="flex items-center gap-2 px-2 py-2 rounded-md cursor-pointer hover:bg-slate-600"
     >
-      <Avatar name={user.name} />
+      <Avatar
+        fontWeight={"bold"}
+        src={
+          user.avatarID
+            ? api.getFile(Server.bucketIDUserAvatars, user?.avatarID).toString()
+            : undefined
+        }
+        name={user.name}
+      />
       <div className="flex flex-col justify-center 0">
         <span className="text-lg font-semibold ]tracking-wide ">
           {isPersonal ? "You" : user.name}

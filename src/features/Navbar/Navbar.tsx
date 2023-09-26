@@ -13,11 +13,13 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { getCurrentUserDetails } from "../../services/userServices";
 import { logUserOut } from "../../services/sessionServices";
 import { useNavigate } from "react-router-dom";
-import Avatar from "../../components/Avatar";
+import { Avatar, IconButton, useColorMode } from "@chakra-ui/react";
 
 const Navbar = () => {
   const { currentUser, currentUserDetails, setCurrentUserDetails } = useAuth();
   if (!currentUser || !currentUserDetails) return null;
+
+  const { toggleColorMode } = useColorMode();
 
   const navigate = useNavigate();
 
@@ -34,6 +36,9 @@ const Navbar = () => {
           }}
         >
           <Avatar
+            fontWeight={"black"}
+            size={"md"}
+            borderRadius={5}
             name={currentUserDetails.name}
             src={currentUserDetails.avatarURL}
           />
@@ -62,9 +67,14 @@ const Navbar = () => {
       </div>
 
       <div className="flex-col hidden gap-6 mt-auto mb-4 md:flex">
-        <div className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black">
+        <IconButton
+          onClick={toggleColorMode}
+          bgColor={"transparent"}
+          aria-label="toggle color mode"
+          className="flex items-center justify-center h-10 transition-all rounded-md w-11 hover:bg-slate-600 hover:text-black"
+        >
           <SunIcon className="w-8 h-8" />
-        </div>
+        </IconButton>
 
         <div
           onClick={() =>

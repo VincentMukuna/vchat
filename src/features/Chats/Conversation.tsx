@@ -16,9 +16,9 @@ import { useChatsContext } from "../../context/ChatsContext";
 import useSWR, { mutate } from "swr";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import { toast } from "react-hot-toast";
-import Avatar from "../../components/Avatar";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
+import { Avatar, Card } from "@chakra-ui/react";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -75,7 +75,10 @@ const Chat = ({ conversation }: IChatProps) => {
   const isActive = selectedChat?.$id === conversation.$id;
 
   return (
-    <div
+    <Card
+      bg={"inherit"}
+      shadow={"none"}
+      direction={"row"}
       onMouseOver={() => setShowHoverCard(true)}
       onMouseLeave={() => setShowHoverCard(false)}
       onClick={() => {
@@ -92,17 +95,24 @@ const Chat = ({ conversation }: IChatProps) => {
             ? conversation.name
             : isPersonal
             ? "You"
-            : contactDetails?.name || " "
+            : contactDetails?.name
+        }
+        fontWeight={"bold"}
+        src={
+          isGroup
+            ? conversation.avatarID &&
+              api.getFile(Server.bucketIDGroupAvatars, conversation.avatarID)
+            : contactDetails?.avatarID &&
+              api.getFile(Server.bucketIDUserAvatars, contactDetails?.avatarID)
         }
       />
-
       <div className="flex flex-col ml-2 overflow-hidden shrink text-ellipsis">
-        <span className="text-lg font-semibold tracking-wider whitespace-nowrap overflow-hidden text-ellipsis max-w-[9rem] dark:text-gray1">
+        <span className="max-w-full overflow-hidden text-lg font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
           {isGroup
             ? conversation.name
             : isPersonal
             ? "You"
-            : contactDetails?.name}
+            : contactDetails?.name}{" "}
         </span>
         <span className="overflow-hidden font-sans text-sm font-normal whitespace-nowrap text-ellipsis dark:text-gray6">
           {lastMessage?.body
@@ -116,84 +126,86 @@ const Chat = ({ conversation }: IChatProps) => {
         <span className="relative flex text-xs tracking-tight ">
           {getFormatedDate(conversation.$updatedAt)}
         </span>
-        {!isGroup && showHoverCard && (
-          <DropdownMenu.Root modal={false}>
-            <DropdownMenu.Trigger>
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowHoverCard(true);
-                }}
-                onMouseLeave={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.4}
-                  stroke="currentColor"
-                  className="w-5 h-5 text-gray-400"
+        <div className="h-5">
+          {!isGroup && showHoverCard && (
+            <DropdownMenu.Root modal={false}>
+              <DropdownMenu.Trigger>
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowHoverCard(true);
+                  }}
+                  onMouseLeave={(e) => {
+                    e.stopPropagation();
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                  />
-                </svg>
-              </div>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content className="z-30 flex flex-col overflow-hidden bg-gray-500 rounded">
-                <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      let promise = clearChatMessages(conversation.$id);
-                      toast.promise(promise, {
-                        loading: "Clearing chat messages...",
-                        success: "Cleared",
-                        error: (error) =>
-                          "Whoops! Cannot clear this chat's messages at the moment. Try again later " +
-                          error,
-                      });
-                      promise.then(() => {
-                        mutate(selectedChat?.$id);
-                      });
-                    }}
-                    className="w-full"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2.4}
+                    stroke="currentColor"
+                    className="w-5 h-5 text-gray-400"
                   >
-                    Clear messages
-                  </button>
-                </DropdownMenu.Item>
-                <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
-                  <button
-                    onClick={async (e) => {
-                      e.stopPropagation();
-
-                      if (contactDetails) {
-                        let promise = deleteContact(conversation.$id);
-                        // promise.then(() => mutate(currentUserDetails.$id));
-
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </div>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content className="z-30 flex flex-col overflow-hidden bg-gray-500 rounded">
+                  <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        let promise = clearChatMessages(conversation.$id);
                         toast.promise(promise, {
-                          loading: "deleting contact...",
-                          success: "deleted",
-                          error: "cannot delete contact",
+                          loading: "Clearing chat messages...",
+                          success: "Cleared",
+                          error: (error) =>
+                            "Whoops! Cannot clear this chat's messages at the moment. Try again later " +
+                            error,
                         });
-                      }
-                    }}
-                    className="w-full"
-                  >
-                    Delete contact
-                  </button>
-                </DropdownMenu.Item>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
-        )}
+                        promise.then(() => {
+                          mutate(selectedChat?.$id);
+                        });
+                      }}
+                      className="w-full"
+                    >
+                      Clear messages
+                    </button>
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
+                    <button
+                      onClick={async (e) => {
+                        e.stopPropagation();
+
+                        if (contactDetails) {
+                          let promise = deleteContact(conversation.$id);
+                          // promise.then(() => mutate(currentUserDetails.$id));
+
+                          toast.promise(promise, {
+                            loading: "deleting contact...",
+                            success: "deleted",
+                            error: "cannot delete contact",
+                          });
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      Delete contact
+                    </button>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+          )}
+        </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
