@@ -14,10 +14,11 @@ import {
   deleteGroupMessage,
   getGroupMessages,
 } from "../../services/groupMessageServices";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import RoomDetails from "./RoomDetails";
 
 function Room() {
+  const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, recepient } = useChatsContext();
   const [showDetails, setShowDetails] = useState(false);
 
@@ -74,6 +75,7 @@ function Room() {
             response.payload.changeLog === "deletetext"
           ) {
             mutate();
+            globalMutate(`lastMessage ${selectedChat.$id}`);
           }
         },
       );

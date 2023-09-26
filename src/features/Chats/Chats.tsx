@@ -62,11 +62,7 @@ const Chats = () => {
     isLoading,
     isValidating,
     mutate,
-  } = useSWR(currentUserDetails.$id, getConversations, {
-    keepPreviousData: true,
-    revalidateOnMount: true,
-    revalidateIfStale: true,
-  });
+  } = useSWR(currentUserDetails.$id, getConversations, {});
 
   // Update local chats data when the data is refreshed
   useEffect(() => {

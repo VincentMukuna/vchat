@@ -29,5 +29,7 @@ export function getFormattedDateTime(timestamp: string) {
   }
   if (isYesterday(date)) {
     return "Yesterday " + format(date, "HH: mm");
+  } else {
+    return getFormatedDate(timestamp);
   }
 }

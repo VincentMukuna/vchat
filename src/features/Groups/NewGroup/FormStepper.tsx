@@ -38,7 +38,7 @@ const FormStepper = ({ children, handleSubmit }: FormStepperProps) => {
     <form onSubmit={handleSubmit} className="flex flex-col gap-16">
       {currentChild}
       <div className="flex flex-row-reverse gap-4">
-        <VButton onClick={() => next()}>
+        <VButton type={isLast() ? "submit" : "button"} onClick={() => next()}>
           {isLast() ? "Create" : "Add Members"}
         </VButton>
         {!isFirst() && (

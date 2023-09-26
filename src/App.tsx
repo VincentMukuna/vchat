@@ -22,7 +22,9 @@ function App() {
               overflow: "hidden",
             }}
           />
-          <SWRConfig value={{ keepPreviousData: true }}>
+          <SWRConfig
+            value={{ revalidateIfStale: true, revalidateOnMount: true }}
+          >
             <AuthProvider>
               <AppProvider>
                 <ChatsProvider>
