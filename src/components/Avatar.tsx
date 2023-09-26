@@ -80,7 +80,7 @@ function getSize(size: string) {
 
 type AvatarProps = {
   name: string;
-  src?: string;
+  src?: string | null;
   className?: string;
   size?: "small" | "medium" | "large";
 };
@@ -104,7 +104,7 @@ const Avatar = ({ src, name, className, size = "medium" }: AvatarProps) => {
         className={
           className
             ? className
-            : `p-3 rounded-full ${getSize(
+            : ` relative p-3 rounded-full ${getSize(
                 size,
               )} flex items-center justify-center  font-mono text-gray-100 text-center`
         }

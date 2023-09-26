@@ -19,7 +19,12 @@ function Messages({ messages, onDelete }: MessagesProps) {
             />
           ))
         ) : (
-          <p>No messages</p>
+          <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">
+            <div className="text-lg font-bold tracking-wider">No Messages</div>
+            <div className="">
+              Start the conversation by typing your message below
+            </div>
+          </div>
         )}
       </div>
     </div>

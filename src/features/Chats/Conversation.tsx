@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 //@ts-ignore
 import avatarFallback from "../../assets/avatarFallback.png";
-import { IUserDetails, IChat, IGroup } from "../../interfaces";
+import {
+  IUserDetails,
+  IChat,
+  IGroup,
+  IChatMessage,
+  IGroupMessage,
+} from "../../interfaces";
 import { getFormatedDate } from "../../services/dateServices";
 import { getUserDetails, deleteContact } from "../../services/userServices";
 import { useAuth } from "../../context/AuthContext";
@@ -11,6 +17,8 @@ import useSWR, { mutate } from "swr";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import { toast } from "react-hot-toast";
 import Avatar from "../../components/Avatar";
+import api from "../../services/api";
+import { Server } from "../../utils/config";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -21,6 +29,9 @@ const Chat = ({ conversation }: IChatProps) => {
   if (!currentUserDetails) return null;
   const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
   const [showHoverCard, setShowHoverCard] = useState(false);
+  const [contactDetails, setContactDetails] = useState<
+    IUserDetails | undefined
+  >();
 
   const isGroup = !!conversation?.groupMessages;
   const isPersonal =
@@ -29,25 +40,37 @@ const Chat = ({ conversation }: IChatProps) => {
       (participant: IUserDetails) => participant.$id === currentUserDetails.$id,
     );
 
+  async function getLastMessage() {
+    try {
+      let doc = (await api.getDocument(
+        conversation.$databaseId,
+        conversation.$collectionId,
+        conversation.$id,
+      )) as IChat | IGroup;
+      let msgDoc = isGroup ? doc.groupMessages.at(-1) : doc.chatMessages.at(-1);
+      return msgDoc as IChatMessage | IGroupMessage;
+    } catch (error) {}
+  }
+
   //only fetch data only if conversation is not a group chat or a personal chat
 
-  let { data: contactDetails } = useSWR<IUserDetails>(
-    () => {
-      if (isGroup) return false;
-      else if (isPersonal) return false;
-      else {
-        return conversation.participants.filter(
-          (id: string) => id !== currentUserDetails?.$id,
-        )[0];
-      }
-    },
-    getUserDetails,
-    { keepPreviousData: true, revalidateIfStale: false },
+  const { data: lastMessage } = useSWR(
+    `lastMessage ${conversation.$id}`,
+    getLastMessage,
   );
 
-  if (isPersonal) {
-    contactDetails = currentUserDetails;
-  }
+  useEffect(() => {
+    if (isPersonal) {
+      setContactDetails(currentUserDetails);
+    } else if (!isGroup && !isPersonal) {
+      setContactDetails(
+        conversation.participants?.filter(
+          (participant: IUserDetails) =>
+            participant.$id != currentUserDetails.$id,
+        )[0],
+      );
+    }
+  });
 
   const isActive = selectedChat?.$id === conversation.$id;
 
@@ -82,9 +105,11 @@ const Chat = ({ conversation }: IChatProps) => {
             : contactDetails?.name}
         </span>
         <span className="overflow-hidden font-sans text-sm font-normal whitespace-nowrap text-ellipsis dark:text-gray6">
-          {isGroup
-            ? conversation.description
-            : contactDetails?.about || "Hi there! I am using VChat"}
+          {lastMessage?.body
+            ? lastMessage.senderID === currentUserDetails.$id
+              ? "Me: " + lastMessage.body
+              : lastMessage.body
+            : "Click to start messaging "}
         </span>
       </div>
       <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray8 ">
@@ -129,8 +154,9 @@ const Chat = ({ conversation }: IChatProps) => {
                       toast.promise(promise, {
                         loading: "Clearing chat messages...",
                         success: "Cleared",
-                        error:
-                          "Whoops! Cannot clear this chat's messages at the moment. Try again later",
+                        error: (error) =>
+                          "Whoops! Cannot clear this chat's messages at the moment. Try again later " +
+                          error,
                       });
                       promise.then(() => {
                         mutate(selectedChat?.$id);

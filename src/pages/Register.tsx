@@ -5,6 +5,7 @@ import FormInput from "../components/FormInput";
 import { registerNewUser } from "../services/registerUserService";
 import { ClipLoader } from "react-spinners";
 import { blueDark } from "@radix-ui/colors";
+import toast from "react-hot-toast";
 
 function Register() {
   const navigate = useNavigate();
@@ -25,17 +26,20 @@ function Register() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setRegistering(true);
+
     try {
       const { user, userDeets } = await registerNewUser({
         email: credentials.email,
         password: credentials.password,
         name: credentials.name,
       });
+      toast.success("Account created! ");
       setCurrentUser(user);
       setCurrentUserDetails(userDeets);
+
       navigate("/");
-    } catch (error) {
-      console.log("Error registering");
+    } catch (error: any) {
+      toast.error("Error creating account " + error.message);
     } finally {
       setRegistering(false);
     }
@@ -86,14 +90,16 @@ function Register() {
 
             <button
               type="submit"
-              className="w-full py-2 mt-4 text-sm font-bold tracking-wide bg-secondary-main text-slate-100 dark:bg-dark-tomato4 bg-dark-blue1"
+              className="relative w-full py-2 mt-4 text-sm font-bold tracking-wide bg-secondary-main text-slate-100 dark:bg-dark-tomato4 bg-dark-blue1"
             >
               Register
-              <ClipLoader
-                size={28}
-                color={blueDark.blue12}
-                loading={registering}
-              />
+              <div className="absolute right-3 top-2">
+                <ClipLoader
+                  size={28}
+                  color={blueDark.blue12}
+                  loading={registering}
+                />
+              </div>
             </button>
           </form>
           <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">

@@ -34,7 +34,7 @@ function Message({ message, onDelete }: MessageProps) {
   const { data: senderDetails } = useSWR(() => {
     if (mine || message.senderID === currentUserDetails.$id) return null;
     else return message.senderID;
-  });
+  }, getUserDetails);
   const getMessageAttachments = () => {
     message.attachments.forEach(async (attachmentID) => {
       try {
@@ -53,21 +53,19 @@ function Message({ message, onDelete }: MessageProps) {
     if (!message.$id) return;
     try {
       await api.updateDocument(
-        Server.databaseID,
-        Server.collectionIDChatMessages,
+        message.$databaseId,
+        message.$collectionId,
         message.$id,
         { read: true },
       );
-    } catch (error) {
-      console.log("Error setting message as read: ", error);
-    }
+    } catch (error) {}
   };
 
   const handleDelete = () => {
     onDelete(message);
   };
   useEffect(() => {
-    isGroupMessage || mine || message.read || setReadMessage();
+    !isGroupMessage || mine || message.read || setReadMessage();
     message.attachments?.length && getMessageAttachments();
   }, []);
 
@@ -81,7 +79,7 @@ function Message({ message, onDelete }: MessageProps) {
       } items-end focus:outline-1 focus:outline-slate-600 transition-all`}
     >
       <Avatar
-        src={mine ? currentUserDetails?.avatarURL : null}
+        src={mine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL}
         name={mine ? currentUserDetails.name : (senderDetails?.name as string)}
         size="small"
       />
@@ -94,23 +92,19 @@ function Message({ message, onDelete }: MessageProps) {
                 : "bg-slate-700 dark:bg-dark-slate5 dark:text-dark-gray12 rounded-bl-none text-gray-100"
             } rounded-3xl w-fit max-w-[400px] break-words`}
         >
-          <p className="font-normal leading-relaxed tracking-wide">
+          <p className="text-[15px] font-normal leading-relaxed tracking-wide">
             {message.body}
           </p>
         </div>
         <div
-          className={`flex mx-3 flex-row-reverse text-[9px] tracking-wider md:text-[10px] gap-1 ${
-            mine ? "text-gray-500" : "text-gray-400 "
+          className={`flex  mx-3 text-[9px] tracking-wider md:text-[10px] gap-1 ${
+            mine ? "dark:text-gray-500 justify-end text" : "dark:text-gray-400 "
           }`}
         >
-          {"@ " + getFormattedDateTime(message.$createdAt)}
-          <span className="overflow-hidden text-elipsis whitespace-nowrap  max-w-[5rem] text-ellipsis ">
-            {!isGroupMessage
-              ? null
-              : mine
-              ? "You"
-              : (senderDetails?.name as string)}
+          <span className="overflow-hidden text-elipsis whitespace-nowrap  max-w-[60px]  text-ellipsis ">
+            {senderDetails?.name}
           </span>
+          {" " + getFormattedDateTime(message.$createdAt)}
         </div>
       </div>
 

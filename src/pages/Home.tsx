@@ -26,9 +26,10 @@ function Home() {
 
         <Sidebar />
         <div
-          className={`absolute flex transition-opacity w-screen h-screen  bg-gray2 dark:bg-dark-blue1 inset-0 md:relative grow ${
-            selectedChat ? "z-10" : "invisible md:visible"
-          }`}
+          className={`absolute flex transition-opacity w-screen h-screen  bg-dark-mauve12
+           dark:bg-dark-blue1 inset-0 md:relative grow ${
+             selectedChat ? "z-10" : "invisible md:visible"
+           }`}
         >
           <Room />
         </div>
