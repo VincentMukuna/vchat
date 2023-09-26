@@ -36,9 +36,9 @@ const Chat = ({ conversation }: IChatProps) => {
       if (isGroup) return false;
       else if (isPersonal) return false;
       else {
-        return conversation.participants.filter(
-          (id: string) => id !== currentUserDetails?.$id,
-        )[0];
+        return (conversation as IChat).participants.filter(
+          (participant) => participant.$id !== currentUserDetails?.$id,
+        )[0]?.$id;
       }
     },
     getUserDetails,
