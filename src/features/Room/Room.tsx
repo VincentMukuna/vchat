@@ -76,12 +76,21 @@ function Room() {
       const unsubscribe = api.subscribe<IChat>(
         `databases.${Server.databaseID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
-          if (
-            response.payload.changeLog === "newtext" ||
-            response.payload.changeLog === "deletetext"
-          ) {
-            mutate();
+          if (response.payload.changeLog === "newtext") {
+            if (messages) {
+              mutate([...messages, response.payload]);
+            } else {
+              mutate();
+            }
             globalMutate(`lastMessage ${selectedChat.$id}`);
+          } else if (response.payload.changeLog === "deletetext") {
+            mutate(
+              messages?.filter((msg) => msg.$id !== response.payload.$id),
+              {
+                revalidate: false,
+                rollbackOnError: true,
+              },
+            );
           }
         },
       );
