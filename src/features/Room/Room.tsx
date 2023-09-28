@@ -7,7 +7,7 @@ import Messages from "./Messages";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
 import { useChatsContext } from "../../context/ChatsContext";
-import { IChat, IChatMessage, IGroupMessage } from "../../interfaces";
+import { IChat, IChatMessage, IGroup, IGroupMessage } from "../../interfaces";
 import {
   deleteChatMessage,
   getChatMessages,
@@ -73,25 +73,20 @@ function Room() {
   useEffect(() => {
     if (selectedChat) {
       //subscribe to changes in chat room
-      const unsubscribe = api.subscribe<IChat>(
+      const unsubscribe = api.subscribe<IChat | IGroup>(
         `databases.${Server.databaseID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
-          if (response.payload.changeLog === "newtext") {
-            console.log(response.payload);
-            if (messages) {
-              mutate([...messages, response.payload]);
-            } else {
-              mutate();
-            }
-            globalMutate(`lastMessage ${selectedChat.$id}`);
-          } else if (response.payload.changeLog === "deletetext") {
+          if (
+            response.payload.changeLog === "newtext" ||
+            response.payload.changeLog === "deletetext"
+          ) {
             mutate(
-              messages?.filter((msg) => msg.$id !== response.payload.$id),
-              {
-                revalidate: false,
-                rollbackOnError: true,
-              },
+              isGroup
+                ? [response.payload.groupMessages]
+                : [response.payload.chatMessages],
             );
+
+            globalMutate(`lastMessage ${selectedChat.$id}`);
           }
         },
       );
