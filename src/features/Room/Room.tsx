@@ -77,6 +77,7 @@ function Room() {
         `databases.${Server.databaseID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (response.payload.changeLog === "newtext") {
+            console.log(response.payload);
             if (messages) {
               mutate([...messages, response.payload]);
             } else {
