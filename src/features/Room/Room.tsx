@@ -80,12 +80,7 @@ function Room() {
             response.payload.changeLog === "newtext" ||
             response.payload.changeLog === "deletetext"
           ) {
-            mutate(
-              isGroup
-                ? [response.payload.groupMessages]
-                : [response.payload.chatMessages],
-            );
-
+            mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);
           }
         },
