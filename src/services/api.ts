@@ -46,8 +46,8 @@ let api = {
       .provider()
       .account.createOAuth2Session(
         provider,
-        "http://localhost:5173/login",
-        "http://localhost:5173/register",
+        "http://vchat-messenger.vercel.app/login",
+        "http://vchat-messenger.vercel.app/register",
         ["profile"],
       );
   },
