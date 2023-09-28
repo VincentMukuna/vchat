@@ -2,7 +2,23 @@ import { useAppSelector } from "../../context/AppContext";
 import Chats from "../Chats/Chats";
 import Users from "../UsersList/Users";
 import * as Tabs from "@radix-ui/react-tabs";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  useColorMode,
+  Button,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Icon,
+} from "@chakra-ui/react";
 
 import { ChatIcon, GroupIcon, PlusIcon } from "../../components/Icons";
 import Profile from "../Profile/Profile";
@@ -14,55 +30,60 @@ import * as Dialog from "@radix-ui/react-dialog";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { useState } from "react";
 import { UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { Box } from "@chakra-ui/react";
+import { blueDark, gray } from "@radix-ui/colors";
 const Sidebar = () => {
   const { activePage, setActivePage } = useAppSelector();
-  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { colorMode } = useColorMode();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
 
   return (
-    <aside className="bg-gray2 dark:bg-dark-blue2/[0.998] dark:text-gray2 grow grid grid-rows-[80px_1fr] shrink-0 basis-96 px-2 w-full h-full  md:max-w-[25rem]">
-      <div className="flex items-center justify-between gap-4 px-8 py-4 text-lg font-bold tracking-wider ">
-        <span className="flex justify-center w-full ">{activePage}</span>
-        <div>
-          <Dialog.Root
-            open={showCreateGroupModal}
-            onOpenChange={setShowCreateGroupModal}
+    <Box
+      as={"aside"}
+      gap={0}
+      px={0}
+      className="bg-gray2 dark:bg-dark-blue2/[0.998] dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]"
+    >
+      <div className="w-full font-semibold tracking-widest">
+        <span className="relative flex items-center justify-center w-full h-full ">
+          {activePage}
+          <button
+            onClick={onOpen}
+            aria-label="Create new group"
+            className="absolute flex p-2 text-sm font-normal rounded dark:text-gray8 right-3"
+            title="New group"
           >
-            <Dialog.Trigger asChild>
-              <button
-                type="button"
-                className="flex p-2 text-sm font-normal rounded dark:text-gray8"
-                title="New group"
-              >
-                <UserGroupIcon className="w-6 h-6" />
-                <PlusIcon className="relative w-4 h-4 right-1" />
-              </button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 dark:bg-black/50 bg-dark-gray1/30" />
-              <Dialog.Content className="z-50 fixed overflow-x-hidden overflow-y-autoflex flex-col  py-3 px-3 md:px-8 rounded-md  top-[50%] -translate-x-1/2 -translate-y-1/2 w-[94vw] left-[50%] max-w-[25rem] md:max-w-[500px] max-h-[85vh] dark:bg-dark-blue2 bg-gray1 md:min-w-min">
-                <Dialog.Title className="flex w-full m-0 text-xl font-bold leading-10 dark:text-white text-dark-gray3">
-                  New Group
-                </Dialog.Title>
-                <Dialog.Close asChild>
-                  <button
-                    title="Cancel"
-                    className=" absolute top-[10px] right-[10px] text-black hover:bg-dark-blue8 rounded-full p-1 hover:shadow-[0_0_0_1px]"
-                  >
-                    <XMarkIcon className="w-5 h-5" />
-                  </button>
-                </Dialog.Close>
-                <Dialog.Description className="mt-1 mb-6 text-[14px] dark:text-gray6 text-dark-gray6 leading-4 ">
-                  Create a new group chat.
-                </Dialog.Description>
-                <NewGroupForm
-                  setShowCreateGroupModal={setShowCreateGroupModal}
-                />
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
-        </div>
+            <UserGroupIcon className="w-5 h-5" />
+            <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
+          </button>
+        </span>
+
+        <Modal
+          isOpen={isOpen}
+          onClose={onClose}
+          isCentered
+          scrollBehavior="outside"
+        >
+          <ModalOverlay />
+          <ModalContent
+            bg={colorMode === "dark" ? blueDark.blue1 : gray.gray2}
+            height={"90vh"}
+            overflowY={"auto"}
+          >
+            <ModalHeader className="flex flex-col w-full gap-1 text-xl font-bold dark:text-white text-dark-gray3">
+              New Group
+              <div className="font-md text-[14px] tracking-wide dark:text-gray6 text-dark-gray6 ">
+                Create a new group chat.
+              </div>
+            </ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <NewGroupForm onClose={onClose} />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
       </div>
       <section className="flex flex-col overflow-x-hidden overflow-y-auto">
         <Tabs.Content value="Chats" className="">
@@ -85,7 +106,7 @@ const Sidebar = () => {
           Coming soon! Add Group feature
         </Tabs.Content>
       </section>
-    </aside>
+    </Box>
   );
 };
 

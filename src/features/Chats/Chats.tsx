@@ -12,7 +12,10 @@ import {
   getUserChats,
 } from "../../services/chatMessageServices";
 import { getGroups } from "../../services/groupMessageServices";
-import { SimpleGrid, Stack } from "@chakra-ui/react";
+import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { blueDark, gray } from "@radix-ui/colors";
+import { UserPlusIcon } from "@heroicons/react/20/solid";
 
 export function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);
@@ -30,6 +33,7 @@ export function compareUpdatedAt(a: any, b: any) {
 const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   const { setActivePage } = useAppSelector();
+  const { colorMode } = useColorMode();
 
   const { cache } = useSWRConfig();
 
@@ -103,42 +107,28 @@ const Chats = () => {
     return (
       <div className="flex flex-col items-center gap-6 mt-4">
         <div className="flex flex-col items-center justify-center ">
-          <p>No Contacts!</p>
+          <p>No Chats!</p>
           Add contacts to start messaging
         </div>
 
-        <button
-          onClick={() => setActivePage("Users")}
-          className="flex gap-2 px-2 py-3 text-base transition-all bg-purple-800 rounded hover:bg-purple-900 active:scale-90"
+        <Button
+          bg={blueDark.blue5}
+          color={colorMode === "dark" ? gray.gray2 : gray.gray3}
+          _hover={{ bg: blueDark.blue4 }}
+          px={12}
+          py={"6"}
+          leftIcon={<UserPlusIcon className="w-5 h-5 " />}
+          onClick={() => {
+            setActivePage("Users");
+          }}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-6 h-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"
-            />
-          </svg>
-          Add Contacts
-        </button>
-      </div>
-    );
-  } else if (isLoading && localConversations.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center">
-        <ClipLoader />
-        Fetching chats...
+          Create Chat
+        </Button>
       </div>
     );
   } else {
     return (
-      <Stack>
+      <Stack spacing={0} divider={<Divider />} px={1}>
         {localConversations?.map((conversation) => (
           <Chat key={conversation.$id} conversation={conversation} />
         ))}

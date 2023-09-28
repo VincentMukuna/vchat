@@ -1,10 +1,11 @@
 import { useAuth } from "../../context/AuthContext";
 import { IUserDetails } from "../../interfaces";
-import { getUsers } from "../../services/userServices";
+import { getUsers } from "../../services/userDetailsServices";
 import { ClipLoader } from "react-spinners";
 import useSWR from "swr";
 import User from "./User";
 import { useEffect, useState } from "react";
+import { Divider, Stack } from "@chakra-ui/react";
 
 function Users() {
   const { currentUser } = useAuth();
@@ -62,9 +63,9 @@ function Users() {
     );
   } else {
     return (
-      <div className="px-3 py-4">
+      <Stack spacing={0} divider={<Divider />} px={1}>
         {localUsers?.map((user) => <User key={user.$id} user={user} />)}
-      </div>
+      </Stack>
     );
   }
 }

@@ -16,8 +16,9 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  Icon,
 } from "@chakra-ui/react";
-import { updateUserDetails } from "../../services/userServices";
+import { updateUserDetails } from "../../services/userDetailsServices";
 import { Avatar } from "@chakra-ui/react";
 import {
   blackA,
@@ -33,7 +34,7 @@ import {
   InformationCircleIcon,
   MapPinIcon,
   PencilIcon,
-} from "@heroicons/react/24/solid";
+} from "@heroicons/react/20/solid";
 
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -51,16 +52,20 @@ const Profile = ({ user }: ProfileProps) => {
   return (
     <AnimatePresence>
       <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
+        initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.1 }}
         className="relative flex flex-col items-center justify-between w-full gap-2 py-4"
       >
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-2">
           <Avatar size={"xl"} name={currentUserDetails?.name} />
           <span className="text-lg leading-6 tracking-wide">{user.name}</span>
-          <span className="text-sm text-gray-400">
-            {user.about || "Hi there! I'm using VChat"}
+          <span className="text-sm text-gray11 dark:text-gray-400">
+            {currentUserDetails?.about || "Hi there! I'm using VChat"}
+          </span>
+          <span className="inline-flex items-center gap-1 text-slate-900 dark:text-gray-400">
+            <Icon as={MapPinIcon} className="w-3 h-3" />
+            {currentUserDetails?.location}
           </span>
         </div>
         <div className="flex flex-col items-center w-full gap-4 mt-5 transition">
@@ -79,7 +84,7 @@ const Profile = ({ user }: ProfileProps) => {
           )}
           <Button
             width={"48"}
-            rounded={"3xl"}
+            rounded={"md"}
             onClick={onOpen}
             bg={blueDark.blue6}
             color={gray.gray1}
@@ -203,7 +208,6 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
           isLoading={submitting}
           loadingText="Submitting"
           px={12}
-          colorScheme={blueDark.blue1}
           leftIcon={<CheckIcon className="w-5 h-5 " />}
         >
           Save

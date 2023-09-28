@@ -1,41 +1,30 @@
-import { AppwriteException } from "appwrite";
-import { IUserDetails } from "../interfaces";
+import { AppwriteException, Models } from "appwrite";
+import { IUserDetails, IUserPrefs } from "../interfaces";
 import { Server } from "../utils/config";
 import api from "./api";
+import { createDetailsDoc } from "./registerUserService";
 
-export async function logUserIn(credentials?: {
-  email: string;
-  password: string;
-}) {
+export async function logUserIn(provider?: string) {
+  let userDetails: IUserDetails;
+  let user: Models.User<Models.Preferences>;
+
   try {
     //check if there is a session
-    try {
-      let user = await api.getAccount();
-      let userDetails = (await api.getDocument(
-        Server.databaseID,
-        Server.collectionIDUsers,
-        user.prefs.detailsDocID,
-      )) as IUserDetails;
-      return { user, userDetails };
-    } catch (error) {}
-    //If there's no session create one
-    if (!credentials) {
-      throw new Error("No credentials");
+    user = await api.getAccount();
+    if (user) {
+      userDetails = await createDetailsDoc(user);
+    } else {
+      //If there's no session create one
+      api.handleOauth(provider);
+      user = await api.getAccount();
+      userDetails = await createDetailsDoc(user);
     }
-    await api.createSession(credentials.email, credentials.password);
-    let user = await api.getAccount();
-    console.log(`USER ${user.$id} logged in`);
-    let userDetails = (await api.getDocument(
-      Server.databaseID,
-      Server.collectionIDUsers,
-      user.prefs.detailsDocID,
-    )) as IUserDetails;
     return { user, userDetails };
   } catch (error) {
-    console.log("LOGIN error");
-    throw new Error((error as AppwriteException)?.message);
+    throw new Error("No account");
   }
 }
+
 export async function logUserOut() {
   await api.deleteCurrentSession();
 }

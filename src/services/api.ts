@@ -41,6 +41,17 @@ let api = {
     return api.provider().account.create(ID.unique(), email, password, name);
   },
 
+  handleOauth(provider: string = "google") {
+    return api
+      .provider()
+      .account.createOAuth2Session(
+        provider,
+        "http://localhost:5173/login",
+        "http://localhost:5173/register",
+        ["profile"],
+      );
+  },
+
   //Session control
   createSession: (email: string, password: string) => {
     return api.provider().account.createEmailSession(email, password);

@@ -2,11 +2,8 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { useAuth } from "../../context/AuthContext";
 //@ts-ignore
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import Avatar from "../../components/Avatar";
-import { IGroup, IUserDetails } from "../../interfaces";
-import { getGroupDetails } from "../../services/groupMessageServices";
-import useSWR from "swr";
-import { getChatDoc } from "../../services/chatMessageServices";
+import { IUserDetails } from "../../interfaces";
+import { Avatar } from "@chakra-ui/react";
 
 function ChatHeader() {
   const { recepient, setSelectedChat, setRecepient, selectedChat } =
@@ -42,6 +39,7 @@ function ChatHeader() {
             ? "You"
             : recepient?.name || " "
         }
+        size={"md"}
       />
       <div className="relative flex flex-col ">
         <span className="text-lg font-semibold tracking-wide">

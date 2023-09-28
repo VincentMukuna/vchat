@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-//@ts-ignore
-import avatarFallback from "../../assets/avatarFallback.png";
+
 import {
   IUserDetails,
   IChat,
@@ -10,7 +9,7 @@ import {
   IGroupMessage,
 } from "../../interfaces";
 import { getFormatedDate } from "../../services/dateServices";
-import { getUserDetails, deleteContact } from "../../services/userServices";
+import { deleteContact } from "../../services/userDetailsServices";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import useSWR, { mutate } from "swr";
@@ -81,12 +80,15 @@ const Chat = ({ conversation }: IChatProps) => {
       direction={"row"}
       onMouseOver={() => setShowHoverCard(true)}
       onMouseLeave={() => setShowHoverCard(false)}
+      py={3}
+      ps={3}
+      rounded={"none"}
       onClick={() => {
         setRecepient(contactDetails);
         setSelectedChat(conversation);
       }}
-      className={`transition-all flex items-start px-2 py-3 rounded-md cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
-        isActive ? "bg-slate-200 dark:bg-dark-slate3" : ""
+      className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
+        isActive ? "bg-dark-slate5 dark:bg-dark-slate3" : ""
       }`}
     >
       <Avatar
@@ -97,7 +99,6 @@ const Chat = ({ conversation }: IChatProps) => {
             ? "You"
             : contactDetails?.name
         }
-        fontWeight={"bold"}
         src={
           isGroup
             ? conversation.avatarID &&
@@ -107,14 +108,14 @@ const Chat = ({ conversation }: IChatProps) => {
         }
       />
       <div className="flex flex-col ml-2 overflow-hidden shrink text-ellipsis">
-        <span className="max-w-full overflow-hidden text-lg font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
+        <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
           {isGroup
             ? conversation.name
             : isPersonal
             ? "You"
-            : contactDetails?.name}{" "}
+            : contactDetails?.name}
         </span>
-        <span className="overflow-hidden font-sans text-sm font-normal whitespace-nowrap text-ellipsis dark:text-gray6">
+        <span className="overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
           {lastMessage?.body
             ? lastMessage.senderID === currentUserDetails.$id
               ? "Me: " + lastMessage.body
@@ -123,10 +124,10 @@ const Chat = ({ conversation }: IChatProps) => {
         </span>
       </div>
       <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray8 ">
-        <span className="relative flex text-xs tracking-tight ">
+        <span className="relative flex text-[10px] tracking-wide ">
           {getFormatedDate(conversation.$updatedAt)}
         </span>
-        <div className="h-5">
+        <div className="absolute bottom-0 right-2">
           {!isGroup && showHoverCard && (
             <DropdownMenu.Root modal={false}>
               <DropdownMenu.Trigger>

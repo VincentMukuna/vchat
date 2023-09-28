@@ -97,6 +97,7 @@ export async function getUserChats(userDetailsID: string) {
     Server.collectionIDUsers,
     userDetailsID,
   )) as IUserDetails;
+
   let chatIDs = deets.chats.map((chat) => chat.$id);
   let chats: IChat[] = [];
   if (chatIDs.length > 0) {

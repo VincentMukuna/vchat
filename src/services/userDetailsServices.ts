@@ -1,7 +1,8 @@
-import { AppwriteException, Models, Permission, Role } from "appwrite";
+import { AppwriteException, Models, Permission, Query, Role } from "appwrite";
 import { Server } from "../utils/config";
 import api from "./api";
 import { IUserDetails } from "../interfaces";
+import { getUserChats } from "./chatMessageServices";
 export async function getSession() {
   try {
     let user = await api.getAccount();
@@ -63,6 +64,17 @@ export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
 ) {
+  //check if chat doc exists
+  let userContacts: string[] = [];
+  let deets = await getUserChats(addeeDetailsID);
+  deets.forEach((chat) =>
+    chat.participants.forEach((participant) => {
+      if (participant.$id === adderDetailsID) {
+        throw new Error("Already have a chat with user");
+      }
+    }),
+  );
+
   //Only add one chat Id if its a personal chat
   await api.createDocument(Server.databaseID, Server.collectionIDChats, {
     participants:
@@ -111,4 +123,20 @@ export async function updateUserAvatar(userDetailsID: string, avatar: File) {
     throw new Error("Avatar cannot be larger than 5MB ");
   await deleteUserAvatar(userDetailsID);
   return await uploadUserAvatar(userDetailsID, avatar);
+}
+
+export async function deleteUser(userID: string) {
+  let deleteResponse = await api.executeFunction(Server.functionIDFuncs, {
+    action: "delete user",
+    params: {
+      userID,
+    },
+  });
+
+  let response = JSON.parse(deleteResponse.response) as {
+    ok: boolean;
+    message: string;
+  };
+
+  return response;
 }

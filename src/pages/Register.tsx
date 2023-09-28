@@ -1,118 +1,73 @@
 import { useRef, useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
-import FormInput from "../components/FormInput";
-import { registerNewUser } from "../services/registerUserService";
 import { ClipLoader } from "react-spinners";
 import { blueDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
+import { Button, VStack } from "@chakra-ui/react";
+import api from "../services/api";
+import { motion } from "framer-motion";
 
 function Register() {
-  const navigate = useNavigate();
-  const { setCurrentUser, setCurrentUserDetails } = useAuth();
-  const [credentials, setCredentials] = useState({
-    name: "",
-    email: "",
-    password: "",
-    password2: "",
-    avatar: undefined,
-  });
   const [registering, setRegistering] = useState(false);
   const timerRef = useRef(0);
   useEffect(() => {
     return () => clearTimeout(timerRef.current);
   }, []);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleSignUp(provider: string) {
     setRegistering(true);
-
-    try {
-      const { user, userDeets } = await registerNewUser({
-        email: credentials.email,
-        password: credentials.password,
-        name: credentials.name,
-      });
-      toast.success("Account created! ");
-      setCurrentUser(user);
-      setCurrentUserDetails(userDeets);
-
-      navigate("/");
-    } catch (error: any) {
-      toast.error("Error creating account " + error.message);
-    } finally {
-      setRegistering(false);
-    }
+    api.handleOauth(provider);
+    setRegistering(false);
   }
-
-  const handleInputChange = (e: any) => {
-    let name = e.target.name;
-    let value = e.target.value;
-    setCredentials({ ...credentials, [name]: value });
-  };
 
   return (
     <>
-      <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
-        <div className=" py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
-          <h1 className="text-xl font-bold tracking-wider text-gray12 dark:text-indigo2">
-            VChat
-          </h1>
-          <h2 className="mt-1 text-xs tracking-wide text-gray11 dark:text-indigo2/60">
-            Register
-          </h2>
-
-          <form onSubmit={handleSubmit} className="flex flex-col w-full mt-10">
-            <FormInput
-              id="email"
-              name="email"
-              type="email"
-              value={credentials.email}
-              label={"Email"}
-              onChange={handleInputChange}
-            />
-            <FormInput
-              id="name"
-              name="name"
-              type="text"
-              value={credentials.name}
-              label={"Username"}
-              onChange={handleInputChange}
-            />
-            <FormInput
-              id="password"
-              name="password"
-              type="password"
-              value={credentials.password}
-              label={"Password"}
-              onChange={handleInputChange}
-            />
-
-            <button
-              type="submit"
-              className="relative w-full py-2 mt-4 text-sm font-bold tracking-wide bg-secondary-main text-slate-100 dark:bg-dark-tomato4 bg-dark-blue1"
-            >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1"
+      >
+        <div className=" py-4 px-12 rounded-lg flex flex-col items-center w-[340px] gap-8">
+          <VStack>
+            <h1 className="text-xl font-bold tracking-wider text-gray12 dark:text-indigo2">
+              VChat
+            </h1>
+            <h2 className="mt-1 text-xs tracking-wide text-gray11 dark:text-indigo2/60">
               Register
-              <div className="absolute right-3 top-2">
-                <ClipLoader
-                  size={28}
-                  color={blueDark.blue12}
-                  loading={registering}
-                />
-              </div>
-            </button>
-          </form>
-          <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
-            You do have an account?{"   "}
-            <Link
-              to="/login"
-              className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
+            </h2>
+          </VStack>
+          <VStack>
+            <Button
+              isLoading={registering}
+              loadingText={"Registering"}
+              onClick={() => handleSignUp("google")}
             >
-              Login
-            </Link>
-          </div>
+              Sign Up With Google
+            </Button>
+
+            <Button
+              isLoading={registering}
+              loadingText={"Registering"}
+              onClick={() => handleSignUp("github")}
+            >
+              Sign Up with GitHub
+            </Button>
+
+            <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
+              Have an account?
+              <Link
+                to="/login"
+                className="font-semibold text-dark-tomato4 dark:text-dark-tomato8/100"
+              >
+                Log in
+              </Link>
+              instead
+            </div>
+          </VStack>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }

@@ -3,7 +3,7 @@ import FormInput from "../../../components/FormInput";
 import Users from "../../UsersList/Users";
 import { Close } from "@radix-ui/react-dialog";
 import useSWR, { mutate } from "swr";
-import { getUsers } from "../../../services/userServices";
+import { getUsers } from "../../../services/userDetailsServices";
 import Avatar from "../../../components/Avatar";
 import { IUserDetails } from "../../../interfaces";
 import { createGroup } from "../../../services/groupMessageServices";
@@ -14,11 +14,7 @@ import GroupDetailsForm from "./GroupDetailsForm";
 import VButton from "../../../components/button/VButton";
 import FormStepper from "./FormStepper";
 
-const NewGroupForm = ({
-  setShowCreateGroupModal,
-}: {
-  setShowCreateGroupModal: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
+const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const [groupDetails, setGroupDetails] = useState({
@@ -26,8 +22,7 @@ const NewGroupForm = ({
     description: "",
     members: [currentUserDetails] as IUserDetails[],
   });
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     let promise = createGroup({
       name: groupDetails.name,
       description: groupDetails.description,
@@ -42,7 +37,7 @@ const NewGroupForm = ({
     promise.then(() => {
       mutate(currentUserDetails.$id);
     });
-    promise.finally(() => setShowCreateGroupModal(false));
+    promise.finally(() => onClose());
   };
 
   const handleChange = (e: any) => {
@@ -50,20 +45,19 @@ const NewGroupForm = ({
       return { ...d, [e.target.name]: e.target.value };
     });
   };
+
   return (
-    <div className="flex flex-col gap-8">
-      <FormStepper handleSubmit={handleSubmit}>
-        <GroupDetailsForm
-          description={groupDetails.description}
-          name={groupDetails.name}
-          onChange={handleChange}
-        />
-        <AddMembersForm
-          members={groupDetails.members}
-          setGroupDetails={setGroupDetails}
-        />
-      </FormStepper>
-    </div>
+    <FormStepper handleSubmit={handleSubmit}>
+      <GroupDetailsForm
+        description={groupDetails.description}
+        name={groupDetails.name}
+        onChange={handleChange}
+      />
+      <AddMembersForm
+        members={groupDetails.members}
+        setGroupDetails={setGroupDetails}
+      />
+    </FormStepper>
   );
 };
 

@@ -99,7 +99,7 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="bottom-0 m-4 overflow-hidden rounded-full dark:text-dark-blue12 bg-gray8 dark:bg-dark-blue3 end-0 start-0 shrink-0">
+    <footer className="m-4 overflow-hidden rounded-full dark:text-dark-blue12 bg-gray8 dark:bg-dark-blue3 end-0 shrink-0">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
         <div className="flex items-center w-full gap-3 p-3">
           <div className="flex gap-6 px-2">

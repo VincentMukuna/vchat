@@ -1,9 +1,9 @@
 import { mutate } from "swr";
 import { IUserDetails } from "../../interfaces";
-import { addContact } from "../../services/userServices";
+import { addContact } from "../../services/userDetailsServices";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
-import { Avatar } from "@chakra-ui/react";
+import { Avatar, Card } from "@chakra-ui/react";
 import api from "../../services/api";
 import { Server } from "../../utils/config";
 
@@ -28,12 +28,18 @@ function User({ user }: { user: IUserDetails }) {
     });
   };
   return (
-    <article
+    <Card
+      as={"article"}
+      bg={"inherit"}
+      shadow={"none"}
+      direction={"row"}
+      py={3}
+      ps={3}
+      rounded={"none"}
       onClick={handleClick}
-      className="flex items-center gap-2 px-2 py-2 rounded-md cursor-pointer hover:bg-slate-600"
+      className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 `}
     >
       <Avatar
-        fontWeight={"bold"}
         src={
           user.avatarID
             ? api.getFile(Server.bucketIDUserAvatars, user?.avatarID).toString()
@@ -42,12 +48,14 @@ function User({ user }: { user: IUserDetails }) {
         name={user.name}
       />
       <div className="flex flex-col justify-center 0">
-        <span className="text-lg font-semibold ]tracking-wide ">
+        <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
           {isPersonal ? "You" : user.name}
         </span>
-        <span className="text-sm italic ">{user.about}</span>
+        <span className="overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+          {user.about}
+        </span>
       </div>
-    </article>
+    </Card>
   );
 }
 

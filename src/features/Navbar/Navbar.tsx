@@ -1,5 +1,3 @@
-//@ts-ignore
-import avatarFallback from "../../assets/avatarFallback.png";
 import { useAuth } from "../../context/AuthContext";
 import { useAppSelector } from "../../context/AppContext";
 import {
@@ -10,7 +8,7 @@ import {
   WheelIcon,
 } from "../../components/Icons";
 import * as Tabs from "@radix-ui/react-tabs";
-import { getCurrentUserDetails } from "../../services/userServices";
+import { getCurrentUserDetails } from "../../services/userDetailsServices";
 import { logUserOut } from "../../services/sessionServices";
 import { useNavigate } from "react-router-dom";
 import { Avatar, IconButton, useColorMode } from "@chakra-ui/react";
@@ -24,7 +22,7 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="box-content bottom-0 flex items-center justify-center w-full gap-16 p-1 py-2 dark:text-dark-slate11 bg-gray3 dark:bg-dark-indigo2 md:h-full md:flex-col md:w-16 shrink-0">
+    <nav className="box-content flex items-center justify-center h-full gap-16 p-1 py-2 md:static dark:text-dark-slate11 bg-gray3 dark:bg-dark-indigo2 md:flex-col md:w-16 shrink-0">
       <div className="hidden md:flex">
         <Tabs.Trigger
           value="Profile"
@@ -36,9 +34,8 @@ const Navbar = () => {
           }}
         >
           <Avatar
-            fontWeight={"black"}
             size={"md"}
-            borderRadius={5}
+            borderRadius={"2xl"}
             name={currentUserDetails.name}
             src={currentUserDetails.avatarURL}
           />

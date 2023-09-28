@@ -8,100 +8,78 @@ import FormInput from "../components/FormInput";
 import { blueDark, gray, tomato, tomatoDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 import { AppwriteException } from "appwrite";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button, VStack } from "@chakra-ui/react";
+import api from "../services/api";
 
 function Login() {
   const navigate = useNavigate();
 
   const { setCurrentUser, setCurrentUserDetails } = useAuth();
-  const [credentials, setCredentials] = useState({
-    email: "",
-    password: "",
-  });
 
   const [loggingIn, setLoggingIn] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let name = e.target.name;
-    let value = e.target.value;
-
-    setCredentials({ ...credentials, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  async function handleLogin(provider: string) {
     setLoggingIn(true);
     try {
-      const { user, userDetails } = await logUserIn(credentials);
+      const { user, userDetails } = await logUserIn(provider);
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
+
       navigate("/");
     } catch (error) {
-      toast.error("Error logging in: " + (error as AppwriteException).message, {
-        style: {
-          border: ` 0.5px solid ${blueDark.blue1} `,
-          backgroundColor: `${blueDark.blue1}`,
-          color: `${gray.gray1}`,
-        },
-      });
+      navigate("/register");
     } finally {
       setLoggingIn(false);
     }
-  };
+  }
 
   return (
     <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
-      <div className="py-4 px-12 rounded-lg flex flex-col items-center w-[340px]">
-        <h1 className="text-xl font-bold tracking-wider text-dark-blue1 dark:text-indigo2">
-          VChat
-        </h1>
-        <h2 className="mt-1 text-xs tracking-wide text-slate-500 dark:text-indigo2/60">
-          Log In
-        </h2>
-
-        <form onSubmit={handleSubmit} className="flex flex-col w-full mt-12">
-          <FormInput
-            id="email"
-            label="Email"
-            name="email"
-            onChange={handleInputChange}
-            type="email"
-            value={credentials.email}
-          />
-
-          <FormInput
-            id="password"
-            label="Password"
-            name="password"
-            onChange={handleInputChange}
-            type="password"
-            value={credentials.password}
-          />
-
-          <button
-            type="submit"
-            className="relative items-center justify-center w-full py-2 mt-4 text-sm font-bold tracking-wide h-11 dark:bg-dark-tomato4 bg-dark-blue1 text-gray1"
-          >
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="py-4 px-12 rounded-lg flex flex-col items-center w-[340px] gap-12"
+      >
+        <VStack>
+          <h1 className="text-xl font-bold tracking-wider text-dark-blue1 dark:text-indigo2">
+            VChat
+          </h1>
+          <h2 className="mt-1 text-xs tracking-wide text-slate-500 dark:text-indigo2/60">
             Log In
-            <div className="absolute right-3 top-2">
-              <ClipLoader
-                size={28}
-                color={blueDark.blue12}
-                loading={loggingIn}
-              />
-            </div>
-          </button>
-        </form>
-        <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
-          Do not have an account?
-          <Link
-            to="/register"
-            className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
+          </h2>
+        </VStack>
+
+        <VStack>
+          <Button
+            isLoading={loggingIn}
+            loadingText={"Verifying"}
+            onClick={() => handleLogin("google")}
           >
-            {" Register "}
-          </Link>
-          here
-        </div>
-      </div>
+            Log In with Google
+          </Button>
+
+          <Button
+            isLoading={loggingIn}
+            loadingText={"Verifying"}
+            onClick={() => handleLogin("github")}
+          >
+            Log In with GitHub
+          </Button>
+
+          <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
+            Do not have an account?
+            <Link
+              to="/register"
+              className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
+            >
+              {" Register "}
+            </Link>
+            here
+          </div>
+        </VStack>
+      </motion.div>
     </div>
   );
 }

@@ -56,12 +56,11 @@ export async function sendGroupMessage(
         ...message,
       },
     );
-    await api.updateDocument(
-      Server.databaseID,
-      Server.collectionIDGroups,
-      groupID,
-      { changeLog: "newtext" },
-    );
+    api
+      .updateDocument(Server.databaseID, Server.collectionIDGroups, groupID, {
+        changeLog: "newtext",
+      })
+      .catch(() => {});
   } catch (error: any) {
     console.log(`Error sending group message `, error.message);
   }
@@ -177,7 +176,7 @@ export async function clearGroupMessageAttachments(groupID: string) {
 
 export async function deleteGroup(groupID: string) {
   await deleteGroupAvatar(groupID);
-  clearGroupMessageAttachments(groupID);
+  await clearGroupMessageAttachments(groupID);
   await api.deleteDocument(
     Server.databaseID,
     Server.collectionIDGroups,

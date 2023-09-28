@@ -5,15 +5,16 @@ import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import { IChatMessage, IGroupMessage } from "../../interfaces";
 import { DeleteIcon, PencilIcon } from "../../components/Icons";
-//@ts-ignore
-import avatarFallback from "../../assets/avatarFallback.png";
+
 import useSWR from "swr";
 import {
   getCurrentUserDetails,
   getUserDetails,
-} from "../../services/userServices";
-import Avatar from "../../components/Avatar";
+} from "../../services/userDetailsServices";
 import { getFormattedDateTime } from "../../services/dateServices";
+import { Avatar } from "@chakra-ui/react";
+
+import { motion } from "framer-motion";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -31,10 +32,14 @@ function Message({ message, onDelete }: MessageProps) {
 
   let mine = message.senderID === currentUserDetails.$id;
 
-  const { data: senderDetails } = useSWR(() => {
-    if (mine || message.senderID === currentUserDetails.$id) return null;
-    else return message.senderID;
-  }, getUserDetails);
+  const { data: senderDetails } = useSWR(
+    () => {
+      if (mine || message.senderID === currentUserDetails.$id) return null;
+      else return message.senderID;
+    },
+    getUserDetails,
+    { errorRetryCount: 0 },
+  );
   const getMessageAttachments = () => {
     message.attachments.forEach(async (attachmentID) => {
       try {
@@ -70,7 +75,9 @@ function Message({ message, onDelete }: MessageProps) {
   }, []);
 
   return (
-    <article
+    <motion.article
+      initial={{ opacity: 0, x: mine ? 7 : -7 }}
+      whileInView={{ opacity: 1, x: 0 }}
       onMouseEnter={() => setShowHoverCard(true)}
       onMouseLeave={() => setShowHoverCard(false)}
       tabIndex={0}
@@ -81,7 +88,7 @@ function Message({ message, onDelete }: MessageProps) {
       <Avatar
         src={mine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL}
         name={mine ? currentUserDetails.name : (senderDetails?.name as string)}
-        size="small"
+        size="sm"
       />
       <div className="flex flex-col ">
         <div
@@ -102,7 +109,7 @@ function Message({ message, onDelete }: MessageProps) {
           }`}
         >
           <span className="overflow-hidden text-elipsis whitespace-nowrap  max-w-[60px]  text-ellipsis ">
-            {senderDetails?.name}
+            {!mine && (senderDetails?.name || "User ")}
           </span>
           {" " + getFormattedDateTime(message.$createdAt)}
         </div>
@@ -122,7 +129,7 @@ function Message({ message, onDelete }: MessageProps) {
           </button>
         </div>
       )}
-    </article>
+    </motion.article>
   );
 }
 

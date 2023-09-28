@@ -8,7 +8,7 @@ import {
   getCurrentUserDetails,
   getSession,
   getUserDetails,
-} from "../services/userServices";
+} from "../services/userDetailsServices";
 import { logUserIn } from "../services/sessionServices";
 import api from "../services/api";
 
@@ -44,7 +44,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUserDetails(userDetails);
       navigate("/");
     } catch (error: any) {
-      console.log("No session: ", error.message);
       navigate("/login");
     }
   };
@@ -76,7 +75,7 @@ export const useAuth = () => {
   if (context === null) {
     throw new Error("auth context not initialised");
   }
-  return context;
+  return context as IAuthContext;
 };
 
 export default AuthContext;
