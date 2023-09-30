@@ -9,8 +9,6 @@ import {
   Button,
   Checkbox,
   Divider,
-  Flex,
-  Stack,
   VStack,
   useColorMode,
 } from "@chakra-ui/react";

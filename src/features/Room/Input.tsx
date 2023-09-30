@@ -5,14 +5,12 @@ import { IChatMessage, IGroupMessage } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import { sendGroupMessage } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
-import { ID } from "appwrite";
 import { useSWRConfig } from "swr";
-import toast from "react-hot-toast";
 
 type InputProps = {};
 
 const Input = ({}: InputProps) => {
-  const { currentUser, currentUserDetails } = useAuth();
+  const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   const [sending, setSending] = useState(false);
   const { selectedChat, recepient } = useChatsContext();

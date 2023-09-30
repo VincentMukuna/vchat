@@ -1,4 +1,4 @@
-import { AppwriteException, Models, Permission, Query, Role } from "appwrite";
+import { Models, Query } from "appwrite";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { IUserDetails } from "../interfaces";
@@ -60,36 +60,3 @@ export async function addUserToGlobalChat(userDetailsID: string) {
     throw new Error("Error adding user to global chat...");
   }
 }
-
-// export async function registerNewUser() {
-//   let user: Models.User<Models.Preferences> | null = null;
-//   let userDeets: IUserDetails | null = null;
-//   try {
-//     console.log("Creating account...");
-//     api.handleOauth()
-//     console.log("Creating session... ");
-//     await api.createSession(email, password);
-//     try {
-//       console.log("Creating details file...");
-//       userDeets = await createDetailsFile(user);
-//       console.log("Updating preferences...");
-//       user = await api.updatePrefs({ detailsDocID: userDeets.$id });
-//       console.log(`Adding to global chat...`);
-//       userDeets = await addUserToGlobalChat(userDeets.$id);
-//     } catch (error) {
-//       console.log(
-//         "Error creating details file: ",
-//         (error as AppwriteException).message,
-//       );
-//       throw new Error((error as AppwriteException).message);
-//     }
-//     return { user, userDeets };
-//   } catch (error) {
-//     console.log("Error setting up account.");
-//     if (user) {
-//       console.log("Deleting account...");
-//       deleteUser(user.$id);
-//     }
-//     throw error;
-//   }
-// }

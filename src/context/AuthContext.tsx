@@ -4,12 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Models } from "appwrite";
 
 import { IUserDetails } from "../interfaces";
-import {
-  getCurrentUserDetails,
-  getSession,
-  getUserDetails,
-} from "../services/userDetailsServices";
-import { logUserIn } from "../services/sessionServices";
+import { getCurrentUserDetails } from "../services/userDetailsServices";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
 import toast from "react-hot-toast";

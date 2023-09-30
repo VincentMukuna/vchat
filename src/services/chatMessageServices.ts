@@ -1,8 +1,7 @@
-import { AppwriteException, Query } from "appwrite";
+import { Query } from "appwrite";
 import { IChat, IChatMessage, IUserDetails } from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { compareUpdatedAt } from "../features/Chats/Chats";
 type sendMessageProps = {
   senderID: string;
   recepientID: string;

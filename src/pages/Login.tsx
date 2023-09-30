@@ -2,22 +2,11 @@ import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { blue, blueDark, gray } from "@radix-ui/colors";
 import toast from "react-hot-toast";
-import {
-  Button,
-  FocusLock,
-  IconButton,
-  Input,
-  InputGroup,
-  InputRightElement,
-  VStack,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
 import api from "../services/api";
-import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
-import usePassword from "../hooks/usePassword";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 import PasswordInput from "../components/PasswordInput";
 import OauthSignUp from "../components/OauthSignUp";
 

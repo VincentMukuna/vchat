@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 //@ts-ignore
 import chatSVG from "../../assets/groupChat.svg";
 import ChatHeader from "./ChatHeader";

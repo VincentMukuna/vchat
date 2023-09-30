@@ -1,6 +1,5 @@
 import { blueDark } from "@radix-ui/colors";
-import React from "react";
-import { BeatLoader, ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 
 import { motion } from "framer-motion";
 

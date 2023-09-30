@@ -7,33 +7,22 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
   useDisclosure,
   useColorMode,
-  Button,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-  Icon,
 } from "@chakra-ui/react";
 
-import { ChatIcon, GroupIcon, PlusIcon } from "../../components/Icons";
+import { PlusIcon } from "../../components/Icons";
 import Profile from "../Profile/Profile";
 import { useAuth } from "../../context/AuthContext";
 import Settings from "../Settings/Settings";
-import { addUserToGlobalChat } from "../../services/registerUserService";
-import { useMemo } from "react";
-import * as Dialog from "@radix-ui/react-dialog";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
-import { useState } from "react";
-import { UserGroupIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { Box } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
 const Sidebar = () => {
-  const { activePage, setActivePage } = useAppSelector();
+  const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   const { currentUserDetails } = useAuth();

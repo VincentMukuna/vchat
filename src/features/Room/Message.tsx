@@ -7,10 +7,7 @@ import { IChatMessage, IGroupMessage } from "../../interfaces";
 import { DeleteIcon, PencilIcon } from "../../components/Icons";
 
 import useSWR from "swr";
-import {
-  getCurrentUserDetails,
-  getUserDetails,
-} from "../../services/userDetailsServices";
+import { getUserDetails } from "../../services/userDetailsServices";
 import { getFormattedDateTime } from "../../services/dateServices";
 import { Avatar } from "@chakra-ui/react";
 

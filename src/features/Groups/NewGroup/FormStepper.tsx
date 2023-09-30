@@ -14,13 +14,6 @@ import {
   StepTitle,
   Stepper,
 } from "@chakra-ui/react";
-import {
-  blue,
-  blueDark,
-  indigoDark,
-  slate,
-  tomatoDark,
-} from "@radix-ui/colors";
 
 interface FormStepperProps {
   children: React.ReactNode[];

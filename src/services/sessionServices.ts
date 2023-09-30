@@ -1,6 +1,5 @@
-import { AppwriteException, Models } from "appwrite";
-import { IUserDetails, IUserPrefs } from "../interfaces";
-import { SERVER } from "../utils/config";
+import { Models } from "appwrite";
+import { IUserDetails } from "../interfaces";
 import api from "./api";
 import { createDetailsDoc } from "./registerUserService";
 

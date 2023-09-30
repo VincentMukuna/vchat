@@ -1,4 +1,3 @@
-import { Query } from "appwrite";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";

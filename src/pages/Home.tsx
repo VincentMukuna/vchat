@@ -1,13 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "../features/Navbar/Navbar";
-import AppContext, { AppProvider, useAppSelector } from "../context/AppContext";
+import { useAppSelector } from "../context/AppContext";
 import Sidebar from "../features/Sidebar/Sidebar";
 import Room from "../features/Room/Room";
-import { ChatsProvider, useChatsContext } from "../context/ChatsContext";
+import { useChatsContext } from "../context/ChatsContext";
 import * as Tabs from "@radix-ui/react-tabs";
-import { Functions } from "appwrite";
-import { Toaster } from "react-hot-toast";
-import { Box, Container } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 
 function Home() {

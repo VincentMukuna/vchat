@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useState } from "react";
 import { IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -7,7 +7,6 @@ import {
   ModalContent,
   ModalHeader,
   ModalFooter,
-  ModalBody,
   ModalCloseButton,
   useDisclosure,
   useColorMode,
