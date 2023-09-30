@@ -44,10 +44,9 @@ let api = {
   handleOauth(provider: string = "google") {
     return api.provider().account.createOAuth2Session(
       provider,
-      // "http://vchat-messenger.vercel.app/login",
-      // "http://vchat-messenger.vercel.app/register",
-      "http://192.168.8.104:5173/login",
-      "http://192.168.8.104:5173/register",
+      "http://vchat-messenger.vercel.app/login",
+      "http://vchat-messenger.vercel.app/register",
+
       ["profile"],
     );
   },
