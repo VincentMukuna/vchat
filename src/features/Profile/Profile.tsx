@@ -18,7 +18,10 @@ import {
   InputLeftElement,
   Icon,
 } from "@chakra-ui/react";
-import { updateUserDetails } from "../../services/userDetailsServices";
+import {
+  updateUserAvatar,
+  updateUserDetails,
+} from "../../services/userDetailsServices";
 import { Avatar } from "@chakra-ui/react";
 import {
   blackA,
@@ -37,16 +40,40 @@ import {
 } from "@heroicons/react/20/solid";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useFilePicker } from "use-file-picker";
+import toast from "react-hot-toast";
+import api from "../../services/api";
+import { SERVER } from "../../utils/config";
 
 type ProfileProps = {
   user: IUserDetails;
 };
 const Profile = ({ user }: ProfileProps) => {
-  const { currentUser, currentUserDetails } = useAuth();
+  const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
+  if (!currentUserDetails) return null;
 
   const { colorMode } = useColorMode();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { openFilePicker, filesContent, plainFiles } = useFilePicker({
+    accept: [".jpg", ".png"],
+    multiple: false,
+    readAs: "DataURL",
+    onFilesSuccessfullySelected(data) {
+      let promise = updateUserAvatar(
+        currentUserDetails.$id,
+        data.plainFiles[0] as File,
+      );
+
+      promise.then(() => {
+        refreshUserDetails();
+      });
+    },
+
+    onFilesRejected: () => {
+      toast.error("Invalid file");
+    },
+  });
 
   const isCurrentUser = user.userID === currentUser?.$id;
   return (
@@ -58,7 +85,24 @@ const Profile = ({ user }: ProfileProps) => {
         className="relative flex flex-col items-center justify-between w-full gap-2 py-4"
       >
         <div className="flex flex-col items-center gap-2">
-          <Avatar size={"xl"} name={currentUserDetails?.name} />
+          <div className="relative ">
+            <IconButton
+              title="Edit avatar"
+              onClick={openFilePicker}
+              aria-label="edit avatar"
+              icon={
+                <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+              }
+              pos={"absolute"}
+              bg={"transparent"}
+              className="z-20 -right-10"
+            />
+            <Avatar
+              size={"2xl"}
+              name={currentUserDetails?.name}
+              src={filesContent[0]?.content || currentUserDetails.avatarURL}
+            />
+          </div>
           <span className="text-lg leading-6 tracking-wide">{user.name}</span>
           <span className="text-sm text-gray11 dark:text-gray-400">
             {currentUserDetails?.about || "Hi there! I'm using VChat"}
@@ -71,23 +115,38 @@ const Profile = ({ user }: ProfileProps) => {
         <div className="flex flex-col items-center w-full gap-4 mt-5 transition">
           {isCurrentUser && (
             <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />
-              <ModalContent
-                bg={colorMode === "light" ? gray.gray2 : blueDark.blue1}
-                overflow={"hidden"}
-              >
-                <ModalHeader> Edit your details</ModalHeader>
-                <ModalCloseButton />
-                <EditUserDetails onClose={onClose} />
-              </ModalContent>
+              <ModalOverlay />{" "}
+              <AnimatePresence>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.01 }}
+                  exit={{ opacity: 0, height: 0 }}
+                >
+                  <ModalContent
+                    bg={colorMode === "light" ? gray.gray2 : blueDark.blue1}
+                    overflow={"hidden"}
+                    className="border"
+                  >
+                    <ModalHeader> Edit your details</ModalHeader>
+                    <ModalCloseButton />
+                    <EditUserDetails onClose={onClose} />
+                  </ModalContent>
+                </motion.div>
+              </AnimatePresence>
             </Modal>
           )}
           <Button
             width={"48"}
             rounded={"md"}
             onClick={onOpen}
-            bg={blueDark.blue6}
-            color={gray.gray1}
+            bg={blueDark.blue5}
+            color={colorMode === "dark" ? gray.gray2 : gray.gray1}
+            _hover={
+              colorMode === "light"
+                ? { bg: blueDark.blue7, color: gray.gray1 }
+                : {}
+            }
           >
             {"Edit Info"}
           </Button>
@@ -127,7 +186,7 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
     }
   };
   return (
-    <form
+    <motion.form
       onSubmit={handleSubmit}
       className="flex flex-col gap-8 p-4 dark:text-gray-100 dark:bg-dark-blue1 bg-gray2 text-dark-blue1"
     >
@@ -141,10 +200,11 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
           </label>
           <InputGroup>
             <InputLeftElement>
-              <PencilIcon className="w-5 h-5" />
+              <PencilIcon className="w-5 h-5 dark:text-dark-gray8/50" />
             </InputLeftElement>
             <Input
               autoFocus
+              isRequired
               value={details.name}
               onChange={handleDetailsChange}
               type="text"
@@ -168,6 +228,7 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
               />
             </InputLeftElement>
             <Input
+              isRequired
               value={details.about}
               onChange={handleDetailsChange}
               type="text"
@@ -191,6 +252,7 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
               />
             </InputLeftElement>
             <Input
+              isRequired
               value={details.location}
               onChange={handleDetailsChange}
               type="text"
@@ -205,6 +267,11 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
           type="submit"
           bg={blueDark.blue5}
           color={colorMode === "dark" ? gray.gray2 : gray.gray3}
+          _hover={
+            colorMode === "light"
+              ? { bg: blueDark.blue7, color: gray.gray1 }
+              : {}
+          }
           isLoading={submitting}
           loadingText="Submitting"
           px={12}
@@ -213,7 +280,7 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
           Save
         </Button>
       </ModalFooter>
-    </form>
+    </motion.form>
   );
 };
 

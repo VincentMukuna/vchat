@@ -23,7 +23,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        lato: ["Lato"],
+        roboto: ["Roboto"],
       },
 
       colors: {

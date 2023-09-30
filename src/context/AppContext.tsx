@@ -25,7 +25,7 @@ export const useAppSelector = () => {
   if (appContext === null) {
     throw new Error("App context not initalised");
   }
-  return appContext;
+  return appContext as AppContextValue;
 };
 
 export default AppContext;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IUserDetails } from "../../../interfaces";
 import useSWR from "swr";
 import { getUsers } from "../../../services/userDetailsServices";
@@ -8,8 +8,11 @@ import {
   AvatarGroup,
   Button,
   Checkbox,
+  Divider,
   Flex,
   Stack,
+  VStack,
+  useColorMode,
 } from "@chakra-ui/react";
 
 import { motion } from "framer-motion";
@@ -18,23 +21,39 @@ import { blueDark, gray, slate } from "@radix-ui/colors";
 
 interface AddMembersProps {
   members: IUserDetails[];
+  handleSubmit: () => void;
   setGroupDetails: (
     value: React.SetStateAction<{
       name: string;
       description: string;
       members: IUserDetails[];
+      avatar: File | null;
     }>,
   ) => void;
 }
 
-const AddMembersForm = ({ members, setGroupDetails }: AddMembersProps) => {
+const AddMembersForm = ({
+  members: init,
+  setGroupDetails,
+  handleSubmit,
+}: AddMembersProps) => {
   const { currentUserDetails } = useAuth();
   const { prev, next } = useStepper();
   if (!currentUserDetails) return null;
   const { data: users } = useSWR("users", getUsers);
+  const { colorMode } = useColorMode();
+
+  let [members, setMembers] = useState<IUserDetails[]>(init);
+
+  function onSubmit(e: any) {
+    e?.preventDefault();
+    setGroupDetails((prev) => ({ ...prev, members: members }));
+    handleSubmit();
+  }
 
   return (
     <motion.form
+      onSubmit={onSubmit}
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       className="flex flex-col gap-8 pt-4 "
@@ -45,23 +64,34 @@ const AddMembersForm = ({ members, setGroupDetails }: AddMembersProps) => {
         </span>
         <AvatarGroup max={4}>
           {members.map((member) => {
-            return <Avatar name={member.name} size="md" key={member.$id} />;
+            return (
+              <Avatar
+                src={member.avatarURL}
+                name={member.name}
+                size="md"
+                key={member.$id}
+              />
+            );
           })}
         </AvatarGroup>
 
-        <Flex
+        <VStack
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          flexDir={"column"}
           maxWidth={"100%"}
           minH={300}
           maxH={400}
           overflowY={"auto"}
           overflowX={"hidden"}
-          bg={gray.gray3}
+          borderWidth={1}
+          px={2}
+          pt={1}
+          bg={colorMode === "light" ? gray.gray3 : blueDark.blue2}
           rounded={"md"}
           mt={2}
+          divider={<Divider />}
+          spacing={0}
         >
           {users &&
             users
@@ -69,7 +99,7 @@ const AddMembersForm = ({ members, setGroupDetails }: AddMembersProps) => {
               .map((user: IUserDetails, index) => {
                 return (
                   <div
-                    className="flex items-center gap-2 px-2 py-2 hover:bg-gray9/20 group "
+                    className="flex items-center w-full gap-2 px-2 py-2 hover:bg-gray9/20 group "
                     key={index}
                   >
                     <Checkbox
@@ -78,20 +108,14 @@ const AddMembersForm = ({ members, setGroupDetails }: AddMembersProps) => {
                       isChecked={members.includes(user)}
                       onChange={() => {
                         if (members.includes(user)) {
-                          setGroupDetails((groupDetails) => {
-                            return {
-                              ...groupDetails,
-                              members: groupDetails.members.filter(
-                                (member) => member.$id !== user.$id,
-                              ),
-                            };
+                          setMembers((prev) => {
+                            return prev.filter(
+                              (member) => member.$id !== user.$id,
+                            );
                           });
                         } else {
-                          setGroupDetails((groupDetails) => {
-                            return {
-                              ...groupDetails,
-                              members: [...groupDetails.members, user],
-                            };
+                          setMembers((prev) => {
+                            return [...prev, user];
                           });
                         }
                       }}
@@ -111,17 +135,15 @@ const AddMembersForm = ({ members, setGroupDetails }: AddMembersProps) => {
                   </div>
                 );
               })}
-        </Flex>
+        </VStack>
       </div>
       <div className="flex flex-row-reverse gap-4">
         <Button
+          type="submit"
           bg={blueDark.blue3}
           _hover={{ bg: blueDark.blue4 }}
           color={slate.slate1}
           maxW={"48"}
-          onClick={() => {
-            next();
-          }}
         >
           Create
         </Button>

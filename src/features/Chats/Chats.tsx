@@ -3,7 +3,7 @@ import Chat from "./Conversation";
 import { IChat, IGroup, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 import { useAppSelector } from "../../context/AppContext";
 import useSWR, { useSWRConfig } from "swr";
 import { ClipLoader } from "react-spinners";
@@ -79,7 +79,7 @@ const Chats = () => {
   useEffect(() => {
     // Subscribe to changes on the user's chatlist and contact list
     const unsubscribe = api.subscribe<IUserDetails>(
-      `databases.${Server.databaseID}.collections.${Server.collectionIDUsers}.documents.${currentUserDetails.$id}`,
+      `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {
         console.log(response.payload);
         // If the contact details have been updated, refresh the user details
@@ -128,7 +128,7 @@ const Chats = () => {
     );
   } else {
     return (
-      <Stack spacing={0} divider={<Divider />} px={1}>
+      <Stack spacing={0} px={1}>
         {localConversations?.map((conversation) => (
           <Chat key={conversation.$id} conversation={conversation} />
         ))}

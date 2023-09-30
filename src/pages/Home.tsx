@@ -8,6 +8,7 @@ import * as Tabs from "@radix-ui/react-tabs";
 import { Functions } from "appwrite";
 import { Toaster } from "react-hot-toast";
 import { Box, Container } from "@chakra-ui/react";
+import { AnimatePresence } from "framer-motion";
 
 function Home() {
   const { activePage, setActivePage } = useAppSelector();
@@ -26,14 +27,16 @@ function Home() {
         </Tabs.List>
 
         <Sidebar />
-        <Box
-          className={`absolute flex transition-opacity  h-full  bg-dark-mauve12
-           dark:bg-dark-blue1 inset-0 md:relative grow ${
+        <AnimatePresence>
+          <Box
+            className={`absolute flex transition-opacity  h-full   bg-dark-slate12
+           dark:bg-dark-slate1 inset-0 md:relative grow ${
              selectedChat ? "z-10" : "invisible md:visible"
            }`}
-        >
-          <Room />
-        </Box>
+          >
+            <Room />
+          </Box>
+        </AnimatePresence>
       </div>
     </Tabs.Root>
   );

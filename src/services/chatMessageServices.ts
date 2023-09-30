@@ -1,6 +1,6 @@
 import { AppwriteException, Query } from "appwrite";
 import { IChat, IChatMessage, IUserDetails } from "../interfaces";
-import { Server } from "../utils/config";
+import { SERVER } from "../utils/config";
 import api from "./api";
 import { compareUpdatedAt } from "../features/Chats/Chats";
 type sendMessageProps = {
@@ -25,12 +25,12 @@ export async function sendChatMessage(
 
   try {
     await api.createDocument(
-      Server.databaseID,
-      Server.collectionIDChatMessages,
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHAT_MESSAGES,
       message,
     );
     //change last message id in chats db
-    api.updateDocument(Server.databaseID, Server.collectionIDChats, chatID, {
+    api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
       changeLog: "newtext",
     });
   } catch (error: any) {
@@ -55,7 +55,7 @@ export async function getChatMessages(chatID: string) {
 }
 
 export async function clearChatMessages(chatID: string) {
-  let exec = await api.executeFunction(Server.functionIDFuncs, {
+  let exec = await api.executeFunction(SERVER.FUNCTION_ID_FUNCS, {
     action: "clear chat messages",
     params: {
       chatID: chatID,
@@ -70,8 +70,8 @@ export async function clearChatMessages(chatID: string) {
 export async function getChatDoc(chatID: string) {
   try {
     let chatDoc = await api.getDocument(
-      Server.databaseID,
-      Server.collectionIDChats,
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHATS,
       chatID,
     );
     return chatDoc as IChat;
@@ -82,19 +82,19 @@ export async function getChatDoc(chatID: string) {
 
 export async function deleteChatMessage(chatID: string, message: IChatMessage) {
   await api.deleteDocument(
-    Server.databaseID,
-    Server.collectionIDChatMessages,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHAT_MESSAGES,
     message.$id,
   );
-  api.updateDocument(Server.databaseID, Server.collectionIDChats, chatID, {
+  api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
     changeLog: "deletetext",
   });
 }
 
 export async function getUserChats(userDetailsID: string) {
   let deets = (await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDUsers,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
     userDetailsID,
   )) as IUserDetails;
 
@@ -102,8 +102,8 @@ export async function getUserChats(userDetailsID: string) {
   let chats: IChat[] = [];
   if (chatIDs.length > 0) {
     let { documents } = await api.listDocuments(
-      Server.databaseID,
-      Server.collectionIDChats,
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHATS,
       [Query.equal("$id", [...chatIDs])],
     );
     chats = documents as IChat[];

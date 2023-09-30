@@ -20,18 +20,19 @@ function ChatHeader() {
     );
 
   return (
-    <section className="flex items-center w-full gap-3 px-2 py-10 dark:text-gray1 h-14 dark:bg-dark-blue2 bg-gray2 text-dark-gray2">
+    <section className="flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-slate1 bg-gray2 text-dark-gray2">
       <button
         aria-label="closeChat"
         onClick={() => {
           setSelectedChat(undefined);
           setRecepient(undefined);
         }}
-        className="md:hidden flex text-center items-center justify-center w-10 h-10 mr-2  rounded-full cursor-pointer hover:scale-[0.8] text-xl"
+        className=" flex text-center items-center justify-center w-10 h-10 mr-2  rounded-full cursor-pointer hover:scale-[0.95] text-xl"
       >
         <ArrowLeftIcon className="w-6 h-6 " />
       </button>
       <Avatar
+        src={selectedChat.avatarURL}
         name={
           isGroup
             ? selectedChat.name

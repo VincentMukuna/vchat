@@ -1,86 +1,152 @@
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { logUserIn } from "../services/sessionServices";
-import { ClipLoader } from "react-spinners";
-import FormInput from "../components/FormInput";
-import { blueDark, gray, tomato, tomatoDark } from "@radix-ui/colors";
+import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
+import { blue, blueDark, gray } from "@radix-ui/colors";
 import toast from "react-hot-toast";
-import { AppwriteException } from "appwrite";
-import { AnimatePresence, motion } from "framer-motion";
-import { Button, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  FocusLock,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  VStack,
+  useColorMode,
+} from "@chakra-ui/react";
 import api from "../services/api";
+import { AnimatePresence, AnimateSharedLayout, motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
+import Loading from "./Loading";
+import usePassword from "../hooks/usePassword";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
+import PasswordInput from "../components/PasswordInput";
+import OauthSignUp from "../components/OauthSignUp";
 
 function Login() {
-  const navigate = useNavigate();
+  const { logIn, isLoading } = useAuth();
+  const [verifying, setVerifying] = useState(false);
+  const { colorMode } = useColorMode();
 
-  const { setCurrentUser, setCurrentUserDetails } = useAuth();
+  type Credentials = {
+    email: string;
+    password: string;
+  };
 
-  const [loggingIn, setLoggingIn] = useState(false);
+  const [credentials, setCredentials] = useState<Credentials>({
+    email: "",
+    password: "",
+  });
 
-  async function handleLogin(provider: string) {
-    setLoggingIn(true);
-    try {
-      const { user, userDetails } = await logUserIn(provider);
-      setCurrentUser(user);
-      setCurrentUserDetails(userDetails);
-
-      navigate("/");
-    } catch (error) {
-      navigate("/register");
-    } finally {
-      setLoggingIn(false);
-    }
+  async function handleOauthSignIn(provider: string) {
+    setVerifying(true);
+    api.handleOauth(provider);
+    setVerifying(false);
   }
 
+  function handleChange(name: string, value: string) {
+    setCredentials((prev) => ({ ...prev, [name]: value }));
+  }
+
+  async function handleEmailSignIn(e: FormEvent) {
+    e.preventDefault();
+    setVerifying(true);
+    logIn(credentials).finally(() => setVerifying(false));
+  }
+  const [item, setItem] = useState(true);
+
+  if (isLoading) {
+    return <Loading />;
+  }
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1">
+    <FocusLock>
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="py-4 px-12 rounded-lg flex flex-col items-center w-[340px] gap-12"
+        key={"login"}
+        initial={{ opacity: 0, x: "-20%" }}
+        animate={{ opacity: 1, x: "0%" }}
+        exit={{ scale: 1.5 }}
+        className=" flex  items-center  [&>div]:w-full transition-all  "
       >
-        <VStack>
-          <h1 className="text-xl font-bold tracking-wider text-dark-blue1 dark:text-indigo2">
-            VChat
-          </h1>
-          <h2 className="mt-1 text-xs tracking-wide text-slate-500 dark:text-indigo2/60">
-            Log In
-          </h2>
-        </VStack>
-
-        <VStack>
-          <Button
-            isLoading={loggingIn}
-            loadingText={"Verifying"}
-            onClick={() => handleLogin("google")}
-          >
-            Log In with Google
-          </Button>
-
-          <Button
-            isLoading={loggingIn}
-            loadingText={"Verifying"}
-            onClick={() => handleLogin("github")}
-          >
-            Log In with GitHub
-          </Button>
-
-          <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
-            Do not have an account?
-            <Link
-              to="/register"
-              className="font-semibold underline text-dark-tomato4 dark:text-dark-tomato8/100"
-            >
-              {" Register "}
-            </Link>
-            here
+        <div className="grid gap-4 p-6 overflow-hidden border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
+          <div className="flex flex-col space-y-2 ">
+            <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
+              Log in to your account
+            </h1>
+            <h2 className="text-sm font-normal tracking-wide below text-gray11 dark:text-indigo2/60">
+              Enter your email below
+            </h2>
           </div>
-        </VStack>
+
+          <form onSubmit={handleEmailSignIn} className="grid gap-5 mt-2 ">
+            <div className="grid gap-3">
+              <div className="grid gap-2">
+                <label
+                  htmlFor="email"
+                  className="text-sm leading-none text-gray10"
+                >
+                  Email
+                </label>
+                <Input
+                  autoComplete="true"
+                  required
+                  id="email"
+                  type="email"
+                  value={credentials.email}
+                  onChange={(e) => {
+                    handleChange("email", e.target.value);
+                  }}
+                  placeholder="xyz@example.com"
+                />
+              </div>
+              <div className="grid gap-2 ">
+                <label
+                  htmlFor="password"
+                  className="text-sm leading-none text-gray10 "
+                >
+                  Password
+                </label>
+                <PasswordInput
+                  value={credentials.password}
+                  onChange={(e) => {
+                    handleChange("password", e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="">
+              <Button
+                type="submit"
+                isLoading={verifying}
+                loadingText="Verifying"
+                bg={blueDark.blue4}
+                color={blue.blue1}
+                _hover={
+                  colorMode === "light"
+                    ? { bg: blueDark.blue7, color: gray.gray1 }
+                    : {}
+                }
+                className="w-full "
+              >
+                Login
+              </Button>
+            </div>
+          </form>
+
+          <OauthSignUp loading={verifying} onClick={handleOauthSignIn} />
+
+          <div className="flex justify-center gap-1 text-xs tracking-wide text-dark-gray4 dark:text-indigo2/50">
+            <div className="flex justify-center gap-1 ">
+              No account?
+              <Link
+                to="/register"
+                className="font-bold underline text-dark-blue4 dark:text-dark-blue10"
+              >
+                Sign up
+              </Link>
+              instead
+            </div>
+          </div>
+        </div>
       </motion.div>
-    </div>
+    </FocusLock>
   );
 }
 

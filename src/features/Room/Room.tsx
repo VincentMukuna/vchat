@@ -5,9 +5,15 @@ import ChatHeader from "./ChatHeader";
 import Input from "./Input";
 import Messages from "./Messages";
 import api from "../../services/api";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 import { useChatsContext } from "../../context/ChatsContext";
-import { IChat, IChatMessage, IGroup, IGroupMessage } from "../../interfaces";
+import {
+  IChat,
+  IChatMessage,
+  IGroup,
+  IGroupMessage,
+  IUserDetails,
+} from "../../interfaces";
 import {
   deleteChatMessage,
   getChatMessages,
@@ -19,16 +25,25 @@ import {
 import useSWR, { useSWRConfig } from "swr";
 import RoomDetails from "./RoomDetails";
 import { Box, Center, useColorMode } from "@chakra-ui/react";
-import { BeatLoader, ClipLoader } from "react-spinners";
+import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
 
 function Room() {
+  const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { colorMode } = useColorMode();
   const { selectedChat, recepient } = useChatsContext();
-  const [showDetails, setShowDetails] = useState(false);
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isPersonal =
+    selectedChat &&
+    !isGroup &&
+    selectedChat.participants.every(
+      (participant: IUserDetails) =>
+        participant.$id === currentUserDetails?.$id,
+    );
 
   const getRoomMessages = async () => {
     if (isGroup) {
@@ -71,10 +86,10 @@ function Room() {
     }
   };
   useEffect(() => {
-    if (selectedChat) {
+    if (selectedChat && !isPersonal) {
       //subscribe to changes in chat room
       const unsubscribe = api.subscribe<IChat | IGroup>(
-        `databases.${Server.databaseID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
+        `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
             response.payload.changeLog === "newtext" ||
@@ -94,11 +109,19 @@ function Room() {
 
   if (!selectedChat) {
     return (
-      <div className="flex flex-col items-center w-full h-full ">
-        <img src={chatSVG} alt="" className="w-[400px] h-4/6" />
+      <motion.div className="flex flex-col items-center w-full h-full ">
+        <motion.img
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.2 }}
+          src={chatSVG}
+          alt=""
+          className="w-[400px] h-4/6"
+        />
         <p>Vchat</p>
         <p>Click on Chat to start messaging</p>
-      </div>
+      </motion.div>
     );
   }
   if (isLoading || messages == undefined) {
@@ -114,7 +137,7 @@ function Room() {
       <>
         <Box
           as="main"
-          className="flex flex-col h-full transition-all grow shrink-0"
+          className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow shrink-0"
         >
           <ChatHeader />
           {error ? (
@@ -129,7 +152,7 @@ function Room() {
           <Input />
         </Box>
         <aside
-          className={`hidden max-w-[20rem] grow basis-40 transition-all xl:flex `}
+          className={`hidden max-w-[20rem] grow basis-40 transition-all xl:flex border-l-[1px]`}
         >
           <RoomDetails />
         </aside>

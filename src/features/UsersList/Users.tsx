@@ -63,7 +63,7 @@ function Users() {
     );
   } else {
     return (
-      <Stack spacing={0} divider={<Divider />} px={1}>
+      <Stack spacing={0} px={1}>
         {localUsers?.map((user) => <User key={user.$id} user={user} />)}
       </Stack>
     );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../../services/api";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import { IChatMessage, IGroupMessage } from "../../interfaces";
@@ -44,7 +44,7 @@ function Message({ message, onDelete }: MessageProps) {
     message.attachments.forEach(async (attachmentID) => {
       try {
         let response = api.getFile(
-          Server.bucketIDChatAttachments,
+          SERVER.bucketIDChatAttachments,
           attachmentID,
         );
         setAttachments([...attachments, response]);
@@ -76,7 +76,6 @@ function Message({ message, onDelete }: MessageProps) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, x: mine ? 7 : -7 }}
       whileInView={{ opacity: 1, x: 0 }}
       onMouseEnter={() => setShowHoverCard(true)}
       onMouseLeave={() => setShowHoverCard(false)}
@@ -95,8 +94,8 @@ function Message({ message, onDelete }: MessageProps) {
           className={`flex flex-col
             px-5 py-2 m-2 ${
               mine
-                ? "bg-slate-300 dark:bg-dark-mauve68 dark:text-black rounded-br-none"
-                : "bg-slate-700 dark:bg-dark-slate5 dark:text-dark-gray12 rounded-bl-none text-gray-100"
+                ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-br-none"
+                : "bg-slate-700 dark:bg-dark-tomato6  dark:text-dark-gray12 rounded-bl-none text-gray-100"
             } rounded-3xl w-fit max-w-[400px] break-words`}
         >
           <p className="text-[15px] font-normal leading-relaxed tracking-wide">

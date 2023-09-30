@@ -1,5 +1,5 @@
 import { AppwriteException, Models, Permission, Query, Role } from "appwrite";
-import { Server } from "../utils/config";
+import { SERVER } from "../utils/config";
 import api from "./api";
 import { IUserDetails } from "../interfaces";
 import { getUserChats } from "./chatMessageServices";
@@ -15,8 +15,8 @@ export async function getSession() {
 
 export async function getUserDetails(detailsDocID: string) {
   let userDoc = (await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDUsers,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
     detailsDocID,
   )) as IUserDetails;
   return userDoc;
@@ -26,8 +26,8 @@ export async function getCurrentUserDetails(
 ) {
   try {
     let userDetails = (await api.getDocument(
-      Server.databaseID,
-      Server.collectionIDUsers,
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_USERS,
       user.prefs.detailsDocID,
     )) as IUserDetails;
     return userDetails;
@@ -41,8 +41,8 @@ export async function getCurrentUserDetails(
 }
 export async function getUsers() {
   const { documents } = await api.listDocuments(
-    Server.databaseID,
-    Server.collectionIDUsers,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
   );
 
   return documents as IUserDetails[];
@@ -53,8 +53,8 @@ export async function editUserDetails(
   details: Partial<IUserDetails>,
 ) {
   await api.updateDocument(
-    Server.databaseID,
-    Server.collectionIDUsers,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
     userDetailsDocID,
     { ...details },
   );
@@ -65,18 +65,29 @@ export async function addContact(
   addeeDetailsID: string,
 ) {
   //check if chat doc exists
-  let userContacts: string[] = [];
-  let deets = await getUserChats(addeeDetailsID);
-  deets.forEach((chat) =>
-    chat.participants.forEach((participant) => {
-      if (participant.$id === adderDetailsID) {
-        throw new Error("Already have a chat with user");
+  if (adderDetailsID === addeeDetailsID) {
+    let deets = await getUserChats(addeeDetailsID);
+    deets.forEach((chat) => {
+      if (
+        chat.participants.length === 1 &&
+        chat.participants[0].$id === adderDetailsID
+      ) {
+        throw new Error("You already have a personal chat");
       }
-    }),
-  );
+    });
+  } else {
+    let deets = await getUserChats(addeeDetailsID);
+    deets.forEach((chat) =>
+      chat.participants.forEach((participant) => {
+        if (participant.$id === adderDetailsID) {
+          throw new Error("Already have a chat with user");
+        }
+      }),
+    );
+  }
 
   //Only add one chat Id if its a personal chat
-  await api.createDocument(Server.databaseID, Server.collectionIDChats, {
+  await api.createDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, {
     participants:
       adderDetailsID === addeeDetailsID
         ? [addeeDetailsID]
@@ -85,7 +96,11 @@ export async function addContact(
 }
 
 export async function deleteContact(chatID: string) {
-  await api.deleteDocument(Server.databaseID, Server.collectionIDChats, chatID);
+  await api.deleteDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHATS,
+    chatID,
+  );
 }
 
 export async function updateUserDetails(
@@ -93,8 +108,8 @@ export async function updateUserDetails(
   details: Partial<IUserDetails>,
 ) {
   return (await api.updateDocument(
-    Server.databaseID,
-    Server.collectionIDUsers,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
     userDetailsID,
     details,
   )) as IUserDetails;
@@ -103,30 +118,26 @@ export async function updateUserDetails(
 export async function deleteUserAvatar(userDetailsID: string) {
   let details = await getUserDetails(userDetailsID);
   if (details.avatarID) {
-    await api.deleteFile(Server.bucketIDUserAvatars, details.avatarID);
-    await updateUserDetails(userDetailsID, { avatarID: null });
+    await api.deleteFile(SERVER.BUCKET_ID_USER_AVATARS, details.avatarID);
+    await updateUserDetails(userDetailsID, { avatarID: null, avatarURL: null });
   }
 }
 
 export async function uploadUserAvatar(userDetailsID: string, avatar: File) {
-  if (avatar.size > 5_000_000) {
-    throw new Error("Avatar cannot be larger than 5MB ");
-  }
-  let res = await api.createFile(Server.bucketIDUserAvatars, avatar);
+  let res = await api.createFile(SERVER.BUCKET_ID_USER_AVATARS, avatar);
   return await updateUserDetails(userDetailsID, {
     avatarID: res.$id,
+    avatarURL: api.getFile(SERVER.BUCKET_ID_USER_AVATARS, res.$id),
   });
 }
 
 export async function updateUserAvatar(userDetailsID: string, avatar: File) {
-  if (avatar.size > 5_000_000)
-    throw new Error("Avatar cannot be larger than 5MB ");
   await deleteUserAvatar(userDetailsID);
   return await uploadUserAvatar(userDetailsID, avatar);
 }
 
 export async function deleteUser(userID: string) {
-  let deleteResponse = await api.executeFunction(Server.functionIDFuncs, {
+  let deleteResponse = await api.executeFunction(SERVER.FUNCTION_ID_FUNCS, {
     action: "delete user",
     params: {
       userID,

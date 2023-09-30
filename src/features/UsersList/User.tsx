@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
 import { Avatar, Card } from "@chakra-ui/react";
 import api from "../../services/api";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 
 function User({ user }: { user: IUserDetails }) {
   const { currentUserDetails } = useAuth();
@@ -42,7 +42,9 @@ function User({ user }: { user: IUserDetails }) {
       <Avatar
         src={
           user.avatarID
-            ? api.getFile(Server.bucketIDUserAvatars, user?.avatarID).toString()
+            ? api
+                .getFile(SERVER.BUCKET_ID_USER_AVATARS, user?.avatarID)
+                .toString()
             : undefined
         }
         name={user.name}

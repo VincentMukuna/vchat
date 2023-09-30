@@ -10,20 +10,25 @@ import { useEffect } from "react";
 import {
   deleteGroup,
   getGroupDetails,
+  updateGroupAvatar,
 } from "../../services/groupMessageServices";
 import useSWR, { mutate } from "swr";
 import { getChatDoc } from "../../services/chatMessageServices";
 import api from "../../services/api";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 import {
   Avatar,
   AvatarGroup,
   Button,
   Center,
   HStack,
+  IconButton,
   VStack,
 } from "@chakra-ui/react";
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowRightOnRectangleIcon,
+  PencilIcon,
+} from "@heroicons/react/20/solid";
 import {
   getFormatedDate,
   getFormattedDateTime,
@@ -31,6 +36,11 @@ import {
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { deleteContact } from "../../services/userDetailsServices";
+import { useFilePicker } from "use-file-picker";
+import {
+  FileAmountLimitValidator,
+  FileSizeValidator,
+} from "use-file-picker/validators";
 
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat } = useChatsContext();
@@ -55,8 +65,35 @@ const RoomDetails = () => {
     getRoomDetails,
   );
 
+  const { openFilePicker, filesContent } = useFilePicker({
+    accept: [".jpg", ".png"],
+    multiple: false,
+    readAs: "DataURL",
+    validators: [
+      new FileAmountLimitValidator({ max: 1 }),
+      new FileSizeValidator({ maxFileSize: 5 * 1024 * 1024 }),
+    ],
+    onFilesSuccessfullySelected(data) {
+      let promise = updateGroupAvatar(
+        selectedChat.$id,
+        data.plainFiles[0] as File,
+      );
+      promise.catch((error) => {
+        toast.error(error.message);
+      });
+
+      promise.then(() => {
+        mutate(selectedChat.$id);
+      });
+    },
+
+    onFilesRejected: () => {
+      toast.error("Invalid file");
+    },
+  });
+
   return (
-    <div className="bg-gray2 dark:bg-dark-blue2/[0.998] relative flex flex-col items-center justify-center w-full h-full dark:text-white overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden bg-gray2 dark:bg-dark-slate2 dark:text-white">
       <div className="absolute top-0 left-0 flex items-center w-full gap-3 p-2 ">
         <button
           title="Close details panel"
@@ -68,11 +105,31 @@ const RoomDetails = () => {
       </div>
       <div className="flex flex-col items-center w-full gap-8 text-sm">
         <VStack gap={-1}>
-          <Avatar
-            size={"2xl"}
-            name={isGroup ? selectedChat.name : recepient?.name}
-          />
-          <p className="text-lg font-bold">
+          <div className="relative ">
+            {isGroup && (
+              <IconButton
+                title="Edit avatar"
+                onClick={openFilePicker}
+                aria-label="edit avatar"
+                icon={
+                  <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+                }
+                pos={"absolute"}
+                bg={"transparent"}
+                className="z-20 -right-10"
+              />
+            )}
+            <Avatar
+              size={"2xl"}
+              name={isGroup ? selectedChat.name : recepient?.name}
+              src={
+                !isGroup
+                  ? recepient?.avatarURL
+                  : filesContent[0]?.content || selectedChat.avatarURL
+              }
+            />
+          </div>
+          <p className="mt-3 text-lg font-bold">
             {isGroup ? selectedChat.name : recepient?.name}
           </p>
           <span className="relative max-w-[200px] line-clamp-2  text-xs tracking-wide text-dark-gray5 dark:text-gray6">
@@ -102,7 +159,7 @@ const RoomDetails = () => {
                           (member.avatarID &&
                             api
                               .getFile(
-                                Server.bucketIDUserAvatars,
+                                SERVER.BUCKET_ID_USER_AVATARS,
                                 member?.avatarID,
                               )
                               .toString()) ||
@@ -143,7 +200,7 @@ const RoomDetails = () => {
                             (member.avatarID &&
                               api
                                 .getFile(
-                                  Server.bucketIDUserAvatars,
+                                  SERVER.BUCKET_ID_USER_AVATARS,
                                   member?.avatarID,
                                 )
                                 .toString()) ||
@@ -170,7 +227,7 @@ const RoomDetails = () => {
             Leave
           </Button>
           <Button
-            isDisabled={isGroup ? !isAdmin : false}
+            hidden={isGroup ? !isAdmin : false}
             size={"sm"}
             variant={"outline"}
             colorScheme="red"

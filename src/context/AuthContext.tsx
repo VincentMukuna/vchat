@@ -11,12 +11,15 @@ import {
 } from "../services/userDetailsServices";
 import { logUserIn } from "../services/sessionServices";
 import api from "../services/api";
+import { createDetailsDoc } from "../services/registerUserService";
+import toast from "react-hot-toast";
 
 type AuthProviderProps = {
   children: React.JSX.Element;
 };
 
 export interface IAuthContext {
+  isLoading: boolean;
   currentUser: Models.User<Models.Preferences> | null;
   currentUserDetails: IUserDetails | null;
   setCurrentUserDetails: React.Dispatch<
@@ -26,6 +29,12 @@ export interface IAuthContext {
     React.SetStateAction<Models.User<Models.Preferences> | null>
   >;
   refreshUserDetails: () => void;
+  register(credentials: {
+    email: string;
+    password: string;
+    name: string;
+  }): Promise<void>;
+  logIn(credentials: { email: string; password: string }): Promise<void>;
 }
 
 const AuthContext = createContext<IAuthContext | null>(null);
@@ -37,16 +46,56 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUserDetails, setCurrentUserDetails] =
     useState<IUserDetails | null>(null);
 
+  const [isLoading, setIsLoading] = useState(true);
+
+  const getUserDetails = async (user: Models.User<Models.Preferences>) => {
+    try {
+      return await getCurrentUserDetails(user);
+    } catch (error) {
+      return await createDetailsDoc(user);
+    }
+  };
+
   const getUserOnLoad = async () => {
     try {
-      const { user, userDetails } = await logUserIn();
+      const user = await api.getAccount();
+      const userDetails = await getUserDetails(user);
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
+      setIsLoading(false);
       navigate("/");
-    } catch (error: any) {
+    } catch (error) {
+      setIsLoading(false);
       navigate("/login");
     }
   };
+
+  async function register(credentials: {
+    email: string;
+    password: string;
+    name: string;
+  }) {
+    try {
+      await api.createAccount(
+        credentials.email,
+        credentials.password,
+        credentials.name,
+      );
+      await api.createSession(credentials.email, credentials.password);
+      getUserOnLoad();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
+
+  async function logIn(credentials: { email: string; password: string }) {
+    try {
+      await api.createSession(credentials.email, credentials.password);
+      getUserOnLoad();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }
 
   async function refreshUserDetails() {
     if (!currentUser) throw Error("No user");
@@ -54,15 +103,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setCurrentUserDetails(userDeets);
   }
   useEffect(() => {
-    getUserOnLoad();
+    (currentUser && currentUserDetails) || getUserOnLoad();
   }, []);
 
   let contextData = {
+    isLoading,
     currentUser,
     currentUserDetails,
     setCurrentUserDetails,
     setCurrentUser,
     refreshUserDetails,
+    register,
+    logIn,
   };
 
   return (
@@ -71,9 +123,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 };
 
 export const useAuth = () => {
+  let navigate = useNavigate();
   let context = useContext(AuthContext);
   if (context === null) {
-    throw new Error("auth context not initialised");
+    console.log("No context");
+    navigate("/login");
   }
   return context as IAuthContext;
 };

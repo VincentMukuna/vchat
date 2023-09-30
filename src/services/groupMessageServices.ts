@@ -1,13 +1,41 @@
 import { Query } from "appwrite";
-import { Server } from "../utils/config";
+import { SERVER } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
+
+type IInitGroup = {
+  name: string;
+  description: string;
+  members: string[];
+  admins: string[];
+  avatar: File | null;
+};
+
+export async function createGroup({
+  name,
+  description,
+  members,
+  admins,
+  avatar,
+}: IInitGroup) {
+  let doc = (await api.createDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUPS,
+    { name, description, members, admins },
+  )) as IGroup;
+
+  if (avatar) {
+    setTimeout(() => {
+      uploadGroupAvatar(doc.$id, avatar);
+    }, 1000);
+  }
+}
 
 export async function getGroups(userDetailsDocID: string) {
   try {
     let deets = (await api.getDocument(
-      Server.databaseID,
-      Server.collectionIDUsers,
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_USERS,
       userDetailsDocID,
     )) as IUserDetails;
     return deets.groups;
@@ -19,8 +47,8 @@ export async function getGroups(userDetailsDocID: string) {
 
 export async function getGroupMessages(groupID: string) {
   let groupDoc = await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUPS,
     groupID,
   );
   let messages = groupDoc.groupMessages as IGroupMessage[];
@@ -50,16 +78,21 @@ export async function sendGroupMessage(
 ) {
   try {
     let msg = await api.createDocument(
-      Server.databaseID,
-      Server.collectionIDGroupMessages,
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_GROUP_MESSAGES,
       {
         ...message,
       },
     );
     api
-      .updateDocument(Server.databaseID, Server.collectionIDGroups, groupID, {
-        changeLog: "newtext",
-      })
+      .updateDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_GROUPS,
+        groupID,
+        {
+          changeLog: "newtext",
+        },
+      )
       .catch(() => {});
   } catch (error: any) {
     console.log(`Error sending group message `, error.message);
@@ -68,19 +101,19 @@ export async function sendGroupMessage(
 
 export async function deleteGroupMessage(groupID: string, messageID: string) {
   await api.deleteDocument(
-    Server.databaseID,
-    Server.collectionIDGroupMessages,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUP_MESSAGES,
     messageID,
   );
-  api.updateDocument(Server.databaseID, Server.collectionIDGroups, groupID, {
+  api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUPS, groupID, {
     changeLog: "deletetext",
   });
 }
 
 export async function getGroupDetails(groupID: string) {
   return (await api.getDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUPS,
     groupID,
   )) as IGroup;
 }
@@ -90,8 +123,8 @@ export async function updateGroupDetails(
   details: Partial<IGroup>,
 ) {
   return (await api.updateDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUPS,
     groupID,
     details,
   )) as IGroup;
@@ -100,42 +133,23 @@ export async function updateGroupDetails(
 export async function deleteGroupAvatar(groupID: string) {
   let details = await getGroupDetails(groupID);
   if (details.avatarID) {
-    await api.deleteFile(Server.bucketIDGroupAvatars, details.groupAvatarID);
-    await updateGroupDetails(groupID, {
-      avatarID: null,
-    });
+    await api.deleteFile(SERVER.BUCKET_ID_GROUP_AVATARS, details.avatarID);
   }
 }
 
 export async function uploadGroupAvatar(groupID: string, groupAvatar: File) {
-  if (groupAvatar.size > 5_000_000) {
-    throw new Error("Avatar cannot be larger than 5MB ");
-  }
-  let res = await api.createFile(Server.bucketIDGroupAvatars, groupAvatar);
+  let res = await api.createFile(SERVER.BUCKET_ID_GROUP_AVATARS, groupAvatar);
   return await updateGroupDetails(groupID, {
     avatarID: res.$id,
+    avatarURL: api.getFile(SERVER.BUCKET_ID_GROUP_AVATARS, res.$id),
   });
 }
 
-export async function updateUserAvatar(groupID: string, groupAvatar: File) {
-  if (groupAvatar.size > 5_000_000)
-    throw new Error("Avatar cannot be larger than 5MB ");
-  await deleteGroupAvatar(groupID);
+export async function updateGroupAvatar(groupID: string, groupAvatar: File) {
+  try {
+    await deleteGroupAvatar(groupID);
+  } catch (error) {}
   return await uploadGroupAvatar(groupID, groupAvatar);
-}
-
-type IInitGroup = {
-  name: string;
-  description: string;
-  members: string[];
-  admins?: string[];
-};
-export async function createGroup(groupDetails: IInitGroup) {
-  await api.createDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
-    groupDetails,
-  );
 }
 
 export async function addMembers(groupID: string, membersID: string[]) {
@@ -170,7 +184,7 @@ export async function clearGroupMessageAttachments(groupID: string) {
   );
 
   attachments.forEach((attachment) => {
-    api.deleteFile(Server.bucketIDGroupAttachments, attachment);
+    api.deleteFile(SERVER.BUCKET_ID_GROUP_ATTACHMENTS, attachment);
   });
 }
 
@@ -178,8 +192,8 @@ export async function deleteGroup(groupID: string) {
   await deleteGroupAvatar(groupID);
   await clearGroupMessageAttachments(groupID);
   await api.deleteDocument(
-    Server.databaseID,
-    Server.collectionIDGroups,
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUPS,
     groupID,
   );
 }

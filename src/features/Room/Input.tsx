@@ -4,7 +4,7 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { IChatMessage, IGroupMessage } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import { sendGroupMessage } from "../../services/groupMessageServices";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 import { ID } from "appwrite";
 import { useSWRConfig } from "swr";
 import toast from "react-hot-toast";
@@ -34,8 +34,8 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
     if (isGroup) {
       let message: IGroupMessage = {
-        $collectionId: Server.collectionIDGroupMessages,
-        $databaseId: Server.databaseID,
+        $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
+        $databaseId: SERVER.DATABASE_ID,
         $createdAt: new Date().toISOString(),
         $id: new Date().toISOString(),
         $permissions: [""],
@@ -65,8 +65,8 @@ const Input = ({}: InputProps) => {
     if (selectedChat === undefined || recepient === undefined) return;
 
     let message = {
-      $collectionId: Server.collectionIDChatMessages,
-      $databaseId: Server.databaseID,
+      $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
+      $databaseId: SERVER.DATABASE_ID,
       $createdAt: new Date().toISOString(),
       $id: new Date().toISOString(),
       $permissions: [""],
@@ -99,9 +99,9 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="m-4 overflow-hidden rounded-full dark:text-dark-blue12 bg-gray8 dark:bg-dark-blue3 end-0 shrink-0">
+    <footer className="flex mx-2  relative dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1 h-[3rem] rounded-full overflow-hidden">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
-        <div className="flex items-center w-full gap-3 p-3">
+        <div className="flex items-center w-full h-full gap-3 ">
           <div className="flex gap-6 px-2">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -109,7 +109,7 @@ const Input = ({}: InputProps) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6 "
+              className="w-5 h-5 "
             >
               <path
                 strokeLinecap="round"
@@ -123,7 +123,7 @@ const Input = ({}: InputProps) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6 -rotate-45"
+              className="w-5 h-5 -rotate-45"
             >
               <path
                 strokeLinecap="round"
@@ -135,8 +135,8 @@ const Input = ({}: InputProps) => {
 
           <input
             placeholder="Type a message"
-            className="w-[80%] py-2  bg-transparent focus:outline-none caret-secondary-main
-             placeholder:text-slate-800 placeholder:dark:text-indigo-50  rounded  resize-none max-h-[100px]
+            className="focus:outline-none caret-secondary-main bg-transparent grow mr-20
+             placeholder:text-slate-800 placeholder:dark:text-indigo-50 resize-none max-h-[100px]
              dark:text-gray1
              invalid:border invalid:border-red-300"
             value={messageBody}
@@ -149,7 +149,7 @@ const Input = ({}: InputProps) => {
             <button
               type="submit"
               disabled={sending}
-              className="flex items-center gap-3 p-2 mr-3 text-base font-medium tracking-wider rounded bg-dark-indigo4 dark:text-white"
+              className="absolute right-0 flex items-center h-full gap-3 px-4 text-base font-medium tracking-wider rounded-e-full bg-dark-blue4 dark:text-white"
             >
               Send
             </button>

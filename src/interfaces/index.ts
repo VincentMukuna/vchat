@@ -19,6 +19,7 @@ interface IGroup extends Models.Document {
   name: string;
   description: string;
   avatarID: string | null;
+  avatarURL: any;
   admins: string[];
   members: (IUserDetails | string)[];
   groupMessages: IChatMessage[];

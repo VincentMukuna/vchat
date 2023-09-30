@@ -43,5 +43,5 @@ export const useChatsContext = () => {
   if (chatContext === null) {
     throw new Error("chats context not initia;ised");
   }
-  return chatContext;
+  return chatContext as IChatsContextData;
 };

@@ -8,7 +8,7 @@ import {
   Models,
   Functions,
 } from "appwrite";
-import { Server } from "../utils/config";
+import { SERVER } from "../utils/config";
 import { IUserPrefs } from "../interfaces";
 let api = {
   sdk: null as null | {
@@ -25,7 +25,7 @@ let api = {
     }
 
     let appwrite = new Appwrite();
-    appwrite.setEndpoint(Server.endpoint).setProject(Server.projectID);
+    appwrite.setEndpoint(SERVER.ENDPOINT).setProject(SERVER.PROJECT_ID);
     const account = new Account(appwrite);
     const database = new Databases(appwrite);
     const storage = new Storage(appwrite);
@@ -42,14 +42,14 @@ let api = {
   },
 
   handleOauth(provider: string = "google") {
-    return api
-      .provider()
-      .account.createOAuth2Session(
-        provider,
-        "http://vchat-messenger.vercel.app/login",
-        "http://vchat-messenger.vercel.app/register",
-        ["profile"],
-      );
+    return api.provider().account.createOAuth2Session(
+      provider,
+      // "http://vchat-messenger.vercel.app/login",
+      // "http://vchat-messenger.vercel.app/register",
+      "http://192.168.8.104:5173/login",
+      "http://192.168.8.104:5173/register",
+      ["profile"],
+    );
   },
 
   //Session control

@@ -16,7 +16,7 @@ import useSWR, { mutate } from "swr";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import { toast } from "react-hot-toast";
 import api from "../../services/api";
-import { Server } from "../../utils/config";
+import { SERVER } from "../../utils/config";
 import { Avatar, Card } from "@chakra-ui/react";
 
 interface IChatProps {
@@ -102,9 +102,12 @@ const Chat = ({ conversation }: IChatProps) => {
         src={
           isGroup
             ? conversation.avatarID &&
-              api.getFile(Server.bucketIDGroupAvatars, conversation.avatarID)
+              api.getFile(SERVER.BUCKET_ID_GROUP_AVATARS, conversation.avatarID)
             : contactDetails?.avatarID &&
-              api.getFile(Server.bucketIDUserAvatars, contactDetails?.avatarID)
+              api.getFile(
+                SERVER.BUCKET_ID_USER_AVATARS,
+                contactDetails?.avatarID,
+              )
         }
       />
       <div className="flex flex-col ml-2 overflow-hidden shrink text-ellipsis">

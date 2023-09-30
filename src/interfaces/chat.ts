@@ -4,7 +4,7 @@ import IUserDetails from "./userDetails";
 
 export default interface IChat extends Models.Document {
   chatMessages: IChatMessage[];
-  participants: [IUserDetails, IUserDetails];
+  participants: [IUserDetails, IUserDetails] | [IUserDetails];
   changeLog?:
     | "newtext"
     | "deletetext"

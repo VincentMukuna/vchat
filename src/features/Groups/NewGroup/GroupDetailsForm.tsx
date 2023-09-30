@@ -2,20 +2,36 @@ import { blueDark, indigoDark, slate } from "@radix-ui/colors";
 import React from "react";
 import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
-import { Button } from "@chakra-ui/react";
-
+import { Avatar, Button, IconButton } from "@chakra-ui/react";
+import { useFilePicker } from "use-file-picker";
+import toast from "react-hot-toast";
+import { PencilIcon } from "@heroicons/react/20/solid";
 interface GroupDetailsProps {
   description: string;
   name: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  handleAvatar: (avatar: File | null) => void;
 }
 
 const GroupDetailsForm = ({
   name,
   onChange,
   description,
+  handleAvatar,
 }: GroupDetailsProps) => {
   const { next } = useStepper();
+  const { openFilePicker, filesContent, plainFiles } = useFilePicker({
+    accept: [".jpg", ".png"],
+    multiple: true,
+    readAs: "DataURL",
+    onFilesSuccessfullySelected: (data) => {
+      handleAvatar(data.plainFiles[0] as File);
+    },
+
+    onFilesRejected: () => {
+      toast.error("Invalid file");
+    },
+  });
 
   return (
     <motion.form
@@ -26,8 +42,20 @@ const GroupDetailsForm = ({
         e.preventDefault();
         next();
       }}
-      className="relative flex flex-col h-full gap-3 space-y-2 "
+      className="relative flex flex-col h-full gap-3 mt-8 space-y-2 "
     >
+      <div className="relative self-center ">
+        <IconButton
+          title="Edit avatar"
+          onClick={openFilePicker}
+          aria-label="edit avatar"
+          icon={<PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />}
+          pos={"absolute"}
+          bg={"transparent"}
+          className="z-20 -right-10"
+        />
+        <Avatar size={"2xl"} name={name} src={filesContent[0]?.content} />
+      </div>
       <div className="relative flex flex-col-reverse gap-2 transition-[height]">
         <input
           max={30}

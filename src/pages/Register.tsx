@@ -1,74 +1,155 @@
-import { useRef, useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { Link, useNavigate } from "react-router-dom";
-import { ClipLoader } from "react-spinners";
-import { blueDark } from "@radix-ui/colors";
+import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
+import { blue, blueDark, gray } from "@radix-ui/colors";
 import toast from "react-hot-toast";
-import { Button, VStack } from "@chakra-ui/react";
+import {
+  Button,
+  FocusLock,
+  Input,
+  VStack,
+  useColorMode,
+} from "@chakra-ui/react";
 import api from "../services/api";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { useAuth } from "../context/AuthContext";
+import PasswordInput from "../components/PasswordInput";
+import OauthSignUp from "../components/OauthSignUp";
 
 function Register() {
+  const { register } = useAuth();
   const [registering, setRegistering] = useState(false);
-  const timerRef = useRef(0);
-  useEffect(() => {
-    return () => clearTimeout(timerRef.current);
-  }, []);
+  const { colorMode } = useColorMode();
 
-  async function handleSignUp(provider: string) {
+  type Credentials = {
+    email: string;
+    password: string;
+    name: string;
+  };
+
+  const [credentials, setCredentials] = useState<Credentials>({
+    email: "",
+    password: "",
+    name: "",
+  });
+
+  function handleOauthSignUp(provider: string) {
     setRegistering(true);
     api.handleOauth(provider);
     setRegistering(false);
   }
 
+  function handleEmailSignUp(e: FormEvent) {
+    setRegistering(true);
+    e.preventDefault();
+    register(credentials).finally(() => {
+      setRegistering(false);
+    });
+  }
+  function handleChange(name: string, value: string) {
+    setCredentials((prev) => ({ ...prev, [name]: value }));
+  }
+
   return (
-    <>
+    <FocusLock>
       <motion.div
-        initial={{ opacity: 0, scale: 0.96 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3 }}
-        className="flex items-center justify-center w-full h-screen bg-gray2 text-dark-blue1 dark:text-dark-blue12 dark:bg-dark-blue1"
+        key={"register"}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ scale: 1.5 }}
+        className="flex items-center h-full transition-all "
       >
-        <div className=" py-4 px-12 rounded-lg flex flex-col items-center w-[340px] gap-8">
-          <VStack>
-            <h1 className="text-xl font-bold tracking-wider text-gray12 dark:text-indigo2">
-              VChat
+        <div className="grid gap-6 p-6 overflow-hidden border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
+          <div className="flex flex-col space-y-2 ">
+            <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
+              Create an account
             </h1>
-            <h2 className="mt-1 text-xs tracking-wide text-gray11 dark:text-indigo2/60">
-              Register
+            <h2 className="text-sm tracking-wide below text-gray11 dark:text-indigo2/60">
+              Enter your email below
             </h2>
-          </VStack>
-          <VStack>
-            <Button
-              isLoading={registering}
-              loadingText={"Registering"}
-              onClick={() => handleSignUp("google")}
-            >
-              Sign Up With Google
-            </Button>
+          </div>
 
-            <Button
-              isLoading={registering}
-              loadingText={"Registering"}
-              onClick={() => handleSignUp("github")}
-            >
-              Sign Up with GitHub
-            </Button>
+          <form onSubmit={handleEmailSignUp} className="grid gap-6">
+            <div className="grid gap-3">
+              <div className="grid gap-2">
+                <label
+                  htmlFor="email"
+                  className="text-sm leading-none text-gray10"
+                >
+                  Email
+                </label>
+                <Input
+                  required
+                  value={credentials.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="xyz@example.com"
+                />
+              </div>
+              <div className="grid gap-2">
+                <label
+                  htmlFor="name"
+                  className="text-sm leading-none text-gray10"
+                >
+                  Username
+                </label>
+                <Input
+                  required
+                  value={credentials.name}
+                  onChange={(e) => handleChange("name", e.target.value)}
+                  id="name"
+                  placeholder="John Doe"
+                />
+              </div>
+              <div className="grid gap-2">
+                <label
+                  htmlFor="password"
+                  className="text-sm leading-none text-gray10"
+                >
+                  Password
+                </label>
+                <PasswordInput
+                  value={credentials.password}
+                  onChange={(e) => handleChange("password", e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="">
+              <Button
+                isLoading={registering}
+                loadingText="Registering"
+                bg={blueDark.blue4}
+                color={blue.blue1}
+                _hover={
+                  colorMode === "light"
+                    ? { bg: blueDark.blue7, color: gray.gray1 }
+                    : {}
+                }
+                className="w-full "
+                type="submit"
+              >
+                Create an account
+              </Button>
+            </div>
+          </form>
 
-            <div className="flex gap-1 mt-3 text-xs text-dark-blue4 dark:text-indigo2/50">
+          <OauthSignUp loading={registering} onClick={handleOauthSignUp} />
+
+          <div className="flex justify-center gap-1 text-xs tracking-wide text-dark-gray4 dark:text-indigo2/50">
+            <div className="flex justify-center gap-1 ">
               Have an account?
               <Link
                 to="/login"
-                className="font-semibold text-dark-tomato4 dark:text-dark-tomato8/100"
+                className="font-bold underline text-dark-blue4 dark:text-dark-blue10"
               >
                 Log in
               </Link>
               instead
             </div>
-          </VStack>
+          </div>
         </div>
       </motion.div>
-    </>
+    </FocusLock>
   );
 }
 
