@@ -4,7 +4,7 @@ import { blue, blueDark, gray } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
 import api from "../services/api";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
 import Loading from "./Loading";
 import PasswordInput from "../components/PasswordInput";
@@ -46,14 +46,14 @@ function Login() {
     return <Loading />;
   }
   return (
-    <FocusLock>
-      <motion.div
-        key={"login"}
-        initial={{ opacity: 0, x: "-20%" }}
-        animate={{ opacity: 1, x: "0%" }}
-        exit={{ scale: 1.5 }}
-        className=" flex  items-center  [&>div]:w-full transition-all  "
-      >
+    <motion.div
+      key="login"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className=" flex  items-center  [&>div]:w-full transition-all  "
+    >
+      <FocusLock>
         <div className="grid gap-4 p-6 overflow-hidden border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
           <div className="flex flex-col space-y-2 ">
             <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
@@ -133,9 +133,9 @@ function Login() {
               instead
             </div>
           </div>
-        </div>
-      </motion.div>
-    </FocusLock>
+        </div>{" "}
+      </FocusLock>
+    </motion.div>
   );
 }
 

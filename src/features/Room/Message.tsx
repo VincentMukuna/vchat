@@ -73,6 +73,11 @@ function Message({ message, onDelete }: MessageProps) {
 
   return (
     <motion.article
+      layout
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      transition={{ type: "spring", duration: 0.4 }}
+      exit={{ opacity: 0, height: 0 }}
       whileInView={{ opacity: 1, x: 0 }}
       onMouseEnter={() => setShowHoverCard(true)}
       onMouseLeave={() => setShowHoverCard(false)}

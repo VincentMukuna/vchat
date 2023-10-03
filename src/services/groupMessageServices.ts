@@ -90,6 +90,7 @@ export async function sendGroupMessage(
         groupID,
         {
           changeLog: "newtext",
+          changerID: message.senderID,
         },
       )
       .catch(() => {});
@@ -98,7 +99,11 @@ export async function sendGroupMessage(
   }
 }
 
-export async function deleteGroupMessage(groupID: string, messageID: string) {
+export async function deleteGroupMessage(
+  deleterID: string,
+  groupID: string,
+  messageID: string,
+) {
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUP_MESSAGES,
@@ -106,6 +111,7 @@ export async function deleteGroupMessage(groupID: string, messageID: string) {
   );
   api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUPS, groupID, {
     changeLog: "deletetext",
+    changerID: `${deleterID}`,
   });
 }
 

@@ -31,6 +31,7 @@ export async function sendChatMessage(
     //change last message id in chats db
     api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
       changeLog: "newtext",
+      changerID: sentMessage.senderID,
     });
   } catch (error: any) {
     console.log("Error sending chat message ", error.message);
@@ -79,7 +80,11 @@ export async function getChatDoc(chatID: string) {
   }
 }
 
-export async function deleteChatMessage(chatID: string, message: IChatMessage) {
+export async function deleteChatMessage(
+  deleterID: string,
+  chatID: string,
+  message: IChatMessage,
+) {
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_CHAT_MESSAGES,
@@ -87,6 +92,7 @@ export async function deleteChatMessage(chatID: string, message: IChatMessage) {
   );
   api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
     changeLog: "deletetext",
+    changerID: `${deleterID}`,
   });
 }
 

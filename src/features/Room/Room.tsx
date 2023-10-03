@@ -36,6 +36,8 @@ function Room() {
   const { colorMode } = useColorMode();
   const { selectedChat, recepient } = useChatsContext();
 
+  if (!currentUserDetails) return null;
+
   const isGroup = !!(selectedChat?.$collectionId === "groups");
   const isPersonal =
     selectedChat &&
@@ -71,7 +73,11 @@ function Room() {
         rollbackOnError: true,
       });
       try {
-        await deleteGroupMessage(selectedChat.$id, message.$id);
+        await deleteGroupMessage(
+          currentUserDetails.$id,
+          selectedChat.$id,
+          message.$id,
+        );
       } catch (error: any) {
         console.log("Error deleting message! ", error.message);
       }
@@ -82,7 +88,11 @@ function Room() {
         revalidate: false,
         rollbackOnError: true,
       });
-      await deleteChatMessage(selectedChat.$id, message as IChatMessage);
+      await deleteChatMessage(
+        currentUserDetails.$id,
+        selectedChat.$id,
+        message as IChatMessage,
+      );
     }
   };
   useEffect(() => {
@@ -92,8 +102,9 @@ function Room() {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            response.payload.changeLog === "newtext" ||
-            response.payload.changeLog === "deletetext"
+            response.payload.changerID !== currentUserDetails.$id &&
+            (response.payload.changeLog === "newtext" ||
+              response.payload.changeLog === "deletetext")
           ) {
             mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);
