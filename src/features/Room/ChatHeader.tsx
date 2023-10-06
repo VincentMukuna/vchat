@@ -27,7 +27,7 @@ function ChatHeader() {
           setSelectedChat(undefined);
           setRecepient(undefined);
         }}
-        className=" flex text-center items-center justify-center w-10 h-10 mr-2  rounded-full cursor-pointer hover:scale-[0.95] text-xl"
+        className=" flex text-center items-center justify-center w-10 h-10   rounded-full cursor-pointer hover:scale-[0.95] text-xl"
       >
         <ArrowLeftIcon className="w-6 h-6 " />
       </button>
