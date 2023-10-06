@@ -6,14 +6,27 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { IChatMessage, IGroupMessage } from "../../interfaces";
 import { DeleteIcon, PencilIcon } from "../../components/Icons";
 
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { getUserDetails } from "../../services/userDetailsServices";
 import { getFormattedDateTime } from "../../services/dateServices";
-import { AspectRatio, Avatar, Image } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  Avatar,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  IconButton,
+  Image,
+  Input,
+  InputGroup,
+  InputRightElement,
+  useEditableControls,
+} from "@chakra-ui/react";
 
 import { motion } from "framer-motion";
 import { CheckIcon } from "@heroicons/react/20/solid";
 import Blueticks from "../../components/Blueticks";
+import toast from "react-hot-toast";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -23,10 +36,12 @@ interface MessageProps {
 const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
-  const { recepient } = useChatsContext();
+  const { recepient, selectedChat } = useChatsContext();
   const [attachments, setAttachments] = useState<URL[] | []>([]);
   const [showHoverCard, setShowHoverCard] = useState(false);
   const [read, setRead] = useState(message.read);
+  const [isEditing, setIsEditing] = useState(false);
+  const [newMessage, setNewMessage] = useState(message.body);
 
   const isOptimistic = message?.optimistic;
 
@@ -107,6 +122,25 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
   const handleDelete = () => {
     onDelete(message);
   };
+
+  const handleEditMessage = async () => {
+    if (newMessage !== message.body) {
+      console.log("Edited");
+      setIsEditing(false);
+      try {
+        await api.updateDocument(
+          message.$databaseId,
+          message.$collectionId,
+          message.$id,
+          { body: newMessage },
+        );
+        toast.success("Message succesfully edited");
+        mutate(selectedChat?.$id);
+      } catch (error) {
+        toast.error("Something went wrong!");
+      }
+    }
+  };
   useEffect(() => {
     if (!mine && !message.read) {
       setReadMessage();
@@ -148,6 +182,7 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
           </AspectRatio>
         )}
         <div
+          onClick={() => setIsEditing(true)}
           className={`flex relative gap-3
               ps-4  py-2 pe-4  ${
                 mine
@@ -155,9 +190,46 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
                   : "bg-slate-700 dark:bg-dark-tomato6  dark:text-dark-gray12 rounded-bl-none text-gray-100 "
               } rounded-3xl w-fit max-w-[400px] break-words`}
         >
-          <p className="text-[15px] font-normal leading-relaxed tracking-wide">
-            {message.body}
-          </p>
+          {mine ? (
+            isEditing ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleEditMessage();
+                }}
+              >
+                <InputGroup>
+                  <InputRightElement>
+                    <IconButton
+                      aria-label="save changes"
+                      onClick={handleEditMessage}
+                      bg={"inherit"}
+                      icon={<CheckIcon className="w-4 h-4 text-dark-gray1" />}
+                    />
+                  </InputRightElement>
+
+                  <Input
+                    autoFocus
+                    value={newMessage}
+                    onBlur={() => {
+                      setIsEditing(false);
+                    }}
+                    onChange={(e) => {
+                      setNewMessage(e.target.value);
+                    }}
+                  />
+                </InputGroup>
+              </form>
+            ) : (
+              <p className="text-[15px] font-normal leading-relaxed tracking-wide">
+                {message.body}
+              </p>
+            )
+          ) : (
+            <p className="text-[15px] font-normal leading-relaxed tracking-wide">
+              {message.body}
+            </p>
+          )}
           {mine && <Blueticks read={read} />}
         </div>
         <div
@@ -181,7 +253,11 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
           <button onClick={handleDelete}>
             <DeleteIcon className="w-4 h-4" />
           </button>
-          <button>
+          <button
+            onClick={() => {
+              setIsEditing((prev) => !prev);
+            }}
+          >
             <PencilIcon className="w-4 h-4" />
           </button>
         </div>

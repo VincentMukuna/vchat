@@ -42,7 +42,7 @@ function Room() {
   const isPersonal =
     selectedChat &&
     !isGroup &&
-    selectedChat.participants.every(
+    selectedChat?.participants.every(
       (participant: IUserDetails) =>
         participant.$id === currentUserDetails?.$id,
     );
