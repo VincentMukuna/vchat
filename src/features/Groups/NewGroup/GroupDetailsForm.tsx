@@ -2,7 +2,7 @@ import { blueDark, indigoDark, slate } from "@radix-ui/colors";
 import React from "react";
 import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
-import { Avatar, Button, IconButton } from "@chakra-ui/react";
+import { Avatar, Button, IconButton, Input } from "@chakra-ui/react";
 import { useFilePicker } from "use-file-picker";
 import toast from "react-hot-toast";
 import { PencilIcon } from "@heroicons/react/20/solid";
@@ -56,8 +56,11 @@ const GroupDetailsForm = ({
         />
         <Avatar size={"2xl"} name={name} src={filesContent[0]?.content} />
       </div>
-      <div className="relative flex flex-col-reverse gap-2 transition-[height]">
-        <input
+      <div className="grid gap-2">
+        <label htmlFor="name" className="text-sm leading-none text-gray10">
+          Name :
+        </label>
+        <Input
           max={30}
           type="text"
           id="name"
@@ -66,17 +69,10 @@ const GroupDetailsForm = ({
           value={name}
           onChange={onChange}
           placeholder="Group Name"
-          className={`p-2 bg-transparent shadow-dark-indigo12 focus:shadow-[0_0_0_2px] dark:shadow-dark-indigo4 rounded shadow-[0_0_0_2px] dark:focus:shadow-[0_0_0_2px] dark:focus:shadow-dark-indigo6 placeholder:text-gray9 placeholder:text-sm peer dark:border-dark-indigo4 focus:outline-none  `}
         />
-        <label
-          htmlFor="name"
-          className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
-        >
-          Name :
-        </label>
       </div>
-      <div className="relative flex flex-col-reverse gap-2">
-        <input
+      <div className="grid gap-2">
+        <Input
           max={50}
           type="text"
           required
@@ -85,14 +81,7 @@ const GroupDetailsForm = ({
           value={description}
           onChange={onChange}
           placeholder="Few words to describe this group's purpose"
-          className={`p-2 bg-transparent shadow-dark-indigo12 focus:shadow-[0_0_0_2px] dark:shadow-dark-indigo4 rounded shadow-[0_0_0_2px] dark:focus:shadow-[0_0_0_2px] dark:focus:shadow-dark-indigo6 placeholder:text-gray9 placeholder:text-sm peer border-dark-indigo4 focus:outline-none focus:border-dark-indigo7 `}
         />
-        <label
-          htmlFor="description"
-          className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
-        >
-          Description :
-        </label>
       </div>
 
       <div className="absolute flex flex-row-reverse w-full mt-auto bottom-2">

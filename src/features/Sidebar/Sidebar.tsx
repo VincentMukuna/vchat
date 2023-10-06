@@ -20,7 +20,7 @@ import Settings from "../Settings/Settings";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { Box } from "@chakra-ui/react";
-import { blueDark, gray } from "@radix-ui/colors";
+import { blueDark, gray, slateDark } from "@radix-ui/colors";
 const Sidebar = () => {
   const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -57,9 +57,10 @@ const Sidebar = () => {
         >
           <ModalOverlay />
           <ModalContent
-            bg={colorMode === "dark" ? blueDark.blue1 : gray.gray2}
+            bg={colorMode === "dark" ? slateDark.slate1 : gray.gray2}
             height={"90vh"}
             overflowY={"auto"}
+            className="border"
           >
             <ModalHeader className="flex flex-col w-full gap-1 text-xl font-bold dark:text-white text-dark-gray3">
               New Group

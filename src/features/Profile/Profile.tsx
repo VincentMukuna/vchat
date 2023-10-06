@@ -30,6 +30,7 @@ import {
   grayDark,
   redDark,
   skyDark,
+  slateDark,
 } from "@radix-ui/colors";
 import {
   CheckIcon,
@@ -115,24 +116,17 @@ const Profile = ({ user }: ProfileProps) => {
           {isCurrentUser && (
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
-              <AnimatePresence>
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.01 }}
-                  exit={{ opacity: 0, height: 0 }}
+              <motion.div>
+                <ModalContent
+                  bg={colorMode === "light" ? gray.gray2 : slateDark.slate1}
+                  overflow={"hidden"}
+                  className="border"
                 >
-                  <ModalContent
-                    bg={colorMode === "light" ? gray.gray2 : blueDark.blue1}
-                    overflow={"hidden"}
-                    className="border"
-                  >
-                    <ModalHeader> Edit your details</ModalHeader>
-                    <ModalCloseButton />
-                    <EditUserDetails onClose={onClose} />
-                  </ModalContent>
-                </motion.div>
-              </AnimatePresence>
+                  <ModalHeader> Edit your details</ModalHeader>
+                  <ModalCloseButton />
+                  <EditUserDetails onClose={onClose} />
+                </ModalContent>
+              </motion.div>
             </Modal>
           )}
           <Button
@@ -187,7 +181,7 @@ const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-8 p-4 dark:text-gray-100 dark:bg-dark-blue1 bg-gray2 text-dark-blue1"
+      className="flex flex-col gap-8 p-4 dark:text-gray-100 text-dark-blue1"
     >
       <div className="flex flex-col gap-4 ">
         <div className="flex flex-col gap-2 py-2 ">
