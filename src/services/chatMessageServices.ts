@@ -23,10 +23,21 @@ export async function sendChatMessage(
   };
 
   try {
+    let attachmentIDs: string[] = [];
+    if (message.attachments) {
+      for (const attachment of message.attachments) {
+        let { $id } = await api.createFile(
+          SERVER.BUCKET_ID_CHAT_ATTACHMENTS,
+          attachment,
+        );
+        attachmentIDs.push($id);
+      }
+    }
+
     await api.createDocument(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_CHAT_MESSAGES,
-      message,
+      { ...message, attachments: attachmentIDs },
     );
     //change last message id in chats db
     api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
@@ -84,7 +95,15 @@ export async function deleteChatMessage(
   deleterID: string,
   chatID: string,
   message: IChatMessage,
+  attachments: string[] = [],
 ) {
+  if (attachments.every((attachment) => typeof attachment === "string")) {
+    for (const attachmentID of attachments) {
+      api
+        .deleteFile(SERVER.BUCKET_ID_CHAT_ATTACHMENTS, attachmentID)
+        .catch(() => {});
+    }
+  }
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_CHAT_MESSAGES,

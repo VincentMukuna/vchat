@@ -1,12 +1,6 @@
-import {
-  ArrowLeftIcon,
-  ArrowLeftOnRectangleIcon,
-  TrashIcon,
-} from "@heroicons/react/24/solid";
+import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useChatsContext } from "../../context/ChatsContext";
 import { IGroup, IUserDetails } from "../../interfaces";
-import User from "../UsersList/User";
-import { useEffect } from "react";
 import {
   deleteGroup,
   getGroupDetails,
@@ -95,12 +89,13 @@ const RoomDetails = () => {
   return (
     <div className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden bg-gray2 dark:bg-dark-slate2 dark:text-white">
       <div className="absolute top-0 left-0 flex items-center w-full gap-3 p-2 ">
-        <button
+        <IconButton
+          aria-label="close side panel"
+          icon={<ArrowLeftIcon className="w-5 h-5" />}
           title="Close details panel"
-          className="p-1 rounded-full hover:scale-95 hover:shadow-[0_0_0_1px] focus:text-black focus:shadow-[0_0_0_1px] active:scale-110 transition-all"
-        >
-          <ArrowLeftIcon className="w-5 h-5" />
-        </button>
+          bg={"inherit"}
+          rounded={"full"}
+        ></IconButton>
         Chat Details
       </div>
       <div className="flex flex-col items-center w-full gap-8 text-sm">
@@ -129,7 +124,10 @@ const RoomDetails = () => {
               }
             />
           </div>
-          <p className="mt-3 text-lg font-bold">
+          <p
+            // contentEditable={isGroup && isAdmin}
+            className="mt-3 text-lg font-bold"
+          >
             {isGroup ? selectedChat.name : recepient?.name}
           </p>
           <span className="relative max-w-[200px] line-clamp-2  text-xs tracking-wide text-dark-gray5 dark:text-gray6">

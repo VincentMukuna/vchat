@@ -37,9 +37,7 @@ function App() {
               overflow: "hidden",
             }}
           />
-          <SWRConfig
-            value={{ revalidateIfStale: true, revalidateOnMount: true }}
-          >
+          <SWRConfig>
             <AuthProvider>
               <AppProvider>
                 <ChatsProvider>

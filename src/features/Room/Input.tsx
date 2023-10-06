@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { sendChatMessage } from "../../services/chatMessageServices";
 import { useChatsContext } from "../../context/ChatsContext";
-import { IChatMessage, IGroupMessage } from "../../interfaces";
+import { IChatMessage, IGroupMessage, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import { sendGroupMessage } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
 import { useSWRConfig } from "swr";
+import { PlusIcon } from "@heroicons/react/20/solid";
+import { Badge, IconButton, Image } from "@chakra-ui/react";
+import { useFilePicker } from "use-file-picker";
+import {
+  FileAmountLimitValidator,
+  FileSizeValidator,
+  Validator,
+} from "use-file-picker/validators";
+import toast from "react-hot-toast";
+import { FileTypeValidator } from "../../utils/fileValidators";
 
 type InputProps = {};
 
@@ -14,9 +24,35 @@ const Input = ({}: InputProps) => {
   if (!currentUserDetails) return;
   const [sending, setSending] = useState(false);
   const { selectedChat, recepient } = useChatsContext();
+  if (!selectedChat) return null;
   const [messageBody, setMessageBody] = useState("");
+  const [attachments, setAttachments] = useState<File[]>([]);
 
   let { mutate, cache } = useSWRConfig();
+
+  const { openFilePicker, filesContent, clear } = useFilePicker({
+    accept: [".jpg", ".png"],
+    multiple: false,
+    readAs: "DataURL",
+    validators: [
+      new FileTypeValidator(["image/png", "image/jpeg"]),
+      new FileAmountLimitValidator({ max: 1 }),
+      new FileSizeValidator({ maxFileSize: 5 * 1024 * 1024 }),
+    ],
+    onFilesSuccessfullySelected(data) {
+      setAttachments(data.plainFiles as File[]);
+    },
+
+    onFilesRejected: ({ errors }) => {
+      toast.error(
+        "Invalid file " + errors.map((error: any) => error.reason + " \n"),
+      );
+    },
+
+    onClear: () => {
+      setAttachments([]);
+    },
+  });
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
 
@@ -30,66 +66,58 @@ const Input = ({}: InputProps) => {
     e.preventDefault();
     setSending(true);
     setMessageBody("");
-    if (isGroup) {
-      let message: IGroupMessage = {
-        $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
-        $databaseId: SERVER.DATABASE_ID,
-        $createdAt: new Date().toISOString(),
-        $id: new Date().toISOString(),
-        $permissions: [""],
-        $updatedAt: new Date().toISOString(),
-        attachments: [],
-        senderID: currentUserDetails.$id,
-        body: messageBody,
-        group: selectedChat.$id,
-      };
-      await mutate(
-        selectedChat.$id,
-        [message, ...cache.get(selectedChat.$id)?.data],
-        { revalidate: false },
-      );
-      let promise = sendGroupMessage(selectedChat.$id, {
-        body: message.body,
-        group: message.group as string,
-        senderID: message.senderID,
-        attachments: null,
-      });
-      promise.finally(() => {
-        setSending(false);
-      });
 
-      return;
-    }
-    if (selectedChat === undefined || recepient === undefined) return;
+    let message = isGroup
+      ? {
+          $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
+          $databaseId: SERVER.DATABASE_ID,
+          $createdAt: new Date().toISOString(),
+          $id: new Date().toISOString(),
+          $permissions: [""],
+          $updatedAt: new Date().toISOString(),
+          attachments: filesContent,
+          senderID: currentUserDetails.$id,
+          body: messageBody,
+          group: selectedChat.$id,
+        }
+      : {
+          $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
+          $databaseId: SERVER.DATABASE_ID,
+          $createdAt: new Date().toISOString(),
+          $id: new Date().toISOString(),
+          $permissions: [""],
+          $updatedAt: new Date().toISOString(),
+          senderID: currentUserDetails.$id,
+          recepientID: recepient?.$id,
+          body: messageBody,
+          read: false,
+          chat: selectedChat.$id,
+          attachments: filesContent,
+        };
 
-    let message = {
-      $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
-      $databaseId: SERVER.DATABASE_ID,
-      $createdAt: new Date().toISOString(),
-      $id: new Date().toISOString(),
-      $permissions: [""],
-      $updatedAt: new Date().toISOString(),
-      senderID: currentUserDetails.$id,
-      recepientID: recepient.$id,
-      body: messageBody,
-      read: false,
-      chat: selectedChat.$id,
-    } as IChatMessage;
     await mutate(
       selectedChat.$id,
       [message, ...cache.get(selectedChat.$id)?.data],
-      { revalidate: false, rollbackOnError: true },
+      { revalidate: false },
     );
-
-    let promise = sendChatMessage(selectedChat.$id, {
-      messageBody: messageBody,
-      recepientID: recepient.$id,
-      senderID: currentUserDetails.$id,
-    });
+    let promise = isGroup
+      ? sendGroupMessage(selectedChat.$id, {
+          body: message.body,
+          group: message.group as string,
+          senderID: message.senderID,
+          attachments: attachments,
+        })
+      : sendChatMessage(selectedChat.$id, {
+          messageBody: messageBody,
+          recepientID: (recepient as IUserDetails).$id,
+          senderID: currentUserDetails.$id,
+          attachments: attachments,
+        });
 
     promise.finally(() => {
       setSending(false);
       setMessageBody("");
+      setAttachments([]);
     });
   };
 
@@ -97,38 +125,31 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="flex mx-2  relative dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1 h-[3rem] rounded-full overflow-hidden">
+    <footer className="flex flex-col justify-center mx-2  relative dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1 h-[3rem] rounded-full overflow-hidden">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
         <div className="flex items-center w-full h-full gap-3 ">
-          <div className="flex gap-6 px-2">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 "
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.182 15.182a4.5 4.5 0 01-6.364 0M21 12a9 9 0 11-18 0 9 9 0 0118 0zM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75zm-.375 0h.008v.015h-.008V9.75zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75zm-.375 0h.008v.015h-.008V9.75z"
-              />
-            </svg>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 -rotate-45"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"
-              />
-            </svg>
+          <div className="relative flex h-full">
+            <IconButton
+              bg={"inherit"}
+              rounded={"full"}
+              aria-label="add attachment"
+              title="add attachment"
+              icon={<PlusIcon className="w-6 h-6" />}
+              onClick={() => {
+                clear();
+                openFilePicker();
+              }}
+            ></IconButton>
+            {attachments.length > 0 && (
+              <Badge
+                colorScheme="green"
+                className="absolute right-0 "
+                rounded={"full"}
+                size="2xl"
+              >
+                {attachments.length}
+              </Badge>
+            )}
           </div>
 
           <input

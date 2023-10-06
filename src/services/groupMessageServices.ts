@@ -72,15 +72,26 @@ export async function sendGroupMessage(
     senderID: string;
     body: string;
     group: string;
-    attachments: string[] | null;
+    attachments: File[] | null;
   },
 ) {
   try {
+    let attachmentIDs: string[] = [];
+    if (message.attachments) {
+      for (const attachment of message.attachments.slice(0, 4)) {
+        let { $id } = await api.createFile(
+          SERVER.BUCKET_ID_GROUP_ATTACHMENTS,
+          attachment,
+        );
+        attachmentIDs.push($id);
+      }
+    }
     let msg = await api.createDocument(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_GROUP_MESSAGES,
       {
         ...message,
+        attachments: attachmentIDs,
       },
     );
     api
@@ -103,7 +114,15 @@ export async function deleteGroupMessage(
   deleterID: string,
   groupID: string,
   messageID: string,
+  attachments: string[] = [],
 ) {
+  if (attachments.every((attachment) => typeof attachment === "string")) {
+    for (const attachmentID of attachments) {
+      api
+        .deleteFile(SERVER.BUCKET_ID_GROUP_ATTACHMENTS, attachmentID)
+        .catch(() => {});
+    }
+  }
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUP_MESSAGES,

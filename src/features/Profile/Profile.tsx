@@ -114,7 +114,7 @@ const Profile = ({ user }: ProfileProps) => {
         <div className="flex flex-col items-center w-full gap-4 mt-5 transition">
           {isCurrentUser && (
             <Modal isOpen={isOpen} onClose={onClose}>
-              <ModalOverlay />{" "}
+              <ModalOverlay />
               <AnimatePresence>
                 <motion.div
                   initial={{ opacity: 0 }}

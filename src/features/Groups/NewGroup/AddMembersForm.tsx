@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IUserDetails } from "../../../interfaces";
 import useSWR from "swr";
 import { getUsers } from "../../../services/userDetailsServices";
@@ -42,11 +42,16 @@ const AddMembersForm = ({
   const { colorMode } = useColorMode();
 
   let [members, setMembers] = useState<IUserDetails[]>(init);
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (done) handleSubmit();
+  }, [done]);
 
   function onSubmit(e: any) {
     e?.preventDefault();
     setGroupDetails((prev) => ({ ...prev, members: members }));
-    handleSubmit();
+    setDone(true);
   }
 
   return (

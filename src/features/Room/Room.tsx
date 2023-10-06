@@ -77,6 +77,7 @@ function Room() {
           currentUserDetails.$id,
           selectedChat.$id,
           message.$id,
+          message.attachments,
         );
       } catch (error: any) {
         console.log("Error deleting message! ", error.message);
@@ -102,9 +103,8 @@ function Room() {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            response.payload.changerID !== currentUserDetails.$id &&
-            (response.payload.changeLog === "newtext" ||
-              response.payload.changeLog === "deletetext")
+            response.payload.changeLog === "newtext" ||
+            response.payload.changeLog === "deletetext"
           ) {
             mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);

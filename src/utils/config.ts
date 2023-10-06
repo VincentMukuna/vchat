@@ -8,7 +8,7 @@ export const SERVER = {
   COLLECTION_ID_GROUPS: "groups",
   COLLECTION_ID_GROUP_MESSAGES: "group-messages",
   BUCKET_ID_USER_AVATARS: "user-avatars",
-  bucketIDChatAttachments: "chat-message-attachments",
+  BUCKET_ID_CHAT_ATTACHMENTS: "chat-message-attachments",
   BUCKET_ID_GROUP_AVATARS: "group-avatars",
   BUCKET_ID_GROUP_ATTACHMENTS: "group-message-attachments",
   DOCUMENT_ID_GLOBAL_CHAT: "main-lobby",
