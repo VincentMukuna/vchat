@@ -4,11 +4,15 @@ import { IGroup, IUserDetails } from "../../interfaces";
 import {
   deleteGroup,
   getGroupDetails,
+  getGroupMessageCount,
   updateGroupAvatar,
   updateGroupDetails,
 } from "../../services/groupMessageServices";
 import useSWR, { mutate } from "swr";
-import { getChatDoc } from "../../services/chatMessageServices";
+import {
+  getChatDoc,
+  getChatMessageCount,
+} from "../../services/chatMessageServices";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import {
@@ -39,13 +43,15 @@ import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat } = useChatsContext();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
+
+  const [msgCount, setMsgCount] = useState(0);
 
   const [groupDetails, setGroupDetails] = useState({
     name: selectedChat?.name,
@@ -96,6 +102,17 @@ const RoomDetails = () => {
     },
   });
 
+  useEffect(() => {
+    if (isGroup) {
+      getGroupMessageCount(selectedChat.$id).then((count) => {
+        setMsgCount(count);
+      });
+    } else {
+      getChatMessageCount(selectedChat.$id).then((count) => {
+        setMsgCount(count);
+      });
+    }
+  }, [selectedChat]);
   return (
     <div className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden bg-gray2 dark:bg-dark-slate2 dark:text-white">
       <div className="absolute top-0 left-0 flex items-center w-full gap-3 p-2 ">
@@ -186,6 +203,11 @@ const RoomDetails = () => {
             <EditablePreview />
             <EditableInput />
           </Editable>
+          <p className="inline-flex gap-2 mt-3">
+            <span className="font-semibold ">Message Count :</span>
+            {msgCount}
+          </p>
+
           <p className="mt-3">
             <span className="font-semibold ">Created on :</span>
             {" " + getFormatedDate(selectedChat.$createdAt)}
@@ -206,16 +228,7 @@ const RoomDetails = () => {
                 ? roomDetails?.members?.map((member: IUserDetails) => {
                     return (
                       <Avatar
-                        src={
-                          (member.avatarID &&
-                            api
-                              .getFile(
-                                SERVER.BUCKET_ID_USER_AVATARS,
-                                member?.avatarID,
-                              )
-                              .toString()) ||
-                          undefined
-                        }
+                        src={member.avatarURL || undefined}
                         name={member.name}
                         key={member.$id}
                         size={"sm"}
@@ -225,6 +238,7 @@ const RoomDetails = () => {
                 : roomDetails?.participants?.map(
                     (participant: IUserDetails) => (
                       <Avatar
+                        src={participant.avatarURL}
                         name={participant.name}
                         key={participant.$id}
                         size={"sm"}
@@ -234,7 +248,7 @@ const RoomDetails = () => {
             </AvatarGroup>
           </div>
         </div>
-        <Center flexDir={"column"}>
+        <div>
           {isGroup && (
             <>
               Admins
@@ -267,7 +281,8 @@ const RoomDetails = () => {
               </div>
             </>
           )}
-        </Center>
+        </div>
+
         <HStack>
           <Button
             size={"sm"}

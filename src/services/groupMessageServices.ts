@@ -1,6 +1,7 @@
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
+import { Query } from "appwrite";
 
 type IInitGroup = {
   name: string;
@@ -39,11 +40,21 @@ export async function getGroups(userDetailsDocID: string) {
     )) as IUserDetails;
     return deets.groups;
   } catch (error: any) {
-    console.log("Error getting groups ", error.message);
     throw error;
   }
 }
-
+export async function getGroupMessageCount(groupID: string) {
+  try {
+    const { total } = await api.listDocuments(
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_GROUP_MESSAGES,
+      [Query.equal("group", groupID), Query.select(["$id"])],
+    );
+    return total;
+  } catch (error) {
+    throw new Error("error getting count");
+  }
+}
 export async function getGroupMessages(groupID: string) {
   let groupDoc = await api.getDocument(
     SERVER.DATABASE_ID,

@@ -48,6 +48,19 @@ export async function sendChatMessage(
     console.log("Error sending chat message ", error.message);
   }
 }
+
+export async function getChatMessageCount(chatID: string) {
+  try {
+    const { total } = await api.listDocuments(
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHAT_MESSAGES,
+      [Query.equal("chat", chatID), Query.select(["$id"])],
+    );
+    return total;
+  } catch (error) {
+    throw new Error("error getting count");
+  }
+}
 export async function getChatMessages(chatID: string) {
   const chatDoc = await getChatDoc(chatID);
   let chatMessages = chatDoc?.chatMessages;

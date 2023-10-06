@@ -119,8 +119,9 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
     } catch (error) {}
   };
 
-  const handleDelete = () => {
-    onDelete(message);
+  const handleDelete = async () => {
+    await onDelete(message);
+    toast.success("Message deleted");
   };
 
   const handleEditMessage = async () => {
@@ -222,7 +223,7 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
               </form>
             ) : (
               <p className="text-[15px] font-normal leading-relaxed tracking-wide">
-                {message.body}
+                {newMessage}
               </p>
             )
           ) : (
