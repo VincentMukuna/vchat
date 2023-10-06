@@ -140,7 +140,7 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
         {attachments.length > 0 && (
           <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
             <Image
-              src={attachments[0]}
+              src={attachments[0] as any}
               objectFit="cover"
               borderRadius={"md"}
               sizes="150px"
