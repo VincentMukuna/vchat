@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { useEffect, useState } from "react";
 
 import {
   IUserDetails,
@@ -18,6 +17,7 @@ import { toast } from "react-hot-toast";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import { Avatar, Card } from "@chakra-ui/react";
+import Blueticks from "../../components/Blueticks";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -99,18 +99,9 @@ const Chat = ({ conversation }: IChatProps) => {
             ? "You"
             : contactDetails?.name
         }
-        src={
-          isGroup
-            ? conversation.avatarID &&
-              api.getFile(SERVER.BUCKET_ID_GROUP_AVATARS, conversation.avatarID)
-            : contactDetails?.avatarID &&
-              api.getFile(
-                SERVER.BUCKET_ID_USER_AVATARS,
-                contactDetails?.avatarID,
-              )
-        }
+        src={isGroup ? conversation.avatarURL : contactDetails?.avatarURL}
       />
-      <div className="flex flex-col ml-2 overflow-hidden shrink text-ellipsis">
+      <div className="grid gap-1 ml-2 overflow-hidden shrink text-ellipsis">
         <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
           {isGroup
             ? conversation.name
@@ -118,96 +109,22 @@ const Chat = ({ conversation }: IChatProps) => {
             ? "You"
             : contactDetails?.name}
         </span>
-        <span className="overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+        <span className="flex overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
           {lastMessage?.body
             ? lastMessage.senderID === currentUserDetails.$id
               ? "Me: " + lastMessage.body
               : lastMessage.body
             : "Click to start messaging "}
+
+          {!isGroup && lastMessage?.senderID === currentUserDetails.$id && (
+            <Blueticks read={lastMessage?.read} />
+          )}
         </span>
       </div>
       <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray8 ">
-        <span className="relative flex text-[10px] tracking-wide ">
+        <span className="flex text-[10px] tracking-wide ">
           {getFormatedDate(conversation.$updatedAt)}
         </span>
-        <div className="absolute bottom-0 right-2">
-          {!isGroup && showHoverCard && (
-            <DropdownMenu.Root modal={false}>
-              <DropdownMenu.Trigger>
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowHoverCard(true);
-                  }}
-                  onMouseLeave={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.4}
-                    stroke="currentColor"
-                    className="w-5 h-5 text-gray-400"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-                    />
-                  </svg>
-                </div>
-              </DropdownMenu.Trigger>
-              <DropdownMenu.Portal>
-                <DropdownMenu.Content className="z-30 flex flex-col overflow-hidden bg-gray-500 rounded">
-                  <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        let promise = clearChatMessages(conversation.$id);
-                        toast.promise(promise, {
-                          loading: "Clearing chat messages...",
-                          success: "Cleared",
-                          error: (error) =>
-                            "Whoops! Cannot clear this chat's messages at the moment. Try again later " +
-                            error,
-                        });
-                        promise.then(() => {
-                          mutate(selectedChat?.$id);
-                        });
-                      }}
-                      className="w-full"
-                    >
-                      Clear messages
-                    </button>
-                  </DropdownMenu.Item>
-                  <DropdownMenu.Item className="px-3 py-2 hover:bg-gray-600 hover:text-gray-200">
-                    <button
-                      onClick={async (e) => {
-                        e.stopPropagation();
-
-                        if (contactDetails) {
-                          let promise = deleteContact(conversation.$id);
-                          // promise.then(() => mutate(currentUserDetails.$id));
-
-                          toast.promise(promise, {
-                            loading: "deleting contact...",
-                            success: "deleted",
-                            error: "cannot delete contact",
-                          });
-                        }
-                      }}
-                      className="w-full"
-                    >
-                      Delete contact
-                    </button>
-                  </DropdownMenu.Item>
-                </DropdownMenu.Content>
-              </DropdownMenu.Portal>
-            </DropdownMenu.Root>
-          )}
-        </div>
       </div>
     </Card>
   );

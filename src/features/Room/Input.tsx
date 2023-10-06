@@ -79,6 +79,7 @@ const Input = ({}: InputProps) => {
           senderID: currentUserDetails.$id,
           body: messageBody,
           group: selectedChat.$id,
+          optimistic: true,
         }
       : {
           $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
@@ -93,6 +94,7 @@ const Input = ({}: InputProps) => {
           read: false,
           chat: selectedChat.$id,
           attachments: filesContent,
+          optimistic: true,
         };
 
     await mutate(
@@ -125,13 +127,12 @@ const Input = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="flex flex-col justify-center mx-2  relative dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1 h-[3rem] rounded-full overflow-hidden">
+    <footer className="flex flex-col rounded-lg justify-center mx-2  relative dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1 h-[3rem]  overflow-hidden">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
-        <div className="flex items-center w-full h-full gap-3 ">
+        <div className="flex items-center w-full h-full gap-3 ps-5">
           <div className="relative flex h-full">
             <IconButton
               bg={"inherit"}
-              rounded={"full"}
               aria-label="add attachment"
               title="add attachment"
               icon={<PlusIcon className="w-6 h-6" />}
@@ -168,7 +169,7 @@ const Input = ({}: InputProps) => {
             <button
               type="submit"
               disabled={sending}
-              className="absolute right-0 flex items-center h-full gap-3 px-4 text-base font-medium tracking-wider rounded-e-full bg-dark-blue4 dark:text-white"
+              className="absolute right-0 flex items-center h-full gap-3 px-4 text-base font-medium tracking-wider bg-dark-blue4 dark:text-white"
             >
               Send
             </button>

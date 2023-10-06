@@ -12,6 +12,8 @@ import { getFormattedDateTime } from "../../services/dateServices";
 import { AspectRatio, Avatar, Image } from "@chakra-ui/react";
 
 import { motion } from "framer-motion";
+import { CheckIcon } from "@heroicons/react/20/solid";
+import Blueticks from "../../components/Blueticks";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -24,6 +26,9 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
   const { recepient } = useChatsContext();
   const [attachments, setAttachments] = useState<URL[] | []>([]);
   const [showHoverCard, setShowHoverCard] = useState(false);
+  const [read, setRead] = useState(message.read);
+
+  const isOptimistic = message?.optimistic;
 
   const isGroupMessage = !!(
     message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES
@@ -73,6 +78,20 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
     return attachments;
   }
 
+  const subscribeToUnreadMessageChanges = () => {
+    const unsubscribe = api.subscribe<IChatMessage>(
+      `databases.${SERVER.DATABASE_ID}.collections.${message.$collectionId}.documents.${message.$id}`,
+      (response) => {
+        if (response.payload.read === true) {
+          setRead(true);
+          unsubscribe();
+        }
+      },
+    );
+
+    return unsubscribe;
+  };
+
   const setReadMessage = async () => {
     if (!message.$id) return;
     try {
@@ -89,7 +108,11 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
     onDelete(message);
   };
   useEffect(() => {
-    !isGroupMessage && !mine && !message.read && setReadMessage();
+    if (!mine && !message.read) {
+      setReadMessage();
+    } else if (mine && !isOptimistic && !message.read) {
+      return subscribeToUnreadMessageChanges();
+    }
   }, []);
 
   return (
@@ -97,7 +120,7 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
       layout
       initial={{ opacity: 0, scaleX: 0.8 }}
       animate={{ opacity: 1, scaleX: 1 }}
-      transition={{ type: "spring", duration: 0.4 }}
+      transition={{ type: "spring", duration: 0.2 }}
       exit={{ opacity: 0, scaleX: 0.8 }}
       whileInView={{ opacity: 1, x: 0 }}
       onMouseEnter={() => setShowHoverCard(true)}
@@ -125,16 +148,17 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
           </AspectRatio>
         )}
         <div
-          className={`flex flex-col
-            px-5 py-2  ${
-              mine
-                ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-br-none self-end"
-                : "bg-slate-700 dark:bg-dark-tomato6  dark:text-dark-gray12 rounded-bl-none text-gray-100"
-            } rounded-3xl w-fit max-w-[400px] break-words`}
+          className={`flex relative gap-3
+              ps-4  py-2 pe-4  ${
+                mine
+                  ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-br-none self-end pb-3 "
+                  : "bg-slate-700 dark:bg-dark-tomato6  dark:text-dark-gray12 rounded-bl-none text-gray-100 "
+              } rounded-3xl w-fit max-w-[400px] break-words`}
         >
           <p className="text-[15px] font-normal leading-relaxed tracking-wide">
             {message.body}
           </p>
+          {mine && <Blueticks read={read} />}
         </div>
         <div
           className={`flex  mx-3 text-[9px] tracking-wider md:text-[10px] gap-1 ${

@@ -5,6 +5,7 @@ import {
   deleteGroup,
   getGroupDetails,
   updateGroupAvatar,
+  updateGroupDetails,
 } from "../../services/groupMessageServices";
 import useSWR, { mutate } from "swr";
 import { getChatDoc } from "../../services/chatMessageServices";
@@ -15,6 +16,9 @@ import {
   AvatarGroup,
   Button,
   Center,
+  Editable,
+  EditableInput,
+  EditablePreview,
   HStack,
   IconButton,
   VStack,
@@ -35,12 +39,18 @@ import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
+import { useState } from "react";
 
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat } = useChatsContext();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
+
+  const [groupDetails, setGroupDetails] = useState({
+    name: selectedChat?.name,
+    description: selectedChat?.description,
+  });
   const isGroup = !!(selectedChat?.$collectionId === "groups");
   const isAdmin =
     isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
@@ -124,15 +134,58 @@ const RoomDetails = () => {
               }
             />
           </div>
-          <p
-            // contentEditable={isGroup && isAdmin}
+          <Editable
+            isDisabled={!(isGroup && isAdmin)}
+            title={isGroup && isAdmin ? "click to edit group name" : ""}
+            textAlign="center"
+            value={isGroup ? groupDetails.name : recepient?.name}
+            onChange={(val) => {
+              setGroupDetails({ ...groupDetails, name: val });
+            }}
+            onSubmit={async (val) => {
+              if (selectedChat.name !== groupDetails.name) {
+                try {
+                  await updateGroupDetails(selectedChat.$id, groupDetails);
+                  toast.success("Group name changed successfully!");
+                  mutate(selectedChat.$id);
+                } catch (error) {
+                  toast.error("Something went wrong");
+                }
+              }
+            }}
             className="mt-3 text-lg font-bold"
           >
-            {isGroup ? selectedChat.name : recepient?.name}
-          </p>
-          <span className="relative max-w-[200px] line-clamp-2  text-xs tracking-wide text-dark-gray5 dark:text-gray6">
-            {isGroup ? selectedChat.description : recepient?.about || "about"}
-          </span>
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+
+          <Editable
+            isDisabled={!(isGroup && isAdmin)}
+            title={isGroup && isAdmin ? "click to edit group description" : ""}
+            value={
+              isGroup ? groupDetails.description : recepient?.about || "about"
+            }
+            onChange={(val) => {
+              setGroupDetails({ ...groupDetails, description: val });
+            }}
+            onSubmit={async (val) => {
+              if (selectedChat.description !== groupDetails.description) {
+                try {
+                  await updateGroupDetails(selectedChat.$id, groupDetails);
+                  toast.success("Group description changed successfully!");
+                  mutate(selectedChat.$id);
+                } catch (error) {
+                  toast.error("Something went wrong");
+                }
+
+                return;
+              }
+            }}
+            className=" text-dark-gray5 dark:text-gray6"
+          >
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
           <p className="mt-3">
             <span className="font-semibold ">Created on :</span>
             {" " + getFormatedDate(selectedChat.$createdAt)}
