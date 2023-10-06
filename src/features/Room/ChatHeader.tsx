@@ -32,7 +32,7 @@ function ChatHeader() {
         <ArrowLeftIcon className="w-6 h-6 " />
       </button>
       <Avatar
-        src={selectedChat.avatarURL}
+        src={selectedChat.avatarURL || recepient?.avatarURL}
         name={
           isGroup
             ? selectedChat.name
