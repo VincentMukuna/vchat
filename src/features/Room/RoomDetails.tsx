@@ -30,6 +30,7 @@ import {
 import {
   ArrowRightOnRectangleIcon,
   PencilIcon,
+  UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import {
   getFormatedDate,
@@ -94,6 +95,7 @@ const RoomDetails = () => {
 
       promise.then(() => {
         mutate(selectedChat.$id);
+        toast.success("Avatar changed");
       });
     },
 
@@ -114,16 +116,18 @@ const RoomDetails = () => {
     }
   }, [selectedChat]);
   return (
-    <div className="relative flex flex-col items-center justify-center w-full h-full overflow-hidden bg-gray2 dark:bg-dark-slate2 dark:text-white">
-      <div className="absolute top-0 left-0 flex items-center w-full gap-3 p-2 ">
-        <IconButton
-          aria-label="close side panel"
-          icon={<ArrowLeftIcon className="w-5 h-5" />}
-          title="Close details panel"
-          bg={"inherit"}
-          rounded={"full"}
-        ></IconButton>
-        Chat Details
+    <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto bg-gray2 dark:bg-dark-slate2 dark:text-white">
+      <div className="flex items-center w-full gap-3 p-4 ">
+        <div className="absolute top-0 left-0 p-2">
+          <IconButton
+            aria-label="close side panel"
+            icon={<ArrowLeftIcon className="w-5 h-5" />}
+            title="Close details panel"
+            bg={"inherit"}
+          ></IconButton>
+        </div>
+
+        <span className="inline-flex justify-center w-full ">Chat Details</span>
       </div>
       <div className="flex flex-col items-center w-full gap-8 text-sm">
         <VStack gap={-1}>
@@ -282,6 +286,7 @@ const RoomDetails = () => {
             </>
           )}
         </div>
+        <HStack></HStack>
 
         <HStack>
           <Button

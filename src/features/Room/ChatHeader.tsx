@@ -3,7 +3,16 @@ import { useAuth } from "../../context/AuthContext";
 //@ts-ignore
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { IUserDetails } from "../../interfaces";
-import { Avatar } from "@chakra-ui/react";
+import {
+  Avatar,
+  IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/react";
+import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
+import RoomActions from "./RoomActions";
 
 function ChatHeader() {
   const { recepient, setSelectedChat, setRecepient, selectedChat } =
@@ -21,16 +30,16 @@ function ChatHeader() {
 
   return (
     <section className="flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-slate1 bg-gray2 text-dark-gray2">
-      <button
-        aria-label="closeChat"
+      <IconButton
+        bg={"transparent"}
+        title="Close chat"
+        icon={<ArrowLeftIcon className="w-5 h-5 " />}
+        aria-label="Close Chat"
         onClick={() => {
           setSelectedChat(undefined);
           setRecepient(undefined);
         }}
-        className=" flex text-center items-center justify-center w-10 h-10   rounded-full cursor-pointer hover:scale-[0.95] text-xl"
-      >
-        <ArrowLeftIcon className="w-6 h-6 " />
-      </button>
+      ></IconButton>
       <Avatar
         src={selectedChat.avatarURL || recepient?.avatarURL}
         name={
@@ -49,6 +58,16 @@ function ChatHeader() {
         <span className="relative text-xs tracking-wide text-dark-gray5 dark:text-gray6">
           {isGroup ? selectedChat.description : recepient?.about || "about"}
         </span>
+      </div>
+      <div className="ml-auto">
+        <Menu>
+          <MenuButton
+            bg={"transparent"}
+            as={IconButton}
+            icon={<EllipsisVerticalIcon className="w-5 h-5" />}
+          ></MenuButton>
+          <RoomActions />
+        </Menu>
       </div>
     </section>
   );
