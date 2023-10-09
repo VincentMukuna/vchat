@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Navbar from "../features/Navbar/Navbar";
 import { useAppSelector } from "../context/AppContext";
 import Sidebar from "../features/Sidebar/Sidebar";
@@ -11,6 +11,8 @@ import { AnimatePresence } from "framer-motion";
 function Home() {
   const { activePage, setActivePage } = useAppSelector();
   const { selectedChat } = useChatsContext();
+
+  const MemoizedRoom = useCallback(Room, [selectedChat]);
 
   useEffect(() => {}, []);
   return (
@@ -32,7 +34,7 @@ function Home() {
              selectedChat ? "z-10" : "invisible md:visible"
            }`}
           >
-            <Room />
+            <MemoizedRoom />
           </Box>
         </AnimatePresence>
       </div>

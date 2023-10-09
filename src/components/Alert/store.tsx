@@ -1,5 +1,6 @@
 import { Alert } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { Store } from "../../services/observableStore";
 
 export type Alert = {
   isShown: boolean;
@@ -21,20 +22,14 @@ let initialState = {
   cancelText: "",
 };
 
-let value: Alert = initialState;
-
-let listener: null | ((state: Alert) => void) = null;
+let alertStore = new Store(initialState);
 
 export const useAlert: () => Alert = () => {
-  const [state, setState] = useState<Alert>(value);
+  const [state, setState] = useState(initialState);
 
   useEffect(() => {
-    listener = setState;
-    return () => {
-      listener = null;
-    };
-  }, [state]);
-
+    return alertStore.subscribe(setState);
+  }, []);
   return state;
 };
 
@@ -43,15 +38,10 @@ export const useAlert: () => Alert = () => {
 // };
 
 export const clearAlert = () => {
-  value = initialState;
-  if (listener) {
-    listener(value);
-  }
+  alertStore.set(initialState);
 };
 
 export const alert = (options: Omit<Alert, "isShown">) => {
-  value = { ...options, isShown: true };
-  if (listener) {
-    listener(value);
-  }
+  let newAlert = { ...options, isShown: true };
+  alertStore.set(newAlert);
 };
