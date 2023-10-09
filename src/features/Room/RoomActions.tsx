@@ -1,10 +1,40 @@
 import { MenuItem, MenuList } from "@chakra-ui/react";
-const RoomActions = () => {
+import { Alert, alert } from "../../components/Alert/store";
+import { useChatsContext } from "../../context/ChatsContext";
+import { clearChatMessages } from "../../services/chatMessageServices";
+import toast from "react-hot-toast";
+import { mutate } from "swr";
+
+const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
+  const { selectedChat } = useChatsContext();
   return (
     <MenuList className="px-2">
-      <MenuItem py={"2.5"}>Edit Members</MenuItem>
-      <MenuItem py={"2.5"}>Edit Admins</MenuItem>
-      <MenuItem>Clear Messages</MenuItem>
+      {!isGroup && (
+        <MenuItem
+          py={"2.5"}
+          onClick={() => {
+            alert({
+              title: "Delete chat messages",
+              message: `Are you sure you want to delete all messages in this Chat? This action is irreversible`,
+              confirmText: "Yes, delete all messages",
+              cancelText: "Keep messages",
+              onConfirm: () => {
+                let ps = clearChatMessages(id);
+                toast.promise(ps, {
+                  loading: "Deleting messages",
+                  success: "Messages deleted successfully",
+                  error: "Something went wrong",
+                });
+                ps.then(() => {
+                  mutate(id, []);
+                });
+              },
+            });
+          }}
+        >
+          Clear Messages
+        </MenuItem>
+      )}
     </MenuList>
   );
 };

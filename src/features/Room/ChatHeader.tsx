@@ -66,7 +66,7 @@ function ChatHeader() {
             as={IconButton}
             icon={<EllipsisVerticalIcon className="w-5 h-5" />}
           ></MenuButton>
-          <RoomActions />
+          <RoomActions id={selectedChat.$id} isGroup={isGroup} />
         </Menu>
       </div>
     </section>

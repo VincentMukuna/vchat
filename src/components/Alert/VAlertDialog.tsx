@@ -9,39 +9,55 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import { forwardRef, useImperativeHandle, useRef } from "react";
-import { useAlert } from "./Alerter";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
+import { Alert, clearAlert } from "./store";
 
-const VAlertDialog = forwardRef((ref: any) => {
+type VAlertDialogProps = { alert: Alert };
+
+const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const cancelRef = useRef(null);
-  const { cancelText, confirmText, message, onCancel, onConfirm } = useAlert()!;
 
   useImperativeHandle(ref, () => {
     return {
       onOpen,
     };
   });
+
+  useEffect(() => {
+    if (alert.isShown) {
+      onOpen();
+    }
+  }, [alert]);
   return (
     <AlertDialog
       isOpen={isOpen}
       leastDestructiveRef={cancelRef}
       onClose={onClose}
+      isCentered={true}
     >
       <AlertDialogOverlay />
       <AlertDialogContent>
-        <AlertDialogHeader></AlertDialogHeader>
+        <AlertDialogHeader>{alert.title}</AlertDialogHeader>
         <AlertDialogCloseButton />
-        <AlertDialogBody>{message}</AlertDialogBody>
+        <AlertDialogBody className="flex flex-col gap-1">
+          {alert.message.split("\n").map((line, i) => (
+            <p key={i}>{line}</p>
+          ))}
+        </AlertDialogBody>
         <AlertDialogFooter>
-          <Button ref={cancelRef}>{cancelText}</Button>
+          <Button variant="ghost" ref={cancelRef} onClick={onClose}>
+            {alert.cancelText || "Cancel"}
+          </Button>
           <Button
+            colorScheme="red"
             onClick={() => {
-              onConfirm();
+              alert.onConfirm();
               onClose();
+              clearAlert();
             }}
           >
-            {confirmText}
+            {alert.confirmText}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

@@ -1,31 +1,14 @@
-import { ReactNode, createContext, useContext, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import VAlertDialog from "./VAlertDialog";
-
-type AlertContextValueType = {
-  message: string;
-  confirmText: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-  cancelText: string;
-};
-
-const AlertContext = createContext<AlertContextValueType | null>(null);
+import { useAlert } from "./store";
 
 const Alerter = () => {
-  const [alert, setAlert] = useState<AlertContextValueType | null>(null);
+  const alert = useAlert();
   const alertRef = useRef(null);
-  
-  return (
-    <AlertContext.Provider value={alert}>
-      <VAlertDialog ref={alertRef} />
-    </AlertContext.Provider>
-  );
+
+  if (!alert.isShown) return null;
+
+  return <VAlertDialog ref={alertRef} alert={alert} />;
 };
 
 export default Alerter;
-
-export const useAlert = () => useContext(AlertContext);
-
-function createAlert(a:AlertContextValueType){
-    
-}

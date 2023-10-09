@@ -14,6 +14,7 @@ import Loading from "./pages/Loading";
 import { useColorMode } from "@chakra-ui/react";
 import { slate, slateDark } from "@radix-ui/colors";
 import { AnimatePresence } from "framer-motion";
+import Alerter from "./components/Alert/Alerter";
 
 function App() {
   const { colorMode } = useColorMode();
@@ -37,6 +38,8 @@ function App() {
               overflow: "hidden",
             }}
           />
+          <Alerter />
+
           <SWRConfig>
             <AuthProvider>
               <AppProvider>
