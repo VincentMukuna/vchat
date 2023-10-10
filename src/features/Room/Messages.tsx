@@ -13,11 +13,12 @@ function Messages({ messages, onDelete }: MessagesProps) {
       <div className="flex flex-col-reverse h-full p-2 pb-4 overflow-y-scroll transition-all">
         {messages.length > 0 ? (
           <AnimatePresence initial={false} mode="popLayout">
-            {messages.map((message) => (
+            {messages.map((message, i) => (
               <Message
                 message={message}
                 onDelete={onDelete}
                 key={message.$id}
+                i={i}
               />
             ))}
           </AnimatePresence>

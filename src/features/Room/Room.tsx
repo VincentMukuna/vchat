@@ -104,12 +104,16 @@ function Room() {
         (response) => {
           if (
             response.payload.changeLog === "newtext" ||
-            response.payload.changeLog === "deletetext"
+            response.payload.changeLog === "deletetext" ||
+            response.payload.changeLog === "readtext"
           ) {
             mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);
           } else if (response.payload.changeLog === "cleared") {
             mutate([], { revalidate: false });
+            globalMutate(`lastMessage ${selectedChat.$id}`, undefined, {
+              revalidate: false,
+            });
           }
         },
       );

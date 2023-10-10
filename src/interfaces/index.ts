@@ -14,7 +14,8 @@ type changeLogTypes =
   | "editavatar"
   | "edittext"
   | "deletetext"
-  | "created";
+  | "created"
+  | "readtext";
 interface IGroup extends Models.Document {
   name: string;
   description: string;

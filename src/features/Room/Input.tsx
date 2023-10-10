@@ -127,6 +127,7 @@ const Input = ({}: InputProps) => {
       setSending(false);
       setMessageBody("");
       setAttachments([]);
+      clear();
     });
   };
 

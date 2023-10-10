@@ -21,4 +21,5 @@ export default interface IUserDetails extends Models.Document {
   groups: IGroup[];
   chats: IChat[];
   changeLog: changeLogTypes;
+  online: boolean;
 }

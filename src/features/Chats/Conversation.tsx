@@ -8,7 +8,6 @@ import {
   IGroupMessage,
 } from "../../interfaces";
 import { getFormatedDate } from "../../services/dateServices";
-import { deleteContact } from "../../services/userDetailsServices";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import useSWR, { mutate } from "swr";

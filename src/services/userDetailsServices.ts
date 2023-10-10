@@ -89,14 +89,28 @@ export async function addContact(
         ? [addeeDetailsID]
         : [adderDetailsID, addeeDetailsID],
   });
+
+  api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
+    addeeDetailsID,
+    { changeLog: "newchat" },
+  );
 }
 
-export async function deleteContact(chatID: string) {
+export async function deleteContact(chatID: string, contactDetailsID: string) {
   await clearChatMessages(chatID);
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_CHATS,
     chatID,
+  );
+
+  api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
+    contactDetailsID,
+    { changeLog: "deletechat" },
   );
 }
 
@@ -131,6 +145,18 @@ export async function uploadUserAvatar(userDetailsID: string, avatar: File) {
 export async function updateUserAvatar(userDetailsID: string, avatar: File) {
   await deleteUserAvatar(userDetailsID);
   return await uploadUserAvatar(userDetailsID, avatar);
+}
+
+export async function setOnlineStatus(
+  userDetailsID: string,
+  isOnline: boolean,
+) {
+  return (await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
+    userDetailsID,
+    { online: isOnline, lastSeen: new Date(Date.now()) },
+  )) as IUserDetails;
 }
 
 export async function deleteUser(userID: string) {

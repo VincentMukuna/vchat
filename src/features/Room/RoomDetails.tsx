@@ -130,7 +130,10 @@ const RoomDetails = () => {
         mutate(currentUserDetails?.$id);
       });
     } else {
-      let promise = deleteContact((selectedChat as IChat).$id);
+      let promise = deleteContact(
+        (selectedChat as IChat).$id,
+        (recepient as any).$id,
+      );
       toast.promise(promise, {
         loading: "Deleting",
         error: "Something went wrong, try again later",

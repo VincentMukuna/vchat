@@ -81,7 +81,6 @@ const Chats = () => {
     const unsubscribe = api.subscribe<IUserDetails>(
       `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {
-        console.log(response.payload);
         // If the contact details have been updated, refresh the user details
         mutate();
       },
