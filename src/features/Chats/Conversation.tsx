@@ -116,12 +116,14 @@ const Chat = ({ conversation }: IChatProps) => {
               : lastMessage.body
             : "Click to start messaging "}
 
-          {!isGroup && lastMessage?.senderID === currentUserDetails.$id && (
-            <Blueticks read={lastMessage?.read} />
+          {lastMessage?.senderID === currentUserDetails.$id && (
+            <div className="absolute right-4 bottom-4">
+              <Blueticks read={lastMessage?.read} />
+            </div>
           )}
         </span>
       </div>
-      <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray8 ">
+      <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
         <span className="flex text-[10px] tracking-wide ">
           {getFormatedDate(conversation.$updatedAt)}
         </span>

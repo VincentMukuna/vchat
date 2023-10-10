@@ -5,10 +5,5 @@ import IUserDetails from "./userDetails";
 export default interface IChat extends Models.Document {
   chatMessages: IChatMessage[];
   participants: [IUserDetails, IUserDetails] | [IUserDetails];
-  changeLog?:
-    | "newtext"
-    | "deletetext"
-    | "edittext"
-    | "clearmessages"
-    | "created";
+  changeLog?: "newtext" | "deletetext" | "edittext" | "cleared" | "created";
 }

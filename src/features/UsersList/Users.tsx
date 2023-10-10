@@ -8,8 +8,6 @@ import { useEffect, useState } from "react";
 import { Divider, Stack } from "@chakra-ui/react";
 
 function Users() {
-  const { currentUser } = useAuth();
-
   const [localUsers, setLocalUsers] = useState<IUserDetails[]>();
 
   const {

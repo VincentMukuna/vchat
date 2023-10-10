@@ -55,6 +55,12 @@ const Input = ({}: InputProps) => {
   });
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isPersonal: boolean =
+    !isGroup &&
+    selectedChat.participants.every(
+      (participant: IUserDetails) =>
+        participant.$id === currentUserDetails?.$id,
+    );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.style.height = "auto";
@@ -91,7 +97,7 @@ const Input = ({}: InputProps) => {
           senderID: currentUserDetails.$id,
           recepientID: recepient?.$id,
           body: messageBody,
-          read: false,
+          read: isPersonal ? true : false,
           chat: selectedChat.$id,
           attachments: filesContent,
           optimistic: true,
@@ -114,6 +120,7 @@ const Input = ({}: InputProps) => {
           recepientID: (recepient as IUserDetails).$id,
           senderID: currentUserDetails.$id,
           attachments: attachments,
+          read: isPersonal ? true : false,
         });
 
     promise.finally(() => {

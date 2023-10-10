@@ -108,6 +108,8 @@ function Room() {
           ) {
             mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);
+          } else if (response.payload.changeLog === "cleared") {
+            mutate([], { revalidate: false });
           }
         },
       );

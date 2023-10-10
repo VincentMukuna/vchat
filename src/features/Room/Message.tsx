@@ -108,7 +108,9 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
   };
 
   const setReadMessage = async () => {
-    if (!message.$id) return;
+    if (message.optimistic) {
+      return;
+    }
     try {
       await api.updateDocument(
         message.$databaseId,
@@ -118,6 +120,13 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
       );
     } catch (error) {}
   };
+  useEffect(() => {
+    if (!mine && !isOptimistic && !message.read) {
+      setReadMessage();
+    } else if (mine && !isOptimistic && !message.read) {
+      return subscribeToUnreadMessageChanges();
+    }
+  }, []);
 
   const handleDelete = async () => {
     await onDelete(message);
@@ -142,13 +151,6 @@ const Message = forwardRef<any, MessageProps>(({ message, onDelete }, ref) => {
       }
     }
   };
-  useEffect(() => {
-    if (!mine && !message.read) {
-      setReadMessage();
-    } else if (mine && !isOptimistic && !message.read) {
-      return subscribeToUnreadMessageChanges();
-    }
-  }, []);
 
   return (
     <motion.article

@@ -1,6 +1,6 @@
 import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useChatsContext } from "../../context/ChatsContext";
-import { IGroup, IUserDetails } from "../../interfaces";
+import { IChat, IGroup, IUserDetails } from "../../interfaces";
 import {
   deleteGroup,
   getGroupDetails,
@@ -45,6 +45,7 @@ import {
   FileSizeValidator,
 } from "use-file-picker/validators";
 import { useEffect, useState } from "react";
+import { confirmAlert } from "../../components/Alert/alertStore";
 
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat } = useChatsContext();
@@ -115,6 +116,32 @@ const RoomDetails = () => {
       });
     }
   }, [selectedChat]);
+
+  function handleDeleteChat() {
+    if (isGroup) {
+      let promise = deleteGroup(selectedChat.$id);
+      toast.promise(promise, {
+        loading: "Deleting",
+        error: "Something went wrong, try again later",
+        success: "Group deleted",
+      });
+      promise.then(() => {
+        setSelectedChat(undefined);
+        mutate(currentUserDetails?.$id);
+      });
+    } else {
+      let promise = deleteContact((selectedChat as IChat).$id);
+      toast.promise(promise, {
+        loading: "Deleting",
+        error: "Something went wrong, try again later",
+        success: "Chat deleted",
+      });
+      promise.then(() => {
+        setSelectedChat(undefined);
+        mutate(currentUserDetails?.$id);
+      });
+    }
+  }
   return (
     <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto bg-gray2 dark:bg-dark-slate2 dark:text-white">
       <div className="flex items-center w-full gap-3 p-4 ">
@@ -304,29 +331,17 @@ const RoomDetails = () => {
             colorScheme="red"
             leftIcon={<TrashIcon className="w-5 h-5" />}
             onClick={() => {
-              if (isGroup) {
-                let promise = deleteGroup(selectedChat.$id);
-                toast.promise(promise, {
-                  loading: "Deleting",
-                  error: "Something went wrong, try again later",
-                  success: "Group deleted",
-                });
-                promise.then(() => {
-                  setSelectedChat(undefined);
-                  mutate(currentUserDetails?.$id);
-                });
-              } else {
-                let promise = deleteContact(selectedChat.$id);
-                toast.promise(promise, {
-                  loading: "Deleting",
-                  error: "Something went wrong, try again later",
-                  success: "Chat deleted",
-                });
-                promise.then(() => {
-                  setSelectedChat(undefined);
-                  mutate(currentUserDetails?.$id);
-                });
-              }
+              confirmAlert({
+                message: `Are you sure you want to delete this ${
+                  isGroup ? "group" : "chat"
+                } ? All records of this conversation will be removed from our servers `,
+                title: `Delete conversation `,
+                confirmText: `Yes, I'm sure`,
+                onConfirm: () => {
+                  handleDeleteChat();
+                },
+                cancelText: `No, keep conversation`,
+              });
             }}
           >
             Delete

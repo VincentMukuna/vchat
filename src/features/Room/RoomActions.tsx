@@ -1,5 +1,5 @@
 import { MenuItem, MenuList } from "@chakra-ui/react";
-import { Alert, alert } from "../../components/Alert/store";
+import { Alert, confirmAlert } from "../../components/Alert/alertStore";
 import { useChatsContext } from "../../context/ChatsContext";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
         <MenuItem
           py={"2.5"}
           onClick={() => {
-            alert({
+            confirmAlert({
               title: "Delete chat messages",
               message: `Are you sure you want to delete all messages in this Chat? This action is irreversible`,
               confirmText: "Yes, delete all messages",
@@ -24,9 +24,6 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
                   loading: "Deleting messages",
                   success: "Messages deleted successfully",
                   error: "Something went wrong",
-                });
-                ps.then(() => {
-                  mutate(id, []);
                 });
               },
             });

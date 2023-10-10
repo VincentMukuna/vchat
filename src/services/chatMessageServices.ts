@@ -7,6 +7,7 @@ type sendMessageProps = {
   recepientID: string;
   messageBody: string;
   attachments?: File[];
+  read: boolean;
 };
 
 export async function sendChatMessage(
@@ -18,7 +19,7 @@ export async function sendChatMessage(
     senderID: sentMessage.senderID,
     recepientID: sentMessage.recepientID,
     body: sentMessage.messageBody,
-    read: false,
+    read: sentMessage.read,
     attachments: sentMessage.attachments,
   };
 
@@ -79,16 +80,29 @@ export async function getChatMessages(chatID: string) {
 }
 
 export async function clearChatMessages(chatID: string) {
-  let exec = await api.executeFunction(SERVER.FUNCTION_ID_FUNCS, {
-    action: "clear chat messages",
-    params: {
-      chatID: chatID,
-    },
+  let messages = await getChatMessages(chatID);
+  messages.forEach((message) => {
+    if (message.attachments.length > 0) {
+      message.attachments.forEach((attachmentID) => {
+        api
+          .deleteFile(SERVER.BUCKET_ID_CHAT_ATTACHMENTS, attachmentID)
+          .catch((e) => {});
+      });
+    }
   });
-  let response = JSON.parse(exec.response);
-  if (!response.ok) {
-    throw new Error(response.message);
-  }
+  messages.forEach((message) => {
+    api
+      .deleteDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_CHAT_MESSAGES,
+        message.$id,
+      )
+      .catch((e) => {});
+  });
+
+  api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
+    changeLog: "cleared",
+  });
 }
 
 export async function getChatDoc(chatID: string) {

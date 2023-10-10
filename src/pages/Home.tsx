@@ -3,7 +3,7 @@ import Navbar from "../features/Navbar/Navbar";
 import { useAppSelector } from "../context/AppContext";
 import Sidebar from "../features/Sidebar/Sidebar";
 import Room from "../features/Room/Room";
-import { useChatsContext } from "../context/ChatsContext";
+import { ChatsProvider, useChatsContext } from "../context/ChatsContext";
 import * as Tabs from "@radix-ui/react-tabs";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
@@ -25,7 +25,6 @@ function Home() {
         <Tabs.List aria-label="App navigation">
           <Navbar />
         </Tabs.List>
-
         <Sidebar />
         <AnimatePresence>
           <Box

@@ -2,7 +2,7 @@ import { AppwriteException, Models } from "appwrite";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { IUserDetails } from "../interfaces";
-import { getUserChats } from "./chatMessageServices";
+import { clearChatMessages, getUserChats } from "./chatMessageServices";
 export async function getSession() {
   try {
     let user = await api.getAccount();
@@ -32,10 +32,6 @@ export async function getCurrentUserDetails(
     )) as IUserDetails;
     return userDetails;
   } catch (error) {
-    console.log(
-      "Error getting details...,",
-      (error as AppwriteException).message,
-    );
     throw error;
   }
 }
@@ -96,6 +92,7 @@ export async function addContact(
 }
 
 export async function deleteContact(chatID: string) {
+  await clearChatMessages(chatID);
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_CHATS,

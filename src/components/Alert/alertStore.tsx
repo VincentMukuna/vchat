@@ -41,7 +41,7 @@ export const clearAlert = () => {
   alertStore.set(initialState);
 };
 
-export const alert = (options: Omit<Alert, "isShown">) => {
+export const confirmAlert = (options: Omit<Alert, "isShown">) => {
   let newAlert = { ...options, isShown: true };
   alertStore.set(newAlert);
 };

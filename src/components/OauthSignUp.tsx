@@ -15,7 +15,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
 
         <div className="relative text-xs font-medium text-gray9 -top-2">
           <div className="px-4 uppercase bg-gray1 dark:bg-dark-slate1">
-            Or Sign Up With
+            Or Continue With
           </div>
         </div>
       </div>

@@ -10,7 +10,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { Alert, clearAlert } from "./store";
+import { Alert, clearAlert } from "./alertStore";
 
 type VAlertDialogProps = { alert: Alert };
 
@@ -45,7 +45,7 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
             <p key={i}>{line}</p>
           ))}
         </AlertDialogBody>
-        <AlertDialogFooter>
+        <AlertDialogFooter gap={2}>
           <Button variant="ghost" ref={cancelRef} onClick={onClose}>
             {alert.cancelText || "Cancel"}
           </Button>
