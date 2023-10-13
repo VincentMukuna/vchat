@@ -84,7 +84,7 @@ const GroupDetailsForm = ({
         />
       </div>
 
-      <div className="absolute flex flex-row-reverse w-full mt-auto bottom-2">
+      <div className="flex flex-row-reverse w-full mt-auto ">
         <Button
           type="submit"
           bg={blueDark.blue3}

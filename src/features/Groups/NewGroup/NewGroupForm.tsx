@@ -25,24 +25,22 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
     avatar: null,
   });
   const handleSubmit = () => {
-    console.log(groupDetails);
-    console.log(groupDetails.members.map((member) => member.$id));
-    // let promise = createGroup({
-    //   name: groupDetails.name,
-    //   description: groupDetails.description,
-    //   members: groupDetails.members.map((member) => member.$id),
-    //   admins: [currentUserDetails.$id],
-    //   avatar: groupDetails.avatar,
-    // });
-    // toast.promise(promise, {
-    //   loading: "Creating group",
-    //   success: "Group created",
-    //   error: "Couldn't create group",
-    // });
-    // promise.then(() => {
-    //   mutate(currentUserDetails.$id);
-    // });
-    // promise.finally(() => onClose());
+    let promise = createGroup({
+      name: groupDetails.name,
+      description: groupDetails.description,
+      members: groupDetails.members.map((member) => member.$id),
+      admins: [currentUserDetails.$id],
+      avatar: groupDetails.avatar,
+    });
+    toast.promise(promise, {
+      loading: "Creating group",
+      success: "Group created",
+      error: "Couldn't create group",
+    });
+    promise.then(() => {
+      mutate(currentUserDetails.$id);
+    });
+    promise.finally(() => onClose());
   };
 
   const handleChange = (e: any) => {

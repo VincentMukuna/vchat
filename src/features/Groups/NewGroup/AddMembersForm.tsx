@@ -16,6 +16,7 @@ import {
 import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
 import { blueDark, gray, slate } from "@radix-ui/colors";
+import toast from "react-hot-toast";
 
 interface AddMembersProps {
   members: IUserDetails[];
@@ -45,11 +46,18 @@ const AddMembersForm = ({
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (done) handleSubmit();
+    if (done) {
+      handleSubmit();
+      setDone(false);
+    }
   }, [done]);
 
   function onSubmit(e: any) {
     e?.preventDefault();
+    if (members.length <= 1) {
+      toast.error("Groups should have more than one member");
+      return;
+    }
     setGroupDetails((prev) => ({ ...prev, members: members }));
     setDone(true);
   }
@@ -131,7 +139,7 @@ const AddMembersForm = ({
                       <Avatar
                         name={user.name}
                         size="sm"
-                        src={user.avatarID ?? undefined}
+                        src={user.avatarURL ?? undefined}
                       />
                       {user.name}
                     </label>

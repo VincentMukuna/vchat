@@ -1,6 +1,6 @@
 import { Alert } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Store } from "../../services/observableStore";
+import { Store } from "../../utils/observableStore";
 
 export type Alert = {
   isShown: boolean;

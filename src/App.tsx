@@ -15,6 +15,7 @@ import { useColorMode } from "@chakra-ui/react";
 import { slate, slateDark } from "@radix-ui/colors";
 import { AnimatePresence } from "framer-motion";
 import Alerter from "./components/Alert/Alerter";
+import VModal from "./components/Modal";
 
 function App() {
   const { colorMode } = useColorMode();
@@ -39,7 +40,7 @@ function App() {
             }}
           />
           <Alerter />
-
+          <VModal />
           <SWRConfig>
             <AuthProvider>
               <AppProvider>
