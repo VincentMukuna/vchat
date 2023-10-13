@@ -33,10 +33,6 @@ export const useAlert: () => Alert = () => {
   return state;
 };
 
-// export const toggleIsShown = () => {
-//   value.isShown = !value.isShown;
-// };
-
 export const clearAlert = () => {
   alertStore.set(initialState);
 };
