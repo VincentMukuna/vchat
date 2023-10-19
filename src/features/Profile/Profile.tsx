@@ -141,7 +141,7 @@ const Profile = ({ user }: ProfileProps) => {
                 : {}
             }
           >
-            {"Edit Info"}
+            Edit Info
           </Button>
         </div>
       </motion.div>
