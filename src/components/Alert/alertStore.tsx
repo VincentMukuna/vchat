@@ -6,7 +6,7 @@ export type Alert = {
   isShown: boolean;
   title: string;
   message: string;
-  confirmText: string;
+  confirmText?: string;
   onConfirm: () => void;
   onCancel?: () => void;
   cancelText?: string;
@@ -16,7 +16,7 @@ let initialState = {
   isShown: false,
   title: "",
   message: "",
-  confirmText: "",
+  confirmText: "Yes, I'm sure",
   onConfirm: () => {},
   onCancel: () => {},
   cancelText: "",

@@ -9,7 +9,7 @@ type changeLogTypes =
   | "addadmin"
   | "newtext"
   | "removeadmin"
-  | "removemember"
+  | "editmembers"
   | "changedetails"
   | "editavatar"
   | "edittext"

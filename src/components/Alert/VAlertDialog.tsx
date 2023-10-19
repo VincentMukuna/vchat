@@ -46,7 +46,14 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
           ))}
         </AlertDialogBody>
         <AlertDialogFooter gap={2}>
-          <Button variant="ghost" ref={cancelRef} onClick={onClose}>
+          <Button
+            variant="ghost"
+            ref={cancelRef}
+            onClick={() => {
+              onClose();
+              alert.onCancel && alert.onCancel();
+            }}
+          >
             {alert.cancelText || "Cancel"}
           </Button>
           <Button

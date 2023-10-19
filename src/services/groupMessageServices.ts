@@ -2,6 +2,8 @@ import { SERVER } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
 import { Query } from "appwrite";
+import { confirmAlert } from "../components/Alert/alertStore";
+import toast from "react-hot-toast";
 
 type IInitGroup = {
   name: string;
@@ -198,16 +200,17 @@ export async function addMembers(groupID: string, membersID: string[]) {
   } catch (error) {}
 }
 
-export async function removeMembers(groupID: string, membersID: string[]) {
-  let groupDoc = await getGroupDetails(groupID);
-  let newMembers = groupDoc.members.filter((member) => {
-    return !membersID.includes((member as IUserDetails).$id);
+export async function editMembers(groupID: string, memberIDs: string[]) {
+  await new Promise((resolve) => {
+    setTimeout(() => {
+      console.log("new membersList: ", memberIDs);
+      resolve(1);
+    }, 2000);
   });
-
-  await updateGroupDetails(groupID, {
-    members: newMembers,
-    changeLog: "removemember",
-  });
+  // await updateGroupDetails(groupID, {
+  //   members: memberIDs,
+  //   changeLog: "editmembers",
+  // });
 }
 
 export async function clearGroupMessageAttachments(groupID: string) {
