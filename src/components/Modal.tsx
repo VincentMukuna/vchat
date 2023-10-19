@@ -39,27 +39,6 @@ const VModal = () => {
         className="border"
       >
         {state.modalContent}
-        <ModalFooter gap={4}>
-          <Button variant={"ghost"} onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            bg={blueDark.blue5}
-            color={colorMode === "dark" ? gray.gray2 : gray.gray3}
-            _hover={
-              colorMode === "light"
-                ? { bg: blueDark.blue7, color: gray.gray1 }
-                : {}
-            }
-            isLoading={false}
-            loadingText="Submitting"
-            px={12}
-            leftIcon={<CheckIcon className="w-5 h-5 " />}
-            onClick={onClose}
-          >
-            Done
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );
