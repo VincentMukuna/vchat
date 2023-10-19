@@ -12,10 +12,15 @@ import {
   useModalContext,
 } from "@chakra-ui/react";
 import { IGroup } from "../../interfaces";
-import useSWR from "swr";
-import { getGroupDetails } from "../../services/groupMessageServices";
+import useSWR, { mutate } from "swr";
+import {
+  editMembers,
+  getGroupDetails,
+} from "../../services/groupMessageServices";
 import { blueDark, gray } from "@radix-ui/colors";
 import { getUsers } from "../../services/userDetailsServices";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const AddMembers = ({ group }: { group: IGroup }) => {
   const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>
@@ -27,30 +32,48 @@ const AddMembers = ({ group }: { group: IGroup }) => {
 
   const { onClose } = useModalContext();
 
-  const handleAddMembers = () => {};
+  let memberIDs = roomDetails?.members.map(
+    (member: any) => member.$id,
+  ) as string[];
+
+  const handleAddMembers = () => {
+    toast.promise(
+      editMembers(group.$id, (value as string[]).concat(memberIDs)),
+      {
+        loading: "Saving changes",
+        success: "Members changed",
+        error: "Something went wrong",
+      },
+    );
+    mutate(group.$id);
+    onClose();
+  };
+
   return (
     <>
       <ModalHeader>Add members</ModalHeader>
       <ModalCloseButton />
       <ModalBody>
-        <p className="text-sm italic text-dark-gray9">
+        <p className="mb-2 text-sm italic text-dark-gray9">
           Check member to add to {group.name}
         </p>
-        <Stack>
-          {users?.map((user) => {
-            return (
-              <Checkbox
-                key={user.$id}
-                iconColor={blueDark.blue1}
-                {...getCheckboxProps({ value: user.$id })}
-              >
-                <div className="flex items-center gap-2 text-[12]">
-                  <Avatar name={user.name} src={user.avatarURL} size={"sm"} />
-                  {user.name}
-                </div>
-              </Checkbox>
-            );
-          })}
+        <Stack maxH={200} overflowY={"auto"} gap={2}>
+          {users
+            ?.filter((user) => !memberIDs?.includes(user.$id))
+            .map((user) => {
+              return (
+                <Checkbox
+                  key={user.$id}
+                  iconColor={blueDark.blue1}
+                  {...getCheckboxProps({ value: user.$id })}
+                >
+                  <div className="flex items-center gap-2 text-[12]">
+                    <Avatar name={user.name} src={user.avatarURL} size={"sm"} />
+                    {user.name}
+                  </div>
+                </Checkbox>
+              );
+            })}
         </Stack>
       </ModalBody>
       <ModalFooter className="gap-2">
@@ -69,6 +92,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
               : {}
           }
           title="save changes"
+          isDisabled={value.length < 1}
         >
           Save
         </Button>

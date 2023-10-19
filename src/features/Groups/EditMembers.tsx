@@ -14,7 +14,7 @@ import {
   useModalContext,
 } from "@chakra-ui/react";
 import { IGroup, IUserDetails } from "../../interfaces";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import {
   editMembers,
   getGroupDetails,
@@ -48,6 +48,7 @@ const EditMembers = ({ group }: { group: IGroup }) => {
           success: "Members changed",
           error: "Something went wrong",
         });
+        mutate(group.$id);
         onClose();
       },
       title: "Remove members",
@@ -71,111 +72,25 @@ const EditMembers = ({ group }: { group: IGroup }) => {
           Uncheck member to remove
         </p>
         {/* <CheckboxGroup defaultValue={memberIDs}> */}
-        <Stack>
+        <Stack maxH={200} overflowY={"auto"} gap={3}>
           {roomDetails?.members
             .filter((member: any) => member.$id !== currentUserDetails?.$id)
             .map((member: any) => {
               return (
-                <>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                  <Checkbox
-                    key={member.$id}
-                    iconColor={blueDark.blue1}
-                    {...getCheckboxProps({ value: member.$id })}
-                  >
-                    <div className="flex items-center gap-2 text-[12]">
-                      <Avatar
-                        name={member.name}
-                        src={member.avatarURL}
-                        size={"sm"}
-                      />
-                      {member.name}
-                    </div>
-                  </Checkbox>
-                </>
+                <Checkbox
+                  key={member.$id}
+                  iconColor={blueDark.blue1}
+                  {...getCheckboxProps({ value: member.$id })}
+                >
+                  <div className="flex items-center gap-2 text-[12]">
+                    <Avatar
+                      name={member.name}
+                      src={member.avatarURL}
+                      size={"sm"}
+                    />
+                    {member.name}
+                  </div>
+                </Checkbox>
               );
             })}
         </Stack>

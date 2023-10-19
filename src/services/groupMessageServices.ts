@@ -201,16 +201,10 @@ export async function addMembers(groupID: string, membersID: string[]) {
 }
 
 export async function editMembers(groupID: string, memberIDs: string[]) {
-  await new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("new membersList: ", memberIDs);
-      resolve(1);
-    }, 2000);
+  await updateGroupDetails(groupID, {
+    members: memberIDs,
+    changeLog: "editmembers",
   });
-  // await updateGroupDetails(groupID, {
-  //   members: memberIDs,
-  //   changeLog: "editmembers",
-  // });
 }
 
 export async function clearGroupMessageAttachments(groupID: string) {

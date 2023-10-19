@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 import { openModal } from "../../components/Modal";
 import EditMembers from "../Groups/EditMembers";
 import { IGroup } from "../../interfaces";
+import AddMembers from "../Groups/AddMembers";
 
 const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
   const { selectedChat } = useChatsContext();
@@ -44,6 +45,12 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
         }
       >
         Edit Members
+      </MenuItem>
+      <MenuItem
+        py={"2.5"}
+        onClick={() => openModal(<AddMembers group={selectedChat as IGroup} />)}
+      >
+        Add Members
       </MenuItem>
     </MenuList>
   );
