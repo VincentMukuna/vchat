@@ -48,7 +48,7 @@ import { SERVER } from "../../utils/config";
 type ProfileProps = {
   user: IUserDetails;
 };
-const Profile = ({ user }: ProfileProps) => {
+const Profile = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   if (!currentUserDetails) return null;
 
@@ -75,7 +75,6 @@ const Profile = ({ user }: ProfileProps) => {
     },
   });
 
-  const isCurrentUser = user.userID === currentUser?.$id;
   return (
     <AnimatePresence>
       <motion.div
@@ -103,7 +102,9 @@ const Profile = ({ user }: ProfileProps) => {
               src={filesContent[0]?.content || currentUserDetails.avatarURL}
             />
           </div>
-          <span className="text-lg leading-6 tracking-wide">{user.name}</span>
+          <span className="text-lg leading-6 tracking-wide">
+            {currentUserDetails.name}
+          </span>
           <span className="text-sm text-gray11 dark:text-gray-400">
             {currentUserDetails?.about || "Hi there! I'm using VChat"}
           </span>
@@ -113,7 +114,7 @@ const Profile = ({ user }: ProfileProps) => {
           </span>
         </div>
         <div className="flex flex-col items-center w-full gap-4 mt-5 transition">
-          {isCurrentUser && (
+          {
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
               <motion.div>
@@ -128,7 +129,7 @@ const Profile = ({ user }: ProfileProps) => {
                 </ModalContent>
               </motion.div>
             </Modal>
-          )}
+          }
           <Button
             width={"48"}
             rounded={"md"}

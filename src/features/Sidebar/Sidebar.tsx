@@ -1,7 +1,4 @@
 import { useAppSelector } from "../../context/AppContext";
-import Chats from "../Chats/Chats";
-import Users from "../UsersList/Users";
-import * as Tabs from "@radix-ui/react-tabs";
 import {
   Modal,
   ModalOverlay,
@@ -14,13 +11,12 @@ import {
 } from "@chakra-ui/react";
 
 import { PlusIcon } from "../../components/Icons";
-import Profile from "../Profile/Profile";
 import { useAuth } from "../../context/AuthContext";
-import Settings from "../Settings/Settings";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { Box } from "@chakra-ui/react";
-import { blueDark, gray, slateDark } from "@radix-ui/colors";
+import { gray, slateDark } from "@radix-ui/colors";
+import { Outlet } from "react-router-dom";
 const Sidebar = () => {
   const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -76,25 +72,7 @@ const Sidebar = () => {
         </Modal>
       </div>
       <section className="flex flex-col overflow-x-hidden overflow-y-auto">
-        <Tabs.Content value="Chats" className="">
-          <Chats />
-        </Tabs.Content>
-        <Tabs.Content
-          value="Users"
-          forceMount={activePage === "Users" ? true : undefined}
-        >
-          <Users />
-        </Tabs.Content>
-
-        <Tabs.Content value="Profile">
-          <Profile user={currentUserDetails} />
-        </Tabs.Content>
-        <Tabs.Content value="Settings">
-          <Settings />
-        </Tabs.Content>
-        <Tabs.Content value="New Group">
-          Coming soon! Add Group feature
-        </Tabs.Content>
+        <Outlet />
       </section>
     </Box>
   );

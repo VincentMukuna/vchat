@@ -1,5 +1,5 @@
-import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { blue, blueDark, gray } from "@radix-ui/colors";
 import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
 import api from "../services/api";
@@ -9,9 +9,15 @@ import PasswordInput from "../components/PasswordInput";
 import OauthSignUp from "../components/OauthSignUp";
 
 function Register() {
-  const { register } = useAuth();
+  const { register, currentUser } = useAuth();
   const [registering, setRegistering] = useState(false);
+  const navigate = useNavigate();
   const { colorMode } = useColorMode();
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/home");
+    }
+  }, [currentUser]);
 
   type Credentials = {
     email: string;

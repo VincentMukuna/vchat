@@ -1,5 +1,5 @@
-import { FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { FormEvent, useEffect, useState } from "react";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { blue, blueDark, gray } from "@radix-ui/colors";
 import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
 import api from "../services/api";
@@ -10,7 +10,9 @@ import PasswordInput from "../components/PasswordInput";
 import OauthSignUp from "../components/OauthSignUp";
 
 function Login() {
-  const { logIn, isLoading } = useAuth();
+  const { logIn, isLoading, currentUser } = useAuth();
+  const navigate = useNavigate();
+
   const [verifying, setVerifying] = useState(false);
   const { colorMode } = useColorMode();
 
@@ -40,6 +42,12 @@ function Login() {
     logIn(credentials).finally(() => setVerifying(false));
   }
   const [item, setItem] = useState(true);
+
+  useEffect(() => {
+    if (currentUser) {
+      navigate("/home");
+    }
+  }, [currentUser]);
 
   if (isLoading) {
     return <Loading />;

@@ -1,5 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
 
@@ -35,13 +35,13 @@ export interface IAuthContext {
 const AuthContext = createContext<IAuthContext | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const navigate = useNavigate();
   const [currentUser, setCurrentUser] =
     useState<Models.User<Models.Preferences> | null>(null);
   const [currentUserDetails, setCurrentUserDetails] =
     useState<IUserDetails | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getUserDetails = async (user: Models.User<Models.Preferences>) => {
     try {
@@ -58,10 +58,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
-      navigate("/");
+      navigate("home");
     } catch (error) {
       setIsLoading(false);
-      navigate("/login");
+      navigate("login");
     }
   };
 

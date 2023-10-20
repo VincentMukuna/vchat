@@ -17,6 +17,7 @@ import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import { Avatar, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
+import { Link } from "react-router-dom";
 
 interface IChatProps {
   conversation: IChat | IGroup;

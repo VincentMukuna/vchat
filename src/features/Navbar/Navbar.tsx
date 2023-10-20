@@ -7,16 +7,15 @@ import {
   UserIcon,
   WheelIcon,
 } from "../../components/Icons";
-import * as Tabs from "@radix-ui/react-tabs";
 import { getCurrentUserDetails } from "../../services/userDetailsServices";
 import { logUserOut } from "../../services/sessionServices";
-import { useNavigate } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 import { Avatar, IconButton, useColorMode } from "@chakra-ui/react";
 
 const tabs = [
-  { value: "Chats", icon: <ChatIcon className="w-8 h-8" /> },
-  { value: "Users", icon: <UserIcon className="w-8 h-8" /> },
-  { value: "Settings", icon: <WheelIcon className="w-8 h-8" /> },
+  { value: "chats", icon: <ChatIcon className="w-8 h-8" /> },
+  { value: "users", icon: <UserIcon className="w-8 h-8" /> },
+  { value: "settings", icon: <WheelIcon className="w-8 h-8" /> },
 ];
 
 const Navbar = () => {
@@ -25,15 +24,14 @@ const Navbar = () => {
 
   const { toggleColorMode } = useColorMode();
 
-  const navigate = useNavigate();
-
   return (
     <nav className="flex  md:flex-col md:gap-8 md:w-[80px]   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate1 md:h-full gap-3">
       <div className="hidden md:flex">
-        <Tabs.Trigger
-          value="Profile"
+        <Link
+          to={"/profile"}
           className="mt-4 "
           onClick={() => {
+            redirect("profile");
             getCurrentUserDetails(currentUser).then((deets) => {
               setCurrentUserDetails(deets);
             });
@@ -44,12 +42,12 @@ const Navbar = () => {
             name={currentUserDetails.name}
             src={currentUserDetails.avatarURL}
           />
-        </Tabs.Trigger>
+        </Link>
       </div>
       <div className="flex items-center justify-around w-full md:flex-col md:gap-2 ">
         {tabs.map((tab, i) => {
           return (
-            <Tabs.Trigger key={i} asChild value={tab.value}>
+            <Link key={i} to={tab.value}>
               <div
                 className="flex flex-col gap-[2px] items-center justify-center px-2  py-1 md:py-3 w-16 text-xs tracking-wider rounded
                 hover:bg-dark-slate9
@@ -66,7 +64,7 @@ const Navbar = () => {
                 {tab.icon}
                 <span className="md:hidden">{tab.value}</span>
               </div>
-            </Tabs.Trigger>
+            </Link>
           );
         })}
       </div>
@@ -81,16 +79,16 @@ const Navbar = () => {
           <SunIcon className="w-8 h-8" />
         </IconButton>
 
-        <div
-          onClick={() =>
-            logUserOut().then(() => {
-              navigate("/login");
-            })
-          }
+        <Link
+          to={"/login"}
+          onClick={() => {
+            logUserOut();
+            redirect("/login");
+          }}
           className="flex items-center justify-center transition-all w-11 hover:bg-slate-600 hover:text-black"
         >
           <LogOutIcon className="w-8 h-8 " />
-        </div>
+        </Link>
       </div>
     </nav>
   );
