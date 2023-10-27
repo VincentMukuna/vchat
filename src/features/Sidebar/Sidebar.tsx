@@ -23,7 +23,6 @@ const Sidebar = () => {
   const { colorMode } = useColorMode();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
-
   return (
     <Box
       as={"aside"}

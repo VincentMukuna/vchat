@@ -108,6 +108,7 @@ const Input = ({}: InputProps) => {
       [message, ...cache.get(selectedChat.$id)?.data],
       { revalidate: false },
     );
+    mutate(`lastMessage ${selectedChat.$id}`, message, { revalidate: false });
     let promise = isGroup
       ? sendGroupMessage(selectedChat.$id, {
           body: message.body,

@@ -103,7 +103,8 @@ function Room() {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            response.payload.changeLog === "newtext" ||
+            (response.payload.changerID !== currentUserDetails.$id &&
+              response.payload.changeLog === "newtext") ||
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
           ) {

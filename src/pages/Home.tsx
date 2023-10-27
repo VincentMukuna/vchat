@@ -11,8 +11,6 @@ function Home() {
   const { activePage, setActivePage } = useAppSelector();
   const { selectedChat } = useChatsContext();
 
-  const MemoizedRoom = useCallback(Room, [selectedChat]);
-
   useEffect(() => {}, []);
   return (
     <>
@@ -26,7 +24,7 @@ function Home() {
              selectedChat ? "z-10" : "invisible md:visible"
            }`}
           >
-            <MemoizedRoom />
+            <Room />
           </Box>
         </AnimatePresence>
       </div>

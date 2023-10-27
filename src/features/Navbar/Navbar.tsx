@@ -9,7 +9,7 @@ import {
 } from "../../components/Icons";
 import { getCurrentUserDetails } from "../../services/userDetailsServices";
 import { logUserOut } from "../../services/sessionServices";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { Avatar, IconButton, useColorMode } from "@chakra-ui/react";
 
 const tabs = [
@@ -20,6 +20,7 @@ const tabs = [
 
 const Navbar = () => {
   const { currentUser, currentUserDetails, setCurrentUserDetails } = useAuth();
+  const { setActivePage } = useAppSelector();
   if (!currentUser || !currentUserDetails) return null;
 
   const { toggleColorMode } = useColorMode();
@@ -28,13 +29,14 @@ const Navbar = () => {
     <nav className="flex  md:flex-col md:gap-8 md:w-[80px]   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate1 md:h-full gap-3">
       <div className="hidden md:flex">
         <Link
-          to={"/profile"}
+          to={"profile"}
           className="mt-4 "
           onClick={() => {
             redirect("profile");
             getCurrentUserDetails(currentUser).then((deets) => {
               setCurrentUserDetails(deets);
             });
+            setActivePage("Profile");
           }}
         >
           <Avatar
@@ -47,7 +49,13 @@ const Navbar = () => {
       <div className="flex items-center justify-around w-full md:flex-col md:gap-2 ">
         {tabs.map((tab, i) => {
           return (
-            <Link key={i} to={tab.value}>
+            <Link
+              key={i}
+              to={tab.value}
+              onClick={() => {
+                setActivePage(tab.value[0]?.toUpperCase() + tab.value.slice(1));
+              }}
+            >
               <div
                 className="flex flex-col gap-[2px] items-center justify-center px-2  py-1 md:py-3 w-16 text-xs tracking-wider rounded
                 hover:bg-dark-slate9
