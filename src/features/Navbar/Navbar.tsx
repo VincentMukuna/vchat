@@ -19,7 +19,12 @@ const tabs = [
 ];
 
 const Navbar = () => {
-  const { currentUser, currentUserDetails, setCurrentUserDetails } = useAuth();
+  const {
+    currentUser,
+    currentUserDetails,
+    setCurrentUserDetails,
+    setCurrentUser,
+  } = useAuth();
   const { setActivePage } = useAppSelector();
   if (!currentUser || !currentUserDetails) return null;
 
@@ -90,8 +95,9 @@ const Navbar = () => {
         <Link
           to={"/login"}
           onClick={() => {
+            setCurrentUserDetails(null);
+            setCurrentUser(null);
             logUserOut();
-            redirect("/login");
           }}
           className="flex items-center justify-center transition-all w-11 hover:bg-slate-600 hover:text-black"
         >
