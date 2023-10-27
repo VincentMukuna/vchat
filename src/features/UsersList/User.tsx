@@ -49,7 +49,7 @@ function User({ user }: { user: IUserDetails }) {
         }
         name={user.name}
       />
-      <div className="flex flex-col justify-center 0">
+      <div className="flex flex-col justify-center ms-2">
         <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
           {isPersonal ? "You" : user.name}
         </span>
