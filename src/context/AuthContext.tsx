@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, useEffect } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  ReactNode,
+} from "react";
 import { redirect, useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
@@ -10,7 +16,7 @@ import { createDetailsDoc } from "../services/registerUserService";
 import toast from "react-hot-toast";
 
 type AuthProviderProps = {
-  children: React.JSX.Element;
+  children: ReactNode;
 };
 
 export interface IAuthContext {
