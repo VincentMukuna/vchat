@@ -10,14 +10,11 @@ import {
 import { getFormatedDate } from "../../services/dateServices";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import useSWR, { mutate } from "swr";
-import { clearChatMessages } from "../../services/chatMessageServices";
-import { toast } from "react-hot-toast";
+import useSWR from "swr";
 import api from "../../services/api";
-import { SERVER } from "../../utils/config";
 import { Avatar, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
-import { Link } from "react-router-dom";
+import { UserIcon } from "@heroicons/react/20/solid";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -101,15 +98,15 @@ const Chat = ({ conversation }: IChatProps) => {
         }
         src={isGroup ? conversation.avatarURL : contactDetails?.avatarURL}
       />
-      <div className="grid gap-1 ml-2 overflow-hidden shrink text-ellipsis">
-        <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
+      <div className="grid gap-[2px] ml-2 overflow-hidden shrink text-ellipsis">
+        <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
           {isGroup
             ? conversation.name
             : isPersonal
             ? "You"
             : contactDetails?.name}
         </span>
-        <span className="flex overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+        <span className="flex overflow-hidden font-sans text-[13px] italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
           {lastMessage?.body
             ? lastMessage.senderID === currentUserDetails.$id
               ? "Me: " + lastMessage.body
