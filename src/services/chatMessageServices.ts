@@ -65,17 +65,6 @@ export async function getChatMessageCount(chatID: string) {
 export async function getChatMessages(chatID: string) {
   const chatDoc = await getChatDoc(chatID);
   let chatMessages = chatDoc?.chatMessages;
-  if (chatMessages.length > 1) {
-    chatMessages.sort((a, b) => {
-      if (a.$createdAt < b.$createdAt) {
-        return 1;
-      } else if (a.$createdAt > b.$createdAt) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-  }
   return chatMessages as IChatMessage[];
 }
 

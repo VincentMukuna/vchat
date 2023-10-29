@@ -2,8 +2,6 @@ import { SERVER } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
 import { Query } from "appwrite";
-import { confirmAlert } from "../components/Alert/alertStore";
-import toast from "react-hot-toast";
 
 type IInitGroup = {
   name: string;
@@ -64,18 +62,6 @@ export async function getGroupMessages(groupID: string) {
     groupID,
   );
   let messages = groupDoc.groupMessages as IGroupMessage[];
-
-  if (messages.length > 1) {
-    messages.sort((a, b) => {
-      if (a.$createdAt < b.$createdAt) {
-        return 1;
-      } else if (a.$createdAt > b.$createdAt) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-  }
   return messages as IGroupMessage[];
 }
 

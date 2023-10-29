@@ -147,7 +147,7 @@ const Navbar = () => {
               colorMode === "dark" ? (
                 <SunIcon className="w-6 h-6" />
               ) : (
-                <MoonIcon className="w-6 h-6" />
+                <MoonIcon className="w-5 h-5" />
               )
             }
             className="flex items-center justify-center w-11 "

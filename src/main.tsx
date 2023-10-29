@@ -17,27 +17,18 @@ import Settings from "./features/Settings/Settings";
 
 const router = createBrowserRouter([
   {
-    path: "",
     element: <App />,
     children: [
       {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/",
+        path: "",
         element: <PrivateRoutes />,
         children: [
           {
-            path: "",
+            index: true,
             element: <Navigate to="home" />,
           },
           {
-            path: "/home",
+            path: "home",
             element: <Home />,
             children: [
               {
@@ -60,13 +51,17 @@ const router = createBrowserRouter([
                 path: "settings",
                 element: <Settings />,
               },
-              {
-                path: "*/:chatID",
-                element: <Chats />,
-              },
             ],
           },
         ],
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
       },
     ],
   },
@@ -75,7 +70,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <>
     <ColorModeScript initialColorMode="dark" />
-    <ChakraProvider resetCSS>
+    <ChakraProvider>
       <RouterProvider router={router} />
     </ChakraProvider>
   </>,

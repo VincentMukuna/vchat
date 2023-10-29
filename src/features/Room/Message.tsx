@@ -50,7 +50,7 @@ const Message = forwardRef<any, MessageProps>(
     const isGroupMessage = !!(
       message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES
     );
-    let mine = message.senderID === currentUserDetails.$id;
+    const mine = message.senderID === currentUserDetails.$id;
 
     const { data: senderDetails } = useSWR(
       () => {

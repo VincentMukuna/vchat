@@ -30,6 +30,19 @@ import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 
+export function compareCreatedAt(a: any, b: any) {
+  const dateA = new Date(a.$createdAt);
+  const dateB = new Date(b.$createdAt);
+
+  if (dateA < dateB) {
+    return 1;
+  } else if (dateA > dateB) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
 function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
@@ -48,20 +61,21 @@ function Room() {
     );
 
   const getRoomMessages = async () => {
+    let messages: any[] = [];
     if (isGroup) {
-      let messages = await getGroupMessages(selectedChat.$id);
-      return messages;
+      messages = await getGroupMessages(selectedChat.$id);
+    } else if (!selectedChat || !recepient) {
+      return undefined;
+    } else {
+      messages = await getChatMessages(selectedChat.$id);
     }
-    if (!selectedChat || !recepient) return undefined;
-    let messages = await getChatMessages(selectedChat.$id);
-    return messages;
+    return messages.sort(compareCreatedAt);
   };
 
   const {
     data: messages,
     error,
     isLoading,
-    isValidating,
     mutate,
   } = useSWR(selectedChat?.$id, getRoomMessages, {});
 

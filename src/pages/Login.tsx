@@ -60,7 +60,7 @@ function Login() {
     >
       <div className=" flex  items-center  [&>div]:w-full transition-all  ">
         <FocusLock>
-          <div className="grid gap-4 p-6 overflow-hidden border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
+          <div className="grid gap-4 p-6 border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
             <div className="flex flex-col space-y-2 ">
               <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
                 Log in to your account
