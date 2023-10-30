@@ -7,6 +7,7 @@ import {
   RealtimeResponseEvent,
   Models,
   Functions,
+  Query,
 } from "appwrite";
 import { SERVER } from "../utils/config";
 import { IUserPrefs } from "../interfaces";
@@ -92,10 +93,11 @@ let api = {
     databaseId: string,
     collectionId: string,
     documentId: string,
+    queries?: string[],
   ) => {
     return api
       .provider()
-      .database.getDocument(databaseId, collectionId, documentId);
+      .database.getDocument(databaseId, collectionId, documentId, queries);
   },
   //
   listDocuments(databaseId: string, collectionId: string, queries?: string[]) {
