@@ -136,7 +136,7 @@ const Message = forwardRef<any, MessageProps>(
             message.$id,
             { body: newMessage },
           );
-          toast.success("Message succesfully edited");
+          toast.success("Message edited succesfully ");
           mutate(selectedChat?.$id);
         } catch (error) {
           toast.error("Something went wrong!");
@@ -188,7 +188,7 @@ const Message = forwardRef<any, MessageProps>(
             className={`flex relative gap-3
               ps-4  py-2 pe-4  ${
                 mine
-                  ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-br-none self-end pb-3 "
+                  ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-br-none self-end "
                   : "bg-slate-700 dark:bg-dark-tomato6  dark:text-dark-gray12 rounded-bl-none text-gray-100 "
               } rounded-3xl w-fit max-w-[400px] break-words`}
           >
