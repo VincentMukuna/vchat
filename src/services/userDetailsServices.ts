@@ -1,4 +1,4 @@
-import { AppwriteException, Models } from "appwrite";
+import { AppwriteException, Models, Query } from "appwrite";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { IUserDetails } from "../interfaces";
