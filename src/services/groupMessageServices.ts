@@ -2,6 +2,7 @@ import { SERVER } from "../utils/config";
 import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
 import { Query } from "appwrite";
+import { updateUserDetails } from "./userDetailsServices";
 
 type IInitGroup = {
   name: string;
@@ -214,4 +215,10 @@ export async function deleteGroup(groupID: string) {
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
   );
+}
+
+export async function leaveGroup(userDetailsID: string, groupID: string) {
+  let groups = await getGroups(userDetailsID);
+  let newGroups = groups.filter((group) => group.$id !== groupID);
+  await updateUserDetails(userDetailsID, { groups: newGroups });
 }
