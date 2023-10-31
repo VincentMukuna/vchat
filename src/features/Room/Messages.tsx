@@ -9,7 +9,10 @@ interface MessagesProps {
 
 function Messages({ messages, onDelete }: MessagesProps) {
   return (
-    <div className="relative self-stretch overflow-y-auto grow">
+    <div
+      id="messages-container"
+      className="relative self-stretch overflow-x-hidden overflow-y-auto grow"
+    >
       <div className="flex flex-col-reverse h-full p-2 pb-4 overflow-y-scroll">
         {messages.length > 0 ? (
           <AnimatePresence initial={false} mode="popLayout">
@@ -19,6 +22,8 @@ function Messages({ messages, onDelete }: MessagesProps) {
                 onDelete={onDelete}
                 key={message.$id}
                 i={i}
+                prev={messages[i + 1]}
+                next={messages[i - 1]}
               />
             ))}
           </AnimatePresence>
