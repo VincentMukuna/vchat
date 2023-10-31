@@ -5,6 +5,7 @@ import {
   deleteGroup,
   getGroupDetails,
   getGroupMessageCount,
+  leaveGroup,
   updateGroupAvatar,
   updateGroupDetails,
 } from "../../services/groupMessageServices";
@@ -126,6 +127,7 @@ const RoomDetails = () => {
 
   function handleDeleteChat() {
     let promise: Promise<void>;
+    removeConversation();
     if (isGroup) {
       promise = deleteGroup(selectedChat.$id);
     } else {
@@ -134,22 +136,30 @@ const RoomDetails = () => {
         (recepient as any).$id,
       );
     }
-    toast.promise(promise, {
-      loading: "Deleting",
-      error: "Something went wrong, try again later",
-      success: "Deleted",
+    promise.catch(() => {
+      toast.error("Something went wrong");
     });
-    promise.then(() => {
-      mutate(
-        "conversations",
-        getConversations().filter(
-          (conversation) => conversation.$id !== selectedChat!.$id,
-        ),
-        {
-          revalidate: false,
-        },
-      );
-      setSelectedChat(undefined);
+  }
+
+  function removeConversation() {
+    let chatID = selectedChat!.$id;
+    mutate(
+      "conversations",
+      getConversations().filter((conversation) => conversation.$id !== chatID),
+      {
+        revalidate: false,
+      },
+    );
+    setSelectedChat(undefined);
+  }
+
+  async function handleExitGroup() {
+    let chatID = selectedChat!.$id;
+    removeConversation();
+    let promise = leaveGroup(currentUserDetails!.$id, chatID);
+
+    promise.catch(() => {
+      toast.error("Something went wrong! ");
     });
   }
   return (
@@ -327,10 +337,18 @@ const RoomDetails = () => {
 
         <HStack>
           <Button
+            hidden={!isGroup}
             size={"sm"}
             variant={"outline"}
             leftIcon={<ArrowRightOnRectangleIcon className="w-5 h-5" />}
-            onClick={() => {}}
+            onClick={() => {
+              confirmAlert({
+                message: `Are you sure you want to leave this conversation?`,
+                title: `Exit Discussion `,
+                confirmText: `Yes, I'm sure`,
+                onConfirm: () => handleExitGroup(),
+              });
+            }}
           >
             Leave
           </Button>
