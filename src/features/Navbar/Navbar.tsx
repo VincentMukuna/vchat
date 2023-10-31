@@ -88,10 +88,11 @@ const Navbar = () => {
               hasArrow
               placement="right"
               py={2}
+              rounded={"md"}
               fontSize={"sm"}
               fontWeight={"normal"}
-              bg={colorMode === "dark" ? indigoDark.indigo1 : indigo.indigo8}
-              textColor={colorMode === "dark" ? indigo.indigo3 : "black"}
+              bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
+              textColor={colorMode === "light" ? indigo.indigo3 : "black"}
             >
               <Link
                 to={tab.value}
@@ -132,9 +133,10 @@ const Navbar = () => {
           placement="right"
           py={2}
           fontSize={"sm"}
+          rounded={"md"}
           fontWeight={"normal"}
-          bg={colorMode === "dark" ? indigoDark.indigo1 : indigo.indigo8}
-          textColor={colorMode === "dark" ? indigo.indigo3 : "black"}
+          bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
+          textColor={colorMode === "light" ? indigo.indigo3 : "black"}
         >
           <IconButton
             onClick={toggleColorMode}
@@ -158,10 +160,11 @@ const Navbar = () => {
           hasArrow
           placement="right"
           py={2}
+          rounded={"md"}
           fontSize={"sm"}
           fontWeight={"normal"}
-          bg={colorMode === "dark" ? indigoDark.indigo1 : indigo.indigo8}
-          textColor={colorMode === "dark" ? indigo.indigo3 : "black"}
+          bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
+          textColor={colorMode === "light" ? indigo.indigo3 : "black"}
         >
           <Link
             to={"/login"}
