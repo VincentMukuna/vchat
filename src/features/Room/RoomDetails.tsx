@@ -8,7 +8,7 @@ import {
   updateGroupAvatar,
   updateGroupDetails,
 } from "../../services/groupMessageServices";
-import useSWR, { mutate } from "swr";
+import useSWR, { mutate, useSWRConfig } from "swr";
 import {
   getChatDoc,
   getChatMessageCount,
@@ -50,6 +50,7 @@ import { confirmAlert } from "../../components/Alert/alertStore";
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat } = useChatsContext();
   const { currentUserDetails } = useAuth();
+  const { cache } = useSWRConfig();
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
 
@@ -117,33 +118,39 @@ const RoomDetails = () => {
     }
   }, [selectedChat]);
 
+  function getConversations() {
+    if (cache.get("conversations")?.data) {
+      return cache.get("conversations")?.data as (IChat | IGroup)[];
+    } else return [];
+  }
+
   function handleDeleteChat() {
+    let promise: Promise<void>;
     if (isGroup) {
-      let promise = deleteGroup(selectedChat.$id);
-      toast.promise(promise, {
-        loading: "Deleting",
-        error: "Something went wrong, try again later",
-        success: "Group deleted",
-      });
-      promise.then(() => {
-        setSelectedChat(undefined);
-        mutate(currentUserDetails?.$id);
-      });
+      promise = deleteGroup(selectedChat.$id);
     } else {
-      let promise = deleteContact(
+      promise = deleteContact(
         (selectedChat as IChat).$id,
         (recepient as any).$id,
       );
-      toast.promise(promise, {
-        loading: "Deleting",
-        error: "Something went wrong, try again later",
-        success: "Chat deleted",
-      });
-      promise.then(() => {
-        setSelectedChat(undefined);
-        mutate(currentUserDetails?.$id);
-      });
     }
+    toast.promise(promise, {
+      loading: "Deleting",
+      error: "Something went wrong, try again later",
+      success: "Deleted",
+    });
+    promise.then(() => {
+      mutate(
+        "conversations",
+        getConversations().filter(
+          (conversation) => conversation.$id !== selectedChat!.$id,
+        ),
+        {
+          revalidate: false,
+        },
+      );
+      setSelectedChat(undefined);
+    });
   }
   return (
     <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto bg-gray2 dark:bg-dark-slate2 dark:text-white">
