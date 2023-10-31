@@ -32,6 +32,7 @@ export function compareUpdatedAt(a: any, b: any) {
 
 const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
+
   const { setActivePage } = useAppSelector();
   const { colorMode } = useColorMode();
 
@@ -48,12 +49,13 @@ const Chats = () => {
     ),
   );
 
-  async function getConversations(userDetailsDocID: string) {
+  async function getConversations() {
+    if (!currentUserDetails) return undefined;
     let conversations: (IGroup | IChat)[] = [];
 
-    let chatDocs = await getUserChats(userDetailsDocID);
+    let chatDocs = await getUserChats(currentUserDetails.$id);
 
-    let groupDocs = await getGroups(userDetailsDocID);
+    let groupDocs = await getGroups(currentUserDetails.$id);
 
     conversations = [...chatDocs, ...groupDocs];
     conversations.sort(compareUpdatedAt);
@@ -67,7 +69,7 @@ const Chats = () => {
     isLoading,
     isValidating,
     mutate,
-  } = useSWR(currentUserDetails.$id, getConversations, {});
+  } = useSWR("conversations", getConversations, {});
 
   // Update local chats data when the data is refreshed
   useEffect(() => {
