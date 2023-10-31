@@ -35,6 +35,7 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
       leastDestructiveRef={cancelRef}
       onClose={onClose}
       isCentered={true}
+      size={"sm"}
     >
       <AlertDialogOverlay />
       <AlertDialogContent>
