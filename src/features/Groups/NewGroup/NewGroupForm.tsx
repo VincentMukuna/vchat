@@ -38,7 +38,7 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
       error: "Couldn't create group",
     });
     promise.then(() => {
-      mutate(currentUserDetails.$id);
+      mutate("conversations");
     });
     promise.finally(() => onClose());
   };
