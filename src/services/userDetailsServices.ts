@@ -1,8 +1,10 @@
 import { AppwriteException, Models, Query } from "appwrite";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { IUserDetails } from "../interfaces";
+import { IChat, IUserDetails } from "../interfaces";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";
+import toast from "react-hot-toast";
+import { mutate } from "swr";
 export async function getSession() {
   try {
     let user = await api.getAccount();
@@ -59,43 +61,38 @@ export async function editUserDetails(
 export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
-) {
+): Promise<{ existed: boolean; chat: IChat }> {
   //check if chat doc exists
-  if (adderDetailsID === addeeDetailsID) {
-    let deets = await getUserChats(addeeDetailsID);
-    deets.forEach((chat) => {
-      if (
-        chat.participants.length === 1 &&
-        chat.participants[0].$id === adderDetailsID
-      ) {
-        throw new Error("You already have a personal chat");
-      }
-    });
-  } else {
-    let deets = await getUserChats(addeeDetailsID);
-    deets.forEach((chat) =>
-      chat.participants.forEach((participant) => {
-        if (participant.$id === adderDetailsID) {
-          throw new Error("Already have a chat with user");
-        }
-      }),
-    );
+  let chats = await getUserChats(adderDetailsID);
+  let chatsArray = chats.map((chat, i) => ({
+    chatIndex: i,
+    participants: chat.participants.map((participant) => participant.$id),
+  }));
+  for (let chat of chatsArray) {
+    if (chat.participants.includes(addeeDetailsID)) {
+      return { existed: true, chat: chats[chat.chatIndex] as IChat };
+    }
   }
 
   //Only add one chat Id if its a personal chat
-  await api.createDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, {
-    participants:
-      adderDetailsID === addeeDetailsID
-        ? [addeeDetailsID]
-        : [adderDetailsID, addeeDetailsID],
-  });
-
+  let doc = await api.createDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHATS,
+    {
+      participants:
+        adderDetailsID === addeeDetailsID
+          ? [addeeDetailsID]
+          : [adderDetailsID, addeeDetailsID],
+    },
+  );
   api.updateDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     addeeDetailsID,
     { changeLog: "newchat" },
   );
+
+  return { existed: false, chat: doc as IChat };
 }
 
 export async function deleteContact(chatID: string, contactDetailsID: string) {

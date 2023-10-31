@@ -1,4 +1,4 @@
-import { mutate } from "swr";
+import { mutate, useSWRConfig } from "swr";
 import { IUserDetails } from "../../interfaces";
 import { addContact } from "../../services/userDetailsServices";
 import { useAuth } from "../../context/AuthContext";
@@ -22,28 +22,46 @@ import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import { MapPinIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray, slateDark, slateDarkA } from "@radix-ui/colors";
+import { useChatsContext } from "../../context/ChatsContext";
+import { useState } from "react";
 
 function User({ user }: { user: IUserDetails }) {
   const { currentUserDetails } = useAuth();
+  const { setSelectedChat, setRecepient } = useChatsContext();
   if (!currentUserDetails) return null;
   const isPersonal = user.$id === currentUserDetails.$id;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const [loading, setLoading] = useState(false);
+
+  const { cache } = useSWRConfig();
+
+  function getConversations() {
+    if (cache.get("conversations")?.data) {
+      return cache.get("conversations")?.data;
+    } else return [];
+  }
 
   const handleClick = async () => {
+    setLoading(true);
     let addContactStatus = addContact(currentUserDetails.$id, user.$id);
     addContactStatus
-      .then(() => mutate(currentUserDetails.îd))
-      .catch((error: any) => {});
-    toast.promise(addContactStatus, {
-      loading: "Adding contact...",
-      success: `Success! ${
-        isPersonal
-          ? "You now have a personal chat "
-          : "You can now message " + user.name
-      }`,
-      error: (error) => `${error.message}`,
-    });
+      .then((result) => {
+        setSelectedChat(result.chat);
+        setRecepient(user);
+        if (!result.existed) {
+          mutate("conversations", [result.chat, ...getConversations()], {
+            revalidate: false,
+          });
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+        onClose();
+      })
+      .catch((error: any) => {
+        toast.error("Something went wrong");
+      });
   };
   return (
     <Card
@@ -79,7 +97,7 @@ function User({ user }: { user: IUserDetails }) {
           {user.about}
         </span>
       </div>
-      <Modal isOpen={isOpen} onClose={onClose} size={"sm"}>
+      <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
         <ModalOverlay
           bg="none"
           backdropFilter="auto"
@@ -87,7 +105,9 @@ function User({ user }: { user: IUserDetails }) {
           backdropBlur="1px"
         />
         <ModalContent bg={slateDark.slate2} shadow={"none"}>
-          <ModalHeader>User Details</ModalHeader>
+          <ModalHeader alignSelf={"center"}>{`${
+            user.name.split(" ")[0]
+          }'s Profile`}</ModalHeader>
           <ModalCloseButton />
           <ModalBody className="flex flex-col items-center justify-center gap-2">
             <Avatar size={"2xl"} name={user?.name} src={user.avatarURL} />
@@ -104,7 +124,10 @@ function User({ user }: { user: IUserDetails }) {
 
           <ModalFooter justifyContent={"center"}>
             <Button
-              onClick={onClose}
+              isDisabled={loading}
+              onClick={() => {
+                handleClick();
+              }}
               width={"48"}
               rounded={"md"}
               bg={blueDark.blue5}
