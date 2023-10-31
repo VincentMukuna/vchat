@@ -29,7 +29,7 @@ const Chat = ({ conversation }: IChatProps) => {
     IUserDetails | undefined
   >();
 
-  const isGroup = !!conversation?.groupMessages;
+  const isGroup = conversation.$collectionId === "groups";
   const isPersonal =
     !isGroup &&
     conversation.participants?.every(
