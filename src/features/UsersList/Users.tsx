@@ -64,8 +64,8 @@ function Users() {
   } else {
     return (
       <Stack spacing={0} px={1}>
-        <span className="w-2/3 ml-2 text-sm italic text-gray8">
-          Click on a user to create a chat with them
+        <span className="w-2/3 mb-2 ml-2 text-sm italic text-gray8">
+          Click on a user to view their profile
         </span>
         {localUsers?.map((user) => <User key={user.$id} user={user} />)}
       </Stack>
