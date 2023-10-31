@@ -70,6 +70,9 @@ const Input = ({}: InputProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (messageBody.trim() === "") {
+      return;
+    }
     setSending(true);
     setMessageBody("");
 
@@ -106,8 +109,12 @@ const Input = ({}: InputProps) => {
     await mutate(
       selectedChat.$id,
       [message, ...cache.get(selectedChat.$id)?.data],
-      { revalidate: false },
+      { revalidate: true },
     );
+    let container = document.getElementById(
+      "messages-container",
+    ) as HTMLDivElement;
+    container.scrollTo({ top: 0, behavior: "smooth" });
     mutate(`lastMessage ${selectedChat.$id}`, message, { revalidate: false });
     let promise = isGroup
       ? sendGroupMessage(selectedChat.$id, {
@@ -173,8 +180,9 @@ const Input = ({}: InputProps) => {
             onChange={handleChange}
             onBlur={handleChange}
             maxLength={1500}
+            autoFocus
           ></input>
-          {messageBody && (
+          {messageBody.trim() && (
             <button
               type="submit"
               disabled={sending}
