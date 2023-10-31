@@ -43,11 +43,7 @@ const Chats = () => {
   // Local state to store chats data
   const [localConversations, setLocalConversations] = useState<
     (IChat | IGroup)[]
-  >(
-    [...currentUserDetails.chats, ...currentUserDetails.groups].sort(
-      compareUpdatedAt,
-    ),
-  );
+  >([...currentUserDetails.groups].sort(compareUpdatedAt));
 
   async function getConversations() {
     if (!currentUserDetails) return undefined;
