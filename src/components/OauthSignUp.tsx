@@ -59,7 +59,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
           px={"12"}
           isLoading={loading}
           loadingText={"Verifying"}
-          onClick={() => onClick("google")}
+          onClick={() => onClick("github")}
         >
           GitHub
         </Button>
