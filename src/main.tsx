@@ -1,6 +1,12 @@
 import ReactDOM from "react-dom/client";
+
 import App from "./App";
-import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  ColorModeScript,
+  ThemeConfig,
+  extendTheme,
+} from "@chakra-ui/react";
 import {
   Navigate,
   RouterProvider,
@@ -14,6 +20,8 @@ import Chats from "./features/Chats/Chats";
 import Users from "./features/UsersList/Users";
 import Profile from "./features/Profile/Profile";
 import Settings from "./features/Settings/Settings";
+import { blueDark, gray, slateDark } from "@radix-ui/colors";
+import { modalTheme } from "./services/theming/modalTheme";
 
 const router = createBrowserRouter([
   {
@@ -67,10 +75,21 @@ const router = createBrowserRouter([
   },
 ]);
 
+let config: ThemeConfig = {
+  initialColorMode: "dark",
+  useSystemColorMode: false,
+};
+const theme = extendTheme({
+  config,
+  components: {
+    Modal: modalTheme,
+  },
+});
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <>
     <ColorModeScript initialColorMode="dark" />
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <RouterProvider router={router} />
     </ChakraProvider>
   </>,

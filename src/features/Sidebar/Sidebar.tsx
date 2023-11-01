@@ -51,12 +51,7 @@ const Sidebar = () => {
           scrollBehavior="outside"
         >
           <ModalOverlay />
-          <ModalContent
-            bg={colorMode === "dark" ? slateDark.slate1 : gray.gray2}
-            height={"90vh"}
-            overflowY={"auto"}
-            className="border"
-          >
+          <ModalContent>
             <ModalHeader className="flex flex-col w-full gap-1 text-xl font-bold dark:text-white text-dark-gray3">
               New Group
               <div className="font-md text-[14px] tracking-wide dark:text-gray6 text-dark-gray6 ">

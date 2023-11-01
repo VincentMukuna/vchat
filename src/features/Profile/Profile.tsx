@@ -118,11 +118,7 @@ const Profile = () => {
             <Modal isOpen={isOpen} onClose={onClose}>
               <ModalOverlay />
               <motion.div>
-                <ModalContent
-                  bg={colorMode === "light" ? gray.gray2 : slateDark.slate1}
-                  overflow={"hidden"}
-                  className="border"
-                >
+                <ModalContent className="border">
                   <ModalHeader> Edit your details</ModalHeader>
                   <ModalCloseButton />
                   <EditUserDetails onClose={onClose} />

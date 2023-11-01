@@ -63,13 +63,8 @@ const UserProfileModal = ({ isOpen, onClose, user }: UserProfileProps) => {
   };
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
-      <ModalOverlay
-        bg="none"
-        backdropFilter="auto"
-        backdropInvert="10%"
-        backdropBlur="1px"
-      />
-      <ModalContent bg={slateDark.slate2} shadow={"none"}>
+      <ModalOverlay />
+      <ModalContent>
         <ModalHeader alignSelf={"center"}>{`${
           user.name.split(" ")[0]
         }'s Profile`}</ModalHeader>

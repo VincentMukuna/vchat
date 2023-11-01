@@ -34,12 +34,7 @@ const VModal = () => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent
-        bg={colorMode === "light" ? gray.gray2 : slateDark.slate1}
-        className="border"
-      >
-        {state.modalContent}
-      </ModalContent>
+      <ModalContent className="border">{state.modalContent}</ModalContent>
     </Modal>
   );
 };
