@@ -139,7 +139,7 @@ const Profile = () => {
             _hover={
               colorMode === "light"
                 ? { bg: blueDark.blue7, color: gray.gray1 }
-                : {}
+                : { bg: blueDark.blue7 }
             }
           >
             Edit Info

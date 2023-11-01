@@ -5,12 +5,14 @@ import { ClipLoader } from "react-spinners";
 import useSWR from "swr";
 import User from "./User";
 import { useEffect, useState } from "react";
-import { Divider, Stack } from "@chakra-ui/react";
+import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
+import { blueDark, gray } from "@radix-ui/colors";
 
 function Users() {
   const [localUsers, setLocalUsers] = useState<IUserDetails[]>();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
+  const { colorMode } = useColorMode();
 
   const {
     data: users,
@@ -31,12 +33,20 @@ function Users() {
           <p>An error occurred while fetching users</p>
         </div>
 
-        <button
+        <Button
+          width={"44"}
+          rounded={"md"}
           onClick={getUsers}
-          className="w-3/5 px-4 py-3 text-gray-200 bg-purple-700 rounded-full hover:bg-purple-900"
+          bg={blueDark.blue5}
+          color={colorMode === "dark" ? gray.gray2 : gray.gray1}
+          _hover={
+            colorMode === "light"
+              ? { bg: blueDark.blue7, color: gray.gray1 }
+              : { bg: blueDark.blue7 }
+          }
         >
           Refresh
-        </button>
+        </Button>
       </div>
     );
   } else if (isLoading) {
@@ -46,25 +56,10 @@ function Users() {
         Fetching users...
       </div>
     );
-  } else if (!isValidating && !isLoading && users?.length === 0) {
-    return (
-      <div className="flex flex-col items-center px-10 gap-7">
-        <span className="text-xl">Seems you're our first user!</span>
-        <div className="flex flex-col items-center gap-2">
-          <span className="flex items-center italic text-center text-sky-100">
-            Simulate a real chat experience with the personal chat feature in
-            the meantime
-          </span>
-          <button className="px-3 py-2 bg-purple-800 rounded ">
-            Personal Chat
-          </button>
-        </div>
-      </div>
-    );
   } else {
     return (
       <Stack spacing={0} px={1}>
-        <span className="w-2/3 mb-2 ml-2 text-sm italic text-gray8">
+        <span className="self-center w-2/3 mb-2 ml-2 text-sm italic text-gray8">
           Click on a user to view their profile
         </span>
         {localUsers?.map((user) => <User key={user.$id} user={user} />)}

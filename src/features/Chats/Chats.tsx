@@ -16,6 +16,8 @@ import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { blueDark, gray } from "@radix-ui/colors";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
+import toast from "react-hot-toast";
+import { Link, useNavigate } from "react-router-dom";
 
 export function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);
@@ -32,8 +34,10 @@ export function compareUpdatedAt(a: any, b: any) {
 
 const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
-
   const { setActivePage } = useAppSelector();
+
+  const navigate = useNavigate();
+
   const { colorMode } = useColorMode();
 
   const { cache } = useSWRConfig();
@@ -62,9 +66,8 @@ const Chats = () => {
   let {
     data: conversations,
     error: chatsError,
-    isLoading,
-    isValidating,
     mutate,
+    isLoading,
   } = useSWR("conversations", getConversations, {});
 
   // Update local chats data when the data is refreshed
@@ -88,12 +91,36 @@ const Chats = () => {
       unsubscribe();
     };
   }, [currentUserDetails]);
-
+  // if (isLoading) {
+  //   return (
+  //     <div className="relative flex flex-col items-center justify-center w-full top-1/3">
+  //       <ClipLoader color="#8C5959" />
+  //       Fetching chats...
+  //     </div>
+  //   );
+  // } else
   if (chatsError) {
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col items-center gap-2">
         Whoops! Error fetching chats
-        <p>{chatsError.message}</p>
+        <p>{chatsError?.message}</p>
+        <Button
+          width={"44"}
+          rounded={"md"}
+          onClick={() => {
+            mutate();
+            toast("Reloading");
+          }}
+          bg={blueDark.blue5}
+          color={colorMode === "dark" ? gray.gray2 : gray.gray1}
+          _hover={
+            colorMode === "light"
+              ? { bg: blueDark.blue7, color: gray.gray1 }
+              : { bg: blueDark.blue7 }
+          }
+        >
+          Reload
+        </Button>
       </div>
     );
   } else if (
@@ -116,6 +143,7 @@ const Chats = () => {
           py={"6"}
           leftIcon={<UserPlusIcon className="w-5 h-5 " />}
           onClick={() => {
+            navigate("users");
             setActivePage("Users");
           }}
         >

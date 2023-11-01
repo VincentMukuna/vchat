@@ -14,7 +14,6 @@ import useSWR from "swr";
 import api from "../../services/api";
 import { Avatar, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
-import { UserIcon } from "@heroicons/react/20/solid";
 
 interface IChatProps {
   conversation: IChat | IGroup;
