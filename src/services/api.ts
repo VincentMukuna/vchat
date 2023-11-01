@@ -43,13 +43,13 @@ let api = {
   },
 
   handleOauth(provider: string = "google") {
-    return api.provider().account.createOAuth2Session(
-      provider,
-      "http://vchat-messenger.vercel.app/login",
-      "http://vchat-messenger.vercel.app/register",
-
-      ["profile"],
-    );
+    return api
+      .provider()
+      .account.createOAuth2Session(
+        provider,
+        SERVER.OAUTH_SUCCESS,
+        SERVER.OAUTH_FAILURE,
+      );
   },
 
   //Session control

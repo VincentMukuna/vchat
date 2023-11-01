@@ -13,4 +13,11 @@ export const SERVER = {
   BUCKET_ID_GROUP_ATTACHMENTS: "group-message-attachments",
   DOCUMENT_ID_GLOBAL_CHAT: "main-lobby",
   FUNCTION_ID_FUNCS: "funcs",
+  OAUTH_SUCCESS: "https://vchat-messenger.vercel.app/login",
+  OAUTH_FAILURE: "https://vchat-messenger.vercel.app/register",
+
+  /* dev*/
+
+  // OAUTH_SUCCESS: "https://localhost:5173",
+  // OAUTH_FAILURE: "https://localhost:5173",
 };

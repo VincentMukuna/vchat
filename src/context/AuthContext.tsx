@@ -92,7 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   async function logIn(credentials: { email: string; password: string }) {
     try {
       await api.createSession(credentials.email, credentials.password);
-      getUserOnLoad();
+      await getUserOnLoad();
     } catch (error: any) {
       toast.error(error.message);
     }
