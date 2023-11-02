@@ -1,4 +1,4 @@
-import { blueDark, indigoDark, slate } from "@radix-ui/colors";
+import { blueDark, gray, indigoDark, slate } from "@radix-ui/colors";
 import React from "react";
 import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
@@ -42,7 +42,7 @@ const GroupDetailsForm = ({
         e.preventDefault();
         next();
       }}
-      className="relative flex flex-col h-full gap-3 mt-8 space-y-2 "
+      className="relative flex flex-col h-full gap-5 mt-4 space-y-2 "
     >
       <div className="relative self-center ">
         <IconButton
@@ -54,7 +54,7 @@ const GroupDetailsForm = ({
           bg={"transparent"}
           className="z-20 -right-10"
         />
-        <Avatar size={"2xl"} name={name} src={filesContent[0]?.content} />
+        <Avatar size={"xl"} name={name} src={filesContent[0]?.content} />
       </div>
       <div className="grid gap-2">
         <label htmlFor="name" className="text-sm leading-none text-gray10">
@@ -72,6 +72,12 @@ const GroupDetailsForm = ({
         />
       </div>
       <div className="grid gap-2">
+        <label
+          htmlFor="description"
+          className="text-sm leading-none text-gray10"
+        >
+          Description :
+        </label>
         <Input
           max={50}
           type="text"
@@ -84,14 +90,8 @@ const GroupDetailsForm = ({
         />
       </div>
 
-      <div className="flex flex-row-reverse w-full mt-auto ">
-        <Button
-          type="submit"
-          bg={blueDark.blue3}
-          _hover={{ bg: blueDark.blue4 }}
-          color={slate.slate1}
-          maxW={"48"}
-        >
+      <div className="flex flex-row-reverse w-full mt-auto text-gray2 ">
+        <Button type="submit" w={"48"} color={gray.gray2}>
           Add Members
         </Button>
       </div>

@@ -130,13 +130,7 @@ const Profile = () => {
             width={"48"}
             rounded={"md"}
             onClick={onOpen}
-            bg={blueDark.blue5}
             color={colorMode === "dark" ? gray.gray2 : gray.gray1}
-            _hover={
-              colorMode === "light"
-                ? { bg: blueDark.blue7, color: gray.gray1 }
-                : { bg: blueDark.blue7 }
-            }
           >
             Edit Info
           </Button>

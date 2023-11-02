@@ -17,7 +17,6 @@ function Users() {
   const {
     data: users,
     error,
-    isValidating,
     isLoading,
   } = useSWR("users", getUsers, { keepPreviousData: true });
 

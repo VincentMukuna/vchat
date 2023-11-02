@@ -84,13 +84,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
           width={"40"}
           rounded={"md"}
           onClick={handleAddMembers}
-          bg={blueDark.blue5}
           color={colorMode === "dark" ? gray.gray2 : gray.gray1}
-          _hover={
-            colorMode === "light"
-              ? { bg: blueDark.blue7, color: gray.gray1 }
-              : {}
-          }
           title="save changes"
           isDisabled={value.length < 1}
         >

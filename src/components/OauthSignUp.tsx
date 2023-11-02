@@ -21,6 +21,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
       </div>
       <div className="grid gap-2 transition-all md:gap-6 md:grid-cols-2">
         <Button
+          variant={"outline"}
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -43,6 +44,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
         </Button>
 
         <Button
+          variant={"outline"}
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"

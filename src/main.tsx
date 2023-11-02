@@ -22,6 +22,7 @@ import Profile from "./features/Profile/Profile";
 import Settings from "./features/Settings/Settings";
 import { blueDark, gray, slateDark } from "@radix-ui/colors";
 import { modalTheme } from "./services/theming/modalTheme";
+import { butttonTheme } from "./services/theming/buttonTheme";
 
 const router = createBrowserRouter([
   {
@@ -83,6 +84,7 @@ const theme = extendTheme({
   config,
   components: {
     Modal: modalTheme,
+    Button: butttonTheme,
   },
 });
 

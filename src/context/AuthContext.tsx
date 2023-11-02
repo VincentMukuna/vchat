@@ -10,10 +10,14 @@ import { useNavigate } from "react-router-dom";
 import { Models } from "appwrite";
 
 import { IUserDetails } from "../interfaces";
-import { getCurrentUserDetails } from "../services/userDetailsServices";
+import {
+  getCurrentUserDetails,
+  getUsers,
+} from "../services/userDetailsServices";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
 import toast from "react-hot-toast";
+import { preload } from "swr";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -65,6 +69,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
       navigate("home");
+      preload("users", getUsers);
     } catch (error) {
       setIsLoading(false);
       navigate("login");

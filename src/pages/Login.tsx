@@ -111,13 +111,6 @@ function Login() {
                   type="submit"
                   isLoading={verifying}
                   loadingText="Verifying"
-                  bg={blueDark.blue4}
-                  color={blue.blue1}
-                  _hover={
-                    colorMode === "light"
-                      ? { bg: blueDark.blue7, color: gray.gray1 }
-                      : {}
-                  }
                   className="w-full "
                 >
                   Login
