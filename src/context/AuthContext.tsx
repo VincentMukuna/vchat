@@ -18,6 +18,7 @@ import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
 import toast from "react-hot-toast";
 import { preload } from "swr";
+import { getConversations } from "../features/Chats/Chats";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -69,6 +70,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
       navigate("home");
+      preload("conversations", () => getConversations(userDetails.$id));
       preload("users", getUsers);
     } catch (error) {
       setIsLoading(false);

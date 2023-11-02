@@ -32,6 +32,19 @@ export function compareUpdatedAt(a: any, b: any) {
   }
 }
 
+export async function getConversations(userDetailsID: string) {
+  if (!userDetailsID) return [];
+  let conversations: (IGroup | IChat)[] = [];
+
+  let chatDocs = await getUserChats(userDetailsID);
+
+  let groupDocs = await getGroups(userDetailsID);
+
+  conversations = [...chatDocs, ...groupDocs];
+  conversations.sort(compareUpdatedAt);
+  return conversations;
+}
+
 const Chats = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   const { setActivePage } = useAppSelector();
@@ -49,26 +62,17 @@ const Chats = () => {
     (IChat | IGroup)[]
   >([...currentUserDetails.groups].sort(compareUpdatedAt));
 
-  async function getConversations() {
-    if (!currentUserDetails) return undefined;
-    let conversations: (IGroup | IChat)[] = [];
-
-    let chatDocs = await getUserChats(currentUserDetails.$id);
-
-    let groupDocs = await getGroups(currentUserDetails.$id);
-
-    conversations = [...chatDocs, ...groupDocs];
-    conversations.sort(compareUpdatedAt);
-    return conversations;
-  }
-
   // Fetch chats data using useSWR
   let {
     data: conversations,
     error: chatsError,
     mutate,
     isLoading,
-  } = useSWR("conversations", getConversations, {});
+  } = useSWR(
+    "conversations",
+    () => getConversations(currentUserDetails.$id),
+    {},
+  );
 
   // Update local chats data when the data is refreshed
   useEffect(() => {
