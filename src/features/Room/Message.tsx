@@ -170,10 +170,10 @@ const Message = forwardRef<any, MessageProps>(
         tabIndex={0}
         className={`relative gap-1 flex ${
           mine ? "flex-row-reverse" : ""
-        } items-end focus:outline-1 focus:outline-slate-600 transition-all`}
+        } items-start focus:outline-1 focus:outline-slate-600 transition-all`}
       >
         <Avatar
-          visibility={nextSameSender ? "hidden" : "visible"}
+          visibility={prevSameSender ? "hidden" : "visible"}
           src={mine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL}
           name={
             mine ? currentUserDetails.name : (senderDetails?.name as string)
@@ -189,7 +189,7 @@ const Message = forwardRef<any, MessageProps>(
             user={senderDetails as IUserDetails}
           />
         )}
-        <div className="flex flex-col gap-1 mt-2 ">
+        <div className="flex flex-col gap-1 mt-1 ">
           {attachments.length > 0 && (
             <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
               <Image
@@ -202,16 +202,14 @@ const Message = forwardRef<any, MessageProps>(
           )}
           <div
             onClick={() => setIsEditing(true)}
-            className={`flex flex-col relative 
+            className={`flex flex-col relative gap-1
                 ps-4  pt-2 pb-1   ${
                   mine
-                    ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-br-none self-end pe-3  gap-1"
-                    : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-bl-none text-gray-100 min-w-[8rem]"
-                } rounded-lg ${
-                  prevSameSender && (mine ? "rounded-t-md" : "rounded-t-sm")
-                }
-                ${nextSameSender && (mine ? "rounded-b-md" : "rounded-br-sm")} 
-                 w-fit max-w-[400px]  break-all `}
+                    ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end pe-3  "
+                    : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[8rem]"
+                } rounded-xl 
+
+                 w-fit max-w-[400px]   `}
           >
             {mine ? (
               isEditing ? (
@@ -244,12 +242,12 @@ const Message = forwardRef<any, MessageProps>(
                   </InputGroup>
                 </form>
               ) : (
-                <p className="text-[15px] font-normal leading-relaxed tracking-wide">
+                <p className="text-[0.9rem] leading-relaxed tracking-wide">
                   {newMessage}
                 </p>
               )
             ) : (
-              <p className="text-[15px] font-normal leading-relaxed tracking-wide">
+              <p className="text-[0.9rem] leading-relaxed tracking-wide">
                 {message.body}
               </p>
             )}
