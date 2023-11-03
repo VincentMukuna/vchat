@@ -70,7 +70,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
       navigate("home");
-      preload("conversations", () => getConversations(userDetails.$id));
       preload("users", getUsers);
     } catch (error) {
       setIsLoading(false);

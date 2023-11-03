@@ -26,7 +26,7 @@ export async function sendChatMessage(
   try {
     let attachmentIDs: string[] = [];
     if (message.attachments) {
-      for (const attachment of message.attachments) {
+      for await (const attachment of message.attachments) {
         let { $id } = await api.createFile(
           SERVER.BUCKET_ID_CHAT_ATTACHMENTS,
           attachment,
