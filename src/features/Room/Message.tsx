@@ -189,7 +189,7 @@ const Message = forwardRef<any, MessageProps>(
             user={senderDetails as IUserDetails}
           />
         )}
-        <div className="flex flex-col gap-1 mt-1 ">
+        <div className="flex flex-col gap-1 mt-3">
           {attachments.length > 0 && (
             <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
               <Image
@@ -202,11 +202,11 @@ const Message = forwardRef<any, MessageProps>(
           )}
           <div
             onClick={() => setIsEditing(true)}
-            className={`flex flex-col relative gap-1
-                ps-4  pt-2 pb-1   ${
+            className={`flex flex-col relative
+                px-2  pt-1   ${
                   mine
-                    ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end pe-3  "
-                    : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[8rem]"
+                    ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end   "
+                    : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
                 } rounded-xl 
 
                  w-fit max-w-[400px]   `}
@@ -253,11 +253,12 @@ const Message = forwardRef<any, MessageProps>(
             )}
             {mine && <Blueticks read={message.read} />}
             <div
-              className={`flex self-end  mx-3 text-[0.54rem] tracking-wider gap-1 ${
-                mine
-                  ? "dark:text-gray-500 justify-end text"
-                  : "dark:text-gray-400 "
-              }`}
+              className={`self-end text-[0.54rem] tracking-wider mb-1
+               ${
+                 mine
+                   ? "dark:text-gray-500 justify-end text mx-3"
+                   : "dark:text-gray-400 "
+               }`}
             >
               {" " + getFormattedDateTime(message.$createdAt)}
             </div>

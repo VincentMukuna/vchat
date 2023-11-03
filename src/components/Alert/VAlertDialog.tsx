@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { Alert, clearAlert } from "./alertStore";
+import { red, redDark, tomato, tomatoDark } from "@radix-ui/colors";
 
 type VAlertDialogProps = { alert: Alert };
 
@@ -58,7 +59,8 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
             {alert.cancelText || "Cancel"}
           </Button>
           <Button
-            colorScheme="red"
+            bg={tomato.tomato9}
+            color={"gray.100"}
             onClick={() => {
               alert.onConfirm();
               onClose();

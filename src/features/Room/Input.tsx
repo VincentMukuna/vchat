@@ -109,7 +109,7 @@ const Input = ({}: InputProps) => {
     await mutate(
       selectedChat.$id,
       [message, ...cache.get(selectedChat.$id)?.data],
-      { revalidate: true },
+      { revalidate: false },
     );
     let container = document.getElementById(
       "messages-container",

@@ -81,11 +81,17 @@ function Room() {
 
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
+    let newMessages = messages?.filter((msg) => msg.$id !== message.$id);
+    mutate(newMessages, {
+      revalidate: false,
+      rollbackOnError: true,
+    });
+    globalMutate(
+      `lastMessage ${selectedChat.$id}`,
+      newMessages && newMessages[0],
+      { revalidate: false },
+    );
     if (isGroup) {
-      mutate(messages?.filter((msg) => msg.$id !== message.$id), {
-        revalidate: false,
-        rollbackOnError: true,
-      });
       try {
         await deleteGroupMessage(
           currentUserDetails.$id,
@@ -99,10 +105,6 @@ function Room() {
 
       return;
     } else {
-      mutate(messages?.filter((msg) => msg.$id !== message.$id), {
-        revalidate: false,
-        rollbackOnError: true,
-      });
       await deleteChatMessage(
         currentUserDetails.$id,
         selectedChat.$id,
@@ -117,8 +119,7 @@ function Room() {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            (response.payload.changerID !== currentUserDetails.$id &&
-              response.payload.changeLog === "newtext") ||
+            response.payload.changeLog === "newtext" ||
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
           ) {
