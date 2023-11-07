@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect } from "react";
 //@ts-ignore
 import chatSVG from "../../assets/groupChat.svg";
 import ChatHeader from "./ChatHeader";
@@ -23,9 +23,8 @@ import {
   getGroupMessages,
 } from "../../services/groupMessageServices";
 import useSWR, { useSWRConfig } from "swr";
-import useSWRInfinite from "swr/infinite";
 import RoomDetails from "./RoomDetails";
-import { Box, Button, Center, useColorMode } from "@chakra-ui/react";
+import { Box, Center, useColorMode } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
@@ -44,15 +43,11 @@ export function compareCreatedAt(a: any, b: any) {
   }
 }
 
-type Messages = (IChatMessage | IGroupMessage)[];
-
 function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { colorMode } = useColorMode();
   const { selectedChat, recepient } = useChatsContext();
-
-  const cursorRef = useRef();
 
   if (!currentUserDetails) return null;
 
@@ -65,28 +60,38 @@ function Room() {
         participant.$id === currentUserDetails?.$id,
     );
 
-  async function getRoomMessages() {
-    return await getGroupMessages(selectedChat!.$id, cursorRef.current);
-  }
+  const getRoomMessages = async () => {
+    let messages: any[] = [];
+    if (isGroup) {
+      messages = await getGroupMessages(selectedChat.$id);
+    } else if (!selectedChat || !recepient) {
+      return undefined;
+    } else {
+      messages = await getChatMessages(selectedChat.$id);
+    }
+    return messages.sort(compareCreatedAt);
+  };
 
-  const { data, error, isLoading, mutate, setSize, size } = useSWRInfinite(
-    () => selectedChat?.$collectionId,
-    getRoomMessages,
-    {},
-  );
-  let messages: any = [];
-  if (data) {
-    messages = [].concat(...data);
-    cursorRef.current = messages.at(-1).$id;
-  }
+  const {
+    data: messages,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(selectedChat?.$id, getRoomMessages, {});
 
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
+    let newMessages = messages?.filter((msg) => msg.$id !== message.$id);
+    mutate(newMessages, {
+      revalidate: false,
+      rollbackOnError: true,
+    });
+    globalMutate(
+      `lastMessage ${selectedChat.$id}`,
+      newMessages && newMessages[0],
+      { revalidate: false },
+    );
     if (isGroup) {
-      mutate(messages?.filter((msg) => msg.$id !== message.$id), {
-        revalidate: false,
-        rollbackOnError: true,
-      });
       try {
         await deleteGroupMessage(
           currentUserDetails.$id,
@@ -100,10 +105,6 @@ function Room() {
 
       return;
     } else {
-      mutate(messages?.filter((msg) => msg.$id !== message.$id), {
-        revalidate: false,
-        rollbackOnError: true,
-      });
       await deleteChatMessage(
         currentUserDetails.$id,
         selectedChat.$id,
@@ -111,7 +112,6 @@ function Room() {
       );
     }
   };
-
   useEffect(() => {
     if (selectedChat && !isPersonal) {
       //subscribe to changes in chat room
@@ -119,8 +119,7 @@ function Room() {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            (response.payload.changerID !== currentUserDetails.$id &&
-              response.payload.changeLog === "newtext") ||
+            response.payload.changeLog === "newtext" ||
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
           ) {
@@ -180,18 +179,7 @@ function Room() {
               <p className="text-sm"> Can't get messages at the moment! </p>
             </Center>
           ) : (
-            <Messages
-              messages={([] as any).concat(...messages)}
-              onDelete={handleDeleteMessage}
-            >
-              <Button
-                onClick={async () => {
-                  setSize((size) => size + 1);
-                }}
-              >
-                Load More
-              </Button>
-            </Messages>
+            <Messages messages={messages} onDelete={handleDeleteMessage} />
           )}
 
           <Input />
