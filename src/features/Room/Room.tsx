@@ -2,7 +2,7 @@ import { useEffect } from "react";
 //@ts-ignore
 import chatSVG from "../../assets/groupChat.svg";
 import ChatHeader from "./ChatHeader";
-import Input from "./Input";
+import Input, { Message } from "./Input";
 import Messages from "./Messages";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
@@ -22,13 +22,14 @@ import {
   deleteGroupMessage,
   getGroupMessages,
 } from "../../services/groupMessageServices";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR, { KeyedMutator, useSWRConfig } from "swr";
 import RoomDetails from "./RoomDetails";
-import { Box, Center, useColorMode } from "@chakra-ui/react";
+import { Box, Center, useColorMode, Button } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
+import useSWRInfinite from "swr/infinite";
 
 export function compareCreatedAt(a: any, b: any) {
   const dateA = new Date(a.$createdAt);
@@ -47,7 +48,7 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { colorMode } = useColorMode();
-  const { selectedChat, recepient } = useChatsContext();
+  const { selectedChat, recepient, setMsgsCount } = useChatsContext();
 
   if (!currentUserDetails) return null;
 
@@ -60,35 +61,77 @@ function Room() {
         participant.$id === currentUserDetails?.$id,
     );
 
-  const getRoomMessages = async () => {
-    let messages: any[] = [];
-    if (isGroup) {
-      messages = await getGroupMessages(selectedChat.$id);
-    } else if (!selectedChat || !recepient) {
-      return undefined;
+  // const getRoomMessages = async () => {
+  //   let messages: any[] = [];
+  //   if (isGroup) {
+  //     messages = await getGroupMessages(selectedChat.$id);
+  //   } else if (!selectedChat || !recepient) {
+  //     return undefined;
+  //   } else {
+  //     messages = await getChatMessages(selectedChat.$id);
+  //   }
+  //   return messages.sort(compareCreatedAt);
+  // };
+  function getKey(pageIndex: number, previousPageData: any) {
+    if (previousPageData && !previousPageData.length) return null;
+    if (!selectedChat) return undefined;
+    if (pageIndex === 0) {
+      return `${selectedChat!.$id}-messages-`;
+    }
+    return `${selectedChat.$id}-messages-${previousPageData.at(-1).$id}`;
+  }
+
+  async function fetcher(key: string) {
+    if (!selectedChat) return undefined;
+    let messages: IGroupMessage[] = [];
+    let re = new RegExp(`${selectedChat.$id}-messages-(\\w+)`);
+    let match = key.match(re);
+    if (match) {
+      let { messages: docs, total } = await getGroupMessages(
+        selectedChat.$id,
+        match[1],
+      );
+      setMsgsCount(total);
+      console.log("total: ", total);
+      messages = docs;
     } else {
-      messages = await getChatMessages(selectedChat.$id);
+      let { messages: docs, total } = await getGroupMessages(selectedChat.$id);
+      console.log("total: ", total);
+      messages = docs;
+      setMsgsCount(total);
     }
     return messages.sort(compareCreatedAt);
-  };
+  }
+
+  // const {
+  //   data: messages,
+  //   error,
+  //   isLoading,
+  //   mutate,
+  // } = useSWR(selectedChat?.$id, getRoomMessages, {});
 
   const {
     data: messages,
-    error,
     isLoading,
+    error,
     mutate,
-  } = useSWR(selectedChat?.$id, getRoomMessages, {});
+    size,
+    setSize,
+    isValidating,
+  } = useSWRInfinite(getKey, fetcher);
 
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
-    let newMessages = messages?.filter((msg) => msg.$id !== message.$id);
+    let newMessages = messages?.map(
+      (msgArray) => msgArray?.filter((msg) => msg.$id !== message.$id),
+    );
     mutate(newMessages, {
       revalidate: false,
       rollbackOnError: true,
     });
     globalMutate(
       `lastMessage ${selectedChat.$id}`,
-      newMessages && newMessages[0],
+      newMessages && newMessages.at(0)?.at(0),
       { revalidate: false },
     );
     if (isGroup) {
@@ -118,11 +161,17 @@ function Room() {
       const unsubscribe = api.subscribe<IChat | IGroup>(
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
+          if (response.payload.changerID !== currentUserDetails.$id) {
+            console.log("Mine change! ");
+          }
+
           if (
-            response.payload.changeLog === "newtext" ||
+            (response.payload.changerID !== currentUserDetails.$id &&
+              response.payload.changeLog === "newtext") ||
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
           ) {
+            console.log("Not mine");
             mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);
           } else if (response.payload.changeLog === "cleared") {
@@ -157,7 +206,7 @@ function Room() {
       </motion.div>
     );
   }
-  if (isLoading || messages == undefined) {
+  if (isLoading || messages === undefined) {
     return (
       <Center className="w-full h-full dark:text-white">
         <ClipLoader
@@ -179,7 +228,21 @@ function Room() {
               <p className="text-sm"> Can't get messages at the moment! </p>
             </Center>
           ) : (
-            <Messages messages={messages} onDelete={handleDeleteMessage} />
+            <Messages
+              messages={([] as IGroupMessage[]).concat(
+                ...(messages as IGroupMessage[][]),
+              )}
+              onDelete={handleDeleteMessage}
+            >
+              <Button
+                onClick={() => setSize(size + 1)}
+                isLoading={isValidating}
+                hidden={messages.at(-1)?.length === 0 ? true : false}
+                flexShrink={0}
+              >
+                {isValidating ? "Fetching" : "See previous"}
+              </Button>
+            </Messages>
           )}
 
           <Input />

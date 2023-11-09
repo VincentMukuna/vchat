@@ -5,9 +5,10 @@ import Message from "./Message";
 interface MessagesProps {
   messages: IGroupMessage[] | IChatMessage[];
   onDelete: (message: IChatMessage | IGroupMessage) => Promise<void>;
+  children: React.ReactNode;
 }
 
-function Messages({ messages, onDelete }: MessagesProps) {
+function Messages({ messages, onDelete, children }: MessagesProps) {
   return (
     <div className="relative self-stretch overflow-x-hidden overflow-y-auto grow">
       <div
@@ -26,6 +27,7 @@ function Messages({ messages, onDelete }: MessagesProps) {
                 next={messages[i - 1]}
               />
             ))}
+            {children}
           </AnimatePresence>
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">
