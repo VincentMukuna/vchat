@@ -35,7 +35,7 @@ export async function sendChatMessage(
       }
     }
 
-    await api.createDocument(
+    let msg = await api.createDocument(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_CHAT_MESSAGES,
       { ...message, attachments: attachmentIDs },
@@ -45,31 +45,46 @@ export async function sendChatMessage(
       changeLog: "newtext",
       changerID: sentMessage.senderID,
     });
+
+    return msg as IChatMessage;
   } catch (error: any) {
     console.log("Error sending chat message ", error.message);
   }
 }
 
-export async function getChatMessageCount(chatID: string) {
-  try {
-    const { total } = await api.listDocuments(
-      SERVER.DATABASE_ID,
-      SERVER.COLLECTION_ID_CHAT_MESSAGES,
-      [Query.equal("chat", chatID), Query.select(["$id"])],
-    );
-    return total;
-  } catch (error) {
-    throw new Error("error getting count");
+export async function getChatMessages(chatID: string, cursor?: string) {
+  let querySet = [
+    Query.orderDesc("$createdAt"),
+    Query.equal("chat", chatID),
+    Query.limit(5),
+  ];
+  if (cursor) {
+    querySet.push(Query.cursorAfter(cursor));
   }
+  const { documents, total } = await api.listDocuments(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHAT_MESSAGES,
+    querySet,
+  );
+  return { messages: documents as IChatMessage[], total };
 }
-export async function getChatMessages(chatID: string) {
-  const chatDoc = await getChatDoc(chatID);
-  let chatMessages = chatDoc?.chatMessages;
-  return chatMessages as IChatMessage[];
+
+async function getAllChatMessages(chatID: string) {
+  let { documents } = await api.listDocuments(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHAT_MESSAGES,
+    [
+      Query.orderDesc("$createdAt"),
+      Query.equal("chat", chatID),
+      Query.limit(1000),
+    ],
+  );
+
+  return documents as IChatMessage[];
 }
 
 export async function clearChatMessages(chatID: string) {
-  let messages = await getChatMessages(chatID);
+  let messages = await getAllChatMessages(chatID);
   messages.forEach((message) => {
     if (message.attachments.length > 0) {
       message.attachments.forEach((attachmentID) => {
