@@ -120,9 +120,7 @@ const Input = ({}: InputProps) => {
 
     await mutate(chatMessagesKey, newMessages, {
       revalidate: false,
-    })
-      .then((value) => console.log("mutated", value))
-      .catch((e) => console.log("Error mutating: ", e));
+    });
 
     let container = document.getElementById(
       "messages-container",
