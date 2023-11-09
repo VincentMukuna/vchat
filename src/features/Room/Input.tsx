@@ -16,8 +16,11 @@ import {
 } from "use-file-picker/validators";
 import toast from "react-hot-toast";
 import { FileTypeValidator } from "../../utils/fileValidators";
+import { unstable_serialize } from "swr/infinite";
 
 type InputProps = {};
+
+export type Message = IChatMessage | IGroupMessage;
 
 const Input = ({}: InputProps) => {
   const { currentUserDetails } = useAuth();
@@ -30,6 +33,10 @@ const Input = ({}: InputProps) => {
 
   let { mutate, cache } = useSWRConfig();
 
+  const chatMessagesKey = unstable_serialize(
+    () => `${selectedChat!.$id}-messages-`,
+  );
+  const firstPageMsgs = cache.get(chatMessagesKey)?.data[0];
   const { openFilePicker, filesContent, clear } = useFilePicker({
     accept: [".jpg", ".png"],
     multiple: false,
@@ -94,7 +101,7 @@ const Input = ({}: InputProps) => {
           $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
           $databaseId: SERVER.DATABASE_ID,
           $createdAt: new Date().toISOString(),
-          $id: new Date().toISOString(),
+          $id: new Date().toISOString() + Math.random(),
           $permissions: [""],
           $updatedAt: new Date().toISOString(),
           senderID: currentUserDetails.$id,
@@ -106,11 +113,17 @@ const Input = ({}: InputProps) => {
           optimistic: true,
         };
 
-    await mutate(
-      selectedChat.$id,
-      [message, ...cache.get(selectedChat.$id)?.data],
-      { revalidate: false },
-    );
+    const newMessages = [
+      [message, ...(cache.get(chatMessagesKey)?.data[0] as Message[])],
+      ...(cache.get(chatMessagesKey)?.data as Message[][]).slice(1),
+    ];
+
+    await mutate(chatMessagesKey, newMessages, {
+      revalidate: false,
+    })
+      .then((value) => console.log("mutated", value))
+      .catch((e) => console.log("Error mutating: ", e));
+
     let container = document.getElementById(
       "messages-container",
     ) as HTMLDivElement;
@@ -130,6 +143,17 @@ const Input = ({}: InputProps) => {
           attachments: attachments,
           read: isPersonal ? true : false,
         });
+    const firstPageMsgs = cache.get(chatMessagesKey)?.data[0] as Message[];
+
+    promise.then((msg) => {
+      console.log("revalidation : ", msg);
+      mutate(chatMessagesKey, [
+        firstPageMsgs.map((ucMessage) => {
+          return ucMessage.$id === message.$id ? msg : ucMessage;
+        }),
+        ...(cache.get(chatMessagesKey)?.data as Message[][]).slice(1),
+      ]);
+    });
 
     promise.finally(() => {
       setSending(false);
