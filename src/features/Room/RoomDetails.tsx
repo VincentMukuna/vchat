@@ -10,17 +10,13 @@ import {
   updateGroupDetails,
 } from "../../services/groupMessageServices";
 import useSWR, { mutate, useSWRConfig } from "swr";
-import {
-  getChatDoc,
-  getChatMessageCount,
-} from "../../services/chatMessageServices";
+import { getChatDoc } from "../../services/chatMessageServices";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import {
   Avatar,
   AvatarGroup,
   Button,
-  Center,
   Editable,
   EditableInput,
   EditablePreview,
@@ -31,12 +27,8 @@ import {
 import {
   ArrowRightOnRectangleIcon,
   PencilIcon,
-  UserPlusIcon,
 } from "@heroicons/react/20/solid";
-import {
-  getFormatedDate,
-  getFormattedDateTime,
-} from "../../services/dateServices";
+import { getFormatedDate } from "../../services/dateServices";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { deleteContact } from "../../services/userDetailsServices";
@@ -45,7 +37,7 @@ import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { confirmAlert } from "../../components/Alert/alertStore";
 
 const RoomDetails = () => {
