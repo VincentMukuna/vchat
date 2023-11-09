@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext, useState, createContext } from "react";
 import { IChat, IGroup, IUserDetails } from "../interfaces";
 
 type ChatsProviderProps = {
@@ -12,12 +12,15 @@ interface IChatsContextData {
   >;
   recepient: IUserDetails | undefined;
   setRecepient: React.Dispatch<React.SetStateAction<IUserDetails | undefined>>;
+  msgsCount: number;
+  setMsgsCount: React.Dispatch<React.SetStateAction<number>>;
 }
-const ChatsContext = React.createContext<IChatsContextData | null>(null);
+const ChatsContext = createContext<IChatsContextData | null>(null);
 
 export const ChatsProvider = ({ children }: ChatsProviderProps) => {
-  const [selectedChat, setSelectedChat] = React.useState<IChat | IGroup>();
-  const [recepient, setRecepient] = React.useState<IUserDetails>();
+  const [selectedChat, setSelectedChat] = useState<IChat | IGroup>();
+  const [recepient, setRecepient] = useState<IUserDetails>();
+  const [msgsCount, setMsgsCount] = useState(0);
 
   //get app users' details
 
@@ -26,9 +29,9 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     setSelectedChat,
     recepient,
     setRecepient,
+    msgsCount,
+    setMsgsCount,
   };
-
-  React.useEffect(() => {});
 
   return (
     <ChatsContext.Provider value={contextData}>
