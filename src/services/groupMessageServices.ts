@@ -56,14 +56,21 @@ export async function getGroupMessageCount(groupID: string) {
     throw new Error("error getting count");
   }
 }
-export async function getGroupMessages(groupID: string) {
-  let groupDoc = await api.getDocument(
+export async function getGroupMessages(groupID: string, cursor?: string) {
+  let querySet = [
+    Query.orderDesc("$createdAt"),
+    Query.equal("group", groupID),
+    Query.limit(5),
+  ];
+  if (cursor) {
+    querySet.push(Query.cursorAfter(cursor));
+  }
+  const { documents, total } = await api.listDocuments(
     SERVER.DATABASE_ID,
-    SERVER.COLLECTION_ID_GROUPS,
-    groupID,
+    SERVER.COLLECTION_ID_GROUP_MESSAGES,
+    querySet,
   );
-  let messages = groupDoc.groupMessages as IGroupMessage[];
-  return messages as IGroupMessage[];
+  return { messages: documents as IGroupMessage[], total };
 }
 
 export async function sendGroupMessage(
@@ -105,6 +112,8 @@ export async function sendGroupMessage(
         },
       )
       .catch(() => {});
+
+    return msg as IGroupMessage;
   } catch (error: any) {
     console.log(`Error sending group message `, error.message);
   }
