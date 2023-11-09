@@ -49,13 +49,12 @@ import { useEffect, useState } from "react";
 import { confirmAlert } from "../../components/Alert/alertStore";
 
 const RoomDetails = () => {
-  const { selectedChat, recepient, setSelectedChat } = useChatsContext();
+  const { selectedChat, recepient, setSelectedChat, msgsCount } =
+    useChatsContext();
   const { currentUserDetails } = useAuth();
   const { cache } = useSWRConfig();
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
-
-  const [msgCount, setMsgCount] = useState(0);
 
   const [groupDetails, setGroupDetails] = useState({
     name: selectedChat?.name,
@@ -106,18 +105,6 @@ const RoomDetails = () => {
       toast.error("Invalid file");
     },
   });
-
-  useEffect(() => {
-    if (isGroup) {
-      getGroupMessageCount(selectedChat.$id).then((count) => {
-        setMsgCount(count);
-      });
-    } else {
-      getChatMessageCount(selectedChat.$id).then((count) => {
-        setMsgCount(count);
-      });
-    }
-  }, [selectedChat]);
 
   function getConversations() {
     if (cache.get("conversations")?.data) {
@@ -256,7 +243,7 @@ const RoomDetails = () => {
           </Editable>
           <p className="inline-flex gap-2 mt-3">
             <span className="font-semibold ">Message Count :</span>
-            {msgCount}
+            {msgsCount}
           </p>
 
           <p className="mt-3">
