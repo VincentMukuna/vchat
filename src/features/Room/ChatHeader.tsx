@@ -15,8 +15,13 @@ import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import RoomActions from "./RoomActions";
 
 function ChatHeader() {
-  const { recepient, setSelectedChat, setRecepient, selectedChat } =
-    useChatsContext();
+  const {
+    recepient,
+    setSelectedChat,
+    setRecepient,
+    selectedChat,
+    setMsgsCount,
+  } = useChatsContext();
   if (selectedChat === undefined) return null;
   const { currentUserDetails } = useAuth();
 
@@ -38,6 +43,7 @@ function ChatHeader() {
         onClick={() => {
           setSelectedChat(undefined);
           setRecepient(undefined);
+          setMsgsCount(0);
         }}
       ></IconButton>
       <Avatar
