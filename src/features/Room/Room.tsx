@@ -48,7 +48,8 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { colorMode } = useColorMode();
-  const { selectedChat, recepient, setMsgsCount } = useChatsContext();
+  const { selectedChat, recepient, setMsgsCount, msgsCount } =
+    useChatsContext();
 
   if (!currentUserDetails) return null;
 
@@ -61,17 +62,6 @@ function Room() {
         participant.$id === currentUserDetails?.$id,
     );
 
-  // const getRoomMessages = async () => {
-  //   let messages: any[] = [];
-  //   if (isGroup) {
-  //     messages = await getGroupMessages(selectedChat.$id);
-  //   } else if (!selectedChat || !recepient) {
-  //     return undefined;
-  //   } else {
-  //     messages = await getChatMessages(selectedChat.$id);
-  //   }
-  //   return messages.sort(compareCreatedAt);
-  // };
   function getKey(pageIndex: number, previousPageData: any) {
     if (previousPageData && !previousPageData.length) return null;
     if (!selectedChat) return undefined;
@@ -83,32 +73,24 @@ function Room() {
 
   async function fetcher(key: string) {
     if (!selectedChat) return undefined;
-    let messages: IGroupMessage[] = [];
+    let messages: (IGroupMessage | IChatMessage)[] = [];
     let re = new RegExp(`${selectedChat.$id}-messages-(\\w+)`);
     let match = key.match(re);
     if (match) {
-      let { messages: docs, total } = await getGroupMessages(
-        selectedChat.$id,
-        match[1],
-      );
+      let { messages: docs, total } = isGroup
+        ? await getGroupMessages(selectedChat.$id, match[1])
+        : await getChatMessages(selectedChat.$id, match[1]);
       setMsgsCount(total);
-      console.log("total: ", total);
       messages = docs;
     } else {
-      let { messages: docs, total } = await getGroupMessages(selectedChat.$id);
-      console.log("total: ", total);
+      let { messages: docs, total } = isGroup
+        ? await getGroupMessages(selectedChat.$id)
+        : await getChatMessages(selectedChat.$id);
       messages = docs;
       setMsgsCount(total);
     }
     return messages.sort(compareCreatedAt);
   }
-
-  // const {
-  //   data: messages,
-  //   error,
-  //   isLoading,
-  //   mutate,
-  // } = useSWR(selectedChat?.$id, getRoomMessages, {});
 
   const {
     data: messages,
@@ -234,14 +216,21 @@ function Room() {
               )}
               onDelete={handleDeleteMessage}
             >
-              <Button
-                onClick={() => setSize(size + 1)}
-                isLoading={isValidating}
-                hidden={messages.at(-1)?.length === 0 ? true : false}
-                flexShrink={0}
-              >
-                {isValidating ? "Fetching" : "See previous"}
-              </Button>
+              {msgsCount >
+                ([] as IGroupMessage[]).concat(
+                  ...(messages as IGroupMessage[][]),
+                ).length &&
+                msgsCount > 5 && (
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => setSize(size + 1)}
+                    isLoading={isValidating}
+                    // hidden={messages.at(-1)?.length === 0 ? true : false}
+                    flexShrink={0}
+                  >
+                    {isValidating ? "Fetching" : "See previous"}
+                  </Button>
+                )}
             </Messages>
           )}
 
