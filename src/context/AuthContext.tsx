@@ -19,6 +19,7 @@ import { createDetailsDoc } from "../services/registerUserService";
 import toast from "react-hot-toast";
 import { preload } from "swr";
 import { getConversations } from "../features/Chats/ChatsList";
+import { unstable_serialize } from "swr/infinite";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -62,15 +63,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  async function preloadUsers(key: string) {
+    return await getUsers();
+  }
+
   const getUserOnLoad = async () => {
     try {
       const user = await api.getAccount();
       const userDetails = await getUserDetails(user);
+      preload(
+        unstable_serialize(() => "users"),
+        preloadUsers,
+      );
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
       navigate("home");
-      preload("users", getUsers);
     } catch (error) {
       setIsLoading(false);
       navigate("login");
