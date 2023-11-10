@@ -54,7 +54,6 @@ const ChatsList = () => {
   const { colorMode } = useColorMode();
 
   const { cache } = useSWRConfig();
-  console.log("cache", cache);
   if (!currentUser || !currentUserDetails) return null;
 
   // Local state to store chats data

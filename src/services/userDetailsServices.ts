@@ -8,11 +8,8 @@ import { mutate } from "swr";
 export async function getSession() {
   try {
     let user = await api.getAccount();
-    console.log("Active session: ");
     return user;
-  } catch (error) {
-    console.log("No active session: ");
-  }
+  } catch (error) {}
 }
 
 export async function getUserDetails(detailsDocID: string) {
@@ -38,10 +35,8 @@ export async function getCurrentUserDetails(
   }
 }
 export async function getUsers(cursor?: string) {
-  console.log("Fetching users: ");
   let querySet = [Query.orderAsc("$createdAt"), Query.limit(20)];
   if (cursor) {
-    console.log("cursor done: ", cursor);
     querySet.push(Query.cursorAfter(cursor));
   }
   const { documents, total } = await api.listDocuments(
@@ -49,8 +44,6 @@ export async function getUsers(cursor?: string) {
     SERVER.COLLECTION_ID_USERS,
     querySet,
   );
-
-  console.log("Fetched users: ", documents);
 
   return { users: documents as IUserDetails[], total };
 }

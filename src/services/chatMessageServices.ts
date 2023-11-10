@@ -48,7 +48,7 @@ export async function sendChatMessage(
 
     return msg as IChatMessage;
   } catch (error: any) {
-    console.log("Error sending chat message ", error.message);
+    throw error;
   }
 }
 

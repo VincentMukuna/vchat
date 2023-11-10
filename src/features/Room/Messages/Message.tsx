@@ -95,9 +95,7 @@ const Message = forwardRef<any, MessageProps>(
               attachmentID,
             );
             attachments.push(response);
-          } catch (error) {
-            console.log("ATTACHMENT ERROR: ", error);
-          }
+          } catch (error) {}
         }
       });
 
@@ -149,7 +147,6 @@ const Message = forwardRef<any, MessageProps>(
             toast.success("Message edited succesfully ");
           })
           .catch((err: any) => {
-            console.log(err.message);
             toast.error("Something went wrong! ");
           });
 

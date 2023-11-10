@@ -104,7 +104,7 @@ export async function sendGroupMessage(
 
     return msg as IGroupMessage;
   } catch (error: any) {
-    console.log(`Error sending group message `, error.message);
+    throw error;
   }
 }
 

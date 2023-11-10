@@ -30,6 +30,7 @@ import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import useSWRInfinite from "swr/infinite";
+import toast from "react-hot-toast";
 
 export function compareCreatedAt(a: any, b: any) {
   const dateA = new Date(a.$createdAt);
@@ -125,7 +126,7 @@ function Room() {
           message.attachments,
         );
       } catch (error: any) {
-        console.log("Error deleting message! ", error.message);
+        toast.error("Something went wrong");
       }
 
       return;

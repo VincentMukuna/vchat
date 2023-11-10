@@ -23,7 +23,6 @@ export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
     );
     //If such a doc exists
     if (documents[0]) {
-      console.log("User has a details doc");
       userDeets = documents[0] as IUserDetails;
       api.updatePrefs({ detailsDocID: userDeets.$id });
       return userDeets;

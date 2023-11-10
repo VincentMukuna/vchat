@@ -49,7 +49,7 @@ const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <nav className="flex  md:flex-col md:gap-8  items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate1 md:h-full gap-3">
+    <nav className="flex  md:flex-col md:gap-8  items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate2 md:h-full gap-3">
       <div className="hidden md:flex">
         <Tooltip
           label="My Profile"
@@ -100,27 +100,25 @@ const Navbar = () => {
                 onClick={() => {
                   setActivePage(tab.title);
                 }}
-                className="relative items-center gap-2 "
+                className="relative"
               >
                 <div
                   className={` md:w-1 md:h-full w-full h-1 bg-dark-blue7 rounded-full absolute  bottom-0 md:-left-1 transition-opacity ${
                     activePage === tab.title ? "visible" : "invisible"
                   }`}
                 />
-
-                <div
-                  className="flex flex-col gap-[2px] items-center justify-center md:ml-1 px-2  py-2 md:py-2 text-xs tracking-wider rounded
-                    hover:bg-dark-slate11
-                    dark:hover:bg-dark-slate6
-                    dark:text-gray7 text-dark-blue1 cursor-pointer
-                    data-[state=active]:bg-dark-slate9 data-[state=active]:dark:bg-dark-blue3 
-                    data-[state=active]:text-gray1
-                    data-[state=active]:shadow-t-[0_0_0_2px_inset]
-                    data-[state=active]:shadow-white                   
-                   "
-                >
-                  {tab.icon}
-                </div>
+                <IconButton
+                  aria-label={tab.title}
+                  icon={tab.icon}
+                  bgColor={"transparent"}
+                  _hover={{
+                    bg:
+                      colorMode === "dark"
+                        ? slateDark.slate6
+                        : slateDark.slate11,
+                  }}
+                  ml={1}
+                />
               </Link>
             </Tooltip>
           );
@@ -153,7 +151,6 @@ const Navbar = () => {
                 <MoonIcon className="w-5 h-5" />
               )
             }
-            className="flex items-center justify-center w-11 "
           />
         </Tooltip>
         <Tooltip

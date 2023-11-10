@@ -141,7 +141,6 @@ export const useAuth = () => {
   let navigate = useNavigate();
   let context = useContext(AuthContext);
   if (context === null) {
-    console.log("No context");
     navigate("/login");
   }
   return context as IAuthContext;

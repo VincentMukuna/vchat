@@ -16,8 +16,6 @@ function UsersList() {
   const totalRef = useRef(0);
 
   function getKey(pageIndex: number, previousPageData: any) {
-    console.log("pageIndex: ", pageIndex);
-    console.log("prevData: ", previousPageData);
     if (previousPageData && !previousPageData.length) return null;
     if (pageIndex === 0) {
       return `users`;
@@ -26,11 +24,9 @@ function UsersList() {
   }
 
   async function fetcher(key: string) {
-    console.log("key: ", key);
     let re = /users-(\w+)/;
     let match = key.match(re);
     if (match) {
-      console.log("match: ", match);
       const { total, users } = await getUsers(match[1]);
       totalRef.current = total;
       return users;
@@ -49,13 +45,6 @@ function UsersList() {
     setSize,
     isValidating,
   } = useSWRInfinite(getKey, fetcher);
-
-  console.log(users);
-  useEffect(() => {
-    if (users) {
-      console.log("users", users);
-    }
-  }, [users]);
 
   if (error) {
     return (
@@ -104,7 +93,6 @@ function UsersList() {
           <Button
             variant={"ghost"}
             onClick={() => {
-              console.log("revalidation");
               setSize(size + 1);
             }}
             isLoading={isValidating}

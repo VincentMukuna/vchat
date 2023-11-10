@@ -28,7 +28,7 @@ const Sidebar = () => {
       as={"aside"}
       gap={0}
       px={0}
-      className="bg-gray2 md:border-r-[1px] dark:bg-dark-slate2 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]"
+      className="bg-gray2 dark:bg-dark-slate1 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]"
     >
       <div className="w-full font-semibold tracking-widest">
         <span className="relative flex items-center justify-center w-full h-full ">

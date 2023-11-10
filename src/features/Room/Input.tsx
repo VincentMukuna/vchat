@@ -159,7 +159,7 @@ const Input = ({}: InputProps) => {
         ...(cache.get(chatMessagesKey)?.data as Message[][]).slice(1),
       ]);
 
-      toast.error("Send message error");
+      toast.error("Error sending message");
     });
 
     msgSentPromise.finally(() => {

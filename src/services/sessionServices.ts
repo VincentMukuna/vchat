@@ -10,7 +10,6 @@ export async function logUserIn(provider?: string) {
   try {
     //check if there is a session
     user = await api.getAccount();
-    console.log(user);
     if (user) {
       userDetails = await createDetailsDoc(user);
       return { user, userDetails };
