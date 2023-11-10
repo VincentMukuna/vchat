@@ -89,6 +89,7 @@ const RoomDetails = () => {
 
       promise.then(() => {
         mutate(selectedChat.$id);
+        mutate("conversations");
         toast.success("Avatar changed");
       });
     },
@@ -248,8 +249,8 @@ const RoomDetails = () => {
             Participants :
             <span className="">{` ${
               isGroup
-                ? roomDetails?.members.length
-                : roomDetails?.participants.length
+                ? roomDetails?.members.length || 0
+                : roomDetails?.participants.length || 0
             }`}</span>
           </span>
           <div className="flex w-full max-w-[80%] overflow-x-hidden  items-center justify-center">
