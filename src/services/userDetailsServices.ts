@@ -37,13 +37,22 @@ export async function getCurrentUserDetails(
     throw error;
   }
 }
-export async function getUsers() {
-  const { documents } = await api.listDocuments(
+export async function getUsers(cursor?: string) {
+  console.log("Fetching users: ");
+  let querySet = [Query.orderAsc("$createdAt"), Query.limit(20)];
+  if (cursor) {
+    console.log("cursor done: ", cursor);
+    querySet.push(Query.cursorAfter(cursor));
+  }
+  const { documents, total } = await api.listDocuments(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
+    querySet,
   );
 
-  return documents as IUserDetails[];
+  console.log("Fetched users: ", documents);
+
+  return { users: documents as IUserDetails[], total };
 }
 
 export async function editUserDetails(
