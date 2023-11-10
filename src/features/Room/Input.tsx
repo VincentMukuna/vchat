@@ -82,6 +82,7 @@ const Input = ({}: InputProps) => {
     }
     setSending(true);
     setMessageBody("");
+    setAttachments([]);
 
     let message = isGroup
       ? {
@@ -163,8 +164,6 @@ const Input = ({}: InputProps) => {
 
     msgSentPromise.finally(() => {
       setSending(false);
-      setMessageBody("");
-      setAttachments([]);
       clear();
     });
   };
