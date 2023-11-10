@@ -18,7 +18,7 @@ import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
 import toast from "react-hot-toast";
 import { preload } from "swr";
-import { getConversations } from "../features/Chats/Chats";
+import { getConversations } from "../features/Chats/ChatsList";
 
 type AuthProviderProps = {
   children: ReactNode;

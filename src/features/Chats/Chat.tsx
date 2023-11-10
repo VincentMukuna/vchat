@@ -14,6 +14,8 @@ import useSWR from "swr";
 import api from "../../services/api";
 import { Avatar, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
+import { Query } from "appwrite";
+import { SERVER } from "../../utils/config";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -28,7 +30,7 @@ const Chat = ({ conversation }: IChatProps) => {
     IUserDetails | undefined
   >();
 
-  const isGroup = conversation.$collectionId === "groups";
+  const isGroup = !!(selectedChat?.$collectionId === "groups");
   const isPersonal =
     !isGroup &&
     conversation.participants?.every(
@@ -37,13 +39,19 @@ const Chat = ({ conversation }: IChatProps) => {
 
   async function getLastMessage() {
     try {
-      let doc = (await api.getDocument(
+      let { documents, total } = await api.listDocuments(
         conversation.$databaseId,
-        conversation.$collectionId,
-        conversation.$id,
-      )) as IChat | IGroup;
-      let msgDoc = isGroup ? doc.groupMessages.at(-1) : doc.chatMessages.at(-1);
-      return msgDoc as IChatMessage | IGroupMessage;
+        isGroup
+          ? SERVER.COLLECTION_ID_GROUP_MESSAGES
+          : SERVER.COLLECTION_ID_CHAT_MESSAGES,
+        [
+          Query.equal(isGroup ? "group" : "chat", conversation?.$id),
+          Query.orderDesc("$createdAt"),
+          Query.limit(1),
+        ],
+      );
+
+      return documents[0] as IChatMessage | IGroupMessage;
     } catch (error) {}
   }
 

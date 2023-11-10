@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import chatSVG from "../../assets/groupChat.svg";
 import ChatHeader from "./ChatHeader";
 import Input, { Message } from "./Input";
-import Messages from "./Messages";
+import Messages from "./Messages/MessagesList";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import { useChatsContext } from "../../context/ChatsContext";

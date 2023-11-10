@@ -72,7 +72,7 @@ const Input = ({}: InputProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.target.style.height = "auto";
     e.target.style.height = e.target.scrollHeight + "px";
-    setMessageBody(e.target.value);
+    setMessageBody(e.target.value.slice(0, 1498));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -127,7 +127,7 @@ const Input = ({}: InputProps) => {
     ) as HTMLDivElement;
     container.scrollTo({ top: 0, behavior: "smooth" });
     mutate(`lastMessage ${selectedChat.$id}`, message, { revalidate: false });
-    let promise = isGroup
+    let msgSentPromise = isGroup
       ? sendGroupMessage(selectedChat.$id, {
           body: message.body,
           group: message.group as string,
@@ -143,8 +143,7 @@ const Input = ({}: InputProps) => {
         });
     const firstPageMsgs = cache.get(chatMessagesKey)?.data[0] as Message[];
 
-    promise.then((msg) => {
-      console.log("revalidation : ", msg);
+    msgSentPromise.then((msg) => {
       mutate(chatMessagesKey, [
         firstPageMsgs.map((ucMessage) => {
           return ucMessage.$id === message.$id ? msg : ucMessage;
@@ -153,7 +152,16 @@ const Input = ({}: InputProps) => {
       ]);
     });
 
-    promise.finally(() => {
+    msgSentPromise.catch((e) => {
+      mutate(chatMessagesKey, [
+        firstPageMsgs.filter((ucMessage) => ucMessage.$id !== message.$id),
+        ...(cache.get(chatMessagesKey)?.data as Message[][]).slice(1),
+      ]);
+
+      toast.error("Send message error");
+    });
+
+    msgSentPromise.finally(() => {
       setSending(false);
       setMessageBody("");
       setAttachments([]);

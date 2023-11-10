@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { IChatMessage, IGroupMessage } from "../../interfaces";
+import { IChatMessage, IGroupMessage } from "../../../interfaces";
 import Message from "./Message";
 
 interface MessagesProps {
@@ -8,7 +8,7 @@ interface MessagesProps {
   children: React.ReactNode;
 }
 
-function Messages({ messages, onDelete, children }: MessagesProps) {
+function MessagesList({ messages, onDelete, children }: MessagesProps) {
   return (
     <div className="relative self-stretch overflow-x-hidden overflow-y-auto grow">
       <div
@@ -42,4 +42,4 @@ function Messages({ messages, onDelete, children }: MessagesProps) {
   );
 }
 
-export default Messages;
+export default MessagesList;

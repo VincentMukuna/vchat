@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Chat from "./Conversation";
+import Chat from "./Chat";
 import { IChat, IGroup, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
@@ -18,6 +18,7 @@ import { blueDark, gray } from "@radix-ui/colors";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+import { Query } from "appwrite";
 
 export function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);
@@ -40,12 +41,14 @@ export async function getConversations(userDetailsID: string) {
 
   let groupDocs = await getGroups(userDetailsID);
 
+  console.log(groupDocs);
+
   conversations = [...chatDocs, ...groupDocs];
   conversations.sort(compareUpdatedAt);
   return conversations;
 }
 
-const Chats = () => {
+const ChatsList = () => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
   const { setActivePage } = useAppSelector();
 
@@ -166,4 +169,4 @@ const Chats = () => {
   }
 };
 
-export default Chats;
+export default ChatsList;

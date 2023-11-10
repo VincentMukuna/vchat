@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
 
-function Users() {
+function UsersList() {
   const [localUsers, setLocalUsers] = useState<IUserDetails[]>();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
@@ -67,4 +67,4 @@ function Users() {
   }
 }
 
-export default Users;
+export default UsersList;

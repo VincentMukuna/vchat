@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { MapPinIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray, slateDark } from "@radix-ui/colors";
-import React, { useState } from "react";
+import { useState } from "react";
 import { addContact } from "../../services/userDetailsServices";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";

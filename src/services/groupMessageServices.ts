@@ -60,7 +60,7 @@ export async function getGroupMessages(groupID: string, cursor?: string) {
   let querySet = [
     Query.orderDesc("$createdAt"),
     Query.equal("group", groupID),
-    Query.limit(5),
+    Query.limit(20),
   ];
   if (cursor) {
     querySet.push(Query.cursorAfter(cursor));

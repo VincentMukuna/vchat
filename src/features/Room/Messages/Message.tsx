@@ -1,14 +1,14 @@
 import { forwardRef, useEffect, useState } from "react";
-import api from "../../services/api";
-import { SERVER } from "../../utils/config";
-import { useAuth } from "../../context/AuthContext";
-import { useChatsContext } from "../../context/ChatsContext";
-import { IChatMessage, IGroupMessage, IUserDetails } from "../../interfaces";
-import { DeleteIcon, PencilIcon } from "../../components/Icons";
+import api from "../../../services/api";
+import { SERVER } from "../../../utils/config";
+import { useAuth } from "../../../context/AuthContext";
+import { useChatsContext } from "../../../context/ChatsContext";
+import { IChatMessage, IGroupMessage, IUserDetails } from "../../../interfaces";
+import { DeleteIcon, PencilIcon } from "../../../components/Icons";
 
 import useSWR, { mutate } from "swr";
-import { getUserDetails } from "../../services/userDetailsServices";
-import { getFormattedDateTime } from "../../services/dateServices";
+import { getUserDetails } from "../../../services/userDetailsServices";
+import { getFormattedDateTime } from "../../../services/dateServices";
 import {
   AspectRatio,
   Avatar,
@@ -20,15 +20,17 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Textarea,
   useDisclosure,
   useEditableControls,
 } from "@chakra-ui/react";
 
 import { motion } from "framer-motion";
 import { CheckIcon } from "@heroicons/react/20/solid";
-import Blueticks from "../../components/Blueticks";
+import Blueticks from "../../../components/Blueticks";
 import toast from "react-hot-toast";
-import UserProfileModal from "../Profile/UserProfileModal";
+import UserProfileModal from "../../Profile/UserProfileModal";
+import { tomato } from "@radix-ui/colors";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -134,20 +136,24 @@ const Message = forwardRef<any, MessageProps>(
 
     const handleEditMessage = async () => {
       if (newMessage !== message.body) {
-        console.log("Edited");
         setIsEditing(false);
-        try {
-          await api.updateDocument(
+
+        let editPS = api
+          .updateDocument(
             message.$databaseId,
             message.$collectionId,
             message.$id,
             { body: newMessage },
-          );
-          toast.success("Message edited succesfully ");
-          mutate(selectedChat?.$id);
-        } catch (error) {
-          toast.error("Something went wrong!");
-        }
+          )
+          .then(() => {
+            toast.success("Message edited succesfully ");
+          })
+          .catch((err: any) => {
+            console.log(err.message);
+            toast.error("Something went wrong! ");
+          });
+
+        mutate(selectedChat?.$id);
       }
     };
 
@@ -232,11 +238,12 @@ const Message = forwardRef<any, MessageProps>(
                     <Input
                       autoFocus
                       value={newMessage}
+                      max={1}
                       onBlur={() => {
                         setIsEditing(false);
                       }}
                       onChange={(e) => {
-                        setNewMessage(e.target.value);
+                        setNewMessage(e.target.value.slice(0, 1499));
                       }}
                     />
                   </InputGroup>
