@@ -143,17 +143,12 @@ function Room() {
       const unsubscribe = api.subscribe<IChat | IGroup>(
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
-          if (response.payload.changerID !== currentUserDetails.$id) {
-            console.log("Mine change! ");
-          }
-
           if (
             (response.payload.changerID !== currentUserDetails.$id &&
               response.payload.changeLog === "newtext") ||
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
           ) {
-            console.log("Not mine");
             mutate();
             globalMutate(`lastMessage ${selectedChat.$id}`);
           } else if (response.payload.changeLog === "cleared") {
