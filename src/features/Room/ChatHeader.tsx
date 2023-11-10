@@ -24,8 +24,7 @@ function ChatHeader() {
   } = useChatsContext();
   if (selectedChat === undefined) return null;
   const { currentUserDetails } = useAuth();
-
-  const isGroup = !!selectedChat?.groupMessages;
+  const isGroup = !!(selectedChat?.$collectionId === "groups");
   const isPersonal =
     !isGroup &&
     selectedChat.participants.every(
