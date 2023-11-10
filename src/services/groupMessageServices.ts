@@ -32,7 +32,7 @@ export async function createGroup({
   }
 }
 
-export async function getGroups(userDetailsDocID: string) {
+export async function getUserGroups(userDetailsDocID: string) {
   try {
     let deets = (await api.getDocument(
       SERVER.DATABASE_ID,
@@ -44,18 +44,7 @@ export async function getGroups(userDetailsDocID: string) {
     throw error;
   }
 }
-export async function getGroupMessageCount(groupID: string) {
-  try {
-    const { total } = await api.listDocuments(
-      SERVER.DATABASE_ID,
-      SERVER.COLLECTION_ID_GROUP_MESSAGES,
-      [Query.equal("group", groupID), Query.select(["$id"])],
-    );
-    return total;
-  } catch (error) {
-    throw new Error("error getting count");
-  }
-}
+
 export async function getGroupMessages(groupID: string, cursor?: string) {
   let querySet = [
     Query.orderDesc("$createdAt"),
@@ -227,7 +216,7 @@ export async function deleteGroup(groupID: string) {
 }
 
 export async function leaveGroup(userDetailsID: string, groupID: string) {
-  let groups = await getGroups(userDetailsID);
+  let groups = await getUserGroups(userDetailsID);
   let newGroups = groups.filter((group) => group.$id !== groupID);
   await updateUserDetails(userDetailsID, { groups: newGroups });
 }
