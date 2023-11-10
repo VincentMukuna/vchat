@@ -16,6 +16,8 @@ import { Avatar, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
 import { Query } from "appwrite";
 import { SERVER } from "../../utils/config";
+import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { grayDark } from "@radix-ui/colors";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -30,7 +32,7 @@ const Chat = ({ conversation }: IChatProps) => {
     IUserDetails | undefined
   >();
 
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(conversation?.$collectionId === "groups");
   const isPersonal =
     !isGroup &&
     conversation.participants?.every(
@@ -96,14 +98,14 @@ const Chat = ({ conversation }: IChatProps) => {
       }`}
     >
       <Avatar
-        name={
-          isGroup
-            ? conversation.name
-            : isPersonal
-            ? "You"
-            : contactDetails?.name
-        }
         src={isGroup ? conversation.avatarURL : contactDetails?.avatarURL}
+        icon={
+          isGroup ? (
+            <UsersIcon className="w-[26px] h-[26px]" />
+          ) : (
+            <UserIcon className="w-[26px] h-[26px]" />
+          )
+        }
       />
       <div className="grid gap-[2px] ml-2 overflow-hidden shrink text-ellipsis">
         <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">

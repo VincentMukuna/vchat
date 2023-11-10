@@ -11,7 +11,7 @@ import {
   getChatMessages,
   getUserChats,
 } from "../../services/chatMessageServices";
-import { getGroups } from "../../services/groupMessageServices";
+import { getUserGroups } from "../../services/groupMessageServices";
 import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { blueDark, gray } from "@radix-ui/colors";
@@ -39,10 +39,7 @@ export async function getConversations(userDetailsID: string) {
 
   let chatDocs = await getUserChats(userDetailsID);
 
-  let groupDocs = await getGroups(userDetailsID);
-
-  console.log(groupDocs);
-
+  let groupDocs = await getUserGroups(userDetailsID);
   conversations = [...chatDocs, ...groupDocs];
   conversations.sort(compareUpdatedAt);
   return conversations;
@@ -57,7 +54,7 @@ const ChatsList = () => {
   const { colorMode } = useColorMode();
 
   const { cache } = useSWRConfig();
-
+  console.log("cache", cache);
   if (!currentUser || !currentUserDetails) return null;
 
   // Local state to store chats data
@@ -70,7 +67,6 @@ const ChatsList = () => {
     data: conversations,
     error: chatsError,
     mutate,
-    isLoading,
   } = useSWR(
     "conversations",
     () => getConversations(currentUserDetails.$id),

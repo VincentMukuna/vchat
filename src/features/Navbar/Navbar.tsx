@@ -1,11 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import { useAppSelector } from "../../context/AppContext";
-import {
-  ChatIcon,
-  LogOutIcon,
-  UserIcon,
-  WheelIcon,
-} from "../../components/Icons";
+import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
 import { getCurrentUserDetails } from "../../services/userDetailsServices";
 import { logUserOut } from "../../services/sessionServices";
 import { Link, redirect } from "react-router-dom";
@@ -24,10 +19,16 @@ import {
   indigoDark,
   slateDark,
 } from "@radix-ui/colors";
+import { UserIcon } from "@heroicons/react/20/solid";
+import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
 
 const tabs = [
   { value: "chats", icon: <ChatIcon className="w-6 h-6" />, title: "Chats" },
-  { value: "users", icon: <UserIcon className="w-6 h-6" />, title: "Users" },
+  {
+    value: "users",
+    icon: <UserIconOutline className="w-6 h-6" />,
+    title: "Users",
+  },
   {
     value: "settings",
     icon: <WheelIcon className="w-6 h-6" />,
@@ -73,8 +74,8 @@ const Navbar = () => {
           >
             <Avatar
               size={"md"}
-              name={currentUserDetails.name}
               src={currentUserDetails.avatarURL}
+              icon={<UserIcon className="w-7 h-7" />}
             />
           </Link>
         </Tooltip>
