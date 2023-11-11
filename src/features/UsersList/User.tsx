@@ -26,7 +26,13 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { useState } from "react";
 import UserProfileModal from "../Profile/UserProfileModal";
 
-function User({ user }: { user: IUserDetails }) {
+function User({
+  user,
+  onCloseModal,
+}: {
+  user: IUserDetails;
+  onCloseModal?: () => void;
+}) {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const isPersonal = user.$id === currentUserDetails.$id;
@@ -44,7 +50,7 @@ function User({ user }: { user: IUserDetails }) {
       ps={3}
       rounded={"sm"}
       onClick={onOpen}
-      className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 `}
+      className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
     >
       <Avatar
         icon={<UserIcon className="w-[26px] h-[26px]" />}
@@ -64,7 +70,14 @@ function User({ user }: { user: IUserDetails }) {
           {user.about}
         </span>
       </div>
-      <UserProfileModal isOpen={isOpen} onClose={onClose} user={user} />
+      <UserProfileModal
+        isOpen={isOpen}
+        onClose={() => {
+          onClose();
+          onCloseModal && onCloseModal();
+        }}
+        user={user}
+      />
     </Card>
   );
 }

@@ -5,9 +5,10 @@ import { ClipLoader } from "react-spinners";
 import useSWR, { mutate } from "swr";
 import User from "./User";
 import { useEffect, useRef, useState } from "react";
-import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
+import { Button, Divider, Stack, VStack, useColorMode } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
 import useSWRInfinite from "swr/infinite";
+import Search from "../../components/Search";
 
 function UsersList() {
   const { currentUserDetails } = useAuth();
@@ -73,22 +74,19 @@ function UsersList() {
     );
   } else if (isLoading) {
     return (
-      <div className="relative flex flex-col items-center justify-center w-full top-1/3">
+      <div className="relative flex flex-col items-center justify-center w-full ">
         <ClipLoader color="#8C5959" />
         Fetching users...
       </div>
     );
   } else {
     return (
-      <Stack spacing={0} px={1}>
-        <span className="self-center w-2/3 mb-2 ml-2 text-sm italic text-gray8">
-          Click on a user to view their profile
-        </span>
+      <VStack spacing={0} px={1} height={"full"} alignItems={"flex-start"}>
+        <Search />
         {([] as IUserDetails[])
           .concat(...users!)
           .filter((user) => (user ? true : false))
           ?.map((user) => <User key={user.$id} user={user} />)}
-
         {totalRef.current > ([] as IUserDetails[]).concat(...users!).length && (
           <Button
             variant={"ghost"}
@@ -101,7 +99,7 @@ function UsersList() {
             {isValidating ? "Fetching" : "See more"}
           </Button>
         )}
-      </Stack>
+      </VStack>
     );
   }
 }

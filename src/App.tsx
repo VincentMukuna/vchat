@@ -7,7 +7,7 @@ import { ChatsProvider } from "./context/ChatsContext";
 import ErrorBoundary from "./pages/ErrorBoundary";
 import { SWRConfig } from "swr/_internal";
 import { useColorMode } from "@chakra-ui/react";
-import { slate, slateDark } from "@radix-ui/colors";
+import { red, redDark, slate, slateDark } from "@radix-ui/colors";
 import Alerter from "./components/Alert/Alerter";
 import VModal from "./components/Modal";
 
