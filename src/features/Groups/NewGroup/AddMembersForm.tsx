@@ -39,7 +39,10 @@ const AddMembersForm = ({
   const { currentUserDetails } = useAuth();
   const { prev, next } = useStepper();
   if (!currentUserDetails) return null;
-  const { data: users } = useSWR("users", getUsers);
+  const { data: users } = useSWR("users", async () => {
+    const { users } = await getUsers();
+    return users;
+  });
   const { colorMode } = useColorMode();
 
   let [members, setMembers] = useState<IUserDetails[]>(init);

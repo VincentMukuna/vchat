@@ -4,7 +4,6 @@ import { IChat, IGroup, IUserDetails } from "../../interfaces";
 import {
   deleteGroup,
   getGroupDetails,
-  getGroupMessageCount,
   leaveGroup,
   updateGroupAvatar,
   updateGroupDetails,

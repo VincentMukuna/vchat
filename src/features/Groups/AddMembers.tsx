@@ -26,7 +26,10 @@ const AddMembers = ({ group }: { group: IGroup }) => {
   const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>
     getGroupDetails(group.$id),
   );
-  const { data: users } = useSWR("users", getUsers);
+  const { data: users } = useSWR("users", async () => {
+    const { users } = await getUsers();
+    return users;
+  });
   const { value, getCheckboxProps, setValue } = useCheckboxGroup();
   const { colorMode } = useColorMode();
 
