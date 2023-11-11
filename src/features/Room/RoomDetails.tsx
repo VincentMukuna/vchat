@@ -43,7 +43,7 @@ const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat, msgsCount } =
     useChatsContext();
   const { currentUserDetails } = useAuth();
-  const { cache } = useSWRConfig();
+
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
 
@@ -98,64 +98,9 @@ const RoomDetails = () => {
     },
   });
 
-  function getConversations() {
-    if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (IChat | IGroup)[];
-    } else return [];
-  }
-
-  function handleDeleteChat() {
-    let promise: Promise<void>;
-    removeConversation();
-    if (isGroup) {
-      promise = deleteGroup(selectedChat.$id);
-    } else {
-      promise = deleteContact(
-        (selectedChat as IChat).$id,
-        (recepient as any).$id,
-      );
-    }
-    promise.catch(() => {
-      toast.error("Something went wrong");
-    });
-  }
-
-  function removeConversation() {
-    let chatID = selectedChat!.$id;
-    mutate(
-      "conversations",
-      getConversations().filter((conversation) => conversation.$id !== chatID),
-      {
-        revalidate: false,
-      },
-    );
-    setSelectedChat(undefined);
-  }
-
-  async function handleExitGroup() {
-    let chatID = selectedChat!.$id;
-    removeConversation();
-    let promise = leaveGroup(currentUserDetails!.$id, chatID);
-
-    promise.catch(() => {
-      toast.error("Something went wrong! ");
-    });
-  }
   return (
-    <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto bg-gray2 dark:bg-dark-slate2 dark:text-white">
-      <div className="flex items-center w-full gap-3 p-4 ">
-        <div className="absolute top-0 left-0 p-2">
-          <IconButton
-            aria-label="close side panel"
-            icon={<ArrowLeftIcon className="w-5 h-5" />}
-            title="Close details panel"
-            bg={"inherit"}
-          ></IconButton>
-        </div>
-
-        <span className="inline-flex justify-center w-full ">Chat Details</span>
-      </div>
-      <div className="flex flex-col items-center w-full gap-8 text-sm">
+    <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto ">
+      <div className="flex flex-col items-center w-full gap-8 mt-4 text-sm">
         <VStack gap={-1}>
           <div className="relative ">
             {isGroup && (
@@ -312,51 +257,122 @@ const RoomDetails = () => {
             </>
           )}
         </div>
-        <HStack></HStack>
-
-        <HStack>
-          <Button
-            hidden={!isGroup}
-            size={"sm"}
-            variant={"outline"}
-            leftIcon={<ArrowRightOnRectangleIcon className="w-5 h-5" />}
-            onClick={() => {
-              confirmAlert({
-                message: `Are you sure you want to leave this conversation?`,
-                title: `Exit Discussion `,
-                confirmText: `Yes, I'm sure`,
-                onConfirm: () => handleExitGroup(),
-              });
-            }}
-          >
-            Leave
-          </Button>
-          <Button
-            hidden={isGroup ? !isAdmin : false}
-            size={"sm"}
-            variant={"outline"}
-            colorScheme="red"
-            leftIcon={<TrashIcon className="w-5 h-5" />}
-            onClick={() => {
-              confirmAlert({
-                message: `Are you sure you want to delete this ${
-                  isGroup ? "group" : "chat"
-                } ? All records of this conversation will be removed from our servers `,
-                title: `Delete conversation `,
-                confirmText: `Yes, I'm sure`,
-                onConfirm: () => {
-                  handleDeleteChat();
-                },
-                cancelText: `No, keep conversation`,
-              });
-            }}
-          >
-            Delete
-          </Button>
-        </HStack>
       </div>
     </div>
   );
 };
 
 export default RoomDetails;
+
+export const RoomDetailsHeader = () => {
+  const { recepient, selectedChat } = useChatsContext();
+  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  return (
+    <div className="text-lg font-bold">
+      {isGroup
+        ? selectedChat.name
+        : `Chat with ${recepient?.name.split(" ")[0]}`}
+    </div>
+  );
+};
+
+export const RoomDetailsFooter = () => {
+  const { cache } = useSWRConfig();
+  const { recepient, setSelectedChat, selectedChat } = useChatsContext();
+
+  if (selectedChat === undefined) return null;
+  const { currentUserDetails } = useAuth();
+  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isPersonal =
+    !isGroup &&
+    selectedChat.participants.every(
+      (participant: IUserDetails) =>
+        participant.$id === currentUserDetails?.$id,
+    );
+  const isAdmin =
+    isGroup &&
+    (selectedChat as IGroup).admins.includes(currentUserDetails!.$id);
+  function getConversations() {
+    if (cache.get("conversations")?.data) {
+      return cache.get("conversations")?.data as (IChat | IGroup)[];
+    } else return [];
+  }
+
+  function removeConversation() {
+    let chatID = selectedChat!.$id;
+    mutate(
+      "conversations",
+      getConversations().filter((conversation) => conversation.$id !== chatID),
+      {
+        revalidate: false,
+      },
+    );
+    setSelectedChat(undefined);
+  }
+  function handleDeleteChat() {
+    let promise: Promise<void>;
+    removeConversation();
+    if (isGroup) {
+      promise = deleteGroup(selectedChat.$id);
+    } else {
+      promise = deleteContact(
+        (selectedChat as IChat).$id,
+        (recepient as any).$id,
+      );
+    }
+    promise.catch(() => {
+      toast.error("Something went wrong");
+    });
+  }
+  async function handleExitGroup() {
+    let chatID = selectedChat!.$id;
+    removeConversation();
+    let promise = leaveGroup(currentUserDetails!.$id, chatID);
+
+    promise.catch(() => {
+      toast.error("Something went wrong! ");
+    });
+  }
+  return (
+    <HStack>
+      <Button
+        hidden={!isGroup}
+        size={"sm"}
+        variant={"outline"}
+        leftIcon={<ArrowRightOnRectangleIcon className="w-5 h-5" />}
+        onClick={() => {
+          confirmAlert({
+            message: `Are you sure you want to leave this conversation?`,
+            title: `Exit Discussion `,
+            confirmText: `Yes, I'm sure`,
+            onConfirm: () => handleExitGroup(),
+          });
+        }}
+      >
+        Leave
+      </Button>
+      <Button
+        hidden={isGroup ? !isAdmin : false}
+        size={"sm"}
+        variant={"outline"}
+        colorScheme="red"
+        leftIcon={<TrashIcon className="w-5 h-5" />}
+        onClick={() => {
+          confirmAlert({
+            message: `Are you sure you want to delete this ${
+              isGroup ? "group" : "chat"
+            } ? All records of this conversation will be removed from our servers `,
+            title: `Delete conversation `,
+            confirmText: `Yes, I'm sure`,
+            onConfirm: () => {
+              handleDeleteChat();
+            },
+            cancelText: `No, keep conversation`,
+          });
+        }}
+      >
+        Delete
+      </Button>
+    </HStack>
+  );
+};

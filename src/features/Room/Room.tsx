@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 //@ts-ignore
 import chatSVG from "../../assets/groupChat.svg";
 import ChatHeader from "./ChatHeader";
@@ -23,7 +23,10 @@ import {
   getGroupMessages,
 } from "../../services/groupMessageServices";
 import useSWR, { KeyedMutator, useSWRConfig } from "swr";
-import RoomDetails from "./RoomDetails";
+import RoomDetails, {
+  RoomDetailsFooter,
+  RoomDetailsHeader,
+} from "./RoomDetails";
 import { Box, Center, useColorMode, Button } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
@@ -51,6 +54,8 @@ function Room() {
   const { colorMode } = useColorMode();
   const { selectedChat, recepient, setMsgsCount, msgsCount } =
     useChatsContext();
+
+  const [showDetails, setShowDetails] = useState(false);
 
   if (!currentUserDetails) return null;
 
@@ -197,7 +202,7 @@ function Room() {
       <>
         <Box
           as="main"
-          className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow shrink-0"
+          className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow "
         >
           <ChatHeader />
           {error ? (
@@ -233,9 +238,12 @@ function Room() {
           <Input />
         </Box>
         <aside
-          className={`hidden max-w-[20rem] grow basis-40 transition-all xl:flex border-l-[1px]`}
+          className={`hidden ${
+            showDetails && "absolute inset-0"
+          } md:static  md:max-w-[20rem] grow basis-40 border-l transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
         >
           <RoomDetails />
+          <RoomDetailsFooter />
         </aside>
       </>
     );

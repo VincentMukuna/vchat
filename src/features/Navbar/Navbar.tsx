@@ -49,7 +49,7 @@ const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <nav className="flex  md:flex-col md:gap-8  items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate2 md:h-full gap-3">
+    <nav className="flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate2 md:h-full gap-3">
       <div className="hidden md:flex">
         <Tooltip
           label="My Profile"
@@ -100,10 +100,10 @@ const Navbar = () => {
                 onClick={() => {
                   setActivePage(tab.title);
                 }}
-                className="relative"
+                className="relative mb-3"
               >
                 <div
-                  className={` md:w-1 md:h-full w-full h-1 bg-dark-blue7 rounded-full absolute  bottom-0 md:-left-1 transition-opacity ${
+                  className={` md:w-1 md:h-full w-full h-1 bg-dark-blue7 rounded-full absolute  -bottom-2 md:bottom-0 left-[2px]  md:-left-1 transition-opacity ${
                     activePage === tab.title ? "visible" : "invisible"
                   }`}
                 />
