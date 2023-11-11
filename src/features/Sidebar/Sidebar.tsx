@@ -24,12 +24,7 @@ const Sidebar = () => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   return (
-    <Box
-      as={"aside"}
-      gap={0}
-      px={0}
-      className="bg-gray2 dark:bg-dark-slate1 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]"
-    >
+    <aside className="bg-gray2 dark:bg-dark-slate1 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]">
       <div className="w-full font-semibold tracking-widest">
         <span className="relative flex items-center justify-center w-full h-full ">
           {activePage}
@@ -65,10 +60,10 @@ const Sidebar = () => {
           </ModalContent>
         </Modal>
       </div>
-      <section className="flex flex-col overflow-x-hidden overflow-y-auto">
+      <section>
         <Outlet />
       </section>
-    </Box>
+    </aside>
   );
 };
 
