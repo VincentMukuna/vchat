@@ -32,7 +32,7 @@ const VModal = () => {
     return modalStore.subscribe(setState);
   }, []);
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
       <ModalOverlay />
       <ModalContent className="border">{state.modalContent}</ModalContent>
     </Modal>

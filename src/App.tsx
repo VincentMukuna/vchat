@@ -33,10 +33,10 @@ function App() {
 
         <SWRConfig>
           <AuthProvider>
-            <Alerter />
-            <VModal />
             <AppProvider>
               <ChatsProvider>
+                <Alerter />
+                <VModal />
                 <div className="fixed inset-0 flex items-center justify-center bg-gray1 dark:bg-dark-slate1">
                   <Outlet />
                 </div>
