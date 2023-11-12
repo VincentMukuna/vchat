@@ -28,7 +28,10 @@ import { CircleLoader, ClipLoader } from "react-spinners";
 function Search({
   handleSearch,
 }: {
-  handleSearch: (searchString: string, onClick: () => void) => Promise<any[]>;
+  handleSearch: (
+    searchString: string,
+    onCloseSearch: () => void,
+  ) => Promise<any[]>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
@@ -61,7 +64,6 @@ function Search({
         onOpen={onOpen}
         onClose={onClose}
         placement="bottom"
-        closeOnBlur={false}
       >
         <PopoverAnchor>
           <InputGroup>
@@ -84,8 +86,9 @@ function Search({
           _focus={{
             border: "none",
             shadow: "0 0 0 1px gray",
-            rounded: "none",
           }}
+          py={4}
+          px={2}
         >
           {loading ? (
             <HStack className="p-4">
