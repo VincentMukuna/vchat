@@ -52,7 +52,7 @@ const Message = forwardRef<any, MessageProps>(
     const [isEditing, setIsEditing] = useState(false);
     const [newMessage, setNewMessage] = useState(message.body);
 
-    const isOptimistic = message?.optimistic;
+    const isOptimistic = message?.optimistic ? true : false;
 
     const isGroupMessage = !!(
       message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES
@@ -129,7 +129,6 @@ const Message = forwardRef<any, MessageProps>(
 
     const handleDelete = async () => {
       await onDelete(message);
-      toast.success("Message deleted");
     };
 
     const handleEditMessage = async () => {
@@ -269,7 +268,7 @@ const Message = forwardRef<any, MessageProps>(
           </div>
         </div>
 
-        {mine && (
+        {mine && !isOptimistic && (
           <div
             className={`flex self-end gap-2 mb-5 ${
               showHoverCard ? "" : "invisible"
