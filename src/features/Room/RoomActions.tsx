@@ -29,17 +29,13 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
                 confirmText: "Yes, delete all messages",
                 cancelText: "Keep messages",
                 onConfirm: () => {
-                  let ps = clearChatMessages(id);
-                  toast.promise(ps, {
-                    loading: "Deleting messages",
-                    success: "Messages deleted successfully",
-                    error: "Something went wrong",
+                  mutate(chatMessagesKey, [[]], { revalidate: false });
+                  mutate(`lastMessage ${selectedChat.$id}`, undefined, {
+                    revalidate: false,
                   });
-                  ps.then(() => {
-                    mutate(chatMessagesKey, [[]], { revalidate: false });
-                    mutate(`lastMessage ${selectedChat.$id}`, undefined, {
-                      revalidate: false,
-                    });
+                  let ps = clearChatMessages(id);
+                  ps.catch(() => {
+                    toast.error("Something went wrong");
                   });
                 },
               });
@@ -49,20 +45,26 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
           </MenuItem>
         </>
       )}
-      <MenuItem
-        py={"2.5"}
-        onClick={() =>
-          openModal(<EditMembers group={selectedChat as IGroup} />)
-        }
-      >
-        Edit Members
-      </MenuItem>
-      <MenuItem
-        py={"2.5"}
-        onClick={() => openModal(<AddMembers group={selectedChat as IGroup} />)}
-      >
-        Add Members
-      </MenuItem>
+      {isGroup && (
+        <>
+          <MenuItem
+            py={"2.5"}
+            onClick={() =>
+              openModal(<EditMembers group={selectedChat as IGroup} />)
+            }
+          >
+            Edit Members
+          </MenuItem>
+          <MenuItem
+            py={"2.5"}
+            onClick={() =>
+              openModal(<AddMembers group={selectedChat as IGroup} />)
+            }
+          >
+            Add Members
+          </MenuItem>
+        </>
+      )}
     </MenuList>
   );
 };
