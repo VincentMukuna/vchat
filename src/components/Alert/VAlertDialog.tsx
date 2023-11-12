@@ -66,6 +66,7 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
               onClose();
               clearAlert();
             }}
+            colorScheme="red"
           >
             {alert.confirmText}
           </Button>
