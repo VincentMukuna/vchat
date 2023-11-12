@@ -23,22 +23,29 @@ import { SERVER } from "../../utils/config";
 import { MapPinIcon, UserIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray, slateDark, slateDarkA } from "@radix-ui/colors";
 import { useChatsContext } from "../../context/ChatsContext";
-import { useState } from "react";
+import { ReactNode, createContext, useContext, useState } from "react";
 import UserProfileModal from "../Profile/UserProfileModal";
+import { openModal } from "../../components/Modal";
+
+interface UserContextValue {
+  user: IUserDetails;
+}
+
+const UserContext = createContext<UserContextValue | undefined>(undefined);
 
 function User({
   user,
   onCloseModal,
   onClick,
+  children,
 }: {
   user: IUserDetails;
   onClick?: () => void;
   onCloseModal?: () => void;
+  children: ReactNode;
 }) {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
-  const isPersonal = user.$id === currentUserDetails.$id;
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Card
@@ -49,39 +56,68 @@ function User({
       py={3}
       ps={3}
       rounded={"sm"}
-      onClick={onClick ? onClick : onOpen}
-      className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
+      onClick={
+        onClick
+          ? onClick
+          : () => {
+              openModal(
+                <UserProfileModal
+                  onClose={() => {
+                    onCloseModal && onCloseModal();
+                  }}
+                  user={user}
+                />,
+              );
+            }
+      }
+      className={`transition-all gap-1 flex items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
     >
-      <Avatar
-        icon={<UserIcon className="w-[26px] h-[26px]" />}
-        src={
-          user.avatarID
-            ? api
-                .getFile(SERVER.BUCKET_ID_USER_AVATARS, user?.avatarID)
-                .toString()
-            : undefined
-        }
-      />
-      <div className="flex flex-col justify-center ms-2">
-        <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
-          {isPersonal ? "You" : user.name}
-        </span>
-        <span className="overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
-          {user.about}
-        </span>
-      </div>
-      {!onClick && (
-        <UserProfileModal
-          isOpen={isOpen}
-          onClose={() => {
-            onClose();
-            onCloseModal && onCloseModal();
-          }}
-          user={user}
-        />
-      )}
+      <UserContext.Provider value={{ user: user }}>
+        {children}
+      </UserContext.Provider>
     </Card>
   );
 }
 
 export default User;
+
+export const UserAvatar = ({ size }: { size?: string }) => {
+  const { user } = useContext(UserContext)!;
+  return (
+    <Avatar
+      size={size}
+      icon={<UserIcon className="w-[26px] h-[26px]" />}
+      src={
+        user.avatarID
+          ? api
+              .getFile(SERVER.BUCKET_ID_USER_AVATARS, user?.avatarID)
+              .toString()
+          : undefined
+      }
+    />
+  );
+};
+
+export const UserDescription = ({ children }: { children?: ReactNode }) => {
+  const { user } = useContext(UserContext)!;
+  const { currentUserDetails } = useAuth();
+  if (!currentUserDetails) return null;
+  const isPersonal = user.$id === currentUserDetails.$id;
+  return (
+    <div className="flex flex-col justify-center ms-2">
+      <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
+        {isPersonal ? "You" : user.name}
+      </span>
+      {children}
+    </div>
+  );
+};
+
+export const UserAbout = () => {
+  const { user } = useContext(UserContext)!;
+  return (
+    <span className="overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+      {user.about}
+    </span>
+  );
+};

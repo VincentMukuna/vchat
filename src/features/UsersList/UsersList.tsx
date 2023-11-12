@@ -3,7 +3,7 @@ import { IUserDetails } from "../../interfaces";
 import { getUsers, searchUsers } from "../../services/userDetailsServices";
 import { ClipLoader } from "react-spinners";
 import useSWR, { mutate } from "swr";
-import User from "./User";
+import User, { UserAbout, UserAvatar, UserDescription } from "./User";
 import { useEffect, useRef, useState } from "react";
 import { Button, Divider, Stack, VStack, useColorMode } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
@@ -62,7 +62,7 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
     return (
       <VStack spacing={0} px={1} height={"full"} alignItems={"flex-start"}>
         <Search
-          handleSearch={async (name, onClick) => {
+          handleSearch={async (name, onCloseSearch) => {
             let res = await searchUsers(name);
             return res.map((user, i) => (
               <User
@@ -71,18 +71,27 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
                   if (onUserClick) {
                     onUserClick();
                   }
-                  onClick();
+                  onCloseSearch();
                 }}
-                // key={user.$id}
-                key={i}
-              />
+                key={user.$id}
+              >
+                <UserAvatar size="sm" />
+                <UserDescription />
+              </User>
             ));
           }}
         />
         {([] as IUserDetails[])
           .concat(...users!)
           .filter((user) => (user ? true : false))
-          ?.map((user) => <User key={user.$id} user={user} />)}
+          ?.map((user) => (
+            <User key={user.$id} user={user}>
+              <UserAvatar />
+              <UserDescription>
+                <UserAbout />
+              </UserDescription>
+            </User>
+          ))}
         {totalRef.current > ([] as IUserDetails[]).concat(...users!).length && (
           <Button
             variant={"ghost"}
