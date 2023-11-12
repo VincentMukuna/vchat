@@ -143,7 +143,6 @@ const Input = ({}: InputProps) => {
           attachments: attachments,
           read: isPersonal ? true : false,
         });
-    const firstPageMsgs = cache.get(chatMessagesKey)?.data[0] as Message[];
 
     let messages = cache.get(chatMessagesKey)?.data as (
       | IChatMessage
@@ -151,6 +150,18 @@ const Input = ({}: InputProps) => {
     )[][];
 
     msgSentPromise.then((msg) => {
+      console.log("before: ", messages);
+      console.log(
+        "after: ",
+        messages.map((msgArray) => {
+          return msgArray.map((ucMessage) => {
+            if (ucMessage.$id === message.$id) {
+              return msg;
+            }
+            return ucMessage;
+          });
+        }),
+      );
       mutate(
         chatMessagesKey,
         messages?.map((msgArray) => {
@@ -161,12 +172,13 @@ const Input = ({}: InputProps) => {
             return ucMessage;
           });
         }),
+        { revalidate: false },
       ).then(() => {
         let lastMessage = cache.get(`lastMessage ${selectedChat.$id}`)?.data as
           | IChatMessage
           | IGroupMessage;
         if (lastMessage.$id === message.$id) {
-          mutate(`lastMessage ${selectedChat.$id}`, msg);
+          mutate(`lastMessage ${selectedChat.$id}`, msg, { revalidate: false });
         }
       });
     });
@@ -175,8 +187,9 @@ const Input = ({}: InputProps) => {
       mutate(
         chatMessagesKey,
         messages?.map((msgArray) => {
-          msgArray.filter((ucMessage) => ucMessage.$id !== message.$id);
+          return msgArray.filter((ucMessage) => ucMessage.$id !== message.$id);
         }),
+        { revalidate: false },
       ).then(() => {
         let lastMessage = cache.get(`lastMessage ${selectedChat.$id}`)?.data as
           | IChatMessage
@@ -185,6 +198,7 @@ const Input = ({}: InputProps) => {
           mutate(
             `lastMessage ${selectedChat.$id}`,
             ([] as Message[]).concat(...messages).at(0),
+            { revalidate: false },
           );
         }
       });
