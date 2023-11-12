@@ -15,7 +15,7 @@ import {
 
 import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
-import { blueDark, gray, slate } from "@radix-ui/colors";
+import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 
 interface AddMembersProps {
@@ -101,7 +101,7 @@ const AddMembersForm = ({
           borderWidth={1}
           px={2}
           pt={1}
-          bg={colorMode === "light" ? gray.gray3 : blueDark.blue2}
+          bg={colorMode === "light" ? gray.gray3 : slateDark.slate2}
           rounded={"md"}
           mt={2}
           divider={<Divider />}
