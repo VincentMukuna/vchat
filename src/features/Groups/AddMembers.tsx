@@ -27,7 +27,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
     getGroupDetails(group.$id),
   );
   const { data: users } = useSWR("users", async () => {
-    const { users } = await getUsers();
+    const [users] = await getUsers();
     return users;
   });
   const { value, getCheckboxProps, setValue } = useCheckboxGroup();

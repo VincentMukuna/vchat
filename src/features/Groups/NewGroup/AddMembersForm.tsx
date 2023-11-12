@@ -40,7 +40,7 @@ const AddMembersForm = ({
   const { prev, next } = useStepper();
   if (!currentUserDetails) return null;
   const { data: users } = useSWR("users", async () => {
-    const { users } = await getUsers();
+    const [users] = await getUsers();
     return users;
   });
   const { colorMode } = useColorMode();
