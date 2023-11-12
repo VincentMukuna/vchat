@@ -66,7 +66,7 @@ export async function getChatMessages(chatID: string, cursor?: string) {
     SERVER.COLLECTION_ID_CHAT_MESSAGES,
     querySet,
   );
-  return { messages: documents as IChatMessage[], total };
+  return [documents, total] as [IChatMessage[], number];
 }
 
 async function getAllChatMessages(chatID: string) {

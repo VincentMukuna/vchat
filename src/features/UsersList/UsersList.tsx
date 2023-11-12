@@ -1,6 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import { IUserDetails } from "../../interfaces";
-import { getUsers } from "../../services/userDetailsServices";
+import { getUsers, searchUsers } from "../../services/userDetailsServices";
 import { ClipLoader } from "react-spinners";
 import useSWR, { mutate } from "swr";
 import User from "./User";
@@ -9,33 +9,12 @@ import { Button, Divider, Stack, VStack, useColorMode } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
 import useSWRInfinite from "swr/infinite";
 import Search from "../../components/Search";
+import { useInfinite } from "../../hooks/useInfinite";
 
-function UsersList() {
+function UsersList({ onUserClick }: { onUserClick?: () => void }) {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const { colorMode } = useColorMode();
-  const totalRef = useRef(0);
-
-  function getKey(pageIndex: number, previousPageData: any) {
-    if (previousPageData && !previousPageData.length) return null;
-    if (pageIndex === 0) {
-      return `users`;
-    }
-    return `users-${previousPageData.at(-1).$id}`;
-  }
-
-  async function fetcher(key: string) {
-    let re = /users-(\w+)/;
-    let match = key.match(re);
-    if (match) {
-      const { total, users } = await getUsers(match[1]);
-      totalRef.current = total;
-      return users;
-    }
-    const { total, users } = await getUsers();
-    totalRef.current = total;
-    return users;
-  }
 
   const {
     data: users,
@@ -45,8 +24,8 @@ function UsersList() {
     size,
     setSize,
     isValidating,
-  } = useSWRInfinite(getKey, fetcher);
-
+    totalRef,
+  } = useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
   if (error) {
     return (
       <div className="flex flex-col items-center gap-8 p-4 text-gray-300">
@@ -82,7 +61,24 @@ function UsersList() {
   } else {
     return (
       <VStack spacing={0} px={1} height={"full"} alignItems={"flex-start"}>
-        <Search />
+        <Search
+          handleSearch={async (name, onClick) => {
+            let res = await searchUsers(name);
+            return res.map((user, i) => (
+              <User
+                user={user}
+                onCloseModal={() => {
+                  if (onUserClick) {
+                    onUserClick();
+                  }
+                  onClick();
+                }}
+                // key={user.$id}
+                key={i}
+              />
+            ));
+          }}
+        />
         {([] as IUserDetails[])
           .concat(...users!)
           .filter((user) => (user ? true : false))
@@ -94,7 +90,7 @@ function UsersList() {
               setSize(size + 1);
             }}
             isLoading={isValidating}
-            flexShrink={0}
+            w={"full"}
           >
             {isValidating ? "Fetching" : "See more"}
           </Button>

@@ -29,16 +29,16 @@ import UserProfileModal from "../Profile/UserProfileModal";
 function User({
   user,
   onCloseModal,
+  onClick,
 }: {
   user: IUserDetails;
+  onClick?: () => void;
   onCloseModal?: () => void;
 }) {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const isPersonal = user.$id === currentUserDetails.$id;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { colorMode } = useColorMode();
-  const [loading, setLoading] = useState(false);
 
   return (
     <Card
@@ -49,7 +49,7 @@ function User({
       py={3}
       ps={3}
       rounded={"sm"}
-      onClick={onOpen}
+      onClick={onClick ? onClick : onOpen}
       className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
     >
       <Avatar
@@ -70,14 +70,16 @@ function User({
           {user.about}
         </span>
       </div>
-      <UserProfileModal
-        isOpen={isOpen}
-        onClose={() => {
-          onClose();
-          onCloseModal && onCloseModal();
-        }}
-        user={user}
-      />
+      {!onClick && (
+        <UserProfileModal
+          isOpen={isOpen}
+          onClose={() => {
+            onClose();
+            onCloseModal && onCloseModal();
+          }}
+          user={user}
+        />
+      )}
     </Card>
   );
 }

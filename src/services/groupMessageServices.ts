@@ -3,6 +3,7 @@ import api from "./api";
 import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
 import { Query } from "appwrite";
 import { updateUserDetails } from "./userDetailsServices";
+import { mutate } from "swr";
 
 type IInitGroup = {
   name: string;
@@ -27,9 +28,11 @@ export async function createGroup({
 
   if (avatar) {
     setTimeout(() => {
-      uploadGroupAvatar(doc.$id, avatar);
+      uploadGroupAvatar(doc.$id, avatar).then(() => mutate("conversations"));
     }, 1000);
   }
+
+  return doc as IGroup;
 }
 
 export async function getUserGroups(userDetailsDocID: string) {
@@ -59,7 +62,7 @@ export async function getGroupMessages(groupID: string, cursor?: string) {
     SERVER.COLLECTION_ID_GROUP_MESSAGES,
     querySet,
   );
-  return { messages: documents as IGroupMessage[], total };
+  return [documents, total] as [IGroupMessage[], number];
 }
 
 export async function sendGroupMessage(

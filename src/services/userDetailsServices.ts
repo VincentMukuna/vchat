@@ -35,7 +35,7 @@ export async function getCurrentUserDetails(
   }
 }
 export async function getUsers(cursor?: string) {
-  let querySet = [Query.orderAsc("$createdAt"), Query.limit(20)];
+  let querySet = [Query.orderAsc("$createdAt"), Query.limit(2)];
   if (cursor) {
     querySet.push(Query.cursorAfter(cursor));
   }
@@ -45,7 +45,7 @@ export async function getUsers(cursor?: string) {
     querySet,
   );
 
-  return { users: documents as IUserDetails[], total };
+  return [documents, total] as [IUserDetails[], number];
 }
 
 export async function editUserDetails(
@@ -172,4 +172,20 @@ export async function deleteUser(userID: string) {
   };
 
   return response;
+}
+
+export async function searchUsers(name: string) {
+  if (name) {
+    try {
+      const { documents } = await api.listDocuments(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_USERS,
+        [Query.search("name", name), Query.limit(4)],
+      );
+      return documents as IUserDetails[];
+    } catch (error) {
+      toast.error("Something went wrong");
+      return [];
+    }
+  } else return [];
 }

@@ -34,6 +34,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import useSWRInfinite from "swr/infinite";
 import toast from "react-hot-toast";
+import { useInfinite } from "../../hooks/useInfinite";
 
 export function compareCreatedAt(a: any, b: any) {
   const dateA = new Date(a.$createdAt);
@@ -67,37 +68,7 @@ function Room() {
       (participant: IUserDetails) =>
         participant.$id === currentUserDetails?.$id,
     );
-
-  function getKey(pageIndex: number, previousPageData: any) {
-    if (previousPageData && !previousPageData.length) return null;
-    if (!selectedChat) return undefined;
-    if (pageIndex === 0) {
-      return `${selectedChat!.$id}-messages-`;
-    }
-    return `${selectedChat.$id}-messages-${previousPageData.at(-1).$id}`;
-  }
-
-  async function fetcher(key: string) {
-    if (!selectedChat) return undefined;
-    let messages: (IGroupMessage | IChatMessage)[] = [];
-    let re = new RegExp(`${selectedChat.$id}-messages-(\\w+)`);
-    let match = key.match(re);
-    if (match) {
-      let { messages: docs, total } = isGroup
-        ? await getGroupMessages(selectedChat.$id, match[1])
-        : await getChatMessages(selectedChat.$id, match[1]);
-      setMsgsCount(total);
-      messages = docs;
-    } else {
-      let { messages: docs, total } = isGroup
-        ? await getGroupMessages(selectedChat.$id)
-        : await getChatMessages(selectedChat.$id);
-      messages = docs;
-      setMsgsCount(total);
-    }
-    return messages.sort(compareCreatedAt);
-  }
-
+  let re = new RegExp(`${selectedChat?.$id}-messages-(\\w+)`);
   const {
     data: messages,
     isLoading,
@@ -106,7 +77,19 @@ function Room() {
     size,
     setSize,
     isValidating,
-  } = useSWRInfinite(getKey, fetcher);
+    totalRef,
+  } = useInfinite<IChatMessage | IGroupMessage>(
+    isGroup ? getGroupMessages : getChatMessages,
+    selectedChat && selectedChat?.$id + "-messages",
+    re,
+    [selectedChat?.$id],
+  );
+
+  useEffect(() => {
+    if (totalRef.current) {
+      setMsgsCount(totalRef.current);
+    }
+  }, [totalRef.current]);
 
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
@@ -122,25 +105,23 @@ function Room() {
       newMessages && newMessages.at(0)?.at(0),
       { revalidate: false },
     );
-    if (isGroup) {
-      try {
+    try {
+      if (isGroup) {
         await deleteGroupMessage(
           currentUserDetails.$id,
           selectedChat.$id,
           message.$id,
           message.attachments,
         );
-      } catch (error: any) {
-        toast.error("Something went wrong");
+      } else {
+        await deleteChatMessage(
+          currentUserDetails.$id,
+          selectedChat.$id,
+          message as IChatMessage,
+        );
       }
-
-      return;
-    } else {
-      await deleteChatMessage(
-        currentUserDetails.$id,
-        selectedChat.$id,
-        message as IChatMessage,
-      );
+    } catch (error) {
+      toast.error("Something went wrong");
     }
   };
   useEffect(() => {
@@ -217,7 +198,7 @@ function Room() {
               )}
               onDelete={handleDeleteMessage}
             >
-              {msgsCount >
+              {totalRef.current >
                 ([] as IGroupMessage[]).concat(
                   ...(messages as IGroupMessage[][]),
                 ).length &&
