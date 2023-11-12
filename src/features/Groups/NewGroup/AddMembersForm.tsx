@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IUserDetails } from "../../../interfaces";
 import useSWR from "swr";
-import { getUsers } from "../../../services/userDetailsServices";
+import { getUsers, searchUsers } from "../../../services/userDetailsServices";
 import { useAuth } from "../../../context/AuthContext";
 import {
   Avatar,
@@ -17,6 +17,8 @@ import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
 import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
+import User, { UserAvatar, UserDescription } from "../../UsersList/User";
+import Search from "../../../components/Search";
 
 interface AddMembersProps {
   members: IUserDetails[];
@@ -107,14 +109,39 @@ const AddMembersForm = ({
           divider={<Divider />}
           spacing={0}
         >
+          <Search
+            handleSearch={async (name, onCloseSearch) => {
+              let res = await searchUsers(name);
+              return res.map((user) => (
+                <User
+                  user={user}
+                  onClick={() => {
+                    if (members.includes(user)) {
+                      setMembers((prev) => {
+                        return prev.filter((member) => member.$id !== user.$id);
+                      });
+                    } else {
+                      setMembers((prev) => {
+                        return [...prev, user];
+                      });
+                    }
+                  }}
+                  key={user.$id}
+                >
+                  <UserAvatar />
+                  <UserDescription />
+                </User>
+              ));
+            }}
+          />
           {users &&
             users
               .filter((member) => member.$id !== currentUserDetails.$id)
               .map((user: IUserDetails, index) => {
                 return (
                   <div
-                    className="flex items-center w-full gap-2 px-2 py-2 hover:bg-gray9/20 group "
-                    key={index}
+                    className="flex items-center w-full gap-2 group "
+                    key={user.$id}
                   >
                     <Checkbox
                       type="checkbox"
@@ -133,18 +160,15 @@ const AddMembersForm = ({
                           });
                         }
                       }}
-                      className=""
                     />
                     <label
                       htmlFor={index.toString()}
                       className="flex items-center w-full gap-1 p-1 text-sm font-semibold tracking-wide cursor-pointer"
                     >
-                      <Avatar
-                        name={user.name}
-                        size="sm"
-                        src={user.avatarURL ?? undefined}
-                      />
-                      {user.name}
+                      <User user={user} onClick={() => {}}>
+                        <UserAvatar size="sm" />
+                        <UserDescription />
+                      </User>
                     </label>
                   </div>
                 );
