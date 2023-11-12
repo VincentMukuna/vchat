@@ -7,10 +7,15 @@ import { openModal } from "../../components/Modal";
 import EditMembers from "../Groups/EditMembers";
 import { IGroup } from "../../interfaces";
 import AddMembers from "../Groups/AddMembers";
+import { mutate } from "swr";
+import { unstable_serialize } from "swr/infinite";
 
 const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
   const { selectedChat } = useChatsContext();
   if (!selectedChat) return null;
+  const chatMessagesKey = unstable_serialize(
+    () => selectedChat.$id + "-messages",
+  );
   return (
     <MenuList className="px-2">
       {!isGroup && (
@@ -29,6 +34,12 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
                     loading: "Deleting messages",
                     success: "Messages deleted successfully",
                     error: "Something went wrong",
+                  });
+                  ps.then(() => {
+                    mutate(chatMessagesKey, [[]], { revalidate: false });
+                    mutate(`lastMessage ${selectedChat.$id}`, undefined, {
+                      revalidate: false,
+                    });
                   });
                 },
               });

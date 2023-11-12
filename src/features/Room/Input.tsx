@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { sendGroupMessage } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
 import { useSWRConfig } from "swr";
-import { PlusIcon } from "@heroicons/react/20/solid";
+import { PaperClipIcon, PlusIcon } from "@heroicons/react/20/solid";
 import { Badge, IconButton, Image } from "@chakra-ui/react";
 import { useFilePicker } from "use-file-picker";
 import {
@@ -34,8 +34,9 @@ const Input = ({}: InputProps) => {
   let { mutate, cache } = useSWRConfig();
 
   const chatMessagesKey = unstable_serialize(
-    () => `${selectedChat!.$id}-messages-`,
+    () => selectedChat.$id + "-messages",
   );
+
   const firstPageMsgs = cache.get(chatMessagesKey)?.data[0];
   const { openFilePicker, filesContent, clear } = useFilePicker({
     accept: [".jpg", ".png"],
@@ -144,20 +145,49 @@ const Input = ({}: InputProps) => {
         });
     const firstPageMsgs = cache.get(chatMessagesKey)?.data[0] as Message[];
 
+    let messages = cache.get(chatMessagesKey)?.data as (
+      | IChatMessage
+      | IGroupMessage
+    )[][];
+
     msgSentPromise.then((msg) => {
-      mutate(chatMessagesKey, [
-        firstPageMsgs.map((ucMessage) => {
-          return ucMessage.$id === message.$id ? msg : ucMessage;
+      mutate(
+        chatMessagesKey,
+        messages?.map((msgArray) => {
+          msgArray.map((ucMessage) => {
+            if (ucMessage.$id === message.$id) {
+              return msg;
+            }
+            return ucMessage;
+          });
         }),
-        ...(cache.get(chatMessagesKey)?.data as Message[][]).slice(1),
-      ]);
+      ).then(() => {
+        let lastMessage = cache.get(`lastMessage ${selectedChat.$id}`)?.data as
+          | IChatMessage
+          | IGroupMessage;
+        if (lastMessage.$id === message.$id) {
+          mutate(`lastMessage ${selectedChat.$id}`, msg);
+        }
+      });
     });
 
     msgSentPromise.catch((e) => {
-      mutate(chatMessagesKey, [
-        firstPageMsgs.filter((ucMessage) => ucMessage.$id !== message.$id),
-        ...(cache.get(chatMessagesKey)?.data as Message[][]).slice(1),
-      ]);
+      mutate(
+        chatMessagesKey,
+        messages?.map((msgArray) => {
+          msgArray.filter((ucMessage) => ucMessage.$id !== message.$id);
+        }),
+      ).then(() => {
+        let lastMessage = cache.get(`lastMessage ${selectedChat.$id}`)?.data as
+          | IChatMessage
+          | IGroupMessage;
+        if (lastMessage.$id === message.$id) {
+          mutate(
+            `lastMessage ${selectedChat.$id}`,
+            ([] as Message[]).concat(...messages).at(0),
+          );
+        }
+      });
 
       toast.error("Error sending message");
     });
@@ -180,7 +210,7 @@ const Input = ({}: InputProps) => {
               bg={"inherit"}
               aria-label="add attachment"
               title="add attachment"
-              icon={<PlusIcon className="w-6 h-6" />}
+              icon={<PaperClipIcon className="w-5 h-5 -rotate-45" />}
               onClick={() => {
                 clear();
                 openFilePicker();
