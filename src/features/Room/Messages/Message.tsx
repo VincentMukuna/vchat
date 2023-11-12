@@ -31,6 +31,7 @@ import Blueticks from "../../../components/Blueticks";
 import toast from "react-hot-toast";
 import UserProfileModal from "../../Profile/UserProfileModal";
 import { tomato } from "@radix-ui/colors";
+import { openModal } from "../../../components/Modal";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -181,16 +182,16 @@ const Message = forwardRef<any, MessageProps>(
             mine ? currentUserDetails.name : (senderDetails?.name as string)
           }
           size="sm"
-          onClick={onOpen}
+          onClick={() => {
+            openModal(
+              <UserProfileModal
+                onClose={() => {}}
+                user={senderDetails as IUserDetails}
+              />,
+            );
+          }}
           cursor={isGroupMessage ? "pointer" : ""}
         />
-        {!mine && isGroupMessage && senderDetails && (
-          <UserProfileModal
-            isOpen={isOpen}
-            onClose={onClose}
-            user={senderDetails as IUserDetails}
-          />
-        )}
         <div className="flex flex-col gap-1 mt-3">
           {attachments.length > 0 && (
             <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
