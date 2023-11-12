@@ -20,43 +20,41 @@ import api from "../services/api";
 import { SERVER } from "../utils/config";
 import { Query } from "appwrite";
 import { IUserDetails } from "../interfaces";
-import { useRef, useState } from "react";
+import React, { Children, useRef, useState } from "react";
 import User from "../features/UsersList/User";
 import { blue, gray, slateDark } from "@radix-ui/colors";
 import { CircleLoader, ClipLoader } from "react-spinners";
 
-function Search() {
+function Search({
+  handleSearch,
+}: {
+  handleSearch: (searchString: string, onClick: () => void) => Promise<any[]>;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [filteredUsers, setFilteredUsers] = useState<IUserDetails[]>([]);
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
-  async function handleSubmit(e?: any) {
-    e.preventDefault();
-    setLoading(true);
-    onOpen();
-    let users = await filterUsers(search);
-    setLoading(false);
-    setFilteredUsers(users);
-  }
+  const [search, setSearch] = useState("");
 
-  async function filterUsers(name: string) {
-    if (search.trim().length > 0) {
-      try {
-        const { documents } = await api.listDocuments(
-          SERVER.DATABASE_ID,
-          SERVER.COLLECTION_ID_USERS,
-          [Query.search("name", search), Query.limit(4)],
-        );
-        return documents as IUserDetails[];
-      } catch (error) {
-        toast.error("Something went wrong");
-        return [];
-      }
-    } else return [];
-  }
+  const [results, setResults] = useState<any[]>([]);
 
   return (
-    <form action="" className="w-full mb-4" onSubmit={handleSubmit}>
+    <form
+      action=""
+      className="w-full mb-4"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        onOpen();
+        setLoading(true);
+        try {
+          let searchResults = await handleSearch(search, onClose);
+
+          setResults(searchResults);
+        } catch (error) {
+          toast.error("Something went wrong");
+        } finally {
+          setLoading(false);
+        }
+      }}
+    >
       <Popover
         isLazy={true}
         isOpen={isOpen}
@@ -100,19 +98,10 @@ function Search() {
                 w="full"
               />
             </HStack>
-          ) : filteredUsers.length > 0 ? (
-            <FocusLock>
-              {filteredUsers.map((user, i) => {
-                if (i === 0) {
-                  return (
-                    <User key={user.$id} user={user} onCloseModal={onClose} />
-                  );
-                }
-                return <User key={user.$id} user={user} />;
-              })}
-            </FocusLock>
+          ) : results.length > 0 ? (
+            <FocusLock>{results}</FocusLock>
           ) : (
-            <span className="p-4">No user found</span>
+            <span className="p-4">No results</span>
           )}
         </PopoverContent>
       </Popover>
