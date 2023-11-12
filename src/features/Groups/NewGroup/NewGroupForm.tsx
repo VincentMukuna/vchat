@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { mutate } from "swr";
+import { mutate, useSWRConfig } from "swr";
 import { IUserDetails } from "../../../interfaces";
 import { createGroup } from "../../../services/groupMessageServices";
 import toast from "react-hot-toast";
@@ -12,6 +12,8 @@ import FormStepper from "./FormStepper";
 const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
+
+  const { cache } = useSWRConfig();
 
   const [groupDetails, setGroupDetails] = useState<{
     name: string;
@@ -37,8 +39,10 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
       success: "Group created",
       error: "Couldn't create group",
     });
-    promise.then(() => {
-      mutate("conversations");
+    promise.then((doc) => {
+      mutate("conversations", [doc, ...cache.get("conversations")?.data], {
+        revalidate: false,
+      });
     });
     promise.finally(() => onClose());
   };
