@@ -7,11 +7,12 @@ import { openModal } from "../../components/Modal";
 import EditMembers from "../Groups/EditMembers";
 import { IGroup } from "../../interfaces";
 import AddMembers from "../Groups/AddMembers";
-import { mutate } from "swr";
+import { mutate, useSWRConfig } from "swr";
 import { unstable_serialize } from "swr/infinite";
 
 const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
   const { selectedChat } = useChatsContext();
+  const { cache } = useSWRConfig();
   if (!selectedChat) return null;
   const chatMessagesKey = unstable_serialize(
     () => selectedChat.$id + "-messages",
@@ -29,6 +30,7 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
                 confirmText: "Yes, delete all messages",
                 cancelText: "Keep messages",
                 onConfirm: () => {
+                  const messages = cache.get(chatMessagesKey)?.data;
                   mutate(chatMessagesKey, [[]], { revalidate: false });
                   mutate(`lastMessage ${selectedChat.$id}`, undefined, {
                     revalidate: false,
@@ -36,6 +38,14 @@ const RoomActions = ({ id, isGroup }: { id: string; isGroup: boolean }) => {
                   let ps = clearChatMessages(id);
                   ps.catch(() => {
                     toast.error("Something went wrong");
+                    mutate(chatMessagesKey, messages, { revalidate: false });
+                    mutate(
+                      `lastMessage ${selectedChat.$id}`,
+                      [].concat(...messages).at(0),
+                      {
+                        revalidate: false,
+                      },
+                    );
                   });
                 },
               });
