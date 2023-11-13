@@ -19,6 +19,8 @@ import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 import User, { UserAvatar, UserDescription } from "../../UsersList/User";
 import Search from "../../../components/Search";
+import { useInfinite } from "../../../hooks/useInfinite";
+import { UserIcon } from "@heroicons/react/20/solid";
 
 interface AddMembersProps {
   members: IUserDetails[];
@@ -33,20 +35,28 @@ interface AddMembersProps {
   ) => void;
 }
 
-const AddMembersForm = ({
+const NewGroupAddMembersForm = ({
   members: init,
   setGroupDetails,
   handleSubmit,
 }: AddMembersProps) => {
   const { currentUserDetails } = useAuth();
-  const { prev, next } = useStepper();
   if (!currentUserDetails) return null;
-  const { data: users } = useSWR("users", async () => {
-    const [users] = await getUsers();
-    return users;
-  });
-  const { colorMode } = useColorMode();
+  const { prev, next } = useStepper();
 
+  const {
+    data,
+    isLoading,
+    error,
+    mutate,
+    size,
+    setSize,
+    isValidating,
+    totalRef,
+  } = useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
+
+  const users = data ? ([] as IUserDetails[]).concat(...data) : [];
+  const { colorMode } = useColorMode();
   let [members, setMembers] = useState<IUserDetails[]>(init);
   const [done, setDone] = useState(false);
 
@@ -57,8 +67,7 @@ const AddMembersForm = ({
     }
   }, [done]);
 
-  function onSubmit(e: any) {
-    e?.preventDefault();
+  function handleAddMembers() {
     if (members.length <= 1) {
       toast.error("Groups should have more than one member");
       return;
@@ -68,8 +77,7 @@ const AddMembersForm = ({
   }
 
   return (
-    <motion.form
-      onSubmit={onSubmit}
+    <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
       className="flex flex-col gap-8 pt-4 "
@@ -83,7 +91,7 @@ const AddMembersForm = ({
             return (
               <Avatar
                 src={member.avatarURL}
-                name={member.name}
+                icon={<UserIcon className="w-[26px] h-[26px]" />}
                 size="md"
                 key={member.$id}
               />
@@ -102,40 +110,50 @@ const AddMembersForm = ({
           overflowX={"hidden"}
           borderWidth={1}
           px={2}
-          pt={1}
+          pt={4}
           bg={colorMode === "light" ? gray.gray3 : slateDark.slate2}
           rounded={"md"}
           mt={2}
-          divider={<Divider />}
           spacing={0}
         >
           <Search
             handleSearch={async (name, onCloseSearch) => {
               let res = await searchUsers(name);
-              return res.map((user) => (
-                <User
-                  user={user}
-                  onClick={() => {
-                    if (members.includes(user)) {
-                      setMembers((prev) => {
-                        return prev.filter((member) => member.$id !== user.$id);
-                      });
-                    } else {
-                      setMembers((prev) => {
-                        return [...prev, user];
-                      });
-                    }
-                  }}
-                  key={user.$id}
-                >
-                  <UserAvatar />
-                  <UserDescription />
-                </User>
-              ));
+              return res
+                .filter(
+                  (user) =>
+                    user.$id !== currentUserDetails.$id &&
+                    !members.some((member) => member.$id !== user.$id),
+                )
+                .map((user) => (
+                  <User
+                    user={user}
+                    onClick={() => {
+                      if (members.includes(user)) {
+                        setMembers((prev) => {
+                          return prev.filter(
+                            (member) => member.$id !== user.$id,
+                          );
+                        });
+                      } else {
+                        setMembers((prev) => {
+                          return [...prev, user];
+                        });
+                      }
+                      onCloseSearch();
+                    }}
+                    key={user.$id}
+                  >
+                    <UserAvatar />
+                    <UserDescription />
+                  </User>
+                ));
             }}
           />
-          {users &&
-            users
+          {!isLoading &&
+            users?.length &&
+            ([] as IUserDetails[])
+              .concat(...users)
               .filter((member) => member.$id !== currentUserDetails.$id)
               .map((user: IUserDetails, index) => {
                 return (
@@ -146,7 +164,9 @@ const AddMembersForm = ({
                     <Checkbox
                       type="checkbox"
                       id={index.toString()}
-                      isChecked={members.includes(user)}
+                      isChecked={members.some(
+                        (member) => member.$id === user.$id,
+                      )}
                       onChange={() => {
                         if (members.includes(user)) {
                           setMembers((prev) => {
@@ -173,11 +193,25 @@ const AddMembersForm = ({
                   </div>
                 );
               })}
+
+          {totalRef.current >
+            ([] as IUserDetails[]).concat(...users!).length && (
+            <Button
+              variant={"ghost"}
+              onClick={() => {
+                setSize(size + 1);
+              }}
+              isLoading={isValidating}
+              w={"full"}
+            >
+              {isValidating ? "Fetching" : "See more"}
+            </Button>
+          )}
         </VStack>
       </div>
       <div className="flex flex-row-reverse gap-4">
         <Button
-          type="submit"
+          onClick={handleAddMembers}
           bg={blueDark.blue3}
           _hover={{ bg: blueDark.blue4 }}
           color={slate.slate1}
@@ -189,8 +223,8 @@ const AddMembersForm = ({
           Change Details
         </Button>
       </div>
-    </motion.form>
+    </motion.div>
   );
 };
 
-export default AddMembersForm;
+export default NewGroupAddMembersForm;

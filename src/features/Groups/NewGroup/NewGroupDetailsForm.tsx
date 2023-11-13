@@ -13,7 +13,7 @@ interface GroupDetailsProps {
   handleAvatar: (avatar: File | null) => void;
 }
 
-const GroupDetailsForm = ({
+const NewGroupDetailsForm = ({
   name,
   onChange,
   description,
@@ -99,4 +99,4 @@ const GroupDetailsForm = ({
   );
 };
 
-export default GroupDetailsForm;
+export default NewGroupDetailsForm;

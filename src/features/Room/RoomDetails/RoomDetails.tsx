@@ -1,17 +1,17 @@
 import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
-import { useChatsContext } from "../../context/ChatsContext";
-import { IChat, IGroup, IUserDetails } from "../../interfaces";
+import { useChatsContext } from "../../../context/ChatsContext";
+import { IChat, IGroup, IUserDetails } from "../../../interfaces";
 import {
   deleteGroup,
   getGroupDetails,
   leaveGroup,
   updateGroupAvatar,
   updateGroupDetails,
-} from "../../services/groupMessageServices";
+} from "../../../services/groupMessageServices";
 import useSWR, { mutate, useSWRConfig } from "swr";
-import { getChatDoc } from "../../services/chatMessageServices";
-import api from "../../services/api";
-import { SERVER } from "../../utils/config";
+import { getChatDoc } from "../../../services/chatMessageServices";
+import api from "../../../services/api";
+import { SERVER } from "../../../utils/config";
 import {
   Avatar,
   AvatarGroup,
@@ -21,23 +21,28 @@ import {
   EditablePreview,
   HStack,
   IconButton,
+  Modal,
   VStack,
 } from "@chakra-ui/react";
 import {
   ArrowRightOnRectangleIcon,
   PencilIcon,
+  UserIcon,
+  UsersIcon,
 } from "@heroicons/react/20/solid";
-import { getFormatedDate } from "../../services/dateServices";
+import { getFormatedDate } from "../../../services/dateServices";
 import toast from "react-hot-toast";
-import { useAuth } from "../../context/AuthContext";
-import { deleteContact } from "../../services/userDetailsServices";
+import { useAuth } from "../../../context/AuthContext";
+import { deleteContact } from "../../../services/userDetailsServices";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
 import { useState } from "react";
-import { confirmAlert } from "../../components/Alert/alertStore";
+import { confirmAlert } from "../../../components/Alert/alertStore";
+import { openModal } from "../../../components/Modal";
+import { EditGroupDetailsForm } from "./EditGroupDetailsForm";
 
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat, msgsCount } =
@@ -46,11 +51,6 @@ const RoomDetails = () => {
 
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
-
-  const [groupDetails, setGroupDetails] = useState({
-    name: selectedChat?.name,
-    description: selectedChat?.description,
-  });
   const isGroup = !!(selectedChat?.$collectionId === "groups");
   const isAdmin =
     isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
@@ -73,82 +73,50 @@ const RoomDetails = () => {
     <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto ">
       <div className="flex flex-col items-center w-full gap-8 mt-4 text-sm">
         <VStack gap={-1}>
-          <div className="relative ">
-            {isGroup && (
-              <IconButton
-                title="Edit avatar"
-                onClick={openFilePicker}
-                aria-label="edit avatar"
+          <div className="flex flex-col items-center gap-2">
+            <div className="relative ">
+              <Avatar
+                size={"2xl"}
+                src={!isGroup ? recepient?.avatarURL : selectedChat.avatarURL}
                 icon={
-                  <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+                  isGroup ? (
+                    <UsersIcon className="w-16 h-16" />
+                  ) : (
+                    <UserIcon className="w-16 h-16" />
+                  )
                 }
-                pos={"absolute"}
-                bg={"transparent"}
-                className="z-20 -right-10"
               />
-            )}
-            <Avatar
-              size={"2xl"}
-              name={isGroup ? selectedChat.name : recepient?.name}
-              src={
-                !isGroup
-                  ? recepient?.avatarURL
-                  : filesContent[0]?.content || selectedChat.avatarURL
-              }
-            />
+            </div>
+            <div className="relative flex flex-col items-center gap-2 mb-6">
+              <div className="mt-3 text-lg font-bold">
+                {isGroup ? selectedChat.name : recepient?.name}
+              </div>
+              <div className=" text-dark-gray5 dark:text-gray6">
+                {isGroup
+                  ? selectedChat.description
+                  : recepient?.about || "about"}
+              </div>
+              {isGroup && (
+                <IconButton
+                  aria-label="edit details"
+                  variant={"outline"}
+                  onClick={() =>
+                    openModal(
+                      <EditGroupDetailsForm group={selectedChat as IGroup} />,
+                    )
+                  }
+                  icon={
+                    <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+                  }
+                  pos={"absolute"}
+                  bg={"transparent"}
+                  className="z-20 -right-8"
+                  border={"none"}
+                />
+              )}
+            </div>
           </div>
-          <Editable
-            isDisabled={!(isGroup && isAdmin)}
-            title={isGroup && isAdmin ? "click to edit group name" : ""}
-            textAlign="center"
-            value={isGroup ? groupDetails.name : recepient?.name}
-            onChange={(val) => {
-              setGroupDetails({ ...groupDetails, name: val });
-            }}
-            onSubmit={async (val) => {
-              if (selectedChat.name !== groupDetails.name) {
-                try {
-                  await updateGroupDetails(selectedChat.$id, groupDetails);
-                  toast.success("Group name changed successfully!");
-                  mutate(selectedChat.$id);
-                } catch (error) {
-                  toast.error("Something went wrong");
-                }
-              }
-            }}
-            className="mt-3 text-lg font-bold"
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
 
-          <Editable
-            isDisabled={!(isGroup && isAdmin)}
-            title={isGroup && isAdmin ? "click to edit group description" : ""}
-            value={
-              isGroup ? groupDetails.description : recepient?.about || "about"
-            }
-            onChange={(val) => {
-              setGroupDetails({ ...groupDetails, description: val });
-            }}
-            onSubmit={async (val) => {
-              if (selectedChat.description !== groupDetails.description) {
-                try {
-                  await updateGroupDetails(selectedChat.$id, groupDetails);
-                  toast.success("Group description changed successfully!");
-                  mutate(selectedChat.$id);
-                } catch (error) {
-                  toast.error("Something went wrong");
-                }
-
-                return;
-              }
-            }}
-            className=" text-dark-gray5 dark:text-gray6"
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
           <p className="inline-flex gap-2 mt-3">
             <span className="font-semibold ">Message Count :</span>
             {msgsCount}
@@ -241,7 +209,7 @@ export const RoomDetailsHeader = () => {
   return (
     <div className="text-lg font-bold">
       {isGroup
-        ? selectedChat.name
+        ? selectedChat.name + " details"
         : `Chat with ${recepient?.name.split(" ")[0]}`}
     </div>
   );
