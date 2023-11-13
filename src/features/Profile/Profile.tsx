@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -6,25 +5,18 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalCloseButton,
   useDisclosure,
   useColorMode,
   Button,
   IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Icon,
+  ModalBody,
 } from "@chakra-ui/react";
-import {
-  updateUserAvatar,
-  updateUserDetails,
-} from "../../services/userDetailsServices";
+import { updateUserAvatar } from "../../services/userDetailsServices";
 import { Avatar } from "@chakra-ui/react";
 import {
   blackA,
-  blueDark,
   grassDark,
   gray,
   grayDark,
@@ -32,24 +24,29 @@ import {
   skyDark,
   slateDark,
 } from "@radix-ui/colors";
-import {
-  CheckIcon,
-  InformationCircleIcon,
-  MapPinIcon,
-  PencilIcon,
-} from "@heroicons/react/20/solid";
+import { MapPinIcon, PencilIcon } from "@heroicons/react/20/solid";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { useFilePicker } from "use-file-picker";
 import toast from "react-hot-toast";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
+import { EditUserDetails } from "./EditUserDetails";
+import {
+  FileAmountLimitValidator,
+  FileSizeValidator,
+} from "use-file-picker/validators";
 
 type ProfileProps = {
   user: IUserDetails;
 };
 const Profile = () => {
-  const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
+  const {
+    currentUser,
+    currentUserDetails,
+    refreshUserDetails,
+    setCurrentUserDetails,
+  } = useAuth();
   if (!currentUserDetails) return null;
 
   const { colorMode } = useColorMode();
@@ -59,15 +56,16 @@ const Profile = () => {
     accept: [".jpg", ".png"],
     multiple: false,
     readAs: "DataURL",
+    validators: [
+      new FileAmountLimitValidator({ max: 1 }),
+      new FileSizeValidator({ maxFileSize: 2 * 1024 * 1024 }),
+    ],
     onFilesSuccessfullySelected(data) {
-      let promise = updateUserAvatar(
-        currentUserDetails.$id,
-        data.plainFiles[0] as File,
+      updateUserAvatar(currentUserDetails.$id, data.plainFiles[0] as File).then(
+        (userDeets) => {
+          setCurrentUserDetails(userDeets);
+        },
       );
-
-      promise.then(() => {
-        refreshUserDetails();
-      });
     },
 
     onFilesRejected: () => {
@@ -102,12 +100,15 @@ const Profile = () => {
               src={filesContent[0]?.content || currentUserDetails.avatarURL}
             />
           </div>
-          <span className="text-lg leading-6 tracking-wide">
-            {currentUserDetails.name}
-          </span>
-          <span className="text-sm text-gray11 dark:text-gray-400">
-            {currentUserDetails?.about || "Hi there! I'm using VChat"}
-          </span>
+          <div className="flex flex-col items-center">
+            <span className="text-lg leading-6 tracking-wide">
+              {currentUserDetails.name}
+            </span>
+            <span className="text-sm italic text-gray11 dark:text-gray-400">
+              {currentUserDetails?.about || "Hi there! I'm using VChat"}
+            </span>
+          </div>
+
           <span className="inline-flex items-center gap-1 text-slate-900 dark:text-gray-400">
             <Icon as={MapPinIcon} className="w-3 h-3" />
             {currentUserDetails?.location}
@@ -115,13 +116,13 @@ const Profile = () => {
         </div>
         <div className="flex flex-col items-center w-full gap-4 mt-5 transition">
           {
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
               <ModalOverlay />
               <motion.div>
                 <ModalContent className="border">
                   <ModalHeader> Edit your details</ModalHeader>
                   <ModalCloseButton />
-                  <EditUserDetails onClose={onClose} />
+                  <EditUserDetails />
                 </ModalContent>
               </motion.div>
             </Modal>
@@ -139,133 +140,4 @@ const Profile = () => {
     </AnimatePresence>
   );
 };
-const EditUserDetails = ({ onClose }: { onClose: () => void }) => {
-  const { currentUserDetails, refreshUserDetails } = useAuth();
-  if (!currentUserDetails) return;
-
-  const { colorMode } = useColorMode();
-
-  const [details, setDetails] = useState({
-    name: currentUserDetails?.name,
-    about: currentUserDetails?.about,
-    location: currentUserDetails?.location,
-  });
-
-  const [submitting, setSubmitting] = useState(false);
-
-  const handleDetailsChange = async (e: any) => {
-    setDetails({ ...details, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = async (e: any) => {
-    setSubmitting(true);
-    e.preventDefault();
-    try {
-      await updateUserDetails(currentUserDetails.$id, details);
-      refreshUserDetails();
-      onClose();
-    } catch (error) {
-    } finally {
-      setSubmitting(false);
-    }
-  };
-  return (
-    <motion.form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-8 p-4 dark:text-gray-100 text-dark-blue1"
-    >
-      <div className="flex flex-col gap-4 ">
-        <div className="flex flex-col gap-2 py-2 ">
-          <label
-            htmlFor="username"
-            className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
-          >
-            Username
-          </label>
-          <InputGroup>
-            <InputLeftElement>
-              <PencilIcon className="w-5 h-5 dark:text-dark-gray8/50" />
-            </InputLeftElement>
-            <Input
-              autoFocus
-              isRequired
-              value={details.name}
-              onChange={handleDetailsChange}
-              type="text"
-              name="name"
-              id="username"
-            />
-          </InputGroup>
-        </div>
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="about"
-            className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
-          >
-            About
-          </label>
-          <InputGroup>
-            <InputLeftElement>
-              <InformationCircleIcon
-                className="w-5 h-5 dark:text-dark-gray8/50"
-                pointerEvents="none"
-              />
-            </InputLeftElement>
-            <Input
-              isRequired
-              value={details.about}
-              onChange={handleDetailsChange}
-              type="text"
-              name="about"
-              id="about"
-            />
-          </InputGroup>
-        </div>
-        <div className="flex flex-col gap-2">
-          <label
-            htmlFor="location"
-            className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
-          >
-            Location
-          </label>
-          <InputGroup>
-            <InputLeftElement>
-              <MapPinIcon
-                className="w-5 h-5 dark:text-dark-gray8/50"
-                pointerEvents="none"
-              />
-            </InputLeftElement>
-            <Input
-              isRequired
-              value={details.location}
-              onChange={handleDetailsChange}
-              type="text"
-              name="location"
-              id="location"
-            />
-          </InputGroup>
-        </div>
-      </div>
-      <ModalFooter>
-        <Button
-          type="submit"
-          bg={blueDark.blue5}
-          color={colorMode === "dark" ? gray.gray2 : gray.gray3}
-          _hover={
-            colorMode === "light"
-              ? { bg: blueDark.blue7, color: gray.gray1 }
-              : {}
-          }
-          isLoading={submitting}
-          loadingText="Submitting"
-          px={12}
-          leftIcon={<CheckIcon className="w-5 h-5 " />}
-        >
-          Save
-        </Button>
-      </ModalFooter>
-    </motion.form>
-  );
-};
-
 export default Profile;
