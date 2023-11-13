@@ -37,11 +37,19 @@ export async function getConversations(userDetailsID: string) {
   if (!userDetailsID) return [];
   let conversations: (IGroup | IChat)[] = [];
 
-  let chatDocs = await getUserChats(userDetailsID);
+  const res = await Promise.allSettled([
+    getUserChats(userDetailsID),
+    getUserGroups(userDetailsID),
+  ]);
 
-  let groupDocs = await getUserGroups(userDetailsID);
-  conversations = [...chatDocs, ...groupDocs];
-  conversations.sort(compareUpdatedAt);
+  conversations = ([] as (IChat | IGroup)[]).concat(
+    ...(res
+      .map((resVal) =>
+        resVal.status === "fulfilled" ? resVal.value : undefined,
+      )
+      .filter((x) => x !== undefined) as (IChat | IGroup)[][]),
+  );
+
   return conversations;
 }
 
@@ -66,11 +74,10 @@ const ChatsList = () => {
     data: conversations,
     error: chatsError,
     mutate,
-  } = useSWR(
-    "conversations",
-    () => getConversations(currentUserDetails.$id),
-    {},
-  );
+  } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+  });
 
   // Update local chats data when the data is refreshed
   useEffect(() => {
