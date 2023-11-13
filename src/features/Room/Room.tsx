@@ -20,6 +20,7 @@ import {
 } from "../../services/chatMessageServices";
 import {
   deleteGroupMessage,
+  getGroupDetails,
   getGroupMessages,
 } from "../../services/groupMessageServices";
 import useSWR, { KeyedMutator, useSWRConfig } from "swr";
@@ -27,7 +28,16 @@ import RoomDetails, {
   RoomDetailsFooter,
   RoomDetailsHeader,
 } from "./RoomDetails/RoomDetails";
-import { Box, Center, useColorMode, Button } from "@chakra-ui/react";
+import {
+  Box,
+  Center,
+  useColorMode,
+  Button,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
+} from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
@@ -53,7 +63,7 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { colorMode } = useColorMode();
-  const { selectedChat, recepient, setMsgsCount, msgsCount } =
+  const { selectedChat, recepient, setMsgsCount, msgsCount, setSelectedChat } =
     useChatsContext();
 
   const [showDetails, setShowDetails] = useState(false);
@@ -61,12 +71,25 @@ function Room() {
   if (!currentUserDetails) return null;
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const { data: group, isLoading: detailsLoading } = useSWR(
+    () => {
+      if (!isGroup) return undefined;
+      return `details ${selectedChat!.$id}`;
+    },
+    () => getGroupDetails(selectedChat!.$id),
+  );
+
   const isPersonal =
     selectedChat &&
     !isGroup &&
     selectedChat?.participants.every(
       (participant: IUserDetails) =>
         participant.$id === currentUserDetails?.$id,
+    );
+  const isGroupMember =
+    isGroup &&
+    group?.members.some(
+      (member) => (member as IUserDetails).$id === currentUserDetails.$id,
     );
   let re = new RegExp(`${selectedChat?.$id}-messages-(\\w+)`);
   const {
@@ -133,10 +156,6 @@ function Room() {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            (response.payload.changerID !== currentUserDetails.$id &&
-              response.payload.changeLog === "newtext") ||
-            response.payload.changeLog === "deletetext" ||
-            response.payload.changeLog === "readtext"
             response.payload.changerID !== currentUserDetails.$id &&
             (response.payload.changeLog === "addadmin" ||
               response.payload.changeLog === "removeadmin" ||
@@ -228,8 +247,17 @@ function Room() {
             )}
           </Messages>
         )}
+        {!isLoading && !detailsLoading && isGroup && !isGroupMember && (
+          <Alert status="error">
+            <AlertIcon />
+            <AlertTitle>Not a member</AlertTitle>
+            <AlertDescription>
+              You've been removed from this group
+            </AlertDescription>
+          </Alert>
+        )}
 
-        <MessageInput />
+        {(!isGroup || isGroupMember) && <MessageInput />}
       </Box>
       <aside
         className={`hidden ${
