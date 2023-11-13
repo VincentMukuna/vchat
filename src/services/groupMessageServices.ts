@@ -189,7 +189,7 @@ export async function addMembers(groupID: string, membersID: string[]) {
 }
 
 export async function editMembers(groupID: string, memberIDs: string[]) {
-  await updateGroupDetails(groupID, {
+  return await updateGroupDetails(groupID, {
     members: memberIDs,
     changeLog: "editmembers",
   });
