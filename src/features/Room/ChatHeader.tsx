@@ -94,8 +94,7 @@ function ChatHeader() {
       />
       <button
         onClick={() => {
-          console.log(breakpoint);
-          if (breakpoint !== "xl") {
+          if (breakpoint !== "lg") {
             onOpen();
           }
         }}
