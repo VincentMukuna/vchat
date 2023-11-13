@@ -39,8 +39,12 @@ import RoomDetails, {
 } from "./RoomDetails/RoomDetails";
 import { slateDark } from "@radix-ui/colors";
 import { confirmAlert } from "../../components/Alert/alertStore";
-import { mutate, useSWRConfig } from "swr";
-import { deleteGroup, leaveGroup } from "../../services/groupMessageServices";
+import useSWR, { mutate, useSWRConfig } from "swr";
+import {
+  deleteGroup,
+  getGroupDetails,
+  leaveGroup,
+} from "../../services/groupMessageServices";
 import { deleteContact } from "../../services/userDetailsServices";
 import toast from "react-hot-toast";
 
@@ -58,7 +62,7 @@ function ChatHeader() {
     selectedChat,
     setMsgsCount,
   } = useChatsContext();
-  if (selectedChat === undefined) return null;
+  if (selectedChat === undefined || !currentUserDetails) return null;
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
   const isPersonal =
@@ -67,6 +71,17 @@ function ChatHeader() {
       (participant: IUserDetails) =>
         participant.$id === currentUserDetails?.$id,
     );
+
+  const { data: group } = useSWR(
+    () => {
+      if (!isGroup) return undefined;
+      return `details ${selectedChat!.$id}`;
+    },
+    () => getGroupDetails(selectedChat!.$id),
+  );
+  const isGroupMember = group?.members.some(
+    (member) => (member as IUserDetails).$id === currentUserDetails.$id,
+  );
 
   return (
     <section className="relative flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-slate1 bg-gray2 text-dark-gray2">
@@ -108,14 +123,16 @@ function ChatHeader() {
         </span>
       </button>
       <div className="absolute ml-auto right-1 top-4 ">
-        <Menu>
-          <MenuButton
-            bg={"transparent"}
-            as={IconButton}
-            icon={<EllipsisVerticalIcon className="w-5 h-5" />}
-          ></MenuButton>
-          <RoomActions id={selectedChat.$id} isGroup={isGroup} />
-        </Menu>
+        {(!isGroup || isGroupMember) && (
+          <Menu>
+            <MenuButton
+              bg={"transparent"}
+              as={IconButton}
+              icon={<EllipsisVerticalIcon className="w-5 h-5" />}
+            ></MenuButton>
+            <RoomActions />
+          </Menu>
+        )}
       </div>
 
       <Drawer
