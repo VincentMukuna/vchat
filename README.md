@@ -2,7 +2,7 @@
 
 This is a simple and feature-rich chat application built with React, Appwrite, Chakra UI and other modern technologies. The app allows users to engage in real-time messaging, create and manage group chats, update their profiles, and more.
 
-##Preview
+## Preview
 ![Screenshot 2023-11-14 001613](https://github.com/VincentMukuna/vchat/assets/93912489/b51d39b8-86fb-463b-8e12-02b218279eda)
 
 ## Features
