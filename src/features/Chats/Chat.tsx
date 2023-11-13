@@ -40,7 +40,6 @@ const Chat = ({ conversation }: IChatProps) => {
     );
 
   async function getLastMessage() {
-    console.log("Getting last message, ", conversation.$id);
     try {
       let { documents, total } = await api.listDocuments(
         conversation.$databaseId,
