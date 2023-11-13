@@ -11,7 +11,8 @@ type groupChangeLogTypes =
   | "edittext"
   | "deletetext"
   | "created"
-  | "readtext";
+  | "readtext"
+  | "clearmessages";
 interface IGroup extends Models.Document {
   name: string;
   description: string;
