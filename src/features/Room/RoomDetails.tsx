@@ -69,35 +69,6 @@ const RoomDetails = () => {
     getRoomDetails,
   );
 
-  const { openFilePicker, filesContent } = useFilePicker({
-    accept: [".jpg", ".png"],
-    multiple: false,
-    readAs: "DataURL",
-    validators: [
-      new FileAmountLimitValidator({ max: 1 }),
-      new FileSizeValidator({ maxFileSize: 5 * 1024 * 1024 }),
-    ],
-    onFilesSuccessfullySelected(data) {
-      let promise = updateGroupAvatar(
-        selectedChat.$id,
-        data.plainFiles[0] as File,
-      );
-      promise.catch((error) => {
-        toast.error(error.message);
-      });
-
-      promise.then(() => {
-        mutate(selectedChat.$id);
-        mutate("conversations");
-        toast.success("Avatar changed");
-      });
-    },
-
-    onFilesRejected: () => {
-      toast.error("Invalid file");
-    },
-  });
-
   return (
     <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto ">
       <div className="flex flex-col items-center w-full gap-8 mt-4 text-sm">

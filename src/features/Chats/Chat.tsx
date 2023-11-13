@@ -40,6 +40,7 @@ const Chat = ({ conversation }: IChatProps) => {
     );
 
   async function getLastMessage() {
+    console.log("Getting last message, ", conversation.$id);
     try {
       let { documents, total } = await api.listDocuments(
         conversation.$databaseId,
@@ -62,6 +63,7 @@ const Chat = ({ conversation }: IChatProps) => {
   const { data: lastMessage } = useSWR(
     `lastMessage ${conversation.$id}`,
     getLastMessage,
+    { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
   useEffect(() => {
