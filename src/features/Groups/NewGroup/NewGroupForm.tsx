@@ -5,8 +5,8 @@ import { IUserDetails } from "../../../interfaces";
 import { createGroup } from "../../../services/groupMessageServices";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
-import AddMembersForm from "./AddMembersForm";
-import GroupDetailsForm from "./GroupDetailsForm";
+import AddMembersForm from "./NewGroupAddMembersForm";
+import GroupDetailsForm from "./NewGroupDetailsForm";
 import FormStepper from "./FormStepper";
 
 const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
