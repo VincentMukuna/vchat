@@ -65,6 +65,15 @@ export async function getGroupMessages(groupID: string, cursor?: string) {
   return [documents, total] as [IGroupMessage[], number];
 }
 
+async function getAllGroupMessages(groupID: string) {
+  const { documents, total } = await api.listDocuments(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUP_MESSAGES,
+    [Query.equal("group", groupID), Query.limit(2000)],
+  );
+  return documents as IGroupMessage[];
+}
+
 export async function sendGroupMessage(
   groupID: string,
   message: {
@@ -196,13 +205,31 @@ export async function editMembers(groupID: string, memberIDs: string[]) {
 }
 
 export async function clearGroupMessageAttachments(groupID: string) {
-  let attachments: string[] = [];
-  let groupDoc = await getGroupDetails(groupID);
-  attachments = groupDoc.groupMessages.reduce(
-    (a: any, message) => [...a, ...message.attachments],
-    [],
-  );
+  const messages = await getAllGroupMessages(groupID);
+  let attachments = ([] as string[])
+    .concat(...messages.map((message) => message.attachments))
+    .filter((attach) => !!attach);
 
+  attachments.forEach((attachment) => {
+    api.deleteFile(SERVER.BUCKET_ID_GROUP_ATTACHMENTS, attachment);
+  });
+}
+
+export async function clearGroupMessages(groupID: string) {
+  const messages = await getAllGroupMessages(groupID);
+  let attachments = ([] as string[])
+    .concat(...messages.map((message) => message.attachments))
+    .filter((attach) => !!attach);
+  messages.forEach((message) => {
+    api
+      .deleteDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_GROUP_MESSAGES,
+        message.$id,
+      )
+      .catch((e) => {});
+  });
+  updateGroupDetails(groupID, { changeLog: "clearmessages" });
   attachments.forEach((attachment) => {
     api.deleteFile(SERVER.BUCKET_ID_GROUP_ATTACHMENTS, attachment);
   });
