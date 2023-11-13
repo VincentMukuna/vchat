@@ -35,7 +35,7 @@ export async function getCurrentUserDetails(
   }
 }
 export async function getUsers(cursor?: string) {
-  let querySet = [Query.orderAsc("$createdAt"), Query.limit(2)];
+  let querySet = [Query.orderAsc("$createdAt"), Query.limit(20)];
   if (cursor) {
     querySet.push(Query.cursorAfter(cursor));
   }
