@@ -137,6 +137,21 @@ function Room() {
               response.payload.changeLog === "newtext") ||
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
+            response.payload.changerID !== currentUserDetails.$id &&
+            (response.payload.changeLog === "addadmin" ||
+              response.payload.changeLog === "removeadmin" ||
+              response.payload.changeLog === "changedetails" ||
+              response.payload.changeLog === "editmembers")
+          ) {
+            setSelectedChat(response.payload);
+            globalMutate(`details ${selectedChat!.$id}`, response.payload, {
+              revalidate: false,
+            });
+          } else if (
+            response.payload.changerID !== currentUserDetails.$id &&
+            (response.payload.changeLog === "newtext" ||
+              response.payload.changeLog === "deletetext" ||
+              response.payload.changeLog === "readtext")
           ) {
             mutate().then((value) => {
               globalMutate(
@@ -146,7 +161,11 @@ function Room() {
                 { revalidate: false },
               );
             });
-          } else if (response.payload.changeLog === "cleared") {
+          } else if (
+            (response.payload.changerID !== currentUserDetails.$id &&
+              response.payload.changeLog === "clearmessages") ||
+            response.payload.changeLog === "cleared"
+          ) {
             mutate([], { revalidate: false });
             globalMutate(`lastMessage ${selectedChat.$id}`, undefined, {
               revalidate: false,
