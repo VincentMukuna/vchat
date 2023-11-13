@@ -55,18 +55,15 @@ const RoomDetails = () => {
   const isAdmin =
     isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
 
-  async function getRoomDetails() {
-    if (isGroup) {
-      let doc = await getGroupDetails(selectedChat.$id);
-      return doc;
-    } else if (selectedChat) {
-      return await getChatDoc(selectedChat.$id);
-    }
-  }
-
   const { data: roomDetails } = useSWR(
-    `details ${selectedChat.$id}`,
-    getRoomDetails,
+    () => {
+      if (!isGroup) return undefined;
+      return `details ${selectedChat.$id}`;
+    },
+    () => getGroupDetails(selectedChat.$id),
+  );
+  const isGroupMember = roomDetails?.members.some(
+    (member) => (member as IUserDetails).$id === currentUserDetails.$id,
   );
 
   return (
@@ -96,7 +93,7 @@ const RoomDetails = () => {
                   ? selectedChat.description
                   : recepient?.about || "about"}
               </div>
-              {isGroup && (
+              {isGroup && isGroupMember && isAdmin && (
                 <IconButton
                   aria-label="edit details"
                   variant={"outline"}
@@ -139,7 +136,7 @@ const RoomDetails = () => {
           <div className="flex w-full max-w-[80%] overflow-x-hidden  items-center justify-center">
             <AvatarGroup size={"sm"} max={2}>
               {isGroup
-                ? roomDetails?.members?.map((member: IUserDetails) => {
+                ? roomDetails?.members?.map((member: any) => {
                     return (
                       <Avatar
                         src={member.avatarURL || undefined}
@@ -169,10 +166,10 @@ const RoomDetails = () => {
               <div className="flex">
                 <AvatarGroup size={"sm"} max={5}>
                   {roomDetails?.members
-                    ?.filter((member: IUserDetails) =>
+                    ?.filter((member: any) =>
                       roomDetails.admins.includes(member.$id),
                     )
-                    .map((member: IUserDetails) => {
+                    .map((member: any) => {
                       return (
                         <Avatar
                           src={
@@ -278,7 +275,7 @@ export const RoomDetailsFooter = () => {
         hidden={!isGroup}
         size={"sm"}
         variant={"outline"}
-        leftIcon={<ArrowRightOnRectangleIcon className="w-5 h-5" />}
+        leftIcon={<ArrowRightOnRectangleIcon className="w-4 h-4" />}
         onClick={() => {
           confirmAlert({
             message: `Are you sure you want to leave this conversation?`,
@@ -295,7 +292,7 @@ export const RoomDetailsFooter = () => {
         size={"sm"}
         variant={"outline"}
         colorScheme="red"
-        leftIcon={<TrashIcon className="w-5 h-5" />}
+        leftIcon={<TrashIcon className="w-4 h-4" />}
         onClick={() => {
           confirmAlert({
             message: `Are you sure you want to delete this ${
