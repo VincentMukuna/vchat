@@ -247,6 +247,15 @@ const MessageInput = ({}: InputProps) => {
             autoFocus
           />
 
+          {messageBody.trim() && (
+            <IconButton
+              variant={"ghost"}
+              me={1}
+              aria-label="send"
+              icon={<PaperAirplaneIcon className="w-4 h-4" />}
+              type="submit"
+              disabled={sending}
+            />
           )}
         </div>
       </form>
