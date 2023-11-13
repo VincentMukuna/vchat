@@ -14,7 +14,7 @@ import {
   useModalContext,
 } from "@chakra-ui/react";
 import { IGroup, IUserDetails } from "../../interfaces";
-import useSWR, { mutate } from "swr";
+import useSWR, { mutate, useSWRConfig } from "swr";
 import {
   editMembers,
   getGroupDetails,
@@ -24,6 +24,7 @@ import { blueDark, gray } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 import { confirmAlert } from "../../components/Alert/alertStore";
 import { useAuth } from "../../context/AuthContext";
+import { UserIcon } from "@heroicons/react/20/solid";
 
 const EditMembers = ({ group }: { group: IGroup }) => {
   const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>
@@ -42,14 +43,16 @@ const EditMembers = ({ group }: { group: IGroup }) => {
     confirmAlert({
       confirmText: "Yes remove members",
       message: "Are you sure you want to remove members",
+
       onConfirm: () => {
-        toast.promise(editMembers(group.$id, value as string[]), {
-          loading: "Saving changes",
-          success: "Members changed",
-          error: "Something went wrong",
-        });
-        mutate(group.$id);
         onClose();
+        editMembers(group.$id, value as string[])
+          .then((newDoc) => {
+            mutate(`details ${group.$id}`, newDoc, { revalidate: false });
+          })
+          .catch(() => {
+            toast.error("Something went wrong");
+          });
       },
       title: "Remove members",
       onCancel: () => {},
@@ -84,9 +87,9 @@ const EditMembers = ({ group }: { group: IGroup }) => {
                 >
                   <div className="flex items-center gap-2 text-[12]">
                     <Avatar
-                      name={member.name}
                       src={member.avatarURL}
                       size={"sm"}
+                      icon={<UserIcon className="w-5 h-5" />}
                     />
                     {member.name}
                   </div>
