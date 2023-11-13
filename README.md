@@ -2,7 +2,8 @@
 
 This is a simple and feature-rich chat application built with React, Appwrite, Chakra UI and other modern technologies. The app allows users to engage in real-time messaging, create and manage group chats, update their profiles, and more.
 
-![Project Logo](link-to-logo.png) <!-- If you have a logo, include it here -->
+##Preview
+![Screenshot 2023-11-14 001613](https://github.com/VincentMukuna/vchat/assets/93912489/b51d39b8-86fb-463b-8e12-02b218279eda)
 
 ## Features
 
@@ -18,7 +19,16 @@ This is a simple and feature-rich chat application built with React, Appwrite, C
 
 - Node.js and npm installed on your machine.
 
-### Installation
+## Appwrite Setup
+
+1. Open the [Appwrite Console](https://cloud.appwrite.io/) and make a new project.
+2. Add a new web app platform, typing
+   in your local IP address (or `localhost`).
+3. Click on "Databases" and make a new database
+4. Ensure your schema matches this
+5. Click on "Storage" and create the following buckets
+
+## Running VChat
 
 1. Clone the repository:
 
@@ -26,21 +36,25 @@ This is a simple and feature-rich chat application built with React, Appwrite, C
    git clone https://github.com/VincentMukuna/vchat.git
 
    ```
+
 2. Change to the project directory:
    ```bash
    cd chat-app
-   ```   
-2. Change to the project directory:
+   ```
+3. Change to the project directory:
    ```bash
    npm install
-   ```  
-4. Start the development server:
+   ```
+4. Edit `config.js` to include the relevant project's API endpoint and ID storage and collection IDs
+5. Start the development server:
    ```bash
       npm run dev
-    ```
+   ```
 
 ### License
+
 This project is licensed under the MIT License.
 
 ### Contact
+
 For any questions or feedback, feel free to reach out at mukunavincent28@gmail.com.
