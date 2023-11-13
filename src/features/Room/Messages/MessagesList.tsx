@@ -1,14 +1,21 @@
 import { AnimatePresence } from "framer-motion";
 import { IChatMessage, IGroupMessage } from "../../../interfaces";
 import Message from "./Message";
+import { SyncLoader } from "react-spinners";
 
 interface MessagesProps {
-  messages: IGroupMessage[] | IChatMessage[];
+  messages: (IChatMessage | IGroupMessage)[];
   onDelete: (message: IChatMessage | IGroupMessage) => Promise<void>;
   children: React.ReactNode;
+  isLoading: boolean;
 }
 
-function MessagesList({ messages, onDelete, children }: MessagesProps) {
+function MessagesList({
+  messages,
+  onDelete,
+  children,
+  isLoading,
+}: MessagesProps) {
   return (
     <div className="relative self-stretch overflow-x-hidden overflow-y-auto grow">
       <div
@@ -29,6 +36,10 @@ function MessagesList({ messages, onDelete, children }: MessagesProps) {
             ))}
             {children}
           </AnimatePresence>
+        ) : isLoading ? (
+          <div className="flex items-center self-center h-full justify-self-center">
+            <SyncLoader />
+          </div>
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">
             <div className="text-lg font-bold tracking-wider">No Messages</div>

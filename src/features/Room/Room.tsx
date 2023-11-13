@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 //@ts-ignore
 import chatSVG from "../../assets/groupChat.svg";
 import ChatHeader from "./ChatHeader";
-import Input, { Message } from "./Input";
+import MessageInput, { Message } from "./MessageInput";
 import Messages from "./Messages/MessagesList";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
@@ -26,13 +26,13 @@ import useSWR, { KeyedMutator, useSWRConfig } from "swr";
 import RoomDetails, {
   RoomDetailsFooter,
   RoomDetailsHeader,
-} from "./RoomDetails";
+} from "./RoomDetails/RoomDetails";
 import { Box, Center, useColorMode, Button } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import useSWRInfinite from "swr/infinite";
+import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 import toast from "react-hot-toast";
 import { useInfinite } from "../../hooks/useInfinite";
 
@@ -70,7 +70,7 @@ function Room() {
     );
   let re = new RegExp(`${selectedChat?.$id}-messages-(\\w+)`);
   const {
-    data: messages,
+    data,
     isLoading,
     error,
     mutate,
@@ -84,7 +84,9 @@ function Room() {
     re,
     [selectedChat?.$id],
   );
-
+  const messages = ([] as (IChatMessage | IGroupMessage)[]).concat(
+    ...(data || []),
+  );
   useEffect(() => {
     if (totalRef.current) {
       setMsgsCount(totalRef.current);
@@ -93,7 +95,7 @@ function Room() {
 
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
-    let newMessages = messages?.map(
+    let newMessages = data?.map(
       (msgArray) => msgArray?.filter((msg) => msg.$id !== message.$id),
     );
     mutate(newMessages, {
@@ -136,8 +138,14 @@ function Room() {
             response.payload.changeLog === "deletetext" ||
             response.payload.changeLog === "readtext"
           ) {
-            mutate();
-            globalMutate(`lastMessage ${selectedChat.$id}`);
+            mutate().then((value) => {
+              globalMutate(
+                `lastMessage ${selectedChat.$id}`,
+                (value as (IChatMessage | IGroupMessage)[][]).at(0)?.at(0),
+
+                { revalidate: false },
+              );
+            });
           } else if (response.payload.changeLog === "cleared") {
             mutate([], { revalidate: false });
             globalMutate(`lastMessage ${selectedChat.$id}`, undefined, {
@@ -170,64 +178,50 @@ function Room() {
       </motion.div>
     );
   }
-  if (isLoading || messages === undefined) {
-    return (
-      <Center className="w-full h-full dark:text-white">
-        <ClipLoader
-          color={colorMode === "dark" ? blue.blue1 : blueDark.blue1}
-        />
-      </Center>
-    );
-  } else
-    return (
-      <>
-        <Box
-          as="main"
-          className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow "
-        >
-          <ChatHeader />
-          {error ? (
-            <Center className="flex-col w-full h-full">
-              Whoops!
-              <p className="text-sm"> Can't get messages at the moment! </p>
-            </Center>
-          ) : (
-            <Messages
-              messages={([] as IGroupMessage[]).concat(
-                ...(messages as IGroupMessage[][]),
-              )}
-              onDelete={handleDeleteMessage}
-            >
-              {totalRef.current >
-                ([] as IGroupMessage[]).concat(
-                  ...(messages as IGroupMessage[][]),
-                ).length &&
-                msgsCount > 5 && (
-                  <Button
-                    variant={"ghost"}
-                    onClick={() => setSize(size + 1)}
-                    isLoading={isValidating}
-                    // hidden={messages.at(-1)?.length === 0 ? true : false}
-                    flexShrink={0}
-                  >
-                    {isValidating ? "Fetching" : "See previous"}
-                  </Button>
-                )}
-            </Messages>
-          )}
+  return (
+    <>
+      <Box
+        as="main"
+        className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow "
+      >
+        <ChatHeader />
+        {error ? (
+          <Center className="flex-col w-full h-full">
+            Whoops!
+            <p className="text-sm"> Can't get messages at the moment! </p>
+          </Center>
+        ) : (
+          <Messages
+            messages={messages.filter((message) => !!message)}
+            onDelete={handleDeleteMessage}
+            isLoading={isLoading}
+          >
+            {totalRef.current > messages.length && msgsCount > 20 && (
+              <Button
+                variant={"ghost"}
+                onClick={() => setSize(size + 1)}
+                isLoading={isValidating}
+                // hidden={messages.at(-1)?.length === 0 ? true : false}
+                flexShrink={0}
+              >
+                {isValidating ? "Fetching" : "See previous"}
+              </Button>
+            )}
+          </Messages>
+        )}
 
-          <Input />
-        </Box>
-        <aside
-          className={`hidden ${
-            showDetails && "absolute inset-0"
-          } md:static  md:max-w-[20rem] grow basis-40 border-l transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
-        >
-          <RoomDetails />
-          <RoomDetailsFooter />
-        </aside>
-      </>
-    );
+        <MessageInput />
+      </Box>
+      <aside
+        className={`hidden ${
+          showDetails && "absolute inset-0"
+        } md:static  md:max-w-[20rem] grow basis-40 border-l transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
+      >
+        <RoomDetails />
+        <RoomDetailsFooter />
+      </aside>
+    </>
+  );
 }
 
 export default Room;
