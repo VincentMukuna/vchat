@@ -3,31 +3,34 @@ import {
   Button,
   Checkbox,
   CheckboxGroup,
+  HStack,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  SkeletonCircle,
+  SkeletonText,
   Stack,
   useCheckboxGroup,
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
-import { IGroup, IUserDetails } from "../../interfaces";
+import { IGroup, IUserDetails } from "../../../interfaces";
 import useSWR, { mutate, useSWRConfig } from "swr";
 import {
   editMembers,
   getGroupDetails,
-} from "../../services/groupMessageServices";
+} from "../../../services/groupMessageServices";
 import { useEffect, useState } from "react";
 import { blueDark, gray } from "@radix-ui/colors";
 import toast from "react-hot-toast";
-import { confirmAlert } from "../../components/Alert/alertStore";
-import { useAuth } from "../../context/AuthContext";
+import { confirmAlert } from "../../../components/Alert/alertStore";
+import { useAuth } from "../../../context/AuthContext";
 import { UserIcon } from "@heroicons/react/20/solid";
 
 const EditMembers = ({ group }: { group: IGroup }) => {
-  const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>
+  const { data: roomDetails, isLoading } = useSWR(`details ${group.$id}`, () =>
     getGroupDetails(group.$id),
   );
   const { colorMode } = useColorMode();
@@ -67,37 +70,48 @@ const EditMembers = ({ group }: { group: IGroup }) => {
 
   return (
     <>
-      <ModalHeader>Edit Members</ModalHeader>
+      <ModalHeader>Remove Members</ModalHeader>
       <ModalCloseButton />
 
       <ModalBody className="flex flex-col gap-2">
         <p className="text-sm italic text-dark-gray9">
           Uncheck member to remove
         </p>
-        {/* <CheckboxGroup defaultValue={memberIDs}> */}
         <Stack maxH={200} overflowY={"auto"} gap={3}>
-          {roomDetails?.members
-            .filter((member: any) => member.$id !== currentUserDetails?.$id)
-            .map((member: any) => {
-              return (
-                <Checkbox
-                  key={member.$id}
-                  iconColor={blueDark.blue1}
-                  {...getCheckboxProps({ value: member.$id })}
-                >
-                  <div className="flex items-center gap-2 text-[12]">
-                    <Avatar
-                      src={member.avatarURL}
-                      size={"sm"}
-                      icon={<UserIcon className="w-5 h-5" />}
-                    />
-                    {member.name}
-                  </div>
-                </Checkbox>
-              );
-            })}
+          {isLoading ? (
+            <HStack className="p-4">
+              <SkeletonCircle size="12" w="14" />
+              <SkeletonText
+                mt="2"
+                noOfLines={2}
+                spacing="4"
+                skeletonHeight="2"
+                w="full"
+              />
+            </HStack>
+          ) : (
+            roomDetails?.members
+              .filter((member: any) => member.$id !== currentUserDetails?.$id)
+              .map((member: any) => {
+                return (
+                  <Checkbox
+                    key={member.$id}
+                    iconColor={blueDark.blue1}
+                    {...getCheckboxProps({ value: member.$id })}
+                  >
+                    <div className="flex items-center gap-2 text-[12]">
+                      <Avatar
+                        src={member.avatarURL}
+                        size={"sm"}
+                        icon={<UserIcon className="w-5 h-5" />}
+                      />
+                      {member.name}
+                    </div>
+                  </Checkbox>
+                );
+              })
+          )}
         </Stack>
-        {/* </CheckboxGroup> */}
         <ModalFooter className="gap-2">
           <Button variant={"ghost"} width={"40"} onClick={onClose}>
             Cancel
