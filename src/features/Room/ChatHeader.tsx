@@ -28,13 +28,15 @@ import {
   ArrowRightOnRectangleIcon,
   EllipsisVerticalIcon,
   TrashIcon,
+  UserIcon,
+  UsersIcon,
 } from "@heroicons/react/20/solid";
 import RoomActions from "./RoomActions";
 import { useRef } from "react";
 import RoomDetails, {
   RoomDetailsFooter,
   RoomDetailsHeader,
-} from "./RoomDetails";
+} from "./RoomDetails/RoomDetails";
 import { slateDark } from "@radix-ui/colors";
 import { confirmAlert } from "../../components/Alert/alertStore";
 import { mutate, useSWRConfig } from "swr";
@@ -80,27 +82,26 @@ function ChatHeader() {
         }}
       ></IconButton>
       <Avatar
-        display={["none", "block"]}
         src={selectedChat.avatarURL || recepient?.avatarURL}
-        name={
-          isGroup
-            ? selectedChat.name
-            : isPersonal
-            ? "You"
-            : recepient?.name || " "
+        icon={
+          isGroup ? (
+            <UsersIcon className="w-[26px] h-[26px]" />
+          ) : (
+            <UserIcon className="w-[26px] h-[26px]" />
+          )
         }
         size={"md"}
       />
       <button
         onClick={() => {
-          if (breakpoint !== "lg") {
-            console.log(breakpoint);
+          console.log(breakpoint);
+          if (breakpoint !== "xl") {
             onOpen();
           }
         }}
-        className="relative flex flex-col "
+        className="relative flex flex-col grow"
       >
-        <span className="text-lg font-semibold tracking-wide">
+        <span className="max-w-[8rem] transition-all overflow-hidden text-base font-semibold tracking-wide sm:text-lg text-ellipsis whitespace-nowrap md:max-w-none">
           {isGroup ? selectedChat.name : isPersonal ? "You" : recepient?.name}
         </span>
         <span className="relative max-w-[9rem] overflow-hidden text-xs tracking-wide whitespace-nowrap text-dark-gray5 dark:text-gray6 text-ellipsis">
@@ -125,6 +126,7 @@ function ChatHeader() {
         finalFocusRef={btnRef}
         size={["full", "full", "md"]}
       >
+        <DrawerOverlay />
         <DrawerContent bg={slateDark.slate1}>
           <DrawerCloseButton />
           <DrawerHeader>
