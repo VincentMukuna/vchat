@@ -66,7 +66,7 @@ const FormStepper = ({ children, handleSubmit }: FormStepperProps) => {
 
   return (
     <Stack gap={2} h={"full"}>
-      <Stepper size={["xs"]} colorScheme="blue" index={step} gap={2}>
+      <Stepper size={["xs", "md"]} colorScheme="blue" index={step} gap={2}>
         {steps.map((step, index) => (
           <Step key={index}>
             <StepIndicator>
@@ -77,7 +77,7 @@ const FormStepper = ({ children, handleSubmit }: FormStepperProps) => {
               />
             </StepIndicator>
 
-            <Box flexShrink="0">
+            <Box>
               <StepTitle>{step.title}</StepTitle>
               <StepDescription>{step.description}</StepDescription>
             </Box>

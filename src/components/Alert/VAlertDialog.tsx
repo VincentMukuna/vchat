@@ -36,7 +36,7 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
       leastDestructiveRef={cancelRef}
       onClose={onClose}
       isCentered={true}
-      size={"sm"}
+      size={["xs", "sm"]}
     >
       <AlertDialogOverlay />
       <AlertDialogContent>
@@ -47,7 +47,12 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
             <p key={i}>{line}</p>
           ))}
         </AlertDialogBody>
-        <AlertDialogFooter gap={2}>
+        <AlertDialogFooter
+          gap={2}
+          display={"flex"}
+          flexWrap={"wrap"}
+          justifyContent={["center", "end"]}
+        >
           <Button
             variant="ghost"
             ref={cancelRef}

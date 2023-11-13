@@ -17,6 +17,7 @@ import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { Box } from "@chakra-ui/react";
 import { gray, slateDark } from "@radix-ui/colors";
 import { Outlet } from "react-router-dom";
+import { MyProfile } from "../Navbar/Navbar";
 const Sidebar = () => {
   const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -25,13 +26,17 @@ const Sidebar = () => {
   if (!currentUserDetails) return;
   return (
     <aside className="bg-gray2 dark:bg-dark-slate1 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]">
-      <div className="w-full font-semibold tracking-widest">
-        <span className="relative flex items-center justify-center w-full h-full ">
+      <div className="flex items-center w-full font-semibold tracking-widests">
+        <span className="relative flex items-center justify-between w-full h-full ">
+          <div className="visible mt-2 md:invisible">
+            <MyProfile />
+          </div>
+
           {activePage}
           <button
             onClick={onOpen}
             aria-label="Create new group"
-            className="absolute flex p-2 text-sm font-normal rounded dark:text-gray8 right-3"
+            className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 "
             title="New group"
           >
             <UserGroupIcon className="w-5 h-5" />
@@ -44,6 +49,7 @@ const Sidebar = () => {
           onClose={onClose}
           isCentered
           scrollBehavior="outside"
+          size={["xs", "lg"]}
         >
           <ModalOverlay />
           <ModalContent>
