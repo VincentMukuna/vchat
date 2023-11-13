@@ -51,34 +51,7 @@ const Navbar = () => {
   return (
     <nav className="flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate2 md:h-full gap-3">
       <div className="hidden md:flex">
-        <Tooltip
-          label="My Profile"
-          hasArrow
-          placement="right"
-          py={2}
-          fontSize={"sm"}
-          fontWeight={"normal"}
-          bg={colorMode === "dark" ? indigoDark.indigo1 : indigo.indigo8}
-          textColor={colorMode === "dark" ? indigo.indigo3 : "black"}
-        >
-          <Link
-            to={"profile"}
-            className="mt-4 "
-            onClick={() => {
-              redirect("profile");
-              getCurrentUserDetails(currentUser).then((deets) => {
-                setCurrentUserDetails(deets);
-              });
-              setActivePage("Profile");
-            }}
-          >
-            <Avatar
-              size={"md"}
-              src={currentUserDetails.avatarURL}
-              icon={<UserIcon className="w-7 h-7" />}
-            />
-          </Link>
-        </Tooltip>
+        <MyProfile />
       </div>
       <div className="flex items-center justify-around w-full md:flex-col md:gap-2 ">
         {tabs.map((tab, i) => {
@@ -189,3 +162,48 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+import React from "react";
+
+export const MyProfile = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const {
+    currentUser,
+    currentUserDetails,
+    setCurrentUserDetails,
+    setCurrentUser,
+  } = useAuth();
+  if (!currentUser || !currentUserDetails) return null;
+  const { setActivePage } = useAppSelector();
+
+  return (
+    <Tooltip
+      label="My Profile"
+      hasArrow
+      placement="right"
+      py={2}
+      fontSize={"sm"}
+      fontWeight={"normal"}
+      bg={colorMode === "dark" ? indigoDark.indigo1 : indigo.indigo8}
+      textColor={colorMode === "dark" ? indigo.indigo3 : "black"}
+    >
+      <Link
+        to={"profile"}
+        className="mt-4 "
+        onClick={() => {
+          redirect("profile");
+          getCurrentUserDetails(currentUser).then((deets) => {
+            setCurrentUserDetails(deets);
+          });
+          setActivePage("Profile");
+        }}
+      >
+        <Avatar
+          size={"md"}
+          src={currentUserDetails.avatarURL}
+          icon={<UserIcon className="w-7 h-7" />}
+        />
+      </Link>
+    </Tooltip>
+  );
+};
