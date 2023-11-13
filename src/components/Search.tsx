@@ -40,32 +40,33 @@ function Search({
   const [results, setResults] = useState<any[]>([]);
 
   return (
-    <form
-      action=""
-      className="w-full mb-4"
-      onSubmit={async (e) => {
-        e.preventDefault();
-        onOpen();
-        setLoading(true);
-        try {
-          let searchResults = await handleSearch(search, onClose);
-
-          setResults(searchResults);
-        } catch (error) {
-          toast.error("Something went wrong");
-        } finally {
-          setLoading(false);
-        }
-      }}
+    <Popover
+      isLazy={true}
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+      placement="bottom"
     >
-      <Popover
-        isLazy={true}
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        placement="bottom"
-      >
-        <PopoverAnchor>
+      <PopoverAnchor>
+        <form
+          action=""
+          className="w-full mb-4"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onOpen();
+            setLoading(true);
+            try {
+              let searchResults = await handleSearch(search, onClose);
+
+              setResults(searchResults);
+            } catch (error) {
+              toast.error("Something went wrong");
+            } finally {
+              setLoading(false);
+            }
+          }}
+        >
           <InputGroup>
             <InputLeftElement>
               <MagnifyingGlassIcon className="w-4 h-4 ml-1 " />
@@ -79,36 +80,36 @@ function Search({
               }}
             />
           </InputGroup>
-        </PopoverAnchor>
-        <PopoverContent
-          bg={gray.gray1}
-          _dark={{ bg: slateDark.slate1 }}
-          _focus={{
-            border: "none",
-            shadow: "0 0 0 1px gray",
-          }}
-          py={4}
-          px={2}
-        >
-          {loading ? (
-            <HStack className="p-4">
-              <SkeletonCircle size="12" w="14" />
-              <SkeletonText
-                mt="2"
-                noOfLines={2}
-                spacing="4"
-                skeletonHeight="2"
-                w="full"
-              />
-            </HStack>
-          ) : results.length > 0 ? (
-            <FocusLock>{results}</FocusLock>
-          ) : (
-            <span className="p-4">No results</span>
-          )}
-        </PopoverContent>
-      </Popover>
-    </form>
+        </form>
+      </PopoverAnchor>
+      <PopoverContent
+        bg={gray.gray1}
+        _dark={{ bg: slateDark.slate1 }}
+        _focus={{
+          border: "none",
+          shadow: "0 0 0 1px gray",
+        }}
+        py={2}
+        px={2}
+      >
+        {loading ? (
+          <HStack className="p-4">
+            <SkeletonCircle size="12" w="14" />
+            <SkeletonText
+              mt="2"
+              noOfLines={2}
+              spacing="4"
+              skeletonHeight="2"
+              w="full"
+            />
+          </HStack>
+        ) : results.length > 0 ? (
+          <FocusLock>{results}</FocusLock>
+        ) : (
+          <span className="p-4">No results</span>
+        )}
+      </PopoverContent>
+    </Popover>
   );
 }
 
