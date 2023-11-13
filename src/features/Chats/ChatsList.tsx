@@ -50,6 +50,8 @@ export async function getConversations(userDetailsID: string) {
       .filter((x) => x !== undefined) as (IChat | IGroup)[][]),
   );
 
+  conversations.sort(compareUpdatedAt);
+
   return conversations;
 }
 
