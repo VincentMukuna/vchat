@@ -9,7 +9,7 @@ This is a simple and feature-rich chat application built with React, Appwrite, C
 - **Real-Time Messaging:** Instant messaging with support for text, images, and voice messages.
 - **Group Chats:** Create and manage group conversations with multiple participants.
 - **User Authentication:** Secure registration and login functionality for user accounts (OAuth and Email)
-- **Profile Customization:** Personalize your profile with avatars, status updates, and more.
+- **Profile Customization:** Personalize your profile with avatars, and more.
 - **Multimedia Sharing:** Share files, documents, and locations within the chat.
 
 ## Getting Started
