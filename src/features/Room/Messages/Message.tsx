@@ -3,7 +3,12 @@ import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { IChatMessage, IGroupMessage, IUserDetails } from "../../../interfaces";
+import {
+  IChatMessage,
+  IGroup,
+  IGroupMessage,
+  IUserDetails,
+} from "../../../interfaces";
 import { DeleteIcon, PencilIcon } from "../../../components/Icons";
 
 import useSWR, { mutate } from "swr";
@@ -58,6 +63,9 @@ const Message = forwardRef<any, MessageProps>(
     const isGroupMessage = !!(
       message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES
     );
+    const isAdmin =
+      isGroupMessage &&
+      (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
     const mine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
@@ -269,7 +277,7 @@ const Message = forwardRef<any, MessageProps>(
           </div>
         </div>
 
-        {mine && !isOptimistic && (
+        {(mine || isAdmin) && !isOptimistic && (
           <div
             className={`flex self-end gap-2 mb-5 ${
               showHoverCard ? "" : "invisible"
