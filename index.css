@@ -1,13 +1,13 @@
 @tailwind base;
 /* Firefox */
 * {
-  scrollbar-width: 12px;
+  scrollbar-width: none;
   scrollbar-track-color: transparent;
 }
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 1px;
+  display: none;
 }
 
 *::-webkit-scrollbar-track {
