@@ -16,3 +16,5 @@ export const SERVER = {
   OAUTH_SUCCESS: "https://vchat-messenger.vercel.app/login",
   OAUTH_FAILURE: "https://vchat-messenger.vercel.app/register",
 };
+
+console.log(import.meta.env.VITE_CLIENT_KEY);
