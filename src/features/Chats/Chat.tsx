@@ -28,7 +28,6 @@ const Chat = ({ conversation }: IChatProps) => {
   const { currentUserDetails, currentUser } = useAuth();
   if (!currentUserDetails) return null;
   const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
-  const [showHoverCard, setShowHoverCard] = useState(false);
   const [contactDetails, setContactDetails] = useState<
     IUserDetails | undefined
   >();
@@ -82,64 +81,62 @@ const Chat = ({ conversation }: IChatProps) => {
   const isActive = selectedChat?.$id === conversation.$id;
 
   return (
-    <Card
-      as={motion.article}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.98 }}
-      bg={"inherit"}
-      shadow={"none"}
-      direction={"row"}
-      onMouseOver={() => setShowHoverCard(true)}
-      onMouseLeave={() => setShowHoverCard(false)}
-      py={3}
-      ps={3}
-      rounded={"none"}
-      onClick={() => {
-        setRecepient(contactDetails);
-        setSelectedChat(conversation);
-      }}
-      className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
-        isActive ? "bg-dark-slate5 dark:bg-dark-slate3" : ""
-      }`}
-    >
-      <Avatar
-        src={isGroup ? conversation.avatarURL : contactDetails?.avatarURL}
-        icon={
-          isGroup ? (
-            <UsersIcon className="w-[26px] h-[26px]" />
-          ) : (
-            <UserIcon className="w-[26px] h-[26px]" />
-          )
-        }
-      />
-      <div className="grid gap-[2px] ml-2 overflow-hidden shrink text-ellipsis">
-        <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
-          {isGroup
-            ? conversation.name
-            : isPersonal
-            ? "You"
-            : contactDetails?.name}
-        </span>
-        <span className="flex overflow-hidden font-sans text-[13px] italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
-          {lastMessage?.body
-            ? lastMessage.senderID === currentUserDetails.$id
-              ? "Me: " + lastMessage.body
-              : lastMessage.body
-            : "Click to start messaging "}
+    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+      <Card
+        as={"article"}
+        bg={"inherit"}
+        shadow={"none"}
+        direction={"row"}
+        py={3}
+        ps={3}
+        rounded={"none"}
+        onClick={() => {
+          setRecepient(contactDetails);
+          setSelectedChat(conversation);
+        }}
+        className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
+          isActive ? "bg-dark-slate5 dark:bg-dark-slate3" : ""
+        }`}
+      >
+        <Avatar
+          src={isGroup ? conversation.avatarURL : contactDetails?.avatarURL}
+          icon={
+            isGroup ? (
+              <UsersIcon className="w-[26px] h-[26px]" />
+            ) : (
+              <UserIcon className="w-[26px] h-[26px]" />
+            )
+          }
+        />
+        <div className="grid gap-[2px] ml-2 overflow-hidden shrink text-ellipsis">
+          <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
+            {isGroup
+              ? conversation.name
+              : isPersonal
+              ? "You"
+              : contactDetails?.name}
+          </span>
+          <span className="flex overflow-hidden font-sans text-[13px] italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+            {lastMessage?.body
+              ? lastMessage.senderID === currentUserDetails.$id
+                ? "Me: " + lastMessage.body
+                : lastMessage.body
+              : "Click to start messaging "}
 
-          {lastMessage?.senderID === currentUserDetails.$id && (
-            <div className="absolute right-4 bottom-4">
-              <Blueticks read={lastMessage?.read} />
-            </div>
-          )}
-        </span>
-      </div>
-      <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
-        <span className="flex text-[10px] tracking-wide ">
-          {getFormatedDate(conversation.$updatedAt)}
-        </span>
-      </div>
-    </Card>
+            {lastMessage?.senderID === currentUserDetails.$id && (
+              <div className="absolute right-4 bottom-4">
+                <Blueticks read={lastMessage?.read} />
+              </div>
+            )}
+          </span>
+        </div>
+        <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
+          <span className="flex text-[10px] tracking-wide ">
+            {getFormatedDate(conversation.$updatedAt)}
+          </span>
+        </div>
+      </Card>
+    </motion.div>
   );
 };
 

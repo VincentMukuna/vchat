@@ -49,36 +49,36 @@ function User({
   if (!currentUserDetails) return null;
 
   return (
-    <Card
-      as={motion.article}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.98 }}
-      bg={"inherit"}
-      shadow={"none"}
-      direction={"row"}
-      py={3}
-      ps={3}
-      rounded={"sm"}
-      onClick={
-        onClick
-          ? onClick
-          : () => {
-              openModal(
-                <UserProfileModal
-                  onClose={() => {
-                    onCloseModal && onCloseModal();
-                  }}
-                  user={user}
-                />,
-              );
-            }
-      }
-      className={`transition-all gap-1 flex items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
-    >
-      <UserContext.Provider value={{ user: user }}>
-        {children}
-      </UserContext.Provider>
-    </Card>
+    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+      <Card
+        as={"article"}
+        bg={"inherit"}
+        shadow={"none"}
+        direction={"row"}
+        py={3}
+        ps={3}
+        rounded={"sm"}
+        onClick={
+          onClick
+            ? onClick
+            : () => {
+                openModal(
+                  <UserProfileModal
+                    onClose={() => {
+                      onCloseModal && onCloseModal();
+                    }}
+                    user={user}
+                  />,
+                );
+              }
+        }
+        className={`transition-all gap-1 flex items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
+      >
+        <UserContext.Provider value={{ user: user }}>
+          {children}
+        </UserContext.Provider>
+      </Card>
+    </motion.div>
   );
 }
 
