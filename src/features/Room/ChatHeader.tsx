@@ -124,7 +124,7 @@ function ChatHeader() {
       </button>
       <div className="absolute ml-auto right-1 top-4 ">
         {(!isGroup || isGroupMember) && (
-          <Menu>
+          <Menu placement="left-start">
             <MenuButton
               bg={"transparent"}
               as={IconButton}
