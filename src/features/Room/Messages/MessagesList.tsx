@@ -23,7 +23,7 @@ function MessagesList({
         className="flex flex-col-reverse h-full p-2 pb-4 overflow-y-scroll"
       >
         {messages.length > 0 ? (
-          <AnimatePresence initial={false} mode="popLayout">
+          <>
             {messages.map((message, i) => (
               <Message
                 message={message}
@@ -35,7 +35,7 @@ function MessagesList({
               />
             ))}
             {children}
-          </AnimatePresence>
+          </>
         ) : isLoading ? (
           <div className="flex items-center self-center h-full justify-self-center">
             <SyncLoader />
