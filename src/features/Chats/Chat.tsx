@@ -82,7 +82,7 @@ const Chat = ({ conversation }: IChatProps) => {
         currentUserDetails.$id,
       );
     },
-    { refreshInterval: 2000 },
+    { refreshInterval: 60000 },
   );
 
   useEffect(() => {
