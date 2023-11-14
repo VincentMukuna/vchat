@@ -33,10 +33,8 @@ import {
 } from "@heroicons/react/20/solid";
 import RoomActions from "./RoomActions";
 import { useRef } from "react";
-import RoomDetails, {
-  RoomDetailsFooter,
-  RoomDetailsHeader,
-} from "./RoomDetails/RoomDetails";
+import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
+import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 import { slateDark } from "@radix-ui/colors";
 import { confirmAlert } from "../../components/Alert/alertStore";
 import useSWR, { mutate, useSWRConfig } from "swr";

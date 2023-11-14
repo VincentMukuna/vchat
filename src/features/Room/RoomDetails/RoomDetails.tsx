@@ -1,46 +1,23 @@
-import { ArrowLeftIcon, TrashIcon } from "@heroicons/react/24/solid";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { IChat, IGroup, IUserDetails } from "../../../interfaces";
-import {
-  deleteGroup,
-  getGroupDetails,
-  leaveGroup,
-  updateGroupAvatar,
-  updateGroupDetails,
-} from "../../../services/groupMessageServices";
-import useSWR, { mutate, useSWRConfig } from "swr";
+import { IGroup, IUserDetails } from "../../../interfaces";
+import { getGroupDetails } from "../../../services/groupMessageServices";
+import useSWR from "swr";
 import { getChatDoc } from "../../../services/chatMessageServices";
 import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 import {
   Avatar,
   AvatarGroup,
-  Button,
   Editable,
   EditableInput,
   EditablePreview,
-  HStack,
   IconButton,
   Modal,
   VStack,
 } from "@chakra-ui/react";
-import {
-  ArrowRightOnRectangleIcon,
-  PencilIcon,
-  UserIcon,
-  UsersIcon,
-} from "@heroicons/react/20/solid";
+import { PencilIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { getFormatedDate } from "../../../services/dateServices";
-import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
-import { deleteContact } from "../../../services/userDetailsServices";
-import { useFilePicker } from "use-file-picker";
-import {
-  FileAmountLimitValidator,
-  FileSizeValidator,
-} from "use-file-picker/validators";
-import { useState } from "react";
-import { confirmAlert } from "../../../components/Alert/alertStore";
 import { openModal } from "../../../components/Modal";
 import { EditGroupDetailsForm } from "./EditGroupDetailsForm";
 
@@ -209,106 +186,5 @@ export const RoomDetailsHeader = () => {
         ? selectedChat.name + " details"
         : `Chat with ${recepient?.name.split(" ")[0]}`}
     </div>
-  );
-};
-
-export const RoomDetailsFooter = () => {
-  const { cache } = useSWRConfig();
-  const { recepient, setSelectedChat, selectedChat } = useChatsContext();
-
-  if (selectedChat === undefined) return null;
-  const { currentUserDetails } = useAuth();
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
-  const isPersonal =
-    !isGroup &&
-    selectedChat.participants.every(
-      (participant: IUserDetails) =>
-        participant.$id === currentUserDetails?.$id,
-    );
-  const isAdmin =
-    isGroup &&
-    (selectedChat as IGroup).admins.includes(currentUserDetails!.$id);
-  function getConversations() {
-    if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (IChat | IGroup)[];
-    } else return [];
-  }
-
-  function removeConversation() {
-    let chatID = selectedChat!.$id;
-    mutate(
-      "conversations",
-      getConversations().filter((conversation) => conversation.$id !== chatID),
-      {
-        revalidate: false,
-      },
-    );
-    setSelectedChat(undefined);
-  }
-  function handleDeleteChat() {
-    let promise: Promise<void>;
-    removeConversation();
-    if (isGroup) {
-      promise = deleteGroup(selectedChat.$id);
-    } else {
-      promise = deleteContact(
-        (selectedChat as IChat).$id,
-        (recepient as any).$id,
-      );
-    }
-    promise.catch(() => {
-      toast.error("Something went wrong");
-    });
-  }
-  async function handleExitGroup() {
-    let chatID = selectedChat!.$id;
-    removeConversation();
-    let promise = leaveGroup(currentUserDetails!.$id, chatID);
-
-    promise.catch(() => {
-      toast.error("Something went wrong! ");
-    });
-  }
-  return (
-    <HStack>
-      <Button
-        hidden={!isGroup}
-        size={"sm"}
-        variant={"outline"}
-        leftIcon={<ArrowRightOnRectangleIcon className="w-4 h-4" />}
-        onClick={() => {
-          confirmAlert({
-            message: `Are you sure you want to leave this conversation?`,
-            title: `Exit Discussion `,
-            confirmText: `Yes, I'm sure`,
-            onConfirm: () => handleExitGroup(),
-          });
-        }}
-      >
-        Leave
-      </Button>
-      <Button
-        hidden={isGroup ? !isAdmin : false}
-        size={"sm"}
-        variant={"outline"}
-        colorScheme="red"
-        leftIcon={<TrashIcon className="w-4 h-4" />}
-        onClick={() => {
-          confirmAlert({
-            message: `Are you sure you want to delete this ${
-              isGroup ? "group" : "chat"
-            } ? All records of this conversation will be removed from our servers `,
-            title: `Delete conversation `,
-            confirmText: `Yes, I'm sure`,
-            onConfirm: () => {
-              handleDeleteChat();
-            },
-            cancelText: `No, keep conversation`,
-          });
-        }}
-      >
-        Delete
-      </Button>
-    </HStack>
   );
 };

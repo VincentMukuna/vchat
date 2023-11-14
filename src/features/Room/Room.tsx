@@ -24,10 +24,8 @@ import {
   getGroupMessages,
 } from "../../services/groupMessageServices";
 import useSWR, { KeyedMutator, useSWRConfig } from "swr";
-import RoomDetails, {
-  RoomDetailsFooter,
-  RoomDetailsHeader,
-} from "./RoomDetails/RoomDetails";
+import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
+import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 import {
   Box,
   Center,
