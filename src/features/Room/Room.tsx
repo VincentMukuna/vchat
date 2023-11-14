@@ -210,7 +210,7 @@ function Room() {
           transition={{ duration: 0.2 }}
           src={chatSVG}
           alt=""
-          className="w-[400px] h-4/6"
+          className="w-[4\6] h-4/6 p-4 max-w-md"
         />
         <p>Vchat</p>
         <p>Click on Chat to start messaging</p>

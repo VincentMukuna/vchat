@@ -14,7 +14,7 @@ function Home() {
   useEffect(() => {}, []);
   return (
     <>
-      <div className="fixed inset-0 flex flex-col-reverse md:flex-row ">
+      <div className="fixed inset-0 flex flex-col-reverse md:flex-row">
         <Navbar />
         <Sidebar />
 
