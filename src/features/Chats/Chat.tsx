@@ -107,7 +107,7 @@ const Chat = ({ conversation }: IChatProps) => {
       });
 
       globalMutate<(IChat | IGroup)[]>("conversations", chats, {
-        revalidate: true,
+        revalidate: false,
       });
     }
   }, [unreadCount]);

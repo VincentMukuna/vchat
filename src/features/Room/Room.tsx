@@ -151,6 +151,11 @@ function Room() {
     }
   };
   useEffect(() => {
+    if (selectedChat) {
+      globalMutate(`unread-${selectedChat.$id}`, 0, { revalidate: false });
+    }
+  }, [selectedChat]);
+  useEffect(() => {
     if (selectedChat && !isPersonal) {
       //subscribe to changes in chat room
       const unsubscribe = api.subscribe<IChat | IGroup>(
