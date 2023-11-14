@@ -176,6 +176,7 @@ export async function getChatUnreadMessagesCount(
     SERVER.COLLECTION_ID_CHAT_MESSAGES,
     [
       Query.orderDesc("$createdAt"),
+      Query.select(["read"]),
       Query.equal("chat", chatID),
       Query.equal("read", false),
       Query.notEqual("senderID", userID),

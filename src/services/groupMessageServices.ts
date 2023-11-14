@@ -261,6 +261,7 @@ export async function getGroupUnreadMessagesCount(
     [
       Query.orderDesc("$createdAt"),
       Query.equal("group", groupID),
+      Query.select(["read"]),
       Query.equal("read", false),
       Query.notEqual("senderID", userID),
       Query.limit(10),
