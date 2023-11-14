@@ -287,6 +287,7 @@ const Message = forwardRef<any, MessageProps>(
               <DeleteIcon className="w-4 h-4" />
             </button>
             <button
+              hidden={!mine}
               onClick={() => {
                 setIsEditing((prev) => !prev);
               }}
