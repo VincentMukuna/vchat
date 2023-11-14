@@ -166,3 +166,21 @@ export async function getUserChats(userDetailsID: string) {
 
   return chats as IChat[];
 }
+
+export async function getChatUnreadMessagesCount(
+  chatID: string,
+  userID: string,
+) {
+  let { documents, total } = await api.listDocuments(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHAT_MESSAGES,
+    [
+      Query.orderDesc("$createdAt"),
+      Query.equal("chat", chatID),
+      Query.equal("read", false),
+      Query.notEqual("senderID", userID),
+      Query.limit(10),
+    ],
+  );
+  return total;
+}

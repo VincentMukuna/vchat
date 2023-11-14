@@ -12,13 +12,15 @@ import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import useSWR from "swr";
 import api from "../../services/api";
-import { Avatar, Card } from "@chakra-ui/react";
+import { Avatar, AvatarBadge, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
 import { Query } from "appwrite";
 import { SERVER } from "../../utils/config";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { grayDark } from "@radix-ui/colors";
+import { grayDark, greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
+import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -65,6 +67,16 @@ const Chat = ({ conversation }: IChatProps) => {
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
+  const { data: unreadCount } = useSWR(`unread-${conversation.$id}`, () => {
+    if (isGroup) {
+      return getGroupUnreadMessagesCount(
+        conversation.$id,
+        currentUserDetails.$id,
+      );
+    }
+    return getChatUnreadMessagesCount(conversation.$id, currentUserDetails.$id);
+  });
+
   useEffect(() => {
     if (isPersonal) {
       setContactDetails(currentUserDetails);
@@ -107,7 +119,18 @@ const Chat = ({ conversation }: IChatProps) => {
               <UserIcon className="w-[26px] h-[26px]" />
             )
           }
-        />
+        >
+          <AvatarBadge
+            hidden={unreadCount ? unreadCount < 1 : true}
+            bottom={"unset"}
+            top={0}
+            bgColor={greenDark.green10}
+            boxSize={"2em"}
+            fontSize={"2xs"}
+          >
+            {unreadCount}
+          </AvatarBadge>
+        </Avatar>
         <div className="grid gap-[2px] ml-2 overflow-hidden shrink text-ellipsis">
           <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
             {isGroup

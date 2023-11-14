@@ -250,3 +250,21 @@ export async function leaveGroup(userDetailsID: string, groupID: string) {
   let newGroups = groups.filter((group) => group.$id !== groupID);
   await updateUserDetails(userDetailsID, { groups: newGroups });
 }
+
+export async function getGroupUnreadMessagesCount(
+  groupID: string,
+  userID: string,
+) {
+  let { documents, total } = await api.listDocuments(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUP_MESSAGES,
+    [
+      Query.orderDesc("$createdAt"),
+      Query.equal("group", groupID),
+      Query.equal("read", false),
+      Query.notEqual("senderID", userID),
+      Query.limit(10),
+    ],
+  );
+  return total;
+}
