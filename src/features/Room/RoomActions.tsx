@@ -88,7 +88,7 @@ const RoomActions = () => {
           <MenuDivider />
         </>
       )}
-      {isGroup && (
+      {isGroup && isAdmin && (
         <>
           <MenuItem
             py={"1"}
@@ -112,23 +112,19 @@ const RoomActions = () => {
             Remove Members
           </MenuItem>
 
-          {isAdmin && (
-            <>
-              <MenuDivider />
-              <MenuItem
-                py={"1"}
-                bg={"transparent"}
-                onClick={() =>
-                  openModal(
-                    <EditGroupAdmins selectedGroup={selectedChat as IGroup} />,
-                  )
-                }
-                icon={<PencilIcon className="w-4 h-4" />}
-              >
-                Edit Admins
-              </MenuItem>
-            </>
-          )}
+          <MenuDivider />
+          <MenuItem
+            py={"1"}
+            bg={"transparent"}
+            onClick={() =>
+              openModal(
+                <EditGroupAdmins selectedGroup={selectedChat as IGroup} />,
+              )
+            }
+            icon={<PencilIcon className="w-4 h-4" />}
+          >
+            Edit Admins
+          </MenuItem>
         </>
       )}
     </MenuList>
