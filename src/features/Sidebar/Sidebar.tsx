@@ -71,6 +71,7 @@ const Sidebar = () => {
       <section className="px-2 overflow-y-auto">
         <AnimatePresence>
           <motion.div
+            key={activePage}
             variants={VARIANTS_MANAGER}
             initial="slide-from-left"
             animate="slide-in"
