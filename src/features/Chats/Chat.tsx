@@ -87,14 +87,17 @@ const Chat = ({ conversation }: IChatProps) => {
 
   useEffect(() => {
     if (unreadCount && unreadCount > 0) {
-      let chats = cache.get(`converstions`)!.data as (IChat | IGroup)[];
+      let chats = cache.get("conversations")?.data as (IChat | IGroup)[];
+
+      if (!chats) return;
       chats.sort(
         (a, b) =>
-          (cache.get(`unread-${a.$id}`)?.data || 0) -
-          (cache.get(`unread-${b.$id}`)?.data || 0),
+          (cache.get(`unread-${b.$id}`)?.data || 0) -
+          (cache.get(`unread-${a.$id}`)?.data || 0),
       );
-      globalMutate<(IChat | IGroup)[]>(`conversations`, chats, {
-        revalidate: false,
+
+      globalMutate<(IChat | IGroup)[]>("conversations", chats, {
+        revalidate: true,
       });
     }
   }, [unreadCount]);

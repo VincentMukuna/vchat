@@ -68,26 +68,20 @@ const ChatsList = () => {
   if (!currentUser || !currentUserDetails) return null;
 
   // Local state to store chats data
-  const [localConversations, setLocalConversations] = useState<
-    (IChat | IGroup)[]
-  >([...currentUserDetails.groups].sort(compareUpdatedAt));
 
   // Fetch chats data using useSWR
   let {
     data: conversations,
     error: chatsError,
     mutate,
-  } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-  });
+    isLoading,
+  } = useSWR(
+    "conversations",
+    () => getConversations(currentUserDetails.$id),
+    {},
+  );
 
   // Update local chats data when the data is refreshed
-  useEffect(() => {
-    if (conversations) {
-      setLocalConversations(conversations);
-    }
-  }, [conversations]);
 
   useEffect(() => {
     // Subscribe to changes on the user's chatlist and contact list
@@ -135,11 +129,7 @@ const ChatsList = () => {
         </Button>
       </div>
     );
-  } else if (
-    Array.isArray(conversations) &&
-    conversations.length === 0 &&
-    localConversations.length === 0
-  ) {
+  } else if (!isLoading && conversations && conversations.length < 1) {
     return (
       <div className="flex flex-col items-center gap-6 mt-4">
         <div className="flex flex-col items-center justify-center ">
@@ -173,9 +163,11 @@ const ChatsList = () => {
         exit="slide-from-right"
       >
         <Stack spacing={0} px={1}>
-          {localConversations?.map((conversation) => (
-            <Chat key={conversation.$id} conversation={conversation} />
-          ))}
+          {(conversations ? conversations : currentUserDetails.groups).map(
+            (conversation) => (
+              <Chat key={conversation.$id} conversation={conversation} />
+            ),
+          )}
         </Stack>
       </motion.div>
     );
