@@ -10,7 +10,7 @@ import {
 import { getFormatedDate } from "../../services/dateServices";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import api from "../../services/api";
 import { Avatar, AvatarBadge, Card } from "@chakra-ui/react";
 import Blueticks from "../../components/Blueticks";
@@ -27,6 +27,7 @@ interface IChatProps {
 }
 
 const Chat = ({ conversation }: IChatProps) => {
+  const { cache, mutate: globalMutate } = useSWRConfig();
   const { currentUserDetails, currentUser } = useAuth();
   if (!currentUserDetails) return null;
   const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
@@ -84,6 +85,19 @@ const Chat = ({ conversation }: IChatProps) => {
     { refreshInterval: 2000 },
   );
 
+  useEffect(() => {
+    if (unreadCount && unreadCount > 0) {
+      let chats = cache.get(`converstions`)!.data as (IChat | IGroup)[];
+      chats.sort(
+        (a, b) =>
+          (cache.get(`unread-${a.$id}`)?.data || 0) -
+          (cache.get(`unread-${b.$id}`)?.data || 0),
+      );
+      globalMutate<(IChat | IGroup)[]>(`conversations`, chats, {
+        revalidate: false,
+      });
+    }
+  }, [unreadCount]);
   useEffect(() => {
     if (isPersonal) {
       setContactDetails(currentUserDetails);

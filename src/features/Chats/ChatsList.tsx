@@ -84,7 +84,7 @@ const ChatsList = () => {
 
   // Update local chats data when the data is refreshed
   useEffect(() => {
-    if (Array.isArray(conversations)) {
+    if (conversations) {
       setLocalConversations(conversations);
     }
   }, [conversations]);
