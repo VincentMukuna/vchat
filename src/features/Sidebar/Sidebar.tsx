@@ -27,7 +27,7 @@ const Sidebar = () => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   return (
-    <aside className="bg-gray2 dark:bg-dark-slate1 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 px-2 grow  md:max-w-[25rem]">
+    <aside className="bg-gray2 dark:bg-dark-slate1 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 grow  md:max-w-[25rem]">
       <div className="flex items-center w-full font-semibold tracking-widests">
         <span className="relative flex items-center justify-between w-full h-full ">
           <div className="visible mt-2 md:invisible">
@@ -68,7 +68,7 @@ const Sidebar = () => {
           </ModalContent>
         </Modal>
       </div>
-      <section className="overflow-y-auto">
+      <section className="px-2 overflow-y-auto">
         <AnimatePresence>
           <motion.div
             variants={VARIANTS_MANAGER}
