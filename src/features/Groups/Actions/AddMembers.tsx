@@ -32,6 +32,7 @@ import { UserIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../context/AuthContext";
 import User, { UserAvatar, UserDescription } from "../../UsersList/User";
+import VSkeleton from "../../../components/VSkeleton";
 
 const AddMembers = ({ group }: { group: IGroup }) => {
   const { currentUserDetails } = useAuth();
@@ -87,16 +88,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
         </p>
         <div>
           {isLoading ? (
-            <HStack className="p-4">
-              <SkeletonCircle size="12" w="14" />
-              <SkeletonText
-                mt="2"
-                noOfLines={2}
-                spacing="4"
-                skeletonHeight="2"
-                w="full"
-              />
-            </HStack>
+            <VSkeleton />
           ) : (
             <>
               <AvatarGroup max={4}>
@@ -217,6 +209,8 @@ const AddMembers = ({ group }: { group: IGroup }) => {
                     }}
                     isLoading={isValidating}
                     w={"full"}
+                    flexShrink={0}
+                    mb={2}
                   >
                     {isValidating ? "Fetching" : "See more"}
                   </Button>

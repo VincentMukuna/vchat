@@ -203,6 +203,8 @@ const NewGroupAddMembersForm = ({
               }}
               isLoading={isValidating}
               w={"full"}
+              flexShrink={0}
+              mb={2}
             >
               {isValidating ? "Fetching" : "See more"}
             </Button>

@@ -28,6 +28,7 @@ import toast from "react-hot-toast";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { useAuth } from "../../../context/AuthContext";
 import { UserIcon } from "@heroicons/react/20/solid";
+import VSkeleton from "../../../components/VSkeleton";
 
 const EditMembers = ({ group }: { group: IGroup }) => {
   const { data: roomDetails, isLoading } = useSWR(`details ${group.$id}`, () =>
@@ -79,16 +80,7 @@ const EditMembers = ({ group }: { group: IGroup }) => {
         </p>
         <Stack maxH={200} overflowY={"auto"} gap={3}>
           {isLoading ? (
-            <HStack className="p-4">
-              <SkeletonCircle size="12" w="14" />
-              <SkeletonText
-                mt="2"
-                noOfLines={2}
-                spacing="4"
-                skeletonHeight="2"
-                w="full"
-              />
-            </HStack>
+            <VSkeleton />
           ) : (
             roomDetails?.members
               .filter((member: any) => member.$id !== currentUserDetails?.$id)

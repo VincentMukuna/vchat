@@ -1,23 +1,9 @@
 import { useAuth } from "../../context/AuthContext";
 import { IUserDetails } from "../../interfaces";
 import { getUsers, searchUsers } from "../../services/userDetailsServices";
-import { ClipLoader } from "react-spinners";
-import useSWR, { mutate } from "swr";
 import User, { UserAbout, UserAvatar, UserDescription } from "./User";
-import { useEffect, useRef, useState } from "react";
-import {
-  Button,
-  Divider,
-  HStack,
-  Skeleton,
-  SkeletonCircle,
-  SkeletonText,
-  Stack,
-  VStack,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Button, Stack, useColorMode } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
-import useSWRInfinite from "swr/infinite";
 import Search from "../../components/Search";
 import { useInfinite } from "../../hooks/useInfinite";
 import { motion } from "framer-motion";
@@ -122,6 +108,8 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
                   }}
                   isLoading={isValidating}
                   w={"full"}
+                  flexShrink={0}
+                  mb={2}
                 >
                   {isValidating ? "Fetching" : "See more"}
                 </Button>
