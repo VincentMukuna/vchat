@@ -19,6 +19,7 @@ import { UserPlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { Query } from "appwrite";
+import { VARIANTS_MANAGER } from "../../services/variants";
 
 export function compareUpdatedAt(a: any, b: any) {
   const dateA = new Date(a.$updatedAt);

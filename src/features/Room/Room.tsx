@@ -45,6 +45,7 @@ import { useAuth } from "../../context/AuthContext";
 import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 import toast from "react-hot-toast";
 import { useInfinite } from "../../hooks/useInfinite";
+import { VARIANTS_MANAGER } from "../../services/variants";
 
 export function compareCreatedAt(a: any, b: any) {
   const dateA = new Date(a.$createdAt);
@@ -219,7 +220,11 @@ function Room() {
   return (
     <>
       <Box
-        as="main"
+        as={motion.main}
+        variants={VARIANTS_MANAGER}
+        initial="slide-from-right"
+        animate="slide-in"
+        exit="slide-from-right"
         className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow "
       >
         <ChatHeader />

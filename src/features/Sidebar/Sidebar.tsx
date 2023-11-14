@@ -18,6 +18,8 @@ import { Box } from "@chakra-ui/react";
 import { gray, slateDark } from "@radix-ui/colors";
 import { Outlet } from "react-router-dom";
 import { MyProfile } from "../Navbar/Navbar";
+import { AnimatePresence, motion } from "framer-motion";
+import { VARIANTS_MANAGER } from "../../services/variants";
 const Sidebar = () => {
   const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -67,7 +69,16 @@ const Sidebar = () => {
         </Modal>
       </div>
       <section className="overflow-y-auto">
-        <Outlet />
+        <AnimatePresence>
+          <motion.div
+            variants={VARIANTS_MANAGER}
+            initial="slide-from-left"
+            animate="slide-in"
+            exit="slide-from-right"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </section>
     </aside>
   );

@@ -26,6 +26,7 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { ReactNode, createContext, useContext, useState } from "react";
 import UserProfileModal from "../Profile/UserProfileModal";
 import { openModal } from "../../components/Modal";
+import { motion } from "framer-motion";
 
 interface UserContextValue {
   user: IUserDetails;
@@ -49,7 +50,9 @@ function User({
 
   return (
     <Card
-      as={"article"}
+      as={motion.article}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
       bg={"inherit"}
       shadow={"none"}
       direction={"row"}

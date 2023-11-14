@@ -18,6 +18,7 @@ import { Query } from "appwrite";
 import { SERVER } from "../../utils/config";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { grayDark } from "@radix-ui/colors";
+import { motion } from "framer-motion";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -82,6 +83,9 @@ const Chat = ({ conversation }: IChatProps) => {
 
   return (
     <Card
+      as={motion.article}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
       bg={"inherit"}
       shadow={"none"}
       direction={"row"}
