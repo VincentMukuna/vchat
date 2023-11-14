@@ -67,13 +67,13 @@ const Message = forwardRef<any, MessageProps>(
     const isAdmin =
       isGroupMessage &&
       (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
-    const mine = message.senderID === currentUserDetails.$id;
+    const isMine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
 
     const { data: senderDetails } = useSWR(
       () => {
-        if (mine || message.senderID === currentUserDetails.$id) return null;
+        if (isMine || message.senderID === currentUserDetails.$id) return null;
         else return message.senderID;
       },
       getUserDetails,
@@ -132,7 +132,7 @@ const Message = forwardRef<any, MessageProps>(
       } catch (error) {}
     };
     useEffect(() => {
-      if (!mine && !isOptimistic && !message.read) {
+      if (!isMine && !isOptimistic && !message.read) {
         setReadMessage();
       }
     }, []);
@@ -163,6 +163,20 @@ const Message = forwardRef<any, MessageProps>(
       }
     };
 
+    function shouldShowHoverCard() {
+      if (!isGroupMessage) {
+        return isMine;
+      } else if (!isMine && !isAdmin) {
+        return false;
+      } else if (
+        isAdmin &&
+        !(selectedChat as IGroup).admins.includes(message.senderID)
+      ) {
+        return true;
+      }
+      return false;
+    }
+
     return (
       <motion.article
         variants={VARIANTS_MANAGER}
@@ -173,14 +187,16 @@ const Message = forwardRef<any, MessageProps>(
         ref={ref}
         tabIndex={0}
         className={`relative gap-1 flex ${
-          mine ? "flex-row-reverse" : ""
+          isMine ? "flex-row-reverse" : ""
         } items-start focus:outline-1 focus:outline-slate-600 transition-all`}
       >
         <Avatar
           visibility={prevSameSender ? "hidden" : "visible"}
-          src={mine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL}
+          src={
+            isMine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL
+          }
           name={
-            mine ? currentUserDetails.name : (senderDetails?.name as string)
+            isMine ? currentUserDetails.name : (senderDetails?.name as string)
           }
           size="sm"
           onClick={() => {
@@ -208,14 +224,14 @@ const Message = forwardRef<any, MessageProps>(
             onClick={() => setIsEditing(true)}
             className={`flex flex-col relative
                 px-2  pt-1   ${
-                  mine
+                  isMine
                     ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end   "
                     : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
                 } rounded-xl 
 
                  w-fit max-w-[400px]   `}
           >
-            {mine ? (
+            {isMine ? (
               isEditing ? (
                 <form
                   onSubmit={(e) => {
@@ -256,11 +272,11 @@ const Message = forwardRef<any, MessageProps>(
                 {message.body}
               </p>
             )}
-            {mine && <Blueticks read={message.read} />}
+            {isMine && <Blueticks read={message.read} />}
             <div
               className={`self-end text-[0.54rem] tracking-wider mb-1
                ${
-                 mine
+                 isMine
                    ? "dark:text-gray-500 justify-end text mx-3"
                    : "dark:text-gray-400 "
                }`}
@@ -270,7 +286,7 @@ const Message = forwardRef<any, MessageProps>(
           </div>
         </div>
 
-        {(mine || isAdmin) && !isOptimistic && (
+        {shouldShowHoverCard() && (
           <div
             className={`flex self-end gap-2 mb-5 ${
               showHoverCard ? "" : "invisible"
@@ -280,7 +296,7 @@ const Message = forwardRef<any, MessageProps>(
               <DeleteIcon className="w-4 h-4" />
             </button>
             <button
-              hidden={!mine}
+              hidden={!isMine}
               onClick={() => {
                 setIsEditing((prev) => !prev);
               }}
