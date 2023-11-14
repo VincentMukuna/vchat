@@ -1,7 +1,7 @@
 export const SERVER = {
   ENDPOINT: "https://cloud.appwrite.io/v1",
-  PROJECT_ID: "64cced226fa211528fbf",
-  DATABASE_ID: "production",
+  PROJECT_ID: import.meta.env.VITE_PROJECT_ID,
+  DATABASE_ID: import.meta.env.VITE_DATABASE_ID,
   COLLECTION_ID_CHAT_MESSAGES: "chat-messages",
   COLLECTION_ID_CHATS: "chats",
   COLLECTION_ID_USERS: "user-details",
@@ -13,8 +13,6 @@ export const SERVER = {
   BUCKET_ID_GROUP_ATTACHMENTS: "group-message-attachments",
   DOCUMENT_ID_GLOBAL_CHAT: "6549f5725a18249f363d",
   FUNCTION_ID_FUNCS: "funcs",
-  OAUTH_SUCCESS: "https://vchat-messenger.vercel.app/login",
-  OAUTH_FAILURE: "https://vchat-messenger.vercel.app/register",
+  OAUTH_SUCCESS: import.meta.env.VITE_OAUTH_SUCCESS,
+  OAUTH_FAILURE: import.meta.env.VITE_OAUTH_FAILURE,
 };
-
-console.log(import.meta.env.VITE_CLIENT_KEY);
