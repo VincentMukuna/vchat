@@ -26,8 +26,8 @@ const Sidebar = () => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   return (
-    <aside className="bg-gray2 dark:bg-dark-slate1 border-r dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 grow  md:max-w-[25rem]">
-      <div className="flex items-center w-full h-full font-semibold tracking-widest">
+    <aside className="bg-gray2 dark:bg-dark-slate1 border-r border-dark-slate10 dark:text-gray2  grid grid-rows-[80px_1fr] shrink basis-96 grow md:max-w-[25rem]">
+      <div className="flex items-center w-full h-full px-2 font-semibold tracking-widest">
         <span className="relative flex items-center justify-between w-full h-full ">
           <div className="visible mt-2 md:invisible">
             <MyProfile />
