@@ -5,7 +5,16 @@ import { ClipLoader } from "react-spinners";
 import useSWR, { mutate } from "swr";
 import User, { UserAbout, UserAvatar, UserDescription } from "./User";
 import { useEffect, useRef, useState } from "react";
-import { Button, Divider, Stack, VStack, useColorMode } from "@chakra-ui/react";
+import {
+  Button,
+  Divider,
+  HStack,
+  SkeletonCircle,
+  SkeletonText,
+  Stack,
+  VStack,
+  useColorMode,
+} from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
 import useSWRInfinite from "swr/infinite";
 import Search from "../../components/Search";
@@ -53,13 +62,6 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
         </Button>
       </div>
     );
-  } else if (isLoading) {
-    return (
-      <div className="relative flex flex-col items-center justify-center w-full ">
-        <ClipLoader color="#8C5959" />
-        Fetching users...
-      </div>
-    );
   } else {
     return (
       <motion.div
@@ -90,29 +92,57 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
               ));
             }}
           />
-          {([] as IUserDetails[])
-            .concat(...users!)
-            .filter((user) => (user ? true : false))
-            ?.map((user) => (
-              <User key={user.$id} user={user}>
-                <UserAvatar />
-                <UserDescription>
-                  <UserAbout />
-                </UserDescription>
-              </User>
-            ))}
-          {totalRef.current >
-            ([] as IUserDetails[]).concat(...users!).length && (
-            <Button
-              variant={"ghost"}
-              onClick={() => {
-                setSize(size + 1);
-              }}
-              isLoading={isValidating}
-              w={"full"}
-            >
-              {isValidating ? "Fetching" : "See more"}
-            </Button>
+
+          {isLoading && !users?.length ? (
+            <>
+              <HStack className="p-4">
+                <SkeletonCircle size="12" w="14" />
+                <SkeletonText
+                  mt="2"
+                  noOfLines={2}
+                  spacing="4"
+                  skeletonHeight="2"
+                  w="full"
+                />
+              </HStack>
+              <HStack className="p-4">
+                <SkeletonCircle size="12" w="14" />
+                <SkeletonText
+                  mt="2"
+                  noOfLines={2}
+                  spacing="4"
+                  skeletonHeight="2"
+                  w="full"
+                />
+              </HStack>
+            </>
+          ) : (
+            <>
+              {([] as IUserDetails[])
+                .concat(...(users ? users : []))
+                .filter((user) => (user ? true : false))
+                ?.map((user) => (
+                  <User key={user.$id} user={user}>
+                    <UserAvatar />
+                    <UserDescription>
+                      <UserAbout />
+                    </UserDescription>
+                  </User>
+                ))}
+              {totalRef.current >
+                ([] as IUserDetails[]).concat(...users!).length && (
+                <Button
+                  variant={"ghost"}
+                  onClick={() => {
+                    setSize(size + 1);
+                  }}
+                  isLoading={isValidating}
+                  w={"full"}
+                >
+                  {isValidating ? "Fetching" : "See more"}
+                </Button>
+              )}
+            </>
           )}
         </Stack>
       </motion.div>
