@@ -67,15 +67,22 @@ const Chat = ({ conversation }: IChatProps) => {
     { revalidateIfStale: false, revalidateOnFocus: false },
   );
 
-  const { data: unreadCount } = useSWR(`unread-${conversation.$id}`, () => {
-    if (isGroup) {
-      return getGroupUnreadMessagesCount(
+  const { data: unreadCount } = useSWR(
+    `unread-${conversation.$id}`,
+    () => {
+      if (isGroup) {
+        return getGroupUnreadMessagesCount(
+          conversation.$id,
+          currentUserDetails.$id,
+        );
+      }
+      return getChatUnreadMessagesCount(
         conversation.$id,
         currentUserDetails.$id,
       );
-    }
-    return getChatUnreadMessagesCount(conversation.$id, currentUserDetails.$id);
-  });
+    },
+    { refreshInterval: 2000 },
+  );
 
   useEffect(() => {
     if (isPersonal) {
