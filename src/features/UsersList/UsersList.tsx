@@ -60,7 +60,7 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
     );
   } else {
     return (
-      <VStack spacing={0} px={1} height={"full"} alignItems={"flex-start"}>
+      <Stack spacing={0} px={1}>
         <Search
           handleSearch={async (name, onCloseSearch) => {
             let res = await searchUsers(name);
@@ -104,7 +104,7 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
             {isValidating ? "Fetching" : "See more"}
           </Button>
         )}
-      </VStack>
+      </Stack>
     );
   }
 }
