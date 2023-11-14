@@ -164,7 +164,9 @@ const Message = forwardRef<any, MessageProps>(
     };
 
     function shouldShowHoverCard() {
-      if (!isGroupMessage) {
+      if (isMine) {
+        return true;
+      } else if (!isGroupMessage) {
         return isMine;
       } else if (!isMine && !isAdmin) {
         return false;
