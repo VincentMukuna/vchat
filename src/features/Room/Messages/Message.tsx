@@ -38,6 +38,7 @@ import UserProfileModal from "../../Profile/UserProfileModal";
 import { tomato } from "@radix-ui/colors";
 import { openModal } from "../../../components/Modal";
 import { VARIANTS_MANAGER } from "../../../services/variants";
+import { confirmAlert } from "../../../components/Alert/alertStore";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -294,7 +295,16 @@ const Message = forwardRef<any, MessageProps>(
               showHoverCard ? "" : "invisible"
             }`}
           >
-            <button onClick={handleDelete}>
+            <button
+              onClick={() =>
+                confirmAlert({
+                  message: "Delete this message? This action is irreversible",
+                  title: "Delete message",
+                  confirmText: "Delete",
+                  onConfirm: () => handleDelete(),
+                })
+              }
+            >
               <DeleteIcon className="w-4 h-4" />
             </button>
             <button
