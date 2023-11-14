@@ -66,7 +66,7 @@ const Sidebar = () => {
           </ModalContent>
         </Modal>
       </div>
-      <section>
+      <section className="overflow-y-auto">
         <Outlet />
       </section>
     </aside>
