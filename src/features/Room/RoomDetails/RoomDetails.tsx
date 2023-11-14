@@ -130,7 +130,7 @@ const RoomDetails = () => {
             <span className="">{` ${
               isGroup
                 ? roomDetails?.members.length || 0
-                : roomDetails?.participants.length || 0
+                : selectedChat?.participants.length || 0
             }`}</span>
           </span>
           <div className="flex w-full max-w-[80%] overflow-x-hidden  items-center justify-center">
@@ -146,7 +146,7 @@ const RoomDetails = () => {
                       />
                     );
                   })
-                : roomDetails?.participants?.map(
+                : selectedChat.participants?.map(
                     (participant: IUserDetails) => (
                       <Avatar
                         src={participant.avatarURL}
