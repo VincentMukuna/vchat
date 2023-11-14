@@ -11,42 +11,24 @@ import {
   Button,
   IconButton,
   Icon,
-  ModalBody,
 } from "@chakra-ui/react";
 import { updateUserAvatar } from "../../services/userDetailsServices";
 import { Avatar } from "@chakra-ui/react";
-import {
-  blackA,
-  grassDark,
-  gray,
-  grayDark,
-  redDark,
-  skyDark,
-  slateDark,
-} from "@radix-ui/colors";
+import { gray } from "@radix-ui/colors";
 import { MapPinIcon, PencilIcon } from "@heroicons/react/20/solid";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useFilePicker } from "use-file-picker";
 import toast from "react-hot-toast";
-import api from "../../services/api";
-import { SERVER } from "../../utils/config";
 import { EditUserDetails } from "./EditUserDetails";
 import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
+import { VARIANTS_MANAGER } from "../../services/variants";
 
-type ProfileProps = {
-  user: IUserDetails;
-};
 const Profile = () => {
-  const {
-    currentUser,
-    currentUserDetails,
-    refreshUserDetails,
-    setCurrentUserDetails,
-  } = useAuth();
+  const { currentUserDetails, setCurrentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
 
   const { colorMode } = useColorMode();
@@ -74,13 +56,14 @@ const Profile = () => {
   });
 
   return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.1 }}
-        className="relative flex flex-col items-center justify-between w-full gap-2 py-4"
-      >
+    <motion.div
+      key="profile"
+      variants={VARIANTS_MANAGER}
+      initial="slide-from-left"
+      animate="slide-in"
+      exit="slide-from-right"
+    >
+      <div className="relative flex flex-col items-center justify-between w-full gap-2 py-4">
         <div className="flex flex-col items-center gap-2">
           <div className="relative ">
             <IconButton
@@ -136,8 +119,8 @@ const Profile = () => {
             Edit Info
           </Button>
         </div>
-      </motion.div>
-    </AnimatePresence>
+      </div>
+    </motion.div>
   );
 };
 export default Profile;

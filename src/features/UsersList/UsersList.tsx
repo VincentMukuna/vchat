@@ -10,6 +10,8 @@ import { blueDark, gray } from "@radix-ui/colors";
 import useSWRInfinite from "swr/infinite";
 import Search from "../../components/Search";
 import { useInfinite } from "../../hooks/useInfinite";
+import { motion } from "framer-motion";
+import { VARIANTS_MANAGER } from "../../services/variants";
 
 function UsersList({ onUserClick }: { onUserClick?: () => void }) {
   const { currentUserDetails } = useAuth();
@@ -60,51 +62,60 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
     );
   } else {
     return (
-      <Stack spacing={0} px={1}>
-        <Search
-          handleSearch={async (name, onCloseSearch) => {
-            let res = await searchUsers(name);
-            return res.map((user, i) => (
-              <User
-                user={user}
-                onCloseModal={() => {
-                  if (onUserClick) {
-                    onUserClick();
-                  }
-                  onCloseSearch();
-                }}
-                key={user.$id}
-              >
-                <UserAvatar size="sm" />
-                <UserDescription />
-              </User>
-            ));
-          }}
-        />
-        {([] as IUserDetails[])
-          .concat(...users!)
-          .filter((user) => (user ? true : false))
-          ?.map((user) => (
-            <User key={user.$id} user={user}>
-              <UserAvatar />
-              <UserDescription>
-                <UserAbout />
-              </UserDescription>
-            </User>
-          ))}
-        {totalRef.current > ([] as IUserDetails[]).concat(...users!).length && (
-          <Button
-            variant={"ghost"}
-            onClick={() => {
-              setSize(size + 1);
+      <motion.div
+        key="users"
+        variants={VARIANTS_MANAGER}
+        initial="slide-from-left"
+        animate="slide-in"
+        exit="slide-from-right"
+      >
+        <Stack spacing={0} px={1}>
+          <Search
+            handleSearch={async (name, onCloseSearch) => {
+              let res = await searchUsers(name);
+              return res.map((user, i) => (
+                <User
+                  user={user}
+                  onCloseModal={() => {
+                    if (onUserClick) {
+                      onUserClick();
+                    }
+                    onCloseSearch();
+                  }}
+                  key={user.$id}
+                >
+                  <UserAvatar size="sm" />
+                  <UserDescription />
+                </User>
+              ));
             }}
-            isLoading={isValidating}
-            w={"full"}
-          >
-            {isValidating ? "Fetching" : "See more"}
-          </Button>
-        )}
-      </Stack>
+          />
+          {([] as IUserDetails[])
+            .concat(...users!)
+            .filter((user) => (user ? true : false))
+            ?.map((user) => (
+              <User key={user.$id} user={user}>
+                <UserAvatar />
+                <UserDescription>
+                  <UserAbout />
+                </UserDescription>
+              </User>
+            ))}
+          {totalRef.current >
+            ([] as IUserDetails[]).concat(...users!).length && (
+            <Button
+              variant={"ghost"}
+              onClick={() => {
+                setSize(size + 1);
+              }}
+              isLoading={isValidating}
+              w={"full"}
+            >
+              {isValidating ? "Fetching" : "See more"}
+            </Button>
+          )}
+        </Stack>
+      </motion.div>
     );
   }
 }

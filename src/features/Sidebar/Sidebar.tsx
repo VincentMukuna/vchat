@@ -18,8 +18,7 @@ import { Box } from "@chakra-ui/react";
 import { gray, slateDark } from "@radix-ui/colors";
 import { Outlet } from "react-router-dom";
 import { MyProfile } from "../Navbar/Navbar";
-import { AnimatePresence, motion } from "framer-motion";
-import { VARIANTS_MANAGER } from "../../services/variants";
+import { AnimatePresence } from "framer-motion";
 const Sidebar = () => {
   const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();

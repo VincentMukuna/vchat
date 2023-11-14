@@ -13,7 +13,7 @@ import {
 } from "../../services/chatMessageServices";
 import { getUserGroups } from "../../services/groupMessageServices";
 import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { blueDark, gray } from "@radix-ui/colors";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
