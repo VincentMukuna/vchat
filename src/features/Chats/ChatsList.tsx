@@ -165,11 +165,19 @@ const ChatsList = () => {
     );
   } else {
     return (
-      <Stack spacing={0} px={1}>
-        {localConversations?.map((conversation) => (
-          <Chat key={conversation.$id} conversation={conversation} />
-        ))}
-      </Stack>
+      <motion.div
+        key="chats"
+        variants={VARIANTS_MANAGER}
+        initial="slide-from-left"
+        animate="slide-in"
+        exit="slide-from-right"
+      >
+        <Stack spacing={0} px={1}>
+          {localConversations?.map((conversation) => (
+            <Chat key={conversation.$id} conversation={conversation} />
+          ))}
+        </Stack>
+      </motion.div>
     );
   }
 };
