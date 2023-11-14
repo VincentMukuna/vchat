@@ -9,7 +9,7 @@ export function getFormatedDate(timestamp: string) {
   let date = new Date(timestamp);
 
   if (isToday(date)) {
-    return format(date, "HH:mm pp 'today'");
+    return format(date, "p 'today'");
   }
   if (isYesterday(date)) {
     return "Yesterday";
