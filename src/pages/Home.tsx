@@ -17,16 +17,17 @@ function Home() {
       <div className="fixed inset-0 flex flex-col-reverse md:flex-row ">
         <Navbar />
         <Sidebar />
-        <AnimatePresence>
-          <Box
-            className={`absolute flex transition-opacity  h-full   bg-gray1
+
+        <Box
+          className={`absolute flex transition-opacity  h-full   bg-gray1
            dark:bg-dark-slate1 inset-0 md:relative grow ${
              selectedChat ? "z-10" : "invisible md:visible"
            }`}
-          >
+        >
+          <AnimatePresence>
             <Room />
-          </Box>
-        </AnimatePresence>
+          </AnimatePresence>
+        </Box>
       </div>
     </>
   );
