@@ -219,60 +219,63 @@ function Room() {
   }
   return (
     <>
-      <Box
-        as={motion.main}
-        key="chatbox"
+      <motion.div
+        key="room"
         variants={VARIANTS_MANAGER}
         initial="slide-from-right"
         animate="slide-in"
         exit="slide-from-right"
-        className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 grow "
       >
-        <ChatHeader />
-        {error ? (
-          <Center className="flex-col w-full h-full">
-            Whoops!
-            <p className="text-sm"> Can't get messages at the moment! </p>
-          </Center>
-        ) : (
-          <Messages
-            messages={messages.filter((message) => !!message)}
-            onDelete={handleDeleteMessage}
-            isLoading={isLoading}
-          >
-            {totalRef.current > messages.length && msgsCount > 20 && (
-              <Button
-                variant={"ghost"}
-                onClick={() => setSize(size + 1)}
-                isLoading={isValidating}
-                // hidden={messages.at(-1)?.length === 0 ? true : false}
-                flexShrink={0}
-              >
-                {isValidating ? "Fetching" : "See previous"}
-              </Button>
-            )}
-          </Messages>
-        )}
-        {!isLoading && !detailsLoading && isGroup && !isGroupMember && (
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle>Not a member</AlertTitle>
-            <AlertDescription>
-              You've been removed from this group
-            </AlertDescription>
-          </Alert>
-        )}
+        <Box
+          as={"main"}
+          className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 grow "
+        >
+          <ChatHeader />
+          {error ? (
+            <Center className="flex-col w-full h-full">
+              Whoops!
+              <p className="text-sm"> Can't get messages at the moment! </p>
+            </Center>
+          ) : (
+            <Messages
+              messages={messages.filter((message) => !!message)}
+              onDelete={handleDeleteMessage}
+              isLoading={isLoading}
+            >
+              {totalRef.current > messages.length && msgsCount > 20 && (
+                <Button
+                  variant={"ghost"}
+                  onClick={() => setSize(size + 1)}
+                  isLoading={isValidating}
+                  // hidden={messages.at(-1)?.length === 0 ? true : false}
+                  flexShrink={0}
+                >
+                  {isValidating ? "Fetching" : "See previous"}
+                </Button>
+              )}
+            </Messages>
+          )}
+          {!isLoading && !detailsLoading && isGroup && !isGroupMember && (
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle>Not a member</AlertTitle>
+              <AlertDescription>
+                You've been removed from this group
+              </AlertDescription>
+            </Alert>
+          )}
 
-        {(!isGroup || isGroupMember) && <MessageInput />}
-      </Box>
-      <aside
-        className={`hidden ${
-          showDetails && "absolute inset-0"
-        } md:static  md:max-w-[20rem] grow basis-40 border-l transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
-      >
-        <RoomDetails />
-        <RoomDetailsFooter />
-      </aside>
+          {(!isGroup || isGroupMember) && <MessageInput />}
+        </Box>
+        <aside
+          className={`hidden ${
+            showDetails && "absolute inset-0"
+          } md:static  md:max-w-[20rem] grow basis-40 border-l transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
+        >
+          <RoomDetails />
+          <RoomDetailsFooter />
+        </aside>
+      </motion.div>
     </>
   );
 }
