@@ -90,11 +90,21 @@ const Chat = ({ conversation }: IChatProps) => {
       let chats = cache.get("conversations")?.data as (IChat | IGroup)[];
 
       if (!chats) return;
-      chats.sort(
-        (a, b) =>
-          (cache.get(`unread-${b.$id}`)?.data || 0) -
-          (cache.get(`unread-${a.$id}`)?.data || 0),
-      );
+      chats.sort((a, b) => {
+        const unreadCountA = cache.get(`unread-${a.$id}`)?.data || 0;
+        const unreadCountB = cache.get(`unread-${b.$id}`)?.data || 0;
+        if (unreadCountA && unreadCountB) {
+          return unreadCountB - unreadCountA;
+        }
+        if (unreadCountB) {
+          return -1;
+        }
+        if (unreadCountA) {
+          return 1;
+        }
+
+        return 0;
+      });
 
       globalMutate<(IChat | IGroup)[]>("conversations", chats, {
         revalidate: true,

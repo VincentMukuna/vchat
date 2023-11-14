@@ -97,14 +97,6 @@ const ChatsList = () => {
       unsubscribe();
     };
   }, [currentUserDetails]);
-  // if (isLoading) {
-  //   return (
-  //     <div className="relative flex flex-col items-center justify-center w-full top-1/3">
-  //       <ClipLoader color="#8C5959" />
-  //       Fetching chats...
-  //     </div>
-  //   );
-  // } else
   if (chatsError) {
     return (
       <div className="flex flex-col items-center gap-2">
