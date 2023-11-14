@@ -218,13 +218,14 @@ function Room() {
     );
   }
   return (
-    <>
+    <motion.div
+      variants={VARIANTS_MANAGER}
+      initial="slide-from-right"
+      animate="slide-in"
+      exit="slide-from-right"
+    >
       <Box
-        as={motion.main}
-        variants={VARIANTS_MANAGER}
-        initial="slide-from-right"
-        animate="slide-in"
-        exit="slide-from-right"
+        as={"main"}
         className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 transition-all grow "
       >
         <ChatHeader />
@@ -272,7 +273,7 @@ function Room() {
         <RoomDetails />
         <RoomDetailsFooter />
       </aside>
-    </>
+    </motion.div>
   );
 }
 
