@@ -9,6 +9,7 @@ import {
   Button,
   Divider,
   HStack,
+  Skeleton,
   SkeletonCircle,
   SkeletonText,
   Stack,
@@ -21,6 +22,7 @@ import Search from "../../components/Search";
 import { useInfinite } from "../../hooks/useInfinite";
 import { motion } from "framer-motion";
 import { VARIANTS_MANAGER } from "../../services/variants";
+import VSkeleton from "../../components/VSkeleton";
 
 function UsersList({ onUserClick }: { onUserClick?: () => void }) {
   const { currentUserDetails } = useAuth();
@@ -95,26 +97,8 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
 
           {isLoading && !users?.length ? (
             <>
-              <HStack className="p-4">
-                <SkeletonCircle size="12" w="14" />
-                <SkeletonText
-                  mt="2"
-                  noOfLines={2}
-                  spacing="4"
-                  skeletonHeight="2"
-                  w="full"
-                />
-              </HStack>
-              <HStack className="p-4">
-                <SkeletonCircle size="12" w="14" />
-                <SkeletonText
-                  mt="2"
-                  noOfLines={2}
-                  spacing="4"
-                  skeletonHeight="2"
-                  w="full"
-                />
-              </HStack>
+              <VSkeleton />
+              <VSkeleton />
             </>
           ) : (
             <>

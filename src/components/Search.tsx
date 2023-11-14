@@ -24,6 +24,7 @@ import React, { Children, useRef, useState } from "react";
 import User from "../features/UsersList/User";
 import { blue, gray, slateDark } from "@radix-ui/colors";
 import { CircleLoader, ClipLoader } from "react-spinners";
+import VSkeleton from "./VSkeleton";
 
 function Search({
   handleSearch,
@@ -93,16 +94,7 @@ function Search({
         px={2}
       >
         {loading ? (
-          <HStack className="p-4">
-            <SkeletonCircle size="12" w="14" />
-            <SkeletonText
-              mt="2"
-              noOfLines={2}
-              spacing="4"
-              skeletonHeight="2"
-              w="full"
-            />
-          </HStack>
+          <VSkeleton />
         ) : results.length > 0 ? (
           <FocusLock>{results}</FocusLock>
         ) : (
