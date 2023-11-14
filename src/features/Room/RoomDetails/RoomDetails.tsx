@@ -120,7 +120,7 @@ const RoomDetails = () => {
           </p>
 
           <p className="mt-3">
-            <span className="font-semibold ">Created on :</span>
+            <span className="font-semibold ">Created :</span>
             {" " + getFormatedDate(selectedChat.$createdAt)}
           </p>
         </VStack>
