@@ -37,6 +37,7 @@ import toast from "react-hot-toast";
 import UserProfileModal from "../../Profile/UserProfileModal";
 import { tomato } from "@radix-ui/colors";
 import { openModal } from "../../../components/Modal";
+import { VARIANTS_MANAGER } from "../../../services/variants";
 
 interface MessageProps {
   message: IChatMessage | IGroupMessage;
@@ -164,17 +165,9 @@ const Message = forwardRef<any, MessageProps>(
 
     return (
       <motion.article
-        layout
-        initial={mine ? {} : { opacity: 0, scaleX: 0.5 }}
-        animate={{ opacity: 1, scaleX: 1 }}
-        style={{ originX: mine ? 1 : 0 }}
-        transition={{
-          opacity: { duration: 0.2 },
-          layout: { type: "spring", bounce: 0.4, duration: 0.4 },
-          duration: 0.4,
-        }}
-        exit={{ opacity: 0, scaleX: 0.8 }}
-        whileInView={{ opacity: 1, x: 0 }}
+        variants={VARIANTS_MANAGER}
+        initial="fade-out"
+        animate="fade-in"
         onMouseEnter={() => setShowHoverCard(true)}
         onMouseLeave={() => setShowHoverCard(false)}
         ref={ref}
