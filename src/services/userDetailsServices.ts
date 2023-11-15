@@ -64,7 +64,6 @@ export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
 ): Promise<{ existed: boolean; chat: IChat }> {
-  console.log(addeeDetailsID, adderDetailsID);
   const isPersonal = adderDetailsID === adderDetailsID;
   //check if chat doc exists
   let chats = await getUserChats(adderDetailsID);
