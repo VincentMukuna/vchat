@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { Alert, clearAlert } from "./alertStore";
-import { red, redDark, tomato, tomatoDark } from "@radix-ui/colors";
+import { red, redDark, tomato, tomatoA, tomatoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 
 type VAlertDialogProps = { alert: Alert };
@@ -73,7 +73,8 @@ const VAlertDialog = ({ alert }: VAlertDialogProps) => {
             as={motion.button}
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
-            bg={tomato.tomato10}
+            bg={tomatoA.tomatoA10}
+            opacity={0.8}
             _hover={{ bg: tomato.tomato9 }}
             color={"gray.100"}
             onClick={() => {
