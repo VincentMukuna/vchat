@@ -74,7 +74,7 @@ const RoomActions = () => {
             onClick={() => {
               confirmAlert({
                 title: "Delete chat messages",
-                message: `Are you sure you want to delete all messages in this Conversation? This action is irreversible`,
+                message: `Are you sure you want to delete all messages in this conversation? This action is irreversible`,
                 confirmText: "Yes, delete all messages",
                 cancelText: "Keep messages",
                 onConfirm: () => {
