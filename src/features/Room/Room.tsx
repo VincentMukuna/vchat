@@ -70,13 +70,6 @@ function Room() {
   if (!currentUserDetails) return null;
 
   const isGroup = !!(selectedChat?.$collectionId === "groups");
-  const { data: group, isLoading: detailsLoading } = useSWR(
-    () => {
-      if (!isGroup) return undefined;
-      return `details ${selectedChat!.$id}`;
-    },
-    () => getGroupDetails(selectedChat!.$id),
-  );
 
   const isPersonal =
     selectedChat &&
@@ -85,11 +78,7 @@ function Room() {
       (participant: IUserDetails) =>
         participant.$id === currentUserDetails?.$id,
     );
-  const isGroupMember =
-    isGroup &&
-    group?.members.some(
-      (member) => (member as IUserDetails).$id === currentUserDetails.$id,
-    );
+
   let re = new RegExp(`${selectedChat?.$id}-messages-(\\w+)`);
   const {
     data,
@@ -109,6 +98,18 @@ function Room() {
   const messages = ([] as (IChatMessage | IGroupMessage)[]).concat(
     ...(data || []),
   );
+  const { data: group, isLoading: detailsLoading } = useSWR(
+    () => {
+      if (!isGroup) return undefined;
+      return `details ${selectedChat!.$id}`;
+    },
+    () => getGroupDetails(selectedChat!.$id),
+  );
+  const isGroupMember =
+    isGroup &&
+    group?.members.some(
+      (member) => (member as IUserDetails).$id === currentUserDetails.$id,
+    );
   useEffect(() => {
     if (totalRef.current) {
       setMsgsCount(totalRef.current);
