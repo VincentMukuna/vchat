@@ -91,7 +91,14 @@ const NewGroupDetailsForm = ({
       </div>
 
       <div className="flex flex-row-reverse w-full mt-auto text-gray2 ">
-        <Button type="submit" w={"48"} color={gray.gray2}>
+        <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+          type="submit"
+          w={"48"}
+          color={gray.gray2}
+        >
           Add Members
         </Button>
       </div>
