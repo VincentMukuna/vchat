@@ -197,6 +197,9 @@ const NewGroupAddMembersForm = ({
           {totalRef.current >
             ([] as IUserDetails[]).concat(...users!).length && (
             <Button
+              as={motion.button}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               variant={"ghost"}
               onClick={() => {
                 setSize(size + 1);
@@ -213,6 +216,9 @@ const NewGroupAddMembersForm = ({
       </div>
       <div className="flex flex-row-reverse gap-4">
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleAddMembers}
           bg={blueDark.blue3}
           _hover={{ bg: blueDark.blue4 }}
@@ -221,7 +227,13 @@ const NewGroupAddMembersForm = ({
         >
           Create
         </Button>
-        <Button variant="ghost" onClick={() => prev()}>
+        <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
+          variant="ghost"
+          onClick={() => prev()}
+        >
           Change Details
         </Button>
       </div>

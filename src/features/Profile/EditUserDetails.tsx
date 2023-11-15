@@ -134,6 +134,9 @@ export const EditUserDetails = () => {
 
       <ModalFooter>
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           bg={blueDark.blue5}
           color={colorMode === "dark" ? gray.gray2 : gray.gray3}
           isLoading={submitting}
