@@ -132,7 +132,7 @@ function ChatHeader() {
         placement="right"
         onClose={onClose}
         finalFocusRef={btnRef}
-        size={["full", "full", "md"]}
+        size={["md"]}
       >
         <DrawerOverlay />
         <DrawerContent bg={slateDark.slate1}>
