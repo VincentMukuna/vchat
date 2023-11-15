@@ -12,31 +12,32 @@ import {
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 import { Alert, clearAlert } from "./alertStore";
 import { red, redDark, tomato, tomatoDark } from "@radix-ui/colors";
+import { motion } from "framer-motion";
 
 type VAlertDialogProps = { alert: Alert };
 
-const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
+const VAlertDialog = ({ alert }: VAlertDialogProps) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const cancelRef = useRef(null);
-
-  useImperativeHandle(ref, () => {
-    return {
-      onOpen,
-    };
-  });
 
   useEffect(() => {
     if (alert.isShown) {
       onOpen();
     }
   }, [alert]);
+
+  function handleAlertClose() {
+    onClose();
+    clearAlert();
+  }
   return (
     <AlertDialog
       isOpen={isOpen}
       leastDestructiveRef={cancelRef}
-      onClose={onClose}
+      onClose={() => handleAlertClose()}
       isCentered={true}
       size={["xs", "sm"]}
+      autoFocus
     >
       <AlertDialogOverlay />
       <AlertDialogContent>
@@ -50,28 +51,37 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
         <AlertDialogFooter
           gap={2}
           display={"flex"}
-          flexWrap={"wrap"}
+          flexWrap={["wrap", "nowrap"]}
           justifyContent={["center", "end"]}
         >
           <Button
+            as={motion.button}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
             variant="ghost"
             ref={cancelRef}
             onClick={() => {
-              onClose();
+              handleAlertClose();
               alert.onCancel && alert.onCancel();
             }}
+            w={["full", "fit-content"]}
           >
             {alert.cancelText || "Cancel"}
           </Button>
           <Button
-            bg={tomato.tomato9}
+            tabIndex={0}
+            as={motion.button}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            bg={tomato.tomato10}
+            _hover={{ bg: tomato.tomato9 }}
             color={"gray.100"}
             onClick={() => {
               alert.onConfirm();
-              onClose();
-              clearAlert();
+              handleAlertClose();
             }}
             colorScheme="red"
+            w={["full", "fit-content"]}
           >
             {alert.confirmText}
           </Button>
@@ -79,6 +89,6 @@ const VAlertDialog = forwardRef(({ alert }: VAlertDialogProps, ref: any) => {
       </AlertDialogContent>
     </AlertDialog>
   );
-});
+};
 
 export default VAlertDialog;
