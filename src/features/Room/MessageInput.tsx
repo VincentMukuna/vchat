@@ -244,7 +244,6 @@ const MessageInput = ({}: InputProps) => {
             onChange={handleChange}
             onBlur={handleChange}
             maxLength={1500}
-            autoFocus
           />
 
           {messageBody.trim() && (
