@@ -278,7 +278,7 @@ const Message = forwardRef<any, MessageProps>(
                   </p>
                 )
               ) : (
-                <p className="text-[0.9rem] leading-relaxed tracking-wide">
+                <p className="text-[0.8rem] md:text-[0.9rem]  leading-relaxed tracking-wide">
                   {message.body}
                 </p>
               )}
