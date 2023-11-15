@@ -99,4 +99,4 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   </>,
 );
 
-navigator.serviceWorker.register("/service-worker.js");
+navigator.serviceWorker?.register("/service-worker.js");

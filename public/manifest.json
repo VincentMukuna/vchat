@@ -1,8 +1,7 @@
 {
   "name": "VChat",
   "description": "A REal time chat application",
-  "start_url": "./",
-  "scope": ".",
+  "start_url": "",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
