@@ -12,7 +12,7 @@ import {
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
-import { MapPinIcon } from "@heroicons/react/20/solid";
+import { MapPinIcon, UserIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray, slateDark } from "@radix-ui/colors";
 import { useState } from "react";
 import { addContact } from "../../services/userDetailsServices";
@@ -21,6 +21,7 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { mutate, useSWRConfig } from "swr";
 import toast from "react-hot-toast";
 import { IChat, IGroup, IUserDetails } from "../../interfaces";
+import { motion } from "framer-motion";
 
 interface UserProfileProps {
   onClose: () => void;
@@ -35,6 +36,7 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
   const { colorMode } = useColorMode();
   const [loading, setLoading] = useState(false);
   const { cache } = useSWRConfig();
+  const isPersonal = user.$id === currentUserDetails.$id;
 
   function getConversations() {
     if (cache.get("conversations")?.data) {
@@ -43,40 +45,47 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
   }
   const handleClick = async () => {
     setLoading(true);
-    let chatWithUser = getConversations()
-      .filter((convo) => convo.$collectionId === "chats")
-      .filter((chat) =>
-        (chat as IChat).participants.some(
-          (participant) => participant.$id === user.$id,
-        ),
-      )
-      .at(0);
+    let chats = getConversations().filter(
+      (convo) => convo.$collectionId === "chats",
+    ) as IChat[];
+    let chatWithUser: IChat | undefined;
+
+    if (isPersonal) {
+      chatWithUser = chats.find((chat) =>
+        chat.participants.every((participant) => participant.$id === user.$id),
+      );
+    } else {
+      chatWithUser = chats.find((chat) =>
+        chat.participants.some((participant) => participant.$id === user.$id),
+      );
+    }
     if (chatWithUser) {
       setLoading(false);
       onClose();
       onModalClose();
       setSelectedChat(chatWithUser);
       setRecepient(user);
+    } else {
+      let addContactStatus = addContact(currentUserDetails.$id, user.$id);
+      addContactStatus
+        .then((result) => {
+          setSelectedChat(result.chat);
+          setRecepient(user);
+          if (!result.existed) {
+            mutate("conversations", [result.chat, ...getConversations()], {
+              revalidate: false,
+            });
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+          onClose();
+          onModalClose();
+        })
+        .catch((error: any) => {
+          toast.error("Something went wrong");
+        });
     }
-    let addContactStatus = addContact(currentUserDetails.$id, user.$id);
-    addContactStatus
-      .then((result) => {
-        setSelectedChat(result.chat);
-        setRecepient(user);
-        if (!result.existed) {
-          mutate("conversations", [result.chat, ...getConversations()], {
-            revalidate: false,
-          });
-        }
-      })
-      .finally(() => {
-        setLoading(false);
-        onClose();
-        onModalClose();
-      })
-      .catch((error: any) => {
-        toast.error("Something went wrong");
-      });
   };
   return (
     <>
@@ -85,7 +94,11 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
       }'s Profile`}</ModalHeader>
       <ModalCloseButton />
       <ModalBody className="flex flex-col items-center justify-center gap-2">
-        <Avatar size={"2xl"} name={user?.name} src={user.avatarURL} />
+        <Avatar
+          size={"2xl"}
+          icon={<UserIcon className="w-16 h-16" />}
+          src={user.avatarURL}
+        />
 
         <span className="text-lg leading-6 tracking-wide">{user.name}</span>
         <span className="text-sm text-gray11 dark:text-gray-400">
@@ -99,6 +112,9 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
 
       <ModalFooter justifyContent={"center"}>
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           isDisabled={loading}
           onClick={() => {
             handleClick();
