@@ -165,7 +165,7 @@ const MessageInput = ({}: InputProps) => {
         messages?.map((msgArray) => {
           return msgArray.map((ucMessage) => {
             if (ucMessage.$id === message.$id) {
-              return msg;
+              return { revalidated: true, ...msg };
             }
             return ucMessage;
           });

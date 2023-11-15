@@ -67,7 +67,7 @@ const Message = forwardRef<any, MessageProps>(
     );
     const isAdmin =
       isGroupMessage &&
-      (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
+      (selectedChat as IGroup).admins?.includes(currentUserDetails.$id);
     const isMine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
@@ -182,50 +182,55 @@ const Message = forwardRef<any, MessageProps>(
 
     return (
       <motion.article
-        variants={VARIANTS_MANAGER}
-        initial="fade-out"
-        animate="fade-in"
+        layout
+        initial={isMine && message?.revalidated ? {} : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={isOptimistic ? {} : { opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.3 }}
+        style={{ originX: isMine ? 1 : 0 }}
         onMouseEnter={() => setShowHoverCard(true)}
         onMouseLeave={() => setShowHoverCard(false)}
         ref={ref}
         tabIndex={0}
-        className={`relative gap-1 flex ${
-          isMine ? "flex-row-reverse" : ""
-        } items-start focus:outline-1 focus:outline-slate-600 transition-all`}
       >
-        <Avatar
-          visibility={prevSameSender ? "hidden" : "visible"}
-          src={
-            isMine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL
-          }
-          name={
-            isMine ? currentUserDetails.name : (senderDetails?.name as string)
-          }
-          size="sm"
-          onClick={() => {
-            openModal(
-              <UserProfileModal
-                onClose={() => {}}
-                user={senderDetails as IUserDetails}
-              />,
-            );
-          }}
-          cursor={isGroupMessage ? "pointer" : ""}
-        />
-        <div className="flex flex-col gap-1 mt-3">
-          {attachments.length > 0 && (
-            <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
-              <Image
-                src={attachments[0] as any}
-                objectFit="cover"
-                borderRadius={"md"}
-                sizes="150px"
-              />
-            </AspectRatio>
-          )}
-          <div
-            onClick={() => setIsEditing(true)}
-            className={`flex flex-col relative
+        <div
+          className={`relative gap-1 flex ${
+            isMine ? "flex-row-reverse" : ""
+          } items-start focus:outline-1 focus:outline-slate-600 transition-all`}
+        >
+          <Avatar
+            visibility={prevSameSender ? "hidden" : "visible"}
+            src={
+              isMine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL
+            }
+            name={
+              isMine ? currentUserDetails.name : (senderDetails?.name as string)
+            }
+            size="sm"
+            onClick={() => {
+              openModal(
+                <UserProfileModal
+                  onClose={() => {}}
+                  user={senderDetails as IUserDetails}
+                />,
+              );
+            }}
+            cursor={isGroupMessage ? "pointer" : ""}
+          />
+          <div className="flex flex-col gap-1 mt-3">
+            {attachments.length > 0 && (
+              <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
+                <Image
+                  src={attachments[0] as any}
+                  objectFit="cover"
+                  borderRadius={"md"}
+                  sizes="150px"
+                />
+              </AspectRatio>
+            )}
+            <div
+              onClick={() => setIsEditing(true)}
+              className={`flex flex-col relative
                 px-2  pt-1   ${
                   isMine
                     ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end   "
@@ -233,90 +238,93 @@ const Message = forwardRef<any, MessageProps>(
                 } rounded-xl 
 
                  w-fit max-w-[400px]   `}
-          >
-            {isMine ? (
-              isEditing ? (
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleEditMessage();
-                  }}
-                >
-                  <InputGroup>
-                    <InputRightElement>
-                      <IconButton
-                        aria-label="save changes"
-                        onClick={handleEditMessage}
-                        bg={"inherit"}
-                        icon={<CheckIcon className="w-4 h-4 text-dark-gray1" />}
-                      />
-                    </InputRightElement>
+            >
+              {isMine ? (
+                isEditing ? (
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleEditMessage();
+                    }}
+                  >
+                    <InputGroup>
+                      <InputRightElement>
+                        <IconButton
+                          aria-label="save changes"
+                          onClick={handleEditMessage}
+                          bg={"inherit"}
+                          icon={
+                            <CheckIcon className="w-4 h-4 text-dark-gray1" />
+                          }
+                        />
+                      </InputRightElement>
 
-                    <Input
-                      autoFocus
-                      value={newMessage}
-                      max={1}
-                      onBlur={() => {
-                        setIsEditing(false);
-                      }}
-                      onChange={(e) => {
-                        setNewMessage(e.target.value.slice(0, 1499));
-                      }}
-                    />
-                  </InputGroup>
-                </form>
+                      <Input
+                        autoFocus
+                        value={newMessage}
+                        max={1}
+                        onBlur={() => {
+                          setIsEditing(false);
+                        }}
+                        onChange={(e) => {
+                          setNewMessage(e.target.value.slice(0, 1499));
+                        }}
+                      />
+                    </InputGroup>
+                  </form>
+                ) : (
+                  <p className="text-[0.9rem] leading-relaxed tracking-wide">
+                    {newMessage}
+                  </p>
+                )
               ) : (
                 <p className="text-[0.9rem] leading-relaxed tracking-wide">
-                  {newMessage}
+                  {message.body}
                 </p>
-              )
-            ) : (
-              <p className="text-[0.9rem] leading-relaxed tracking-wide">
-                {message.body}
-              </p>
-            )}
-            {isMine && <Blueticks read={message.read} />}
-            <div
-              className={`self-end text-[0.54rem] tracking-wider mb-1
+              )}
+              {isMine && <Blueticks read={message.read} />}
+              <div
+                className={`self-end text-[0.54rem] tracking-wider mb-1
                ${
                  isMine
                    ? "dark:text-gray-500 justify-end text mx-3"
                    : "dark:text-gray-400 "
                }`}
-            >
-              {" " + getFormattedDateTime(message.$createdAt)}
+              >
+                {" " + getFormattedDateTime(message.$createdAt)}
+              </div>
             </div>
           </div>
-        </div>
 
-        {shouldShowHoverCard() && (
-          <div
-            className={`flex self-end gap-2 mb-5 ${
-              showHoverCard ? "" : "invisible"
-            }`}
-          >
-            <button
-              onClick={() =>
-                confirmAlert({
-                  message: "Delete this message? This action is irreversible",
-                  title: "Delete message",
-                  confirmText: "Delete",
-                  onConfirm: () => handleDelete(),
-                })
-              }
+          {shouldShowHoverCard() && (
+            <div
+              className={`flex self-end gap-2 mb-5 ${
+                showHoverCard ? "" : "invisible"
+              }`}
             >
-              <DeleteIcon className="w-4 h-4" />
-            </button>
-            <button
-              hidden={!isMine}
-              onClick={() => {
-                setIsEditing((prev) => !prev);
-              }}
-            >
-              <PencilIcon className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+              <button
+                onClick={() =>
+                  confirmAlert({
+                    message: "Delete this message? This action is irreversible",
+                    title: "Delete message",
+                    confirmText: "Delete",
+                    onConfirm: () => handleDelete(),
+                  })
+                }
+              >
+                <DeleteIcon className="w-4 h-4" />
+              </button>
+              <button
+                hidden={!isMine}
+                onClick={() => {
+                  setIsEditing((prev) => !prev);
+                }}
+              >
+                <PencilIcon className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </motion.article>
     );
   },

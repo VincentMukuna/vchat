@@ -24,16 +24,19 @@ function MessagesList({
       >
         {messages.length > 0 ? (
           <>
-            {messages.map((message, i) => (
-              <Message
-                message={message}
-                onDelete={onDelete}
-                key={message.$id}
-                i={i}
-                prev={messages[i + 1]}
-                next={messages[i - 1]}
-              />
-            ))}
+            <AnimatePresence mode="popLayout">
+              {messages.map((message, i) => (
+                <Message
+                  message={message}
+                  onDelete={onDelete}
+                  key={message.$id}
+                  i={i}
+                  prev={messages[i + 1]}
+                  next={messages[i - 1]}
+                />
+              ))}
+            </AnimatePresence>
+
             {children}
           </>
         ) : isLoading ? (
