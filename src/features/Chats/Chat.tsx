@@ -135,7 +135,7 @@ const Chat = ({ conversation }: IChatProps) => {
         direction={"row"}
         py={3}
         ps={3}
-        rounded={"none"}
+        rounded={"md"}
         onClick={() => {
           setRecepient(contactDetails);
           setSelectedChat(conversation);
@@ -165,7 +165,7 @@ const Chat = ({ conversation }: IChatProps) => {
             {unreadCount}
           </AvatarBadge>
         </Avatar>
-        <div className="grid gap-[2px] ml-2 overflow-hidden shrink text-ellipsis">
+        <div className="grid gap-[2px] ml-1 overflow-hidden shrink text-ellipsis">
           <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
             {isGroup
               ? conversation.name

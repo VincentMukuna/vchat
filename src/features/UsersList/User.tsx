@@ -57,7 +57,7 @@ function User({
         direction={"row"}
         py={3}
         ps={3}
-        rounded={"sm"}
+        rounded={"md"}
         onClick={
           onClick
             ? onClick
