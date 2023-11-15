@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { deleteContact } from "../../../services/userDetailsServices";
 import { confirmAlert } from "../../../components/Alert/alertStore";
+import { motion } from "framer-motion";
 
 export const RoomDetailsFooter = () => {
   const { cache } = useSWRConfig();
@@ -73,6 +74,9 @@ export const RoomDetailsFooter = () => {
   return (
     <HStack>
       <Button
+        as={motion.button}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.98 }}
         hidden={!isGroup}
         size={"sm"}
         variant={"outline"}
@@ -89,6 +93,9 @@ export const RoomDetailsFooter = () => {
         Leave
       </Button>
       <Button
+        as={motion.button}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.98 }}
         hidden={isGroup ? !isAdmin : false}
         size={"sm"}
         variant={"outline"}

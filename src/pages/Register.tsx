@@ -114,15 +114,11 @@ function Register() {
               </div>
               <div className="">
                 <Button
+                  as={motion.button}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
                   isLoading={registering}
                   loadingText="Registering"
-                  bg={blueDark.blue4}
-                  color={blue.blue1}
-                  _hover={
-                    colorMode === "light"
-                      ? { bg: blueDark.blue7, color: gray.gray1 }
-                      : {}
-                  }
                   className="w-full "
                   type="submit"
                 >

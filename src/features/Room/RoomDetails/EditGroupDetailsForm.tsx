@@ -28,6 +28,7 @@ import {
 import { useFilePicker } from "use-file-picker";
 import { PencilIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { useChatsContext } from "../../../context/ChatsContext";
+import { motion } from "framer-motion";
 
 export const EditGroupDetailsForm = ({ group }: { group: IGroup }) => {
   const { setSelectedChat } = useChatsContext();
@@ -184,6 +185,9 @@ export const EditGroupDetailsForm = ({ group }: { group: IGroup }) => {
       </ModalBody>
       <ModalFooter gap={2}>
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           variant={"ghost"}
           onClick={onClose}
           isLoading={saving}

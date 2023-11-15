@@ -203,6 +203,9 @@ const AddMembers = ({ group }: { group: IGroup }) => {
                 {totalRef.current >
                   ([] as IUserDetails[]).concat(...users!).length && (
                   <Button
+                    as={motion.button}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
                     variant={"ghost"}
                     onClick={() => {
                       setSize(size + 1);
@@ -225,6 +228,9 @@ const AddMembers = ({ group }: { group: IGroup }) => {
           Cancel
         </Button>
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           width={"40"}
           rounded={"md"}
           onClick={handleAddMembers}

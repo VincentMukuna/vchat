@@ -21,6 +21,7 @@ import {
 import useSWR, { mutate } from "swr";
 import toast from "react-hot-toast";
 import { useChatsContext } from "../../../context/ChatsContext";
+import { motion } from "framer-motion";
 
 const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: IGroup }) => {
   const { currentUserDetails } = useAuth();
@@ -118,6 +119,9 @@ const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: IGroup }) => {
           Cancel
         </Button>
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           width={"40"}
           rounded={"md"}
           onClick={handleEditAdmins}

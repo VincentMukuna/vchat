@@ -2,10 +2,9 @@ import { useChatsContext } from "../../context/ChatsContext";
 import { useAuth } from "../../context/AuthContext";
 //@ts-ignore
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import { IChat, IGroup, IUserDetails } from "../../interfaces";
+import { IUserDetails } from "../../interfaces";
 import {
   Avatar,
-  Button,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -13,14 +12,9 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
-  HStack,
   IconButton,
-  Input,
   Menu,
   MenuButton,
-  MenuItem,
-  MenuList,
-  useBreakpoint,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";

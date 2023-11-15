@@ -108,6 +108,9 @@ function Login() {
               </div>
               <div className="">
                 <Button
+                  as={motion.button}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
                   type="submit"
                   isLoading={verifying}
                   loadingText="Verifying"

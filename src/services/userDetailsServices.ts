@@ -64,6 +64,8 @@ export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
 ): Promise<{ existed: boolean; chat: IChat }> {
+  console.log(addeeDetailsID, adderDetailsID);
+  const isPersonal = adderDetailsID === adderDetailsID;
   //check if chat doc exists
   let chats = await getUserChats(adderDetailsID);
   let chatsArray = chats.map((chat, i) => ({
@@ -71,7 +73,9 @@ export async function addContact(
     participants: chat.participants.map((participant) => participant.$id),
   }));
   for (let chat of chatsArray) {
-    if (chat.participants.includes(addeeDetailsID)) {
+    if (isPersonal && chat.participants.every((id) => id === addeeDetailsID)) {
+      return { existed: true, chat: chats[chat.chatIndex] as IChat };
+    } else if (chat.participants.includes(addeeDetailsID)) {
       return { existed: true, chat: chats[chat.chatIndex] as IChat };
     }
   }

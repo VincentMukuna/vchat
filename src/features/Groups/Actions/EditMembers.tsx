@@ -29,6 +29,7 @@ import { confirmAlert } from "../../../components/Alert/alertStore";
 import { useAuth } from "../../../context/AuthContext";
 import { UserIcon } from "@heroicons/react/20/solid";
 import VSkeleton from "../../../components/VSkeleton";
+import { motion } from "framer-motion";
 
 const EditMembers = ({ group }: { group: IGroup }) => {
   const { data: roomDetails, isLoading } = useSWR(`details ${group.$id}`, () =>
@@ -105,10 +106,20 @@ const EditMembers = ({ group }: { group: IGroup }) => {
           )}
         </Stack>
         <ModalFooter className="gap-2">
-          <Button variant={"ghost"} width={"40"} onClick={onClose}>
+          <Button
+            as={motion.button}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
+            variant={"ghost"}
+            width={"40"}
+            onClick={onClose}
+          >
             Cancel
           </Button>
           <Button
+            as={motion.button}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
             width={"40"}
             rounded={"md"}
             onClick={handleEditMembers}

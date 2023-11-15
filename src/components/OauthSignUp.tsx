@@ -1,4 +1,5 @@
 import { Button } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 interface OauthSignUpProps {
   loading: boolean;
@@ -21,6 +22,9 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
       </div>
       <div className="grid gap-2 transition-all md:gap-6 md:grid-cols-2">
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           variant={"outline"}
           leftIcon={
             <svg
@@ -44,6 +48,9 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
         </Button>
 
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           variant={"outline"}
           leftIcon={
             <svg

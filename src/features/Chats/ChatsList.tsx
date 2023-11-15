@@ -103,6 +103,9 @@ const ChatsList = () => {
         Whoops! Error fetching chats
         <p>{chatsError?.message}</p>
         <Button
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           width={"44"}
           rounded={"md"}
           onClick={() => {
@@ -130,9 +133,9 @@ const ChatsList = () => {
         </div>
 
         <Button
-          bg={blueDark.blue5}
-          color={colorMode === "dark" ? gray.gray2 : gray.gray3}
-          _hover={{ bg: blueDark.blue4 }}
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           px={12}
           py={"6"}
           leftIcon={<UserPlusIcon className="w-5 h-5 " />}

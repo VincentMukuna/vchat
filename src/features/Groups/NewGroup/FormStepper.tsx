@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import {
   Box,
-  Button,
-  Input,
   Stack,
   Step,
   StepDescription,
