@@ -41,13 +41,13 @@ function MessagesList({
           </>
         ) : isLoading ? (
           <div className="flex items-center self-center h-full justify-self-center">
-            <SyncLoader />
+            <SyncLoader size={8} />
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">
             <div className="text-lg font-bold tracking-wider">No Messages</div>
             <div className="">
-              Start the conversation by typing your message below
+              Start the conversation by typing a message below
             </div>
           </div>
         )}
