@@ -98,3 +98,5 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </ChakraProvider>
   </>,
 );
+
+navigator.serviceWorker.register("/service-worker.js");
