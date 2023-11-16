@@ -50,7 +50,7 @@ const Sidebar = () => {
           onClose={onClose}
           isCentered
           scrollBehavior="outside"
-          size={["xs", "lg"]}
+          size={["xs", "sm"]}
         >
           <ModalOverlay />
           <ModalContent>

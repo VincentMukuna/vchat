@@ -97,6 +97,7 @@ const ChatsList = () => {
       unsubscribe();
     };
   }, [currentUserDetails]);
+
   if (chatsError) {
     return (
       <div className="flex flex-col items-center gap-2">

@@ -106,8 +106,8 @@ const AddMembers = ({ group }: { group: IGroup }) => {
 
               <VStack
                 maxWidth={"100%"}
-                minH={300}
-                maxH={400}
+                minH={200}
+                maxH={300}
                 overflowY={"auto"}
                 overflowX={"hidden"}
                 borderWidth={1}
@@ -164,7 +164,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
                     .map((user: IUserDetails, index) => {
                       return (
                         <div
-                          className="flex items-center w-full gap-2 group "
+                          className="flex items-center w-full  group "
                           key={user.$id}
                         >
                           <Checkbox
@@ -189,7 +189,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
                           />
                           <label
                             htmlFor={index.toString()}
-                            className="flex items-center w-full gap-1 p-1 text-sm font-semibold tracking-wide cursor-pointer"
+                            className="flex items-center w-full text-sm font-semibold tracking-wide cursor-pointer"
                           >
                             <User user={user} onClick={() => {}}>
                               <UserAvatar size="sm" />

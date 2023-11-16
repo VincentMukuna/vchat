@@ -49,7 +49,11 @@ function User({
   if (!currentUserDetails) return null;
 
   return (
-    <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
+    <motion.div
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      className="w-full"
+    >
       <Card
         as={"article"}
         bg={"inherit"}

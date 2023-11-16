@@ -101,9 +101,11 @@ function Room() {
   const { data: group, isLoading: detailsLoading } = useSWR(
     () => {
       if (!isGroup) return undefined;
+
       return `details ${selectedChat!.$id}`;
     },
     () => getGroupDetails(selectedChat!.$id),
+    {},
   );
   const isGroupMember =
     isGroup &&

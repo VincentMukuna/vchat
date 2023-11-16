@@ -2,7 +2,7 @@ import { HStack, SkeletonCircle, SkeletonText } from "@chakra-ui/react";
 
 const VSkeleton = () => {
   return (
-    <HStack className="p-4">
+    <HStack className="p-4 w-full">
       <SkeletonCircle size="12" w="14" />
       <SkeletonText
         mt="2"

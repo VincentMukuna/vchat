@@ -47,8 +47,6 @@ const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: IGroup }) => {
         toast.error("Something went wrong");
       });
   }
-  console.log(newAdmins);
-  console.log(group);
   return (
     <>
       <ModalHeader>Add Admin</ModalHeader>
@@ -59,8 +57,8 @@ const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: IGroup }) => {
         </p>
         <VStack
           maxWidth={"100%"}
-          minH={300}
-          maxH={400}
+          minH={200}
+          maxH={300}
           overflowY={"auto"}
           overflowX={"hidden"}
           borderWidth={1}

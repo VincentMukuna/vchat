@@ -120,7 +120,6 @@ const NewGroupAddMembersForm = ({
           <Search
             handleSearch={async (name, onCloseSearch) => {
               let res = await searchUsers(name);
-              console.log(res);
               return res
                 .filter(
                   (user) =>
@@ -190,7 +189,7 @@ const NewGroupAddMembersForm = ({
                     />
                     <label
                       htmlFor={index.toString()}
-                      className="flex items-center w-full gap-1 p-1 text-sm font-semibold tracking-wide cursor-pointer"
+                      className="flex items-center w-full gap-1 p-1 text-sm font-semibold tracking-wide cursor-pointer grow"
                     >
                       <User user={user} onClick={() => {}}>
                         <UserAvatar size="sm" />
