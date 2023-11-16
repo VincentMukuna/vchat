@@ -20,6 +20,7 @@ import { getFormatedDate } from "../../../services/dateServices";
 import { useAuth } from "../../../context/AuthContext";
 import { openModal } from "../../../components/Modal";
 import { EditGroupDetailsForm } from "./EditGroupDetailsForm";
+import { motion } from "framer-motion";
 
 const RoomDetails = () => {
   const { selectedChat, recepient, setSelectedChat, msgsCount } =
@@ -72,6 +73,9 @@ const RoomDetails = () => {
               </div>
               {isGroup && isGroupMember && isAdmin && (
                 <IconButton
+                  as={motion.button}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
                   aria-label="edit details"
                   variant={"outline"}
                   onClick={() =>
