@@ -9,6 +9,7 @@ import {
   useDisclosure,
   useColorMode,
   Tooltip,
+  IconButton,
 } from "@chakra-ui/react";
 
 import { PlusIcon } from "../../components/Icons";
@@ -45,15 +46,18 @@ const Sidebar = () => {
             bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
             textColor={colorMode === "light" ? indigo.indigo3 : "black"}
           >
-            <button
+            <IconButton
               onClick={onOpen}
               aria-label="Create new group"
               className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 "
               title="New group"
-            >
-              <UserGroupIcon className="w-5 h-5" />
-              <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
-            </button>
+              icon={
+                <>
+                  <UserGroupIcon className="w-5 h-5" />
+                  <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
+                </>
+              }
+            ></IconButton>
           </Tooltip>
         </span>
 
