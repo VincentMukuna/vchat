@@ -47,6 +47,7 @@ const Sidebar = () => {
             textColor={colorMode === "light" ? indigo.indigo3 : "black"}
           >
             <IconButton
+              bg={"transparent"}
               as={motion.button}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
