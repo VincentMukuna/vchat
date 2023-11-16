@@ -81,6 +81,9 @@ const Navbar = () => {
                   }`}
                 />
                 <IconButton
+                  as={motion.button}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
                   aria-label={tab.title}
                   icon={tab.icon}
                   bgColor={"transparent"}
@@ -111,6 +114,9 @@ const Navbar = () => {
           textColor={colorMode === "light" ? indigo.indigo3 : "black"}
         >
           <IconButton
+            as={motion.button}
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.98 }}
             onClick={toggleColorMode}
             bgColor={"transparent"}
             _hover={{
@@ -147,6 +153,9 @@ const Navbar = () => {
             className="flex items-center justify-center transition-all w-11"
           >
             <IconButton
+              as={motion.button}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               bgColor={"transparent"}
               _hover={{
                 bg: colorMode === "dark" ? slateDark.slate6 : slateDark.slate11,
@@ -164,6 +173,7 @@ const Navbar = () => {
 export default Navbar;
 
 import React from "react";
+import { motion } from "framer-motion";
 
 export const MyProfile = () => {
   const { colorMode, toggleColorMode } = useColorMode();

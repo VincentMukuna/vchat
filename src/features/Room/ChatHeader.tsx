@@ -39,6 +39,7 @@ import {
 } from "../../services/groupMessageServices";
 import { deleteContact } from "../../services/userDetailsServices";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 function ChatHeader() {
   const { currentUserDetails } = useAuth();
@@ -79,6 +80,9 @@ function ChatHeader() {
     <section className="relative flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-slate1 bg-gray2 text-dark-gray2">
       <IconButton
         bg={"transparent"}
+        as={motion.button}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.98 }}
         title="Close chat"
         icon={<ArrowLeftIcon className="w-5 h-5 " />}
         aria-label="Close Chat"

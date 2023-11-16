@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { FileTypeValidator } from "../../utils/fileValidators";
 import { unstable_serialize } from "swr/infinite";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { motion } from "framer-motion";
 
 type InputProps = {};
 
@@ -212,6 +213,9 @@ const MessageInput = ({}: InputProps) => {
         <div className="flex items-center w-full h-full gap-3 ps-5">
           <div className="relative flex h-full">
             <IconButton
+              as={motion.button}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               bg={"inherit"}
               aria-label="add attachment"
               title="add attachment"

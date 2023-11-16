@@ -19,7 +19,7 @@ import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark, slateDark } from "@radix-ui/colors";
 import { Outlet } from "react-router-dom";
 import { MyProfile } from "../Navbar/Navbar";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 const Sidebar = () => {
   const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -47,15 +47,17 @@ const Sidebar = () => {
             textColor={colorMode === "light" ? indigo.indigo3 : "black"}
           >
             <IconButton
+              as={motion.button}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               onClick={onOpen}
               aria-label="Create new group"
-              className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 "
               title="New group"
               icon={
-                <>
+                <div className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 ">
                   <UserGroupIcon className="w-5 h-5" />
                   <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
-                </>
+                </div>
               }
             ></IconButton>
           </Tooltip>

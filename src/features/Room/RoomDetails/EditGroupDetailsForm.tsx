@@ -124,6 +124,9 @@ export const EditGroupDetailsForm = ({ group }: { group: IGroup }) => {
           <form onSubmit={handleSubmit} className="flex flex-col">
             <div className="relative self-center w-fit ">
               <IconButton
+                as={motion.button}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
                 title="Edit avatar"
                 onClick={openFilePicker}
                 aria-label="edit avatar"

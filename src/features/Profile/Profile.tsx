@@ -67,6 +67,9 @@ const Profile = () => {
         <div className="flex flex-col items-center gap-2">
           <div className="relative ">
             <IconButton
+              as={motion.button}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
               title="Edit avatar"
               onClick={openFilePicker}
               aria-label="edit avatar"

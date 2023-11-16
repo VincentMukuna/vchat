@@ -46,6 +46,9 @@ const NewGroupDetailsForm = ({
     >
       <div className="relative self-center ">
         <IconButton
+          as={motion.button}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.98 }}
           title="Edit avatar"
           onClick={openFilePicker}
           aria-label="edit avatar"
