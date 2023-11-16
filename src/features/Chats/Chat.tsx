@@ -82,7 +82,11 @@ const Chat = ({ conversation }: IChatProps) => {
         currentUserDetails.$id,
       );
     },
-    { refreshInterval: 60000 },
+    {
+      refreshInterval: 60000,
+      revalidateIfStale: false,
+      shouldRetryOnError: false,
+    },
   );
 
   useEffect(() => {

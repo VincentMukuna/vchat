@@ -74,7 +74,7 @@ const Message = forwardRef<any, MessageProps>(
 
     const { data: senderDetails } = useSWR(
       () => {
-        if (isMine || message.senderID === currentUserDetails.$id) return null;
+        if (isMine) return null;
         else return message.senderID;
       },
       getUserDetails,

@@ -33,6 +33,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "../../../context/AuthContext";
 import User, { UserAvatar, UserDescription } from "../../UsersList/User";
 import VSkeleton from "../../../components/VSkeleton";
+import { confirmAlert } from "../../../components/Alert/alertStore";
 
 const AddMembers = ({ group }: { group: IGroup }) => {
   const { currentUserDetails } = useAuth();
@@ -164,7 +165,7 @@ const AddMembers = ({ group }: { group: IGroup }) => {
                     .map((user: IUserDetails, index) => {
                       return (
                         <div
-                          className="flex items-center w-full  group "
+                          className="flex items-center w-full  group gap-1 "
                           key={user.$id}
                         >
                           <Checkbox
@@ -233,7 +234,15 @@ const AddMembers = ({ group }: { group: IGroup }) => {
           whileTap={{ scale: 0.98 }}
           width={"40"}
           rounded={"md"}
-          onClick={handleAddMembers}
+          onClick={() =>
+            confirmAlert({
+              message: `Add ${newMembers.length} user${
+                newMembers.length > 1 ? "s" : ""
+              } to this group?`,
+              title: "Add Members",
+              onConfirm: handleAddMembers,
+            })
+          }
           color={colorMode === "dark" ? gray.gray2 : gray.gray1}
           title="save changes"
           isDisabled={newMembers.length < 1}

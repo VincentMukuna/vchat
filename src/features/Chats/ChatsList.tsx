@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Chat from "./Chat";
 import { IChat, IGroup, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
@@ -6,19 +6,14 @@ import api from "../../services/api";
 import { SERVER } from "../../utils/config";
 import { useAppSelector } from "../../context/AppContext";
 import useSWR, { useSWRConfig } from "swr";
-import { ClipLoader } from "react-spinners";
-import {
-  getChatMessages,
-  getUserChats,
-} from "../../services/chatMessageServices";
+import { getUserChats } from "../../services/chatMessageServices";
 import { getUserGroups } from "../../services/groupMessageServices";
-import { Button, Divider, Stack, useColorMode } from "@chakra-ui/react";
+import { Button, Stack, useColorMode } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { blueDark, gray } from "@radix-ui/colors";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
-import { Query } from "appwrite";
+import { useNavigate } from "react-router-dom";
 import { VARIANTS_MANAGER } from "../../services/variants";
 
 export function compareUpdatedAt(a: any, b: any) {
@@ -75,11 +70,11 @@ const ChatsList = () => {
     error: chatsError,
     mutate,
     isLoading,
-  } = useSWR(
-    "conversations",
-    () => getConversations(currentUserDetails.$id),
-    {},
-  );
+  } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
+    fallbackData: ([] as (IGroup | IChat)[])
+      .concat(currentUserDetails.chats, currentUserDetails.groups)
+      .sort(compareUpdatedAt),
+  });
 
   // Update local chats data when the data is refreshed
 
