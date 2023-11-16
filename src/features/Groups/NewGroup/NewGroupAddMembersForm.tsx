@@ -21,6 +21,7 @@ import User, { UserAvatar, UserDescription } from "../../UsersList/User";
 import Search from "../../../components/Search";
 import { useInfinite } from "../../../hooks/useInfinite";
 import { UserIcon } from "@heroicons/react/20/solid";
+import VSkeleton from "../../../components/VSkeleton";
 
 interface AddMembersProps {
   members: IUserDetails[];
@@ -104,8 +105,8 @@ const NewGroupAddMembersForm = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           maxWidth={"100%"}
-          minH={300}
-          maxH={400}
+          minH={200}
+          maxH={300}
           overflowY={"auto"}
           overflowX={"hidden"}
           borderWidth={1}
@@ -119,11 +120,12 @@ const NewGroupAddMembersForm = ({
           <Search
             handleSearch={async (name, onCloseSearch) => {
               let res = await searchUsers(name);
+              console.log(res);
               return res
                 .filter(
                   (user) =>
                     user.$id !== currentUserDetails.$id &&
-                    !members.some((member) => member.$id !== user.$id),
+                    !members.some((member) => member.$id === user.$id),
                 )
                 .map((user) => (
                   <User
@@ -144,13 +146,18 @@ const NewGroupAddMembersForm = ({
                     }}
                     key={user.$id}
                   >
-                    <UserAvatar />
+                    <UserAvatar size="sm" />
                     <UserDescription />
                   </User>
                 ));
             }}
           />
-          {!isLoading &&
+          {isLoading ? (
+            <>
+              <VSkeleton />
+              <VSkeleton />
+            </>
+          ) : (
             users?.length &&
             ([] as IUserDetails[])
               .concat(...users)
@@ -192,7 +199,8 @@ const NewGroupAddMembersForm = ({
                     </label>
                   </div>
                 );
-              })}
+              })
+          )}
 
           {totalRef.current >
             ([] as IUserDetails[]).concat(...users!).length && (
