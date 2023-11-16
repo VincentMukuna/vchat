@@ -8,14 +8,14 @@ import {
   ModalCloseButton,
   useDisclosure,
   useColorMode,
+  Tooltip,
 } from "@chakra-ui/react";
 
 import { PlusIcon } from "../../components/Icons";
 import { useAuth } from "../../context/AuthContext";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
-import { Box } from "@chakra-ui/react";
-import { gray, slateDark } from "@radix-ui/colors";
+import { indigo, indigoDark, slateDark } from "@radix-ui/colors";
 import { Outlet } from "react-router-dom";
 import { MyProfile } from "../Navbar/Navbar";
 import { AnimatePresence } from "framer-motion";
@@ -34,15 +34,27 @@ const Sidebar = () => {
           </div>
 
           {activePage}
-          <button
-            onClick={onOpen}
-            aria-label="Create new group"
-            className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 "
-            title="New group"
+          <Tooltip
+            label={"New Group"}
+            hasArrow
+            placement="bottom"
+            py={2}
+            rounded={"md"}
+            fontSize={"sm"}
+            fontWeight={"normal"}
+            bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
+            textColor={colorMode === "light" ? indigo.indigo3 : "black"}
           >
-            <UserGroupIcon className="w-5 h-5" />
-            <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
-          </button>
+            <button
+              onClick={onOpen}
+              aria-label="Create new group"
+              className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 "
+              title="New group"
+            >
+              <UserGroupIcon className="w-5 h-5" />
+              <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
+            </button>
+          </Tooltip>
         </span>
 
         <Modal
