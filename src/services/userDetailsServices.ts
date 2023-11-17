@@ -17,6 +17,7 @@ export async function getUserDetails(detailsDocID: string) {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     detailsDocID,
+    [Query.select(["$id", "avatarURL", "about", "name"])],
   )) as IUserDetails;
   return userDoc;
 }
@@ -35,7 +36,11 @@ export async function getCurrentUserDetails(
   }
 }
 export async function getUsers(cursor?: string) {
-  let querySet = [Query.orderAsc("$createdAt"), Query.limit(20)];
+  let querySet = [
+    Query.orderAsc("$createdAt"),
+    Query.limit(20),
+    Query.select(["$id", "avatarURL", "about", "name"]),
+  ];
   if (cursor) {
     querySet.push(Query.cursorAfter(cursor));
   }
