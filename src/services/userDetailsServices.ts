@@ -39,7 +39,7 @@ export async function getUsers(cursor?: string) {
   let querySet = [
     Query.orderAsc("$createdAt"),
     Query.limit(20),
-    Query.select(["$id", "avatarURL", "about", "name"]),
+    Query.select(["$id", "avatarURL", "about", "name", "location"]),
   ];
   if (cursor) {
     querySet.push(Query.cursorAfter(cursor));
