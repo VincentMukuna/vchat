@@ -17,7 +17,7 @@ export async function getUserDetails(detailsDocID: string) {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     detailsDocID,
-    [Query.select(["$id", "avatarURL", "about", "name"])],
+    [Query.select(["$id", "avatarURL", "about", "name", "location"])],
   )) as IUserDetails;
   return userDoc;
 }
