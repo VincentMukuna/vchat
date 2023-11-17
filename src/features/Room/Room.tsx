@@ -79,57 +79,42 @@ function Room() {
         participant.$id === currentUserDetails?.$id,
     );
 
-  let re = new RegExp(`${selectedChat?.$id}-messages-(\\w+)`);
-  const {
-    data,
-    isLoading,
-    error,
-    mutate,
-    size,
-    setSize,
-    isValidating,
-    totalRef,
-  } = useInfinite<IChatMessage | IGroupMessage>(
-    isGroup ? getGroupMessages : getChatMessages,
-    selectedChat && selectedChat?.$id + "-messages",
-    re,
-    [selectedChat?.$id],
-  );
-  const messages = ([] as (IChatMessage | IGroupMessage)[]).concat(
-    ...(data || []),
-  );
-  const { data: group, isLoading: detailsLoading } = useSWR(
-    () => {
-      if (!isGroup) return undefined;
-
-      return `details ${selectedChat!.$id}`;
-    },
-    () => getGroupDetails(selectedChat!.$id),
-    {},
-  );
-  const isGroupMember =
-    isGroup &&
-    group?.members.some(
-      (member) => (member as IUserDetails).$id === currentUserDetails.$id,
-    );
-  useEffect(() => {
-    if (totalRef.current) {
-      setMsgsCount(totalRef.current);
+  async function getRoomMessages() {
+    if (!selectedChat) return undefined;
+    if (isGroup) {
+      const [messages, total] = await getGroupMessages(selectedChat.$id);
+      return messages;
     }
-  }, [totalRef.current]);
+    const [messages, total] = await getChatMessages(selectedChat.$id);
+    return messages;
+  }
+
+  function getFallbackMessages() {
+    if (!selectedChat) return undefined;
+    if (isGroup) {
+      return selectedChat.groupMessages.sort(
+        compareCreatedAt,
+      ) as IGroupMessage[];
+    } else {
+      return selectedChat.chatMessages.sort(compareCreatedAt) as IChatMessage[];
+    }
+  }
+  const { data, isLoading, error, mutate, isValidating } = useSWR(
+    () => (selectedChat ? `${selectedChat.$id}-messages` : null),
+    getRoomMessages,
+    { fallbackData: getFallbackMessages() },
+  );
 
   const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
     if (!selectedChat) return;
-    let newMessages = data?.map(
-      (msgArray) => msgArray?.filter((msg) => msg.$id !== message.$id),
-    );
+    let newMessages = data?.filter((msg) => msg.$id !== message.$id);
     mutate(newMessages, {
       revalidate: false,
       rollbackOnError: true,
     });
     globalMutate(
       `lastMessage ${selectedChat.$id}`,
-      newMessages && newMessages.at(0)?.at(0),
+      newMessages && newMessages.sort(compareCreatedAt).at(0),
       { revalidate: false },
     );
     try {
@@ -179,10 +164,15 @@ function Room() {
               response.payload.changeLog === "deletetext" ||
               response.payload.changeLog === "readtext")
           ) {
-            mutate().then((value) => {
+            mutate(
+              isGroup
+                ? response.payload.groupMessages.sort(compareCreatedAt)
+                : response.payload.chatMessages.sort(compareCreatedAt),
+              { revalidate: false },
+            ).then((value) => {
               globalMutate(
                 `lastMessage ${selectedChat.$id}`,
-                (value as (IChatMessage | IGroupMessage)[][]).at(0)?.at(0),
+                (value as (IChatMessage | IGroupMessage)[]).at(0),
 
                 { revalidate: false },
               );
@@ -232,7 +222,7 @@ function Room() {
         initial="slide-from-right"
         animate="slide-in"
         exit="slide-from-right"
-        className="grid h-full grid-flow-row grid-rows-[85px_auto_70px] dark:bg-dark-gray4 grow "
+        className="grid h-full grid-flow-row grid-rows-[85px_auto_60px] dark:bg-dark-gray4 grow "
       >
         <ChatHeader />
         {error ? (
@@ -242,34 +232,13 @@ function Room() {
           </Center>
         ) : (
           <Messages
-            messages={messages.filter((message) => !!message)}
+            messages={data!}
             onDelete={handleDeleteMessage}
             isLoading={isLoading}
-          >
-            {totalRef.current > messages.length && msgsCount > 20 && (
-              <Button
-                variant={"ghost"}
-                onClick={() => setSize(size + 1)}
-                isLoading={isValidating}
-                // hidden={messages.at(-1)?.length === 0 ? true : false}
-                flexShrink={0}
-              >
-                {isValidating ? "Fetching" : "See previous"}
-              </Button>
-            )}
-          </Messages>
-        )}
-        {!isLoading && !detailsLoading && isGroup && !isGroupMember && (
-          <Alert status="error">
-            <AlertIcon />
-            <AlertTitle>Not a member</AlertTitle>
-            <AlertDescription>
-              You've been removed from this group
-            </AlertDescription>
-          </Alert>
+          ></Messages>
         )}
 
-        {(!isGroup || isGroupMember) && <MessageInput />}
+        <MessageInput />
       </Box>
       <aside
         className={`hidden ${

@@ -8,7 +8,6 @@ import EditMembers from "../Groups/Actions/EditMembers";
 import { IGroup } from "../../interfaces";
 import AddMembers from "../Groups/Actions/AddMembers";
 import { mutate, useSWRConfig } from "swr";
-import { unstable_serialize } from "swr/infinite";
 import { useAuth } from "../../context/AuthContext";
 import { slateDark } from "@radix-ui/colors";
 import EditGroupAdmins from "../Groups/Actions/EditGroupAdmins";
@@ -34,9 +33,7 @@ const RoomActions = () => {
     isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
 
   async function handleClearRoomMessages() {
-    const chatMessagesKey = unstable_serialize(
-      () => selectedChat!.$id + "-messages",
-    );
+    const chatMessagesKey = selectedChat!.$id + "-messages";
     const messages = cache.get(chatMessagesKey)?.data;
 
     (isGroup
@@ -44,22 +41,17 @@ const RoomActions = () => {
       : clearChatMessages(selectedChat!.$id)
     )
       .then(() => {
-        mutate(chatMessagesKey, [[]], { revalidate: false });
+        mutate(chatMessagesKey, [], { revalidate: false });
         mutate(`lastMessage ${selectedChat!.$id}`, undefined, {
           revalidate: false,
         });
       })
       .catch((e) => {
-        console.log(e);
         toast.error("Something went wrong");
         mutate(chatMessagesKey, messages, { revalidate: false });
-        mutate(
-          `lastMessage ${selectedChat!.$id}`,
-          [].concat(...messages).at(0),
-          {
-            revalidate: false,
-          },
-        );
+        mutate(`lastMessage ${selectedChat!.$id}`, messages.at(0), {
+          revalidate: false,
+        });
       });
   }
 

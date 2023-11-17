@@ -4,6 +4,7 @@ import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
 import { Query } from "appwrite";
 import { updateUserDetails } from "./userDetailsServices";
 import { mutate } from "swr";
+import { compareCreatedAt } from "../features/Room/Room";
 
 type IInitGroup = {
   name: string;
@@ -49,29 +50,16 @@ export async function getUserGroups(userDetailsDocID: string) {
 }
 
 export async function getGroupMessages(groupID: string, cursor?: string) {
-  let querySet = [
-    Query.orderDesc("$createdAt"),
-    Query.equal("group", groupID),
-    Query.limit(20),
-  ];
-  if (cursor) {
-    querySet.push(Query.cursorAfter(cursor));
-  }
-  const { documents, total } = await api.listDocuments(
+  let groupDoc = (await api.getDocument(
     SERVER.DATABASE_ID,
-    SERVER.COLLECTION_ID_GROUP_MESSAGES,
-    querySet,
-  );
-  return [documents, total] as [IGroupMessage[], number];
-}
-
-async function getAllGroupMessages(groupID: string) {
-  const { documents, total } = await api.listDocuments(
-    SERVER.DATABASE_ID,
-    SERVER.COLLECTION_ID_GROUP_MESSAGES,
-    [Query.equal("group", groupID), Query.limit(2000)],
-  );
-  return documents as IGroupMessage[];
+    SERVER.COLLECTION_ID_GROUPS,
+    groupID,
+    [Query.select(["groupMessages"])],
+  )) as IGroup;
+  return [
+    groupDoc.groupMessages.sort(compareCreatedAt),
+    groupDoc.groupMessages.length,
+  ] as [IGroupMessage[], number];
 }
 
 export async function sendGroupMessage(
@@ -79,7 +67,7 @@ export async function sendGroupMessage(
   message: {
     senderID: string;
     body: string;
-    group: string;
+    groupDoc: string;
     attachments: File[] | null;
   },
 ) {
@@ -205,7 +193,7 @@ export async function editMembers(groupID: string, memberIDs: string[]) {
 }
 
 export async function clearGroupMessageAttachments(groupID: string) {
-  const messages = await getAllGroupMessages(groupID);
+  const [messages] = await getGroupMessages(groupID);
   let attachments = ([] as string[])
     .concat(...messages.map((message) => message.attachments))
     .filter((attach) => !!attach);
@@ -216,7 +204,7 @@ export async function clearGroupMessageAttachments(groupID: string) {
 }
 
 export async function clearGroupMessages(groupID: string) {
-  const messages = await getAllGroupMessages(groupID);
+  const [messages] = await getGroupMessages(groupID);
   let attachments = ([] as string[])
     .concat(...messages.map((message) => message.attachments))
     .filter((attach) => !!attach);
@@ -260,7 +248,7 @@ export async function getGroupUnreadMessagesCount(
     SERVER.COLLECTION_ID_GROUP_MESSAGES,
     [
       Query.orderDesc("$createdAt"),
-      Query.equal("group", groupID),
+      Query.equal("groupDoc", groupID),
       Query.select(["read"]),
       Query.equal("read", false),
       Query.notEqual("senderID", userID),

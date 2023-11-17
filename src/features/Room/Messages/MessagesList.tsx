@@ -6,16 +6,10 @@ import { SyncLoader } from "react-spinners";
 interface MessagesProps {
   messages: (IChatMessage | IGroupMessage)[];
   onDelete: (message: IChatMessage | IGroupMessage) => Promise<void>;
-  children: React.ReactNode;
   isLoading: boolean;
 }
 
-function MessagesList({
-  messages,
-  onDelete,
-  children,
-  isLoading,
-}: MessagesProps) {
+function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
   return (
     <div className="relative self-stretch overflow-x-hidden overflow-y-auto grow">
       <div
@@ -36,8 +30,6 @@ function MessagesList({
                 />
               ))}
             </AnimatePresence>
-
-            {children}
           </>
         ) : isLoading ? (
           <div className="flex items-center self-center h-full justify-self-center">
