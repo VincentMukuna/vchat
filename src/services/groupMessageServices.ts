@@ -54,7 +54,6 @@ export async function getGroupMessages(groupID: string, cursor?: string) {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
-    [Query.select(["groupMessages"])],
   )) as IGroup;
   return [
     groupDoc.groupMessages.sort(compareCreatedAt),

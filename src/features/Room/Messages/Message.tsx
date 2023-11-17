@@ -150,7 +150,7 @@ const Message = forwardRef<any, MessageProps>(
       if (newMessage !== message.body) {
         setIsEditing(false);
 
-        let editPS = api
+        let editPs = api
           .updateDocument(
             message.$databaseId,
             message.$collectionId,
@@ -266,10 +266,9 @@ const Message = forwardRef<any, MessageProps>(
                         />
                       </InputRightElement>
 
-                      <Input
+                      <Textarea
                         autoFocus
                         value={newMessage}
-                        max={1}
                         onBlur={() => {
                           setIsEditing(false);
                         }}
