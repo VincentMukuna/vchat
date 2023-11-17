@@ -7,7 +7,14 @@ import { sendGroupMessage } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
 import { useSWRConfig } from "swr";
 import { PaperClipIcon, PlusIcon } from "@heroicons/react/20/solid";
-import { Badge, IconButton, Image, Input } from "@chakra-ui/react";
+import {
+  Badge,
+  IconButton,
+  Image,
+  Input,
+  Textarea,
+  useColorMode,
+} from "@chakra-ui/react";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
@@ -16,9 +23,9 @@ import {
 } from "use-file-picker/validators";
 import toast from "react-hot-toast";
 import { FileTypeValidator } from "../../utils/fileValidators";
-import { unstable_serialize } from "swr/infinite";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
+import { slate } from "@radix-ui/colors";
 
 type InputProps = {};
 
@@ -32,12 +39,10 @@ const MessageInput = ({}: InputProps) => {
   if (!selectedChat) return null;
   const [messageBody, setMessageBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
-
+  const { colorMode } = useColorMode();
   let { mutate, cache } = useSWRConfig();
 
-  const chatMessagesKey = unstable_serialize(
-    () => selectedChat.$id + "-messages",
-  );
+  const chatMessagesKey = selectedChat.$id + "-messages";
   const { openFilePicker, filesContent, clear } = useFilePicker({
     accept: [".jpg", ".png"],
     multiple: false,
@@ -70,9 +75,7 @@ const MessageInput = ({}: InputProps) => {
         participant.$id === currentUserDetails?.$id,
     );
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.target.style.height = "auto";
-    e.target.style.height = e.target.scrollHeight + "px";
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > 1498) {
       toast.error("Text too long");
       return;
@@ -80,8 +83,8 @@ const MessageInput = ({}: InputProps) => {
     setMessageBody(e.target.value.slice(0, 1498));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (messageBody.trim() === "") {
       return;
     }
@@ -100,7 +103,7 @@ const MessageInput = ({}: InputProps) => {
           attachments: filesContent,
           senderID: currentUserDetails.$id,
           body: messageBody,
-          group: selectedChat.$id,
+          groupDoc: selectedChat.$id,
           optimistic: true,
         }
       : {
@@ -114,7 +117,7 @@ const MessageInput = ({}: InputProps) => {
           recepientID: recepient?.$id,
           body: messageBody,
           read: isPersonal ? true : false,
-          chat: selectedChat.$id,
+          chatDoc: selectedChat.$id,
           attachments: filesContent,
           optimistic: true,
         };
@@ -122,14 +125,9 @@ const MessageInput = ({}: InputProps) => {
     const roomMessages = cache.get(chatMessagesKey)?.data as (
       | IChatMessage
       | IGroupMessage
-    )[][];
+    )[];
 
-    const newMessages = roomMessages.map((msgArray, i) => {
-      if (i === 0) {
-        return [message, ...msgArray];
-      }
-      return msgArray;
-    });
+    const newMessages = [message, ...roomMessages];
 
     await mutate(chatMessagesKey, newMessages, {
       revalidate: false,
@@ -143,7 +141,7 @@ const MessageInput = ({}: InputProps) => {
     let msgSentPromise = isGroup
       ? sendGroupMessage(selectedChat.$id, {
           body: message.body,
-          group: message.group as string,
+          groupDoc: message.groupDoc as string,
           senderID: message.senderID,
           attachments: attachments,
         })
@@ -158,18 +156,16 @@ const MessageInput = ({}: InputProps) => {
     let messages = cache.get(chatMessagesKey)?.data as (
       | IChatMessage
       | IGroupMessage
-    )[][];
+    )[];
 
     msgSentPromise.then((msg) => {
       mutate(
         chatMessagesKey,
-        messages?.map((msgArray) => {
-          return msgArray.map((ucMessage) => {
-            if (ucMessage.$id === message.$id) {
-              return { revalidated: true, ...msg };
-            }
-            return ucMessage;
-          });
+        messages?.map((ucMessage) => {
+          if (ucMessage.$id === message.$id) {
+            return { revalidated: true, ...msg };
+          }
+          return ucMessage;
         }),
         { revalidate: false },
       );
@@ -178,9 +174,7 @@ const MessageInput = ({}: InputProps) => {
     msgSentPromise.catch((e) => {
       mutate(
         chatMessagesKey,
-        messages?.map((msgArray) => {
-          return msgArray.filter((ucMessage) => ucMessage.$id !== message.$id);
-        }),
+        messages?.filter((ucMessage) => ucMessage.$id !== message.$id),
         { revalidate: false },
       );
 
@@ -188,11 +182,9 @@ const MessageInput = ({}: InputProps) => {
         | IChatMessage
         | IGroupMessage;
       if (lastMessage?.$id === message.$id) {
-        mutate(
-          `lastMessage ${selectedChat.$id}`,
-          ([] as Message[]).concat(...messages).at(0),
-          { revalidate: false },
-        );
+        mutate(`lastMessage ${selectedChat.$id}`, messages.at(0), {
+          revalidate: false,
+        });
       }
 
       toast.error("Error sending message");
@@ -208,9 +200,9 @@ const MessageInput = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="flex flex-col rounded-lg justify-center mx-2  relative dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1 h-[3rem]  overflow-hidden">
+    <footer className="relative flex flex-col justify-start px-2 py-1 mx-2 mb-2 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
-        <div className="flex items-center w-full h-full gap-3 ps-5">
+        <div className="flex items-center w-full h-full gap-1 ps-1">
           <div className="relative flex h-full">
             <IconButton
               as={motion.button}
@@ -237,29 +229,54 @@ const MessageInput = ({}: InputProps) => {
             )}
           </div>
 
-          <input
+          {/* <textarea
             placeholder="Type a message"
-            className="focus:outline-none caret-secondary-main bg-transparent grow mr-20
-             placeholder:text-slate-800 placeholder:dark:text-indigo-50 resize-none max-h-[100px]
-             dark:text-gray1
-             invalid:border invalid:border-red-300"
+            className={`flex bg-red-950 items-center focus:outline-none caret-secondary-main bg-transparent grow 
+            placeholder:text-slate-800 placeholder:dark:text-indigo-50 resize-none            
+            dark:text-gray1 invalid:border invalid:border-red-300 ${
+              messageBody ? "h-fit" : "h-8"
+            } `}
             value={messageBody}
             spellCheck={true}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
+            rows={1.5}
             onChange={handleChange}
             onBlur={handleChange}
             maxLength={1500}
+            style={{ lineHeight: "inherit", verticalAlign: "middle" }}
+          /> */}
+
+          <Textarea
+            placeholder="Type a message"
+            value={messageBody}
+            onChange={handleChange}
+            onBlur={handleChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit();
+              }
+            }}
+            color={colorMode === "dark" ? slate.slate2 : slate.slate12}
+            variant={"unstyled"}
+            resize={"none"}
+            rows={1}
           />
 
-          {messageBody.trim() && (
-            <IconButton
-              variant={"ghost"}
-              me={1}
-              aria-label="send"
-              icon={<PaperAirplaneIcon className="w-4 h-4" />}
-              type="submit"
-              disabled={sending}
-            />
-          )}
+          <IconButton
+            visibility={messageBody.trim() ? "visible" : "hidden"}
+            variant={"ghost"}
+            me={1}
+            aria-label="send"
+            icon={<PaperAirplaneIcon className="w-4 h-4" />}
+            type="submit"
+            disabled={sending}
+          />
         </div>
       </form>
     </footer>
