@@ -76,14 +76,10 @@ const ChatsList = () => {
       .sort(compareUpdatedAt),
   });
 
-  // Update local chats data when the data is refreshed
-
   useEffect(() => {
-    // Subscribe to changes on the user's chatlist and contact list
     const unsubscribe = api.subscribe<IUserDetails>(
       `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {
-        // If the contact details have been updated, refresh the user details
         mutate();
       },
     );
