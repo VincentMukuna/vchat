@@ -75,10 +75,14 @@ const Message = forwardRef<any, MessageProps>(
     const { data: senderDetails } = useSWR(
       () => {
         if (isMine) return null;
-        else return message.senderID;
+        else return `${message.senderID}-details`;
       },
-      getUserDetails,
-      { revalidateIfStale: false },
+      () => getUserDetails(message.senderID),
+      {
+        revalidateIfStale: false,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+      },
     );
 
     const { data } = useSWR(
@@ -165,6 +169,9 @@ const Message = forwardRef<any, MessageProps>(
     };
 
     function shouldShowHoverCard() {
+      if (isOptimistic) {
+        return false;
+      }
       if (isMine) {
         return true;
       } else if (!isGroupMessage) {
