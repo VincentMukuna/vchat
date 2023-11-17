@@ -94,13 +94,7 @@ export const UserAvatar = ({ size }: { size?: string }) => {
     <Avatar
       size={size}
       icon={<UserIcon className="w-[26px] h-[26px]" />}
-      src={
-        user.avatarID
-          ? api
-              .getFile(SERVER.BUCKET_ID_USER_AVATARS, user?.avatarID)
-              .toString()
-          : undefined
-      }
+      src={user.avatarURL}
     />
   );
 };
