@@ -2,6 +2,8 @@ import { Query } from "appwrite";
 import { IChat, IChatMessage, IUserDetails } from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
+import { compareUpdatedAt } from "../features/Chats/ChatsList";
+import { compareCreatedAt } from "../features/Room/Room";
 type sendMessageProps = {
   senderID: string;
   recepientID: string;
@@ -15,7 +17,7 @@ export async function sendChatMessage(
   sentMessage: sendMessageProps,
 ) {
   let message = {
-    chat: chatID,
+    chatDoc: chatID,
     senderID: sentMessage.senderID,
     recepientID: sentMessage.recepientID,
     body: sentMessage.messageBody,
@@ -53,38 +55,20 @@ export async function sendChatMessage(
 }
 
 export async function getChatMessages(chatID: string, cursor?: string) {
-  let querySet = [
-    Query.orderDesc("$createdAt"),
-    Query.equal("chat", chatID),
-    Query.limit(20),
-  ];
-  if (cursor) {
-    querySet.push(Query.cursorAfter(cursor));
-  }
-  const { documents, total } = await api.listDocuments(
+  let chatDoc = (await api.getDocument(
     SERVER.DATABASE_ID,
-    SERVER.COLLECTION_ID_CHAT_MESSAGES,
-    querySet,
-  );
-  return [documents, total] as [IChatMessage[], number];
-}
+    SERVER.COLLECTION_ID_CHATS,
+    chatID,
+  )) as IChat;
 
-async function getAllChatMessages(chatID: string) {
-  let { documents } = await api.listDocuments(
-    SERVER.DATABASE_ID,
-    SERVER.COLLECTION_ID_CHAT_MESSAGES,
-    [
-      Query.orderDesc("$createdAt"),
-      Query.equal("chat", chatID),
-      Query.limit(1000),
-    ],
-  );
-
-  return documents as IChatMessage[];
+  return [
+    chatDoc.chatMessages.sort(compareCreatedAt),
+    chatDoc.chatMessages.length,
+  ] as [IChatMessage[], number];
 }
 
 export async function clearChatMessages(chatID: string) {
-  let messages = await getAllChatMessages(chatID);
+  let [messages] = await getChatMessages(chatID);
   messages.forEach((message) => {
     if (message.attachments.length > 0) {
       message.attachments.forEach((attachmentID) => {
@@ -177,7 +161,7 @@ export async function getChatUnreadMessagesCount(
     [
       Query.orderDesc("$createdAt"),
       Query.select(["read"]),
-      Query.equal("chat", chatID),
+      Query.equal("chatDoc", chatID),
       Query.equal("read", false),
       Query.notEqual("senderID", userID),
       Query.limit(10),
