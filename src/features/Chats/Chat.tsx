@@ -22,6 +22,7 @@ import { motion } from "framer-motion";
 import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
 import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
 import { compareUpdatedAt } from "./ChatsList";
+import { compareCreatedAt } from "../Room/Room";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -64,10 +65,10 @@ const Chat = ({ conversation }: IChatProps) => {
   function getLastMessageFallback() {
     if (isGroup) {
       let messages = conversation.groupMessages as IGroupMessage[];
-      return messages.sort(compareUpdatedAt).at(0);
+      return messages.sort(compareCreatedAt).at(0);
     }
     let messages = conversation.chatMessages as IChatMessage[];
-    return messages.sort(compareUpdatedAt).at(0);
+    return messages.sort(compareCreatedAt).at(0);
   }
 
   const { data: lastMessage } = useSWR(
