@@ -20,14 +20,15 @@ interface IGroup extends Models.Document {
   avatarURL: any;
   admins: string[];
   members: (IUserDetails | string)[];
-  groupMessages: IChatMessage[];
+  groupMessages: IGroupMessage[];
   changeLog: groupChangeLogTypes;
 }
 interface IGroupMessage extends Models.Document {
-  group: [IGroup] | string;
+  groupDoc: [IGroup] | string;
   senderID: string;
   body: string;
   attachments: string[];
+  read: boolean;
 }
 interface IUserPrefs extends Models.Preferences {
   detailsDocID: string;
@@ -46,7 +47,7 @@ interface IChat extends Models.Document {
 }
 
 interface IChatMessage extends Models.Document {
-  chat: IChat | string;
+  chatDoc: IChat | string;
   senderID: string;
   recepientID: string;
   body: string;
