@@ -21,6 +21,7 @@ import { grayDark, greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
 import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
+import { compareUpdatedAt } from "./ChatsList";
 
 interface IChatProps {
   conversation: IChat | IGroup;
@@ -50,7 +51,7 @@ const Chat = ({ conversation }: IChatProps) => {
           ? SERVER.COLLECTION_ID_GROUP_MESSAGES
           : SERVER.COLLECTION_ID_CHAT_MESSAGES,
         [
-          Query.equal(isGroup ? "group" : "chat", conversation?.$id),
+          Query.equal(isGroup ? "groupDoc" : "chatDoc", conversation?.$id),
           Query.orderDesc("$createdAt"),
           Query.limit(1),
         ],
@@ -60,14 +61,41 @@ const Chat = ({ conversation }: IChatProps) => {
     } catch (error) {}
   }
 
-  //only fetch data only if conversation is not a group chat or a personal chat
+  function getLastMessageFallback() {
+    if (isGroup) {
+      let messages = conversation.groupMessages as IGroupMessage[];
+      return messages.sort(compareUpdatedAt).at(0);
+    }
+    let messages = conversation.chatMessages as IChatMessage[];
+    return messages.sort(compareUpdatedAt).at(0);
+  }
 
   const { data: lastMessage } = useSWR(
     `lastMessage ${conversation.$id}`,
     getLastMessage,
-    { revalidateIfStale: false, revalidateOnFocus: false },
+    {
+      fallbackData: getLastMessageFallback(),
+      revalidateOnMount: false,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+    },
   );
+  function getMyUnreadCountFallback() {
+    if (!currentUserDetails) return undefined;
+    if (isGroup) {
+      let messages = conversation.groupMessages as IGroupMessage[];
+      let unreadCount = messages
+        .filter((msg) => msg.senderID !== currentUserDetails.$id)
+        .filter((msg) => !msg.read).length;
+      return unreadCount;
+    }
+    let messages = conversation.chatMessages as IChatMessage[];
+    let unreadCount = messages
+      .filter((msg) => msg.senderID !== currentUserDetails.$id)
+      .filter((msg) => !msg.read).length;
 
+    return unreadCount;
+  }
   const { data: unreadCount } = useSWR(
     `unread-${conversation.$id}`,
     () => {
@@ -83,16 +111,17 @@ const Chat = ({ conversation }: IChatProps) => {
       );
     },
     {
+      fallbackData: getMyUnreadCountFallback(),
       refreshInterval: 60000,
       revalidateIfStale: false,
       shouldRetryOnError: false,
+      revalidateOnMount: false,
     },
   );
 
   useEffect(() => {
     if (unreadCount && unreadCount > 0) {
       let chats = cache.get("conversations")?.data as (IChat | IGroup)[];
-
       if (!chats) return;
       chats.sort((a, b) => {
         const unreadCountA = cache.get(`unread-${a.$id}`)?.data || 0;
