@@ -97,7 +97,9 @@ const RoomDetails = () => {
 
           <p className="inline-flex gap-2 mt-3">
             <span className="font-semibold ">Message Count :</span>
-            {msgsCount}
+            {isGroup
+              ? selectedChat.groupMessages.length
+              : selectedChat.chatMessages.length}
           </p>
 
           <p className="mt-3">
