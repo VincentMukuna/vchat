@@ -23,7 +23,7 @@ import { UserIcon } from "@heroicons/react/20/solid";
 import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
 
 const tabs = [
-  { value: "chats", icon: <ChatIcon className="w-6 h-6" />, title: "Chats" },
+  { value: "", icon: <ChatIcon className="w-6 h-6" />, title: "Chats" },
   {
     value: "users",
     icon: <UserIconOutline className="w-6 h-6" />,

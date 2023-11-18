@@ -10,8 +10,6 @@ import { AnimatePresence } from "framer-motion";
 function Home() {
   const { activePage, setActivePage } = useAppSelector();
   const { selectedChat } = useChatsContext();
-
-  useEffect(() => {}, []);
   return (
     <>
       <div className="fixed inset-0 flex flex-col-reverse md:flex-row">

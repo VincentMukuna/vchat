@@ -34,17 +34,11 @@ const router = createBrowserRouter([
         element: <PrivateRoutes />,
         children: [
           {
-            index: true,
-            element: <Navigate to="home" />,
-          },
-          {
             path: "home",
             element: <Home />,
             children: [
-              {
-                path: "",
-                element: <Navigate to="chats" />,
-              },
+              { index: true, path: "", element: <Chats /> },
+
               {
                 path: "chats",
                 element: <Chats />,
