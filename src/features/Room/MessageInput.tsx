@@ -202,7 +202,7 @@ const MessageInput = ({}: InputProps) => {
   return (
     <footer className="relative flex flex-col justify-start px-2 py-1 mx-2 mb-2 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
-        <div className="flex items-center w-full h-full gap-1 ps-1">
+        <div className="flex items-center w-full h-full gap-2 ps-1">
           <div className="relative flex h-full">
             <IconButton
               as={motion.button}
@@ -229,30 +229,11 @@ const MessageInput = ({}: InputProps) => {
             )}
           </div>
 
-          {/* <textarea
-            placeholder="Type a message"
-            className={`flex bg-red-950 items-center focus:outline-none caret-secondary-main bg-transparent grow 
-            placeholder:text-slate-800 placeholder:dark:text-indigo-50 resize-none            
-            dark:text-gray1 invalid:border invalid:border-red-300 ${
-              messageBody ? "h-fit" : "h-8"
-            } `}
-            value={messageBody}
-            spellCheck={true}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit();
-              }
-            }}
-            rows={1.5}
-            onChange={handleChange}
-            onBlur={handleChange}
-            maxLength={1500}
-            style={{ lineHeight: "inherit", verticalAlign: "middle" }}
-          /> */}
-
           <Textarea
             placeholder="Type a message"
+            _placeholder={{
+              color: colorMode === "dark" ? "slate.300" : "gray.700",
+            }}
             value={messageBody}
             onChange={handleChange}
             onBlur={handleChange}
