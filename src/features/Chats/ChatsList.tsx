@@ -72,7 +72,7 @@ const ChatsList = () => {
     isLoading,
   } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
     fallbackData: ([] as (IGroup | IChat)[])
-      .concat(currentUserDetails.chats, currentUserDetails.groups)
+      .concat(currentUserDetails.groups)
       .sort(compareUpdatedAt),
   });
 
