@@ -27,6 +27,7 @@ export const MyProfile = () => {
       fontWeight={"normal"}
       bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
       textColor={colorMode === "light" ? indigo.indigo3 : "black"}
+      rounded={"md"}
     >
       <Link
         to={"profile"}
