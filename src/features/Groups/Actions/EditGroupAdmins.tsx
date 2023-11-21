@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { gray, slateDark } from "@radix-ui/colors";
 import React, { useState } from "react";
-import User, { UserAvatar, UserDescription } from "../../UsersList/User";
+import User, { UserAvatar, UserDescription } from "../../Users/User";
 import { IGroup, IUserDetails } from "../../../interfaces";
 import { useAuth } from "../../../context/AuthContext";
 import {

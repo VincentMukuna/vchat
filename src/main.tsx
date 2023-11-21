@@ -17,7 +17,7 @@ import Register from "./pages/Register";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import Home from "./pages/Home";
 import Chats from "./features/Chats/ChatsList";
-import Users from "./features/UsersList/UsersList";
+import Users from "./features/Users/UsersList";
 import Profile from "./features/Profile/Profile";
 import Settings from "./features/Settings/Settings";
 import { blueDark, gray, slateDark } from "@radix-ui/colors";

@@ -14,14 +14,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import UsersList from "../features/UsersList/UsersList";
+import UsersList from "../features/Users/UsersList";
 import toast from "react-hot-toast";
 import api from "../services/api";
 import { SERVER } from "../utils/config";
 import { Query } from "appwrite";
 import { IUserDetails } from "../interfaces";
 import React, { Children, useRef, useState } from "react";
-import User from "../features/UsersList/User";
+import User from "../features/Users/User";
 import { blue, gray, slateDark } from "@radix-ui/colors";
 import { CircleLoader, ClipLoader } from "react-spinners";
 import VSkeleton from "./VSkeleton";

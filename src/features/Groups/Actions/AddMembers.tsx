@@ -31,7 +31,7 @@ import Search from "../../../components/Search";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { useAuth } from "../../../context/AuthContext";
-import User, { UserAvatar, UserDescription } from "../../UsersList/User";
+import User, { UserAvatar, UserDescription } from "../../Users/User";
 import VSkeleton from "../../../components/VSkeleton";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 

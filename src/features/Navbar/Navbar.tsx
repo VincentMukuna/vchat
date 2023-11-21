@@ -1,16 +1,9 @@
 import { useAuth } from "../../context/AuthContext";
 import { useAppSelector } from "../../context/AppContext";
 import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
-import { getCurrentUserDetails } from "../../services/userDetailsServices";
 import { logUserOut } from "../../services/sessionServices";
-import { Link, redirect } from "react-router-dom";
-import {
-  Avatar,
-  IconButton,
-  Indicator,
-  Tooltip,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+import { IconButton, Indicator, Tooltip, useColorMode } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import {
   blue,
@@ -19,8 +12,9 @@ import {
   indigoDark,
   slateDark,
 } from "@radix-ui/colors";
-import { UserIcon } from "@heroicons/react/20/solid";
 import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
+import { MyProfile } from "./MyProfile";
+import { motion } from "framer-motion";
 
 const tabs = [
   { value: "", icon: <ChatIcon className="w-6 h-6" />, title: "Chats" },
@@ -171,49 +165,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-import React from "react";
-import { motion } from "framer-motion";
-
-export const MyProfile = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
-  const {
-    currentUser,
-    currentUserDetails,
-    setCurrentUserDetails,
-    setCurrentUser,
-  } = useAuth();
-  if (!currentUser || !currentUserDetails) return null;
-  const { setActivePage } = useAppSelector();
-
-  return (
-    <Tooltip
-      label="My Profile"
-      hasArrow
-      placement="right"
-      py={2}
-      fontSize={"sm"}
-      fontWeight={"normal"}
-      bg={colorMode === "dark" ? indigoDark.indigo1 : indigo.indigo8}
-      textColor={colorMode === "dark" ? indigo.indigo3 : "black"}
-    >
-      <Link
-        to={"profile"}
-        className="mt-4 "
-        onClick={() => {
-          redirect("profile");
-          getCurrentUserDetails(currentUser).then((deets) => {
-            setCurrentUserDetails(deets);
-          });
-          setActivePage("Profile");
-        }}
-      >
-        <Avatar
-          size={"md"}
-          src={currentUserDetails.avatarURL}
-          icon={<UserIcon className="w-7 h-7" />}
-        />
-      </Link>
-    </Tooltip>
-  );
-};

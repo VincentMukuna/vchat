@@ -18,7 +18,7 @@ import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark, slateDark } from "@radix-ui/colors";
 import { Outlet } from "react-router-dom";
-import { MyProfile } from "../Navbar/Navbar";
+import { MyProfile } from "../Navbar/MyProfile";
 import { AnimatePresence, motion } from "framer-motion";
 const Sidebar = () => {
   const { activePage } = useAppSelector();

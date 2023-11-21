@@ -17,7 +17,7 @@ import { motion } from "framer-motion";
 import { useStepper } from "./FormStepper";
 import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
-import User, { UserAvatar, UserDescription } from "../../UsersList/User";
+import User, { UserAvatar, UserDescription } from "../../Users/User";
 import Search from "../../../components/Search";
 import { useInfinite } from "../../../hooks/useInfinite";
 import { UserIcon } from "@heroicons/react/20/solid";
