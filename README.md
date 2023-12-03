@@ -33,8 +33,8 @@ https://github.com/VincentMukuna/vchat/assets/93912489/01db2529-a858-41ab-9d2f-7
 2. Add a new web app platform, typing
    in your local IP address (or `localhost`).
 3. Click on "Databases" and make a new database
-4. Ensure your schema matches this
-5. Click on "Storage" and create the following buckets
+4. Follow this [schema](schema.json)
+5. Click on "Storage" and create the following [buckets](buckets.json)
 
 ## Running VChat
 
