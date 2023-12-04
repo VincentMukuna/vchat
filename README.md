@@ -43,6 +43,10 @@ https://github.com/VincentMukuna/vchat/assets/93912489/01db2529-a858-41ab-9d2f-7
    ```bash
    npm install
    ```
+4. Install appwrite CLI:
+   ```bash
+   npm install --global appwrite-cli
+   ```
 
 ## Appwrite Setup
 
