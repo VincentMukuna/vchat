@@ -45,7 +45,7 @@ https://github.com/VincentMukuna/vchat/assets/93912489/01db2529-a858-41ab-9d2f-7
    ```
 4. Install appwrite CLI:
    ```bash
-   npm install --global appwrite-cli
+   npm install -g appwrite-cli
    ```
 
 ## Appwrite Setup
@@ -56,15 +56,21 @@ https://github.com/VincentMukuna/vchat/assets/93912489/01db2529-a858-41ab-9d2f-7
    in your local IP address (or `localhost`).
 3. Replace projectId and projectName in `appwrite.json` with your project's
 
-4. Deploy
+4. Login to appwrite from the cli
+
+   ```bash
+      appwrite login
+   ```
+
+5. Deploy
 
    ```bash
       appwrite deploy
    ```
 
-5. Edit `config.js` to include the relevant project's API endpoints.
+6. Edit `config.js` to include the relevant project's API endpoints.
 
-6. Start the development server:
+7. Start the development server:
    ```bash
       npm run dev
    ```
