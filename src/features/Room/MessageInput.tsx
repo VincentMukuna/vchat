@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { sendChatMessage } from "../../services/chatMessageServices";
 import { useChatsContext } from "../../context/ChatsContext";
 import { IChatMessage, IGroupMessage, IUserDetails } from "../../interfaces";
@@ -6,20 +6,12 @@ import { useAuth } from "../../context/AuthContext";
 import { sendGroupMessage } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
 import { useSWRConfig } from "swr";
-import { PaperClipIcon, PlusIcon } from "@heroicons/react/20/solid";
-import {
-  Badge,
-  IconButton,
-  Image,
-  Input,
-  Textarea,
-  useColorMode,
-} from "@chakra-ui/react";
+import { PaperClipIcon } from "@heroicons/react/20/solid";
+import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
   FileSizeValidator,
-  Validator,
 } from "use-file-picker/validators";
 import toast from "react-hot-toast";
 import { FileTypeValidator } from "../../utils/fileValidators";
@@ -31,7 +23,18 @@ type InputProps = {};
 
 export type Message = IChatMessage | IGroupMessage;
 
+function createOptimisticMessageProps() {
+  return {
+    $id: new Date().toISOString(),
+    $permissions: [] as string[],
+    $createdAt: new Date().toISOString(),
+    $updatedAt: new Date().toISOString(),
+    optimistic: true,
+  };
+}
+
 const MessageInput = ({}: InputProps) => {
+  const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   const [sending, setSending] = useState(false);
@@ -41,6 +44,12 @@ const MessageInput = ({}: InputProps) => {
   const [attachments, setAttachments] = useState<File[]>([]);
   const { colorMode } = useColorMode();
   let { mutate, cache } = useSWRConfig();
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [selectedChat]);
 
   const chatMessagesKey = selectedChat.$id + "-messages";
   const { openFilePicker, filesContent, clear } = useFilePicker({
@@ -96,30 +105,22 @@ const MessageInput = ({}: InputProps) => {
       ? {
           $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
           $databaseId: SERVER.DATABASE_ID,
-          $createdAt: new Date().toISOString(),
-          $id: new Date().toISOString(),
-          $permissions: [""],
-          $updatedAt: new Date().toISOString(),
           attachments: filesContent,
           senderID: currentUserDetails.$id,
           body: messageBody,
           groupDoc: selectedChat.$id,
-          optimistic: true,
+          ...createOptimisticMessageProps(),
         }
       : {
           $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
           $databaseId: SERVER.DATABASE_ID,
-          $createdAt: new Date().toISOString(),
-          $id: new Date().toISOString() + Math.random(),
-          $permissions: [""],
-          $updatedAt: new Date().toISOString(),
           senderID: currentUserDetails.$id,
           recepientID: recepient?.$id,
           body: messageBody,
           read: isPersonal ? true : false,
           chatDoc: selectedChat.$id,
           attachments: filesContent,
-          optimistic: true,
+          ...createOptimisticMessageProps(),
         };
 
     const roomMessages = cache.get(chatMessagesKey)?.data as (
@@ -141,12 +142,11 @@ const MessageInput = ({}: InputProps) => {
     let msgSentPromise = isGroup
       ? sendGroupMessage(selectedChat.$id, {
           body: message.body,
-          groupDoc: message.groupDoc as string,
           senderID: message.senderID,
           attachments: attachments,
         })
       : sendChatMessage(selectedChat.$id, {
-          messageBody: messageBody,
+          body: messageBody,
           recepientID: (recepient as IUserDetails).$id,
           senderID: currentUserDetails.$id,
           attachments: attachments,
@@ -230,6 +230,7 @@ const MessageInput = ({}: InputProps) => {
           </div>
 
           <Textarea
+            ref={inputRef}
             placeholder="Type a message"
             _placeholder={{
               color: colorMode === "dark" ? "slate.300" : "gray.700",
@@ -247,16 +248,15 @@ const MessageInput = ({}: InputProps) => {
             variant={"unstyled"}
             resize={"none"}
             rows={1}
+            autoFocus
           />
 
           <IconButton
-            visibility={messageBody.trim() ? "visible" : "hidden"}
             variant={"ghost"}
-            me={1}
             aria-label="send"
             icon={<PaperAirplaneIcon className="w-4 h-4" />}
             type="submit"
-            disabled={sending}
+            isDisabled={sending || !messageBody.trim()}
           />
         </div>
       </form>
