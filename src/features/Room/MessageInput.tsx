@@ -200,7 +200,7 @@ const MessageInput = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="relative flex flex-col justify-start px-2 py-1 mx-2 mb-2 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray8 dark:bg-dark-slate1">
+    <footer className="relative flex flex-col justify-start px-2 py-1 mx-2 mb-2 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray5 dark:bg-dark-slate1">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
         <div className="flex items-center w-full h-full gap-2 ps-1">
           <div className="relative flex h-full">
@@ -244,7 +244,7 @@ const MessageInput = ({}: InputProps) => {
                 handleSubmit();
               }
             }}
-            color={colorMode === "dark" ? slate.slate2 : slate.slate12}
+            color={colorMode === "dark" ? slate.slate2 : "black"}
             variant={"unstyled"}
             resize={"none"}
             rows={1}
