@@ -21,8 +21,7 @@ import { grayDark, greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
 import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
-import { compareUpdatedAt } from "./ChatsList";
-import { compareCreatedAt } from "../Room/Room";
+import { compareCreatedAt } from "../../utils";
 
 interface IChatProps {
   conversation: IChat | IGroup;

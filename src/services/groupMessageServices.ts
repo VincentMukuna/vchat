@@ -4,7 +4,7 @@ import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
 import { Query } from "appwrite";
 import { updateUserDetails } from "./userDetailsServices";
 import { mutate } from "swr";
-import { compareCreatedAt } from "../features/Room/Room";
+import { compareCreatedAt } from "../utils";
 
 type IInitGroup = {
   name: string;

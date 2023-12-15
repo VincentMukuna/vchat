@@ -15,19 +15,7 @@ import { UserPlusIcon } from "@heroicons/react/20/solid";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { VARIANTS_MANAGER } from "../../services/variants";
-
-export function compareUpdatedAt(a: any, b: any) {
-  const dateA = new Date(a.$updatedAt);
-  const dateB = new Date(b.$updatedAt);
-
-  if (dateA < dateB) {
-    return 1; // Sort b before a
-  } else if (dateA > dateB) {
-    return -1; // Sort a before b
-  } else {
-    return 0; // Dates are equal
-  }
-}
+import { compareUpdatedAt } from "../../utils";
 
 export async function getConversations(userDetailsID: string) {
   if (!userDetailsID) return [];

@@ -26,16 +26,7 @@ import {
 import useSWR, { KeyedMutator, useSWRConfig } from "swr";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
-import {
-  Box,
-  Center,
-  useColorMode,
-  Button,
-  Alert,
-  AlertIcon,
-  AlertTitle,
-  AlertDescription,
-} from "@chakra-ui/react";
+import { Box, Center, useColorMode } from "@chakra-ui/react";
 import { ClipLoader } from "react-spinners";
 import { blue, blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
@@ -44,19 +35,7 @@ import useSWRInfinite, { unstable_serialize } from "swr/infinite";
 import toast from "react-hot-toast";
 import { useInfinite } from "../../hooks/useInfinite";
 import { VARIANTS_MANAGER } from "../../services/variants";
-
-export function compareCreatedAt(a: any, b: any) {
-  const dateA = new Date(a.$createdAt);
-  const dateB = new Date(b.$createdAt);
-
-  if (dateA < dateB) {
-    return 1;
-  } else if (dateA > dateB) {
-    return -1;
-  } else {
-    return 0;
-  }
-}
+import { compareCreatedAt } from "../../utils";
 
 function Room() {
   const { currentUserDetails } = useAuth();
