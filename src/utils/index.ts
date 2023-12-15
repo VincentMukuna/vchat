@@ -23,3 +23,5 @@ export function compareCreatedAt(a: any, b: any) {
     return 0;
   }
 }
+
+export function composeMessage() {}

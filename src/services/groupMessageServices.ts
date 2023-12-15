@@ -66,7 +66,6 @@ export async function sendGroupMessage(
   message: {
     senderID: string;
     body: string;
-    groupDoc: string;
     attachments: File[] | null;
   },
 ) {
@@ -86,6 +85,7 @@ export async function sendGroupMessage(
       SERVER.COLLECTION_ID_GROUP_MESSAGES,
       {
         ...message,
+        groupDoc: groupID,
         attachments: attachmentIDs,
       },
     );

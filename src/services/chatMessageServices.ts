@@ -2,12 +2,11 @@ import { Query } from "appwrite";
 import { IChat, IChatMessage, IUserDetails } from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { compareUpdatedAt } from "../features/Chats/ChatsList";
-import { compareCreatedAt } from "../features/Room/Room";
+import { compareCreatedAt } from "../utils";
 type sendMessageProps = {
   senderID: string;
   recepientID: string;
-  messageBody: string;
+  body: string;
   attachments?: File[];
   read: boolean;
 };
@@ -20,7 +19,7 @@ export async function sendChatMessage(
     chatDoc: chatID,
     senderID: sentMessage.senderID,
     recepientID: sentMessage.recepientID,
-    body: sentMessage.messageBody,
+    body: sentMessage.body,
     read: sentMessage.read,
     attachments: sentMessage.attachments,
   };
