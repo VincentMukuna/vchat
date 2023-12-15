@@ -266,7 +266,7 @@ const Message = forwardRef<any, MessageProps>(
                         />
                       </InputRightElement>
 
-                      <Textarea
+                      <Input
                         autoFocus
                         value={newMessage}
                         onBlur={() => {
