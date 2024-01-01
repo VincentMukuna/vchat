@@ -76,7 +76,9 @@ const MessageInput = ({}: InputProps) => {
     },
   });
 
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
   const isPersonal: boolean =
     !isGroup &&
     selectedChat.participants.every(

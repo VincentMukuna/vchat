@@ -48,7 +48,9 @@ function Room() {
 
   if (!currentUserDetails) return null;
 
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
 
   const isPersonal =
     selectedChat &&

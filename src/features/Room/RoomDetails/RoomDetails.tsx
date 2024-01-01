@@ -29,7 +29,9 @@ const RoomDetails = () => {
 
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
   const isAdmin =
     isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
 
@@ -185,7 +187,9 @@ export default RoomDetails;
 
 export const RoomDetailsHeader = () => {
   const { recepient, selectedChat } = useChatsContext();
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
   return (
     <div className="text-lg font-bold">
       {isGroup

@@ -13,6 +13,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { deleteContact } from "../../../services/userDetailsServices";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { motion } from "framer-motion";
+import { SERVER } from "../../../utils/config";
 
 export const RoomDetailsFooter = () => {
   const { cache } = useSWRConfig();
@@ -20,7 +21,9 @@ export const RoomDetailsFooter = () => {
 
   if (selectedChat === undefined) return null;
   const { currentUserDetails } = useAuth();
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
   const isPersonal =
     !isGroup &&
     selectedChat.participants.every(

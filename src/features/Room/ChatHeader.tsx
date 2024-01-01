@@ -40,6 +40,7 @@ import {
 import { deleteContact } from "../../services/userDetailsServices";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { SERVER } from "../../utils/config";
 
 function ChatHeader() {
   const { currentUserDetails } = useAuth();
@@ -57,7 +58,9 @@ function ChatHeader() {
   } = useChatsContext();
   if (selectedChat === undefined || !currentUserDetails) return null;
 
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
   const isPersonal =
     !isGroup &&
     selectedChat.participants.every(

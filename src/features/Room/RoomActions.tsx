@@ -18,6 +18,7 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/20/solid";
 import { clearGroupMessages } from "../../services/groupMessageServices";
+import { SERVER } from "../../utils/config";
 
 const RoomActions = () => {
   const { selectedChat } = useChatsContext();
@@ -28,7 +29,9 @@ const RoomActions = () => {
   if (!currentUserDetails) return null;
   if (!selectedChat) return null;
 
-  const isGroup = !!(selectedChat?.$collectionId === "groups");
+  const isGroup = !!(
+    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
+  );
   const isAdmin =
     isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
 
