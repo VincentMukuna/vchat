@@ -52,6 +52,7 @@ const Navbar = () => {
           return (
             <Tooltip
               key={i}
+              openDelay={300}
               label={tab.title}
               hasArrow
               placement="right"
