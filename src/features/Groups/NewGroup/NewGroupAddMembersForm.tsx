@@ -19,7 +19,7 @@ import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
 import Search from "../../../components/Search";
-import { useInfinite } from "../../../hooks/useInfinite";
+import { useInfinite } from "../../../utils/hooks/useInfinite";
 import { UserIcon } from "@heroicons/react/20/solid";
 import VSkeleton from "../../../components/VSkeleton";
 

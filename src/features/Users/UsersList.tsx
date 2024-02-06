@@ -5,7 +5,7 @@ import User, { UserAbout, UserAvatar, UserDescription } from "./User";
 import { Button, Stack, useColorMode } from "@chakra-ui/react";
 import { blueDark, gray } from "@radix-ui/colors";
 import Search from "../../components/Search";
-import { useInfinite } from "../../hooks/useInfinite";
+import { useInfinite } from "../../utils/hooks/useInfinite";
 import { motion } from "framer-motion";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import VSkeleton from "../../components/VSkeleton";

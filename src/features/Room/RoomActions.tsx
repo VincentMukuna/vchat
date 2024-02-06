@@ -5,7 +5,7 @@ import { clearChatMessages } from "../../services/chatMessageServices";
 import toast from "react-hot-toast";
 import { openModal } from "../../components/Modal";
 import EditMembers from "../Groups/Actions/EditMembers";
-import { IGroup } from "../../interfaces";
+import { GroupChatDetails } from "../../interfaces";
 import AddMembers from "../Groups/Actions/AddMembers";
 import { mutate, useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
@@ -33,7 +33,7 @@ const RoomActions = () => {
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
   const isAdmin =
-    isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
+    isGroup && (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
 
   async function handleClearRoomMessages() {
     const chatMessagesKey = selectedChat!.$id + "-messages";
@@ -88,7 +88,7 @@ const RoomActions = () => {
           <MenuItem
             py={"1"}
             onClick={() =>
-              openModal(<AddMembers group={selectedChat as IGroup} />)
+              openModal(<AddMembers group={selectedChat as GroupChatDetails} />)
             }
             bg={"transparent"}
             icon={<UserPlusIcon className="w-4 h-4" />}
@@ -99,7 +99,7 @@ const RoomActions = () => {
           <MenuItem
             py={"1"}
             onClick={() =>
-              openModal(<EditMembers group={selectedChat as IGroup} />)
+              openModal(<EditMembers group={selectedChat as GroupChatDetails} />)
             }
             bg={"transparent"}
             icon={<UserMinusIcon className="w-4 h-4" />}
@@ -113,7 +113,7 @@ const RoomActions = () => {
             bg={"transparent"}
             onClick={() =>
               openModal(
-                <EditGroupAdmins selectedGroup={selectedChat as IGroup} />,
+                <EditGroupAdmins selectedGroup={selectedChat as GroupChatDetails} />,
               )
             }
             icon={<PencilIcon className="w-4 h-4" />}

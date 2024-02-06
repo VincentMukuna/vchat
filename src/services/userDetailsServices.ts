@@ -1,7 +1,7 @@
 import { AppwriteException, Models, Query } from "appwrite";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { IChat, IUserDetails } from "../interfaces";
+import { DirectChatDetails, IUserDetails } from "../interfaces";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";
 import toast from "react-hot-toast";
 import { mutate } from "swr";
@@ -68,7 +68,7 @@ export async function editUserDetails(
 export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
-): Promise<{ existed: boolean; chat: IChat }> {
+): Promise<{ existed: boolean; chat: DirectChatDetails }> {
   const isPersonal = adderDetailsID === adderDetailsID;
   //check if chat doc exists
   let chats = await getUserChats(adderDetailsID);
@@ -78,9 +78,9 @@ export async function addContact(
   }));
   for (let chat of chatsArray) {
     if (isPersonal && chat.participants.every((id) => id === addeeDetailsID)) {
-      return { existed: true, chat: chats[chat.chatIndex] as IChat };
+      return { existed: true, chat: chats[chat.chatIndex] as DirectChatDetails };
     } else if (chat.participants.includes(addeeDetailsID)) {
-      return { existed: true, chat: chats[chat.chatIndex] as IChat };
+      return { existed: true, chat: chats[chat.chatIndex] as DirectChatDetails };
     }
   }
 
@@ -102,7 +102,7 @@ export async function addContact(
     { changeLog: "newchat" },
   );
 
-  return { existed: false, chat: doc as IChat };
+  return { existed: false, chat: doc as DirectChatDetails };
 }
 
 export async function deleteContact(chatID: string, contactDetailsID: string) {

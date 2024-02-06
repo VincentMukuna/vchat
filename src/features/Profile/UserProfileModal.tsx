@@ -20,7 +20,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import { mutate, useSWRConfig } from "swr";
 import toast from "react-hot-toast";
-import { IChat, IGroup, IUserDetails } from "../../interfaces";
+import { DirectChatDetails, GroupChatDetails, IUserDetails } from "../../interfaces";
 import { motion } from "framer-motion";
 
 interface UserProfileProps {
@@ -40,15 +40,15 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
 
   function getConversations() {
     if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (IGroup | IChat)[];
-    } else return [] as (IGroup | IChat)[];
+      return cache.get("conversations")?.data as (GroupChatDetails | DirectChatDetails)[];
+    } else return [] as (GroupChatDetails | DirectChatDetails)[];
   }
   const handleClick = async () => {
     setLoading(true);
     let chats = getConversations().filter(
       (convo) => convo.$collectionId === "chats",
-    ) as IChat[];
-    let chatWithUser: IChat | undefined;
+    ) as DirectChatDetails[];
+    let chatWithUser: DirectChatDetails | undefined;
 
     if (isPersonal) {
       chatWithUser = chats.find((chat) =>

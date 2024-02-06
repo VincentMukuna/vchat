@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { sendChatMessage } from "../../services/chatMessageServices";
 import { useChatsContext } from "../../context/ChatsContext";
-import { IChatMessage, IGroupMessage, IUserDetails } from "../../interfaces";
+import { DirectMessageDetails, GroupMessageDetails, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import { sendGroupMessage } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
@@ -21,7 +21,7 @@ import { slate } from "@radix-ui/colors";
 
 type InputProps = {};
 
-export type Message = IChatMessage | IGroupMessage;
+export type Message = DirectMessageDetails | GroupMessageDetails;
 
 function createOptimisticMessageProps() {
   return {
@@ -126,8 +126,8 @@ const MessageInput = ({}: InputProps) => {
         };
 
     const roomMessages = cache.get(chatMessagesKey)?.data as (
-      | IChatMessage
-      | IGroupMessage
+      | DirectMessageDetails
+      | GroupMessageDetails
     )[];
 
     const newMessages = [message, ...roomMessages];
@@ -156,8 +156,8 @@ const MessageInput = ({}: InputProps) => {
         });
 
     let messages = cache.get(chatMessagesKey)?.data as (
-      | IChatMessage
-      | IGroupMessage
+      | DirectMessageDetails
+      | GroupMessageDetails
     )[];
 
     msgSentPromise.then((msg) => {
@@ -181,8 +181,8 @@ const MessageInput = ({}: InputProps) => {
       );
 
       let lastMessage = cache.get(`lastMessage ${selectedChat.$id}`)?.data as
-        | IChatMessage
-        | IGroupMessage;
+        | DirectMessageDetails
+        | GroupMessageDetails;
       if (lastMessage?.$id === message.$id) {
         mutate(`lastMessage ${selectedChat.$id}`, messages.at(0), {
           revalidate: false,

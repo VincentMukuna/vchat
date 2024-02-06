@@ -1,4 +1,4 @@
-import { IChat, IGroup } from "../../../interfaces";
+import { DirectChatDetails, GroupChatDetails } from "../../../interfaces";
 import {
   updateGroupAvatar,
   updateGroupDetails,
@@ -30,7 +30,7 @@ import { PencilIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { motion } from "framer-motion";
 
-export const EditGroupDetailsForm = ({ group }: { group: IGroup }) => {
+export const EditGroupDetailsForm = ({ group }: { group: GroupChatDetails }) => {
   const { setSelectedChat } = useChatsContext();
   const { cache } = useSWRConfig();
   const { onClose } = useModalContext();
@@ -63,7 +63,7 @@ export const EditGroupDetailsForm = ({ group }: { group: IGroup }) => {
       });
 
       promise.then((updatedChatDoc) => {
-        let chats = cache.get("conversations")?.data as (IChat | IGroup)[];
+        let chats = cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
         let updatedChats = chats.map((chat) => {
           if (chat.$id === group.$id) {
             return {
@@ -98,7 +98,7 @@ export const EditGroupDetailsForm = ({ group }: { group: IGroup }) => {
     try {
       setSaving(true);
       let updatedGroupDoc = await updateGroupDetails(group.$id, details);
-      let chats = cache.get("conversations")?.data as (IChat | IGroup)[];
+      let chats = cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
       let updatedChats = chats.map((chat) => {
         if (chat.$id === updatedGroupDoc.$id) {
           return updatedGroupDoc;

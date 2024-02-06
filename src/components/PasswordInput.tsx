@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/20/solid";
 import React, { useRef } from "react";
-import usePassword from "../hooks/usePassword";
+import usePassword from "../utils/hooks/usePassword";
 import { tomatoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 

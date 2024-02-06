@@ -12,7 +12,7 @@ import {
 import { gray, slateDark } from "@radix-ui/colors";
 import React, { useState } from "react";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
-import { IGroup, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces";
 import { useAuth } from "../../../context/AuthContext";
 import {
   getGroupDetails,
@@ -23,7 +23,7 @@ import toast from "react-hot-toast";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { motion } from "framer-motion";
 
-const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: IGroup }) => {
+const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: GroupChatDetails }) => {
   const { currentUserDetails } = useAuth();
   const { setSelectedChat } = useChatsContext();
   if (!currentUserDetails) return null;

@@ -1,6 +1,6 @@
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { IChat, IGroup, IUserDetails } from "../../../interfaces";
+import { DirectChatDetails, GroupChatDetails, IUserDetails } from "../../../interfaces";
 import {
   deleteGroup,
   leaveGroup,
@@ -32,10 +32,10 @@ export const RoomDetailsFooter = () => {
     );
   const isAdmin =
     isGroup &&
-    (selectedChat as IGroup).admins.includes(currentUserDetails!.$id);
+    (selectedChat as GroupChatDetails).admins.includes(currentUserDetails!.$id);
   function getConversations() {
     if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (IChat | IGroup)[];
+      return cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
     } else return [];
   }
 
@@ -57,7 +57,7 @@ export const RoomDetailsFooter = () => {
       promise = deleteGroup(selectedChat.$id);
     } else {
       promise = deleteContact(
-        (selectedChat as IChat).$id,
+        (selectedChat as DirectChatDetails).$id,
         (recepient as any).$id,
       );
     }

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Chat from "./Chat";
-import { IChat, IGroup, IUserDetails } from "../../interfaces";
+import { DirectChatDetails, GroupChatDetails, IUserDetails } from "../../interfaces";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../services/api";
 import { SERVER } from "../../utils/config";
@@ -19,19 +19,19 @@ import { compareUpdatedAt } from "../../utils";
 
 export async function getConversations(userDetailsID: string) {
   if (!userDetailsID) return [];
-  let conversations: (IGroup | IChat)[] = [];
+  let conversations: (GroupChatDetails | DirectChatDetails)[] = [];
 
   const res = await Promise.allSettled([
     getUserChats(userDetailsID),
     getUserGroups(userDetailsID),
   ]);
 
-  conversations = ([] as (IChat | IGroup)[]).concat(
+  conversations = ([] as (DirectChatDetails | GroupChatDetails)[]).concat(
     ...(res
       .map((resVal) =>
         resVal.status === "fulfilled" ? resVal.value : undefined,
       )
-      .filter((x) => x !== undefined) as (IChat | IGroup)[][]),
+      .filter((x) => x !== undefined) as (DirectChatDetails | GroupChatDetails)[][]),
   );
 
   conversations.sort(compareUpdatedAt);
@@ -59,7 +59,7 @@ const ChatsList = () => {
     mutate,
     isLoading,
   } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
-    fallbackData: ([] as (IGroup | IChat)[])
+    fallbackData: ([] as (GroupChatDetails | DirectChatDetails)[])
       .concat(currentUserDetails.groups)
       .sort(compareUpdatedAt),
   });

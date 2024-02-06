@@ -1,14 +1,14 @@
 import { useContext, useState, createContext } from "react";
-import { IChat, IGroup, IUserDetails } from "../interfaces";
+import { DirectChatDetails, GroupChatDetails, IUserDetails } from "../interfaces";
 
 type ChatsProviderProps = {
   children: React.JSX.Element[] | React.JSX.Element;
 };
 
 interface IChatsContextData {
-  selectedChat: IChat | IGroup | undefined;
+  selectedChat: DirectChatDetails | GroupChatDetails | undefined;
   setSelectedChat: React.Dispatch<
-    React.SetStateAction<IGroup | IChat | undefined>
+    React.SetStateAction<GroupChatDetails | DirectChatDetails | undefined>
   >;
   recepient: IUserDetails | undefined;
   setRecepient: React.Dispatch<React.SetStateAction<IUserDetails | undefined>>;
@@ -18,7 +18,7 @@ interface IChatsContextData {
 const ChatsContext = createContext<IChatsContextData | null>(null);
 
 export const ChatsProvider = ({ children }: ChatsProviderProps) => {
-  const [selectedChat, setSelectedChat] = useState<IChat | IGroup>();
+  const [selectedChat, setSelectedChat] = useState<DirectChatDetails | GroupChatDetails>();
   const [recepient, setRecepient] = useState<IUserDetails>();
   const [msgsCount, setMsgsCount] = useState(0);
 

@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 
 import {
   IUserDetails,
-  IChat,
-  IGroup,
-  IChatMessage,
-  IGroupMessage,
+  DirectChatDetails,
+  GroupChatDetails,
+  DirectMessageDetails,
+  GroupMessageDetails,
 } from "../../interfaces";
 import { getFormatedDate } from "../../services/dateServices";
 import { useAuth } from "../../context/AuthContext";
@@ -24,7 +24,7 @@ import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
 import { compareCreatedAt } from "../../utils";
 
 interface IChatProps {
-  conversation: IChat | IGroup;
+  conversation: DirectChatDetails | GroupChatDetails;
 }
 
 const Chat = ({ conversation }: IChatProps) => {
@@ -59,16 +59,16 @@ const Chat = ({ conversation }: IChatProps) => {
         ],
       );
 
-      return documents[0] as IChatMessage | IGroupMessage;
+      return documents[0] as DirectMessageDetails | GroupMessageDetails;
     } catch (error) {}
   }
 
   function getLastMessageFallback() {
     if (isGroup) {
-      let messages = conversation.groupMessages as IGroupMessage[];
+      let messages = conversation.groupMessages as GroupMessageDetails[];
       return messages.sort(compareCreatedAt).at(0);
     }
-    let messages = conversation.chatMessages as IChatMessage[];
+    let messages = conversation.chatMessages as DirectMessageDetails[];
     return messages.sort(compareCreatedAt).at(0);
   }
 
@@ -85,13 +85,13 @@ const Chat = ({ conversation }: IChatProps) => {
   function getMyUnreadCountFallback() {
     if (!currentUserDetails) return undefined;
     if (isGroup) {
-      let messages = conversation.groupMessages as IGroupMessage[];
+      let messages = conversation.groupMessages as GroupMessageDetails[];
       let unreadCount = messages
         .filter((msg) => msg.senderID !== currentUserDetails.$id)
         .filter((msg) => !msg.read).length;
       return unreadCount;
     }
-    let messages = conversation.chatMessages as IChatMessage[];
+    let messages = conversation.chatMessages as DirectMessageDetails[];
     let unreadCount = messages
       .filter((msg) => msg.senderID !== currentUserDetails.$id)
       .filter((msg) => !msg.read).length;
@@ -123,7 +123,7 @@ const Chat = ({ conversation }: IChatProps) => {
 
   useEffect(() => {
     if (unreadCount && unreadCount > 0) {
-      let chats = cache.get("conversations")?.data as (IChat | IGroup)[];
+      let chats = cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
       if (!chats) return;
       chats.sort((a, b) => {
         const unreadCountA = cache.get(`unread-${a.$id}`)?.data || 0;
@@ -141,7 +141,7 @@ const Chat = ({ conversation }: IChatProps) => {
         return 0;
       });
 
-      globalMutate<(IChat | IGroup)[]>("conversations", chats, {
+      globalMutate<(DirectChatDetails | GroupChatDetails)[]>("conversations", chats, {
         revalidate: false,
       });
     }

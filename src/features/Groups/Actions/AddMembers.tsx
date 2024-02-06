@@ -16,7 +16,7 @@ import {
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
-import { IGroup, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces";
 import useSWR, { mutate, useSWRConfig } from "swr";
 import {
   editMembers,
@@ -26,7 +26,7 @@ import { blueDark, gray, slateDark } from "@radix-ui/colors";
 import { getUsers, searchUsers } from "../../../services/userDetailsServices";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useInfinite } from "../../../hooks/useInfinite";
+import { useInfinite } from "../../../utils/hooks/useInfinite";
 import Search from "../../../components/Search";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
@@ -35,7 +35,7 @@ import User, { UserAvatar, UserDescription } from "../../Users/User";
 import VSkeleton from "../../../components/VSkeleton";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 
-const AddMembers = ({ group }: { group: IGroup }) => {
+const AddMembers = ({ group }: { group: GroupChatDetails }) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>

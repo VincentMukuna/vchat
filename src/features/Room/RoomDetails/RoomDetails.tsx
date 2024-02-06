@@ -1,5 +1,5 @@
 import { useChatsContext } from "../../../context/ChatsContext";
-import { IGroup, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces";
 import { getGroupDetails } from "../../../services/groupMessageServices";
 import useSWR from "swr";
 import { getChatDoc } from "../../../services/chatMessageServices";
@@ -33,7 +33,7 @@ const RoomDetails = () => {
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
   const isAdmin =
-    isGroup && (selectedChat as IGroup).admins.includes(currentUserDetails.$id);
+    isGroup && (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
 
   const { data: roomDetails } = useSWR(
     () => {
@@ -82,7 +82,7 @@ const RoomDetails = () => {
                   variant={"outline"}
                   onClick={() =>
                     openModal(
-                      <EditGroupDetailsForm group={selectedChat as IGroup} />,
+                      <EditGroupDetailsForm group={selectedChat as GroupChatDetails} />,
                     )
                   }
                   icon={

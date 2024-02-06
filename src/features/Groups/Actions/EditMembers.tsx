@@ -16,7 +16,7 @@ import {
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
-import { IGroup, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces";
 import useSWR, { mutate, useSWRConfig } from "swr";
 import {
   editMembers,
@@ -31,7 +31,7 @@ import { UserIcon } from "@heroicons/react/20/solid";
 import VSkeleton from "../../../components/VSkeleton";
 import { motion } from "framer-motion";
 
-const EditMembers = ({ group }: { group: IGroup }) => {
+const EditMembers = ({ group }: { group: GroupChatDetails }) => {
   const { data: roomDetails, isLoading } = useSWR(`details ${group.$id}`, () =>
     getGroupDetails(group.$id),
   );
