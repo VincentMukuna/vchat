@@ -68,9 +68,7 @@ const Message = forwardRef<any, MessageProps>(
     const nextSameSender = next?.senderID === message.senderID;
 
     const { selectedMessages, setSelectedMessages } = useRoomContext();
-    const isSelected = selectedMessages.some(
-      (msg) => msg.messageID === message.$id,
-    );
+    const isSelected = selectedMessages.some((msg) => msg.$id === message.$id);
 
     const { data: senderDetails } = useSWR(
       () => {
@@ -201,13 +199,10 @@ const Message = forwardRef<any, MessageProps>(
         tabIndex={0}
         onClick={() => {
           if (!isSelected) {
-            setSelectedMessages((prev) => [
-              ...prev,
-              { messageID: message.$id, senderID: message.senderID },
-            ]);
+            setSelectedMessages((prev) => [...prev, message]);
           } else {
             setSelectedMessages((prev) =>
-              prev.filter((msg) => msg.messageID !== message.$id),
+              prev.filter((msg) => msg.$id !== message.$id),
             );
           }
         }}

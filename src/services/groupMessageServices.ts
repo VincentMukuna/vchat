@@ -111,9 +111,9 @@ export async function sendGroupMessage(
 export async function deleteGroupMessage(
   deleterID: string,
   groupID: string,
-  messageID: string,
-  attachments: string[] = [],
+  message: GroupMessageDetails,
 ) {
+  let attachments = message.attachments;
   if (attachments.every((attachment) => typeof attachment === "string")) {
     for (const attachmentID of attachments) {
       api
@@ -124,7 +124,7 @@ export async function deleteGroupMessage(
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUP_MESSAGES,
-    messageID,
+    message.$id,
   );
   api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUPS, groupID, {
     changeLog: "deletetext",
@@ -261,14 +261,13 @@ export async function getGroupUnreadMessagesCount(
 export async function deleteSelectedGroupMessages({
   deleter,
   groupID,
-  messageIDs,
+  messages,
 }: {
   deleter: string;
   groupID: string;
-  messageIDs: string[];
+  messages: GroupMessageDetails[];
 }) {
-  for (const messageID of messageIDs) {
-    await deleteGroupMessage(deleter, groupID, messageID);
+  for (const message of messages) {
+    await deleteGroupMessage(deleter, groupID, message);
   }
-  return true;
 }

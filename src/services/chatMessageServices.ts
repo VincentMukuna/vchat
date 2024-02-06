@@ -1,8 +1,12 @@
 import { Query } from "appwrite";
-import { DirectChatDetails, DirectMessageDetails, IUserDetails } from "../interfaces";
+import {
+  DirectChatDetails,
+  DirectMessageDetails,
+  IUserDetails,
+} from "../interfaces";
+import { compareCreatedAt } from "../utils";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { compareCreatedAt } from "../utils";
 export type SendMessageDTO = {
   senderID: string;
   recepientID: string;
@@ -42,10 +46,15 @@ export async function sendChatMessage(
       { ...message, attachments: attachmentIDs },
     );
     //change last message id in chats db
-    await api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
-      changeLog: "newtext",
-      changerID: sentMessage.senderID,
-    });
+    await api.updateDocument(
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHATS,
+      chatID,
+      {
+        changeLog: "newtext",
+        changerID: sentMessage.senderID,
+      },
+    );
 
     return msg as DirectMessageDetails;
   } catch (error: any) {
@@ -64,15 +73,13 @@ export async function getChatMessages(chatID: string) {
 }
 
 export async function clearChatMessages(chatID: string) {
-  let messages= await getChatMessages(chatID);
+  let messages = await getChatMessages(chatID);
   messages.forEach((message) => {
     if (message.attachments.length > 0) {
       message.attachments.forEach((attachmentID) => {
         api
           .deleteFile(SERVER.BUCKET_ID_CHAT_ATTACHMENTS, attachmentID)
-          .catch((e) => {
-
-          });
+          .catch((e) => {});
       });
     }
   });
@@ -86,9 +93,14 @@ export async function clearChatMessages(chatID: string) {
       .catch((e) => {});
   });
 
-  await api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
-    changeLog: "cleared",
-  });
+  await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHATS,
+    chatID,
+    {
+      changeLog: "cleared",
+    },
+  );
 }
 
 export async function getChatDoc(chatID: string) {
@@ -108,8 +120,8 @@ export async function deleteChatMessage(
   deleterID: string,
   chatID: string,
   message: DirectMessageDetails,
-  attachments: string[] = [],
 ) {
+  const attachments = message.attachments;
   if (attachments.every((attachment) => typeof attachment === "string")) {
     for (const attachmentID of attachments) {
       api
@@ -166,4 +178,18 @@ export async function getChatUnreadMessagesCount(
     ],
   );
   return total;
+}
+
+export async function deleteSelectedGroupMessages({
+  deleter,
+  groupID,
+  messages,
+}: {
+  deleter: string;
+  groupID: string;
+  messages: DirectMessageDetails[];
+}) {
+  for (const message of messages) {
+    await deleteChatMessage(deleter, groupID, message);
+  }
 }

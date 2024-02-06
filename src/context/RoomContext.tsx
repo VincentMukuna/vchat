@@ -1,9 +1,7 @@
 import { createContext, useContext, useState } from "react";
+import { DirectMessageDetails, GroupMessageDetails } from "../interfaces";
 
-interface ContextMessage {
-  messageID: string;
-  senderID: string;
-}
+type ContextMessage = DirectMessageDetails | GroupMessageDetails;
 
 interface RoomContextData {
   selectedMessages: ContextMessage[];

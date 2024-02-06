@@ -107,7 +107,7 @@ function ChatHeader() {
       chatMessagesKey,
       messages.filter((msg) => {
         return !toBeDeletedMessages.some(
-          (toBeDeletedMsg) => toBeDeletedMsg.messageID === msg.$id,
+          (toBeDeletedMsg) => toBeDeletedMsg.$id === msg.$id,
         );
       }),
       false,
@@ -118,7 +118,7 @@ function ChatHeader() {
       await deleteSelectedGroupMessages({
         deleter: currentUserDetails!.$id,
         groupID: selectedChat.$id,
-        messageIDs: toBeDeletedMessages.map((msg) => msg.messageID),
+        messages: toBeDeletedMessages as GroupMessageDetails[],
       });
     }
   }

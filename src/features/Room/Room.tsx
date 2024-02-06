@@ -105,8 +105,7 @@ function Room() {
         await deleteGroupMessage(
           currentUserDetails.$id,
           selectedChat.$id,
-          message.$id,
-          message.attachments,
+          message as GroupMessageDetails,
         );
       } else {
         await deleteChatMessage(
