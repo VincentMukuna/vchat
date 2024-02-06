@@ -10,7 +10,7 @@ import {
   Query,
 } from "appwrite";
 import { SERVER } from "../utils/config";
-import { IUserPrefs } from "../interfaces";
+import { UserPrefs } from "../interfaces";
 let api = {
   sdk: null as null | {
     appwrite: Appwrite;
@@ -61,9 +61,9 @@ let api = {
     return api.provider().account.get();
   },
   getPrefs: () => {
-    return api.provider().account.getPrefs<IUserPrefs>();
+    return api.provider().account.getPrefs<UserPrefs>();
   },
-  updatePrefs: (prefs: Partial<IUserPrefs>) => {
+  updatePrefs: (prefs: Partial<UserPrefs>) => {
     return api.provider().account.updatePrefs(prefs);
   },
 
