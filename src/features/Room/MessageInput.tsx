@@ -1,23 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
-import { sendChatMessage } from "../../services/chatMessageServices";
-import { useChatsContext } from "../../context/ChatsContext";
-import { DirectMessageDetails, GroupMessageDetails, IUserDetails } from "../../interfaces";
-import { useAuth } from "../../context/AuthContext";
-import { sendGroupMessage } from "../../services/groupMessageServices";
-import { SERVER } from "../../utils/config";
-import { useSWRConfig } from "swr";
-import { PaperClipIcon } from "@heroicons/react/20/solid";
 import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
+import { PaperClipIcon } from "@heroicons/react/20/solid";
+import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
+import { slate } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import React, { useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
+import { useSWRConfig } from "swr";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-import toast from "react-hot-toast";
+import { useAuth } from "../../context/AuthContext";
+import { useChatsContext } from "../../context/ChatsContext";
+import {
+  DirectMessageDetails,
+  GroupMessageDetails,
+  IUserDetails,
+} from "../../interfaces";
+import { sendChatMessage } from "../../services/chatMessageServices";
+import { sendGroupMessage } from "../../services/groupMessageServices";
+import { SERVER } from "../../utils/config";
 import { FileTypeValidator } from "../../utils/fileValidators";
-import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
-import { motion } from "framer-motion";
-import { slate } from "@radix-ui/colors";
 
 type InputProps = {};
 
@@ -130,7 +134,9 @@ const MessageInput = ({}: InputProps) => {
       | GroupMessageDetails
     )[];
 
-    const newMessages = [message, ...roomMessages];
+    console.log("roomMessages", roomMessages);
+
+    const newMessages = [message, ...(roomMessages || [])];
 
     await mutate(chatMessagesKey, newMessages, {
       revalidate: false,
