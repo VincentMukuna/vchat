@@ -1,50 +1,47 @@
 import { useEffect, useState } from "react";
 //@ts-ignore
+import { Box, Center, useToast } from "@chakra-ui/react";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import useSWR, { useSWRConfig } from "swr";
 import chatSVG from "../../assets/groupChat.svg";
-import ChatHeader from "./ChatHeader";
-import MessageInput, { Message } from "./MessageInput";
-import Messages from "./Messages/MessagesList";
-import api from "../../services/api";
-import { SERVER } from "../../utils/config";
+import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
+import { useRoomContext } from "../../context/RoomContext";
 import {
-  IChat,
-  IChatMessage,
-  IGroup,
-  IGroupMessage,
+  DirectChatDetails,
+  DirectMessageDetails,
+  GroupChatDetails,
+  GroupMessageDetails,
   IUserDetails,
 } from "../../interfaces";
+import api from "../../services/api";
 import {
   deleteChatMessage,
   getChatMessages,
 } from "../../services/chatMessageServices";
 import {
   deleteGroupMessage,
-  getGroupDetails,
   getGroupMessages,
 } from "../../services/groupMessageServices";
-import useSWR, { KeyedMutator, useSWRConfig } from "swr";
-import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
-import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
-import { Box, Center, useColorMode } from "@chakra-ui/react";
-import { ClipLoader } from "react-spinners";
-import { blue, blueDark } from "@radix-ui/colors";
-import { motion } from "framer-motion";
-import { useAuth } from "../../context/AuthContext";
-import useSWRInfinite, { unstable_serialize } from "swr/infinite";
-import toast from "react-hot-toast";
-import { useInfinite } from "../../hooks/useInfinite";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import { compareCreatedAt } from "../../utils";
+import { SERVER } from "../../utils/config";
+import useCommand from "../../utils/hooks/useCommand";
+import ChatHeader from "./ChatHeader";
+import MessageInput from "./MessageInput";
+import Messages from "./Messages/MessagesList";
+import RoomDetails from "./RoomDetails/RoomDetails";
+import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 
 function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
-  const { colorMode } = useColorMode();
-  const { selectedChat, recepient, setMsgsCount, msgsCount, setSelectedChat } =
-    useChatsContext();
+  const { selectedChat, setSelectedChat } = useChatsContext();
+  const { selectedMessages, setSelectedMessages } = useRoomContext();
 
-  const [showDetails, setShowDetails] = useState(false);
+  const chakraToast = useToast();
+  const [showDetails] = useState(false);
 
   if (!currentUserDetails) return null;
 
@@ -63,10 +60,10 @@ function Room() {
   async function getRoomMessages() {
     if (!selectedChat) return undefined;
     if (isGroup) {
-      const [messages, total] = await getGroupMessages(selectedChat.$id);
+      const messages = await getGroupMessages(selectedChat.$id);
       return messages;
     }
-    const [messages, total] = await getChatMessages(selectedChat.$id);
+    const messages = await getChatMessages(selectedChat.$id);
     return messages;
   }
 
@@ -75,9 +72,11 @@ function Room() {
     if (isGroup) {
       return selectedChat.groupMessages.sort(
         compareCreatedAt,
-      ) as IGroupMessage[];
+      ) as GroupMessageDetails[];
     } else {
-      return selectedChat.chatMessages.sort(compareCreatedAt) as IChatMessage[];
+      return selectedChat.chatMessages.sort(
+        compareCreatedAt,
+      ) as DirectMessageDetails[];
     }
   }
   const { data, isLoading, error, mutate, isValidating } = useSWR(
@@ -86,7 +85,9 @@ function Room() {
     { fallbackData: getFallbackMessages() },
   );
 
-  const handleDeleteMessage = async (message: IChatMessage | IGroupMessage) => {
+  const handleDeleteMessage = async (
+    message: DirectMessageDetails | GroupMessageDetails,
+  ) => {
     if (!selectedChat) return;
     let newMessages = data?.filter((msg) => msg.$id !== message.$id);
     mutate(newMessages, {
@@ -98,6 +99,7 @@ function Room() {
       newMessages && newMessages.sort(compareCreatedAt).at(0),
       { revalidate: false },
     );
+
     try {
       if (isGroup) {
         await deleteGroupMessage(
@@ -110,22 +112,32 @@ function Room() {
         await deleteChatMessage(
           currentUserDetails.$id,
           selectedChat.$id,
-          message as IChatMessage,
+          message as DirectMessageDetails,
         );
       }
     } catch (error) {
       toast.error("Something went wrong");
     }
   };
+
+  useEffect(() => {
+    setSelectedMessages([]);
+  }, [selectedChat]);
+
   useEffect(() => {
     if (selectedChat) {
       globalMutate(`unread-${selectedChat.$id}`, 0, { revalidate: false });
     }
   }, [selectedChat]);
+
+  useCommand("Escape", () => {
+    setSelectedMessages([]);
+  });
+
   useEffect(() => {
     if (selectedChat && !isPersonal) {
       //subscribe to changes in chat room
-      const unsubscribe = api.subscribe<IChat | IGroup>(
+      const unsubscribe = api.subscribe<DirectChatDetails | GroupChatDetails>(
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
@@ -153,7 +165,7 @@ function Room() {
             ).then((value) => {
               globalMutate(
                 `lastMessage ${selectedChat.$id}`,
-                (value as (IChatMessage | IGroupMessage)[]).at(0),
+                (value as (DirectMessageDetails | GroupMessageDetails)[]).at(0),
 
                 { revalidate: false },
               );

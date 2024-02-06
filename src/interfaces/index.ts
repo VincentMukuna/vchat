@@ -1,6 +1,6 @@
 import { Models } from "appwrite";
 
-type groupChangeLogTypes =
+type GroupChangeLogTypes =
   | "addmember"
   | "addadmin"
   | "newtext"
@@ -13,29 +13,29 @@ type groupChangeLogTypes =
   | "created"
   | "readtext"
   | "clearmessages";
-interface IGroup extends Models.Document {
+interface GroupChatDetails extends Models.Document {
   name: string;
   description: string;
   avatarID: string | null;
   avatarURL: any;
   admins: string[];
   members: (IUserDetails | string)[];
-  groupMessages: IGroupMessage[];
-  changeLog: groupChangeLogTypes;
+  groupMessages: GroupMessageDetails[];
+  changeLog: GroupChangeLogTypes;
 }
-interface IGroupMessage extends Models.Document {
-  groupDoc: [IGroup] | string;
+interface GroupMessageDetails extends Models.Document {
+  groupDoc: [GroupChatDetails] | string;
   senderID: string;
   body: string;
   attachments: string[];
   read: boolean;
 }
-interface IUserPrefs extends Models.Preferences {
+interface UserPrefs extends Models.Preferences {
   detailsDocID: string;
 }
 
-interface IChat extends Models.Document {
-  chatMessages: IChatMessage[];
+interface DirectChatDetails extends Models.Document {
+  chatMessages: DirectMessageDetails[];
   participants: [IUserDetails, IUserDetails] | [IUserDetails];
   changeLog?:
     | "newtext"
@@ -46,8 +46,8 @@ interface IChat extends Models.Document {
     | "readtext";
 }
 
-interface IChatMessage extends Models.Document {
-  chatDoc: IChat | string;
+interface DirectMessageDetails extends Models.Document {
+  chatDoc: DirectChatDetails | string;
   senderID: string;
   recepientID: string;
   body: string;
@@ -55,7 +55,7 @@ interface IChatMessage extends Models.Document {
   attachments: string[];
 }
 
-type userChangeLogTypes =
+type UserChangeLogTypes =
   | "newchat"
   | "deletechat"
   | "newgroup"
@@ -71,18 +71,18 @@ interface IUserDetails extends Models.Document {
   status: "Online" | "Offline" | "Typing";
   lastSeen: string;
   statusUpdates: string;
-  prefs: IUserPrefs;
+  prefs: UserPrefs;
   email: string;
-  groups: IGroup[];
-  chats: IChat[];
-  changeLog: userChangeLogTypes;
+  groups: GroupChatDetails[];
+  chats: DirectChatDetails[];
+  changeLog: UserChangeLogTypes;
   online: boolean;
 }
 export type {
   IUserDetails,
-  IChatMessage,
-  IChat,
-  IGroup,
-  IGroupMessage,
-  IUserPrefs,
+  DirectMessageDetails,
+  DirectChatDetails,
+  GroupChatDetails,
+  GroupMessageDetails,
+  UserPrefs,
 };

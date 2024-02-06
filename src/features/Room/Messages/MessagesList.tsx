@@ -1,11 +1,13 @@
 import { AnimatePresence } from "framer-motion";
-import { IChatMessage, IGroupMessage } from "../../../interfaces";
-import Message from "./Message";
 import { SyncLoader } from "react-spinners";
+import { DirectMessageDetails, GroupMessageDetails } from "../../../interfaces";
+import Message from "./Message";
 
 interface MessagesProps {
-  messages: (IChatMessage | IGroupMessage)[];
-  onDelete: (message: IChatMessage | IGroupMessage) => Promise<void>;
+  messages: (DirectMessageDetails | GroupMessageDetails)[];
+  onDelete: (
+    message: DirectMessageDetails | GroupMessageDetails,
+  ) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -14,7 +16,7 @@ function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
     <div className="relative self-stretch overflow-x-hidden overflow-y-auto grow">
       <div
         id="messages-container"
-        className="flex flex-col-reverse h-full p-2 pb-4 overflow-y-scroll"
+        className="flex flex-col-reverse h-full p-2 pb-4 overflow-y-scroll gap-y-2"
       >
         {messages.length > 0 ? (
           <>

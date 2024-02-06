@@ -1,57 +1,51 @@
 import { forwardRef, useEffect, useState } from "react";
-import api from "../../../services/api";
-import { SERVER } from "../../../utils/config";
+import { DeleteIcon, PencilIcon } from "../../../components/Icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import {
-  IChatMessage,
-  IGroup,
-  IGroupMessage,
+  DirectMessageDetails,
+  GroupChatDetails,
+  GroupMessageDetails,
   IUserDetails,
 } from "../../../interfaces";
-import { DeleteIcon, PencilIcon } from "../../../components/Icons";
+import api from "../../../services/api";
+import { SERVER } from "../../../utils/config";
 
-import useSWR, { mutate } from "swr";
-import { getUserDetails } from "../../../services/userDetailsServices";
-import { getFormattedDateTime } from "../../../services/dateServices";
 import {
   AspectRatio,
   Avatar,
-  Editable,
-  EditableInput,
-  EditablePreview,
   IconButton,
   Image,
   Input,
   InputGroup,
   InputRightElement,
-  Textarea,
-  useDisclosure,
-  useEditableControls,
 } from "@chakra-ui/react";
+import useSWR, { mutate } from "swr";
+import { getFormattedDateTime } from "../../../services/dateServices";
+import { getUserDetails } from "../../../services/userDetailsServices";
 
-import { motion } from "framer-motion";
 import { CheckIcon } from "@heroicons/react/20/solid";
-import Blueticks from "../../../components/Blueticks";
+import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import UserProfileModal from "../../Profile/UserProfileModal";
-import { tomato } from "@radix-ui/colors";
-import { openModal } from "../../../components/Modal";
-import { VARIANTS_MANAGER } from "../../../services/variants";
 import { confirmAlert } from "../../../components/Alert/alertStore";
+import Blueticks from "../../../components/Blueticks";
+import { openModal } from "../../../components/Modal";
+import { useRoomContext } from "../../../context/RoomContext";
+import UserProfileModal from "../../Profile/UserProfileModal";
 
 interface MessageProps {
-  message: IChatMessage | IGroupMessage;
-  onDelete: (message: IChatMessage | IGroupMessage) => Promise<void>;
+  message: DirectMessageDetails | GroupMessageDetails;
+  onDelete: (
+    message: DirectMessageDetails | GroupMessageDetails,
+  ) => Promise<void>;
   i: number;
-  prev?: IChatMessage | IGroupMessage;
-  next?: IChatMessage | IGroupMessage;
+  prev?: DirectMessageDetails | GroupMessageDetails;
+  next?: DirectMessageDetails | GroupMessageDetails;
 }
 
 const Message = forwardRef<any, MessageProps>(
   ({ message, onDelete, i, prev, next }, ref) => {
     const { currentUserDetails } = useAuth();
-    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const { selectedChat } = useChatsContext();
     if (!currentUserDetails || !selectedChat) return;
@@ -60,17 +54,23 @@ const Message = forwardRef<any, MessageProps>(
     const [isEditing, setIsEditing] = useState(false);
     const [newMessage, setNewMessage] = useState(message.body);
 
-    const isOptimistic = message?.optimistic ? true : false;
+    const isOptimistic = !!message?.optimistic;
 
-    const isGroupMessage = !!(
-      message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES
-    );
+    const isGroupMessage =
+      message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES;
     const isAdmin =
       isGroupMessage &&
-      (selectedChat as IGroup).admins?.includes(currentUserDetails.$id);
+      (selectedChat as GroupChatDetails).admins?.includes(
+        currentUserDetails.$id,
+      );
     const isMine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
+
+    const { selectedMessages, setSelectedMessages } = useRoomContext();
+    const isSelected = selectedMessages.some(
+      (msg) => msg.messageID === message.$id,
+    );
 
     const { data: senderDetails } = useSWR(
       () => {
@@ -180,7 +180,7 @@ const Message = forwardRef<any, MessageProps>(
         return false;
       } else if (
         isAdmin &&
-        !(selectedChat as IGroup).admins.includes(message.senderID)
+        !(selectedChat as GroupChatDetails).admins.includes(message.senderID)
       ) {
         return true;
       }
@@ -199,11 +199,30 @@ const Message = forwardRef<any, MessageProps>(
         onMouseLeave={() => setShowHoverCard(false)}
         ref={ref}
         tabIndex={0}
+        onClick={() => {
+          if (!isSelected) {
+            setSelectedMessages((prev) => [
+              ...prev,
+              { messageID: message.$id, senderID: message.senderID },
+            ]);
+          } else {
+            setSelectedMessages((prev) =>
+              prev.filter((msg) => msg.messageID !== message.$id),
+            );
+          }
+        }}
       >
         <div
-          className={`relative gap-1 flex ${
+          className={`relative gap-1 flex cursor-pointer ${
             isMine ? "flex-row-reverse" : ""
-          } items-start focus:outline-1 focus:outline-slate-600 transition-all`}
+          } items-start focus:outline-1 focus:outline-slate-600 transition-all
+            ${
+              isSelected
+                ? "bg-slate-300 dark:bg-slate-800 p-2 rounded-md ring-1 ring-offset-2 ring-slate-500 dark:ring-gray-800 dark:ring-offset-gray-700"
+                : ""
+            }
+          
+            `}
         >
           <Avatar
             visibility={prevSameSender ? "hidden" : "visible"}
@@ -240,7 +259,11 @@ const Message = forwardRef<any, MessageProps>(
               className={`flex flex-col relative
                 px-2  pt-1   ${
                   isMine
-                    ? "bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end   "
+                    ? `${
+                        isSelected
+                          ? "bg-slate-500"
+                          : "bg-slate-300 dark:bg-gray4/90"
+                      } dark:text-black rounded-tr-none self-end`
                     : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
                 } rounded-xl 
 
@@ -302,27 +325,29 @@ const Message = forwardRef<any, MessageProps>(
             </div>
           </div>
 
-          {shouldShowHoverCard() && (
+          {shouldShowHoverCard() && !isSelected && (
             <div
               className={`flex self-end gap-2 mb-5 ${
                 showHoverCard ? "" : "invisible"
               }`}
             >
               <button
-                onClick={() =>
+                onClick={(e) => {
                   confirmAlert({
                     message: "Delete this message? This action is irreversible",
                     title: "Delete message",
                     confirmText: "Delete",
                     onConfirm: () => handleDelete(),
-                  })
-                }
+                  });
+                  e.stopPropagation();
+                }}
               >
                 <DeleteIcon className="w-4 h-4" />
               </button>
               <button
                 hidden={!isMine}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setIsEditing((prev) => !prev);
                 }}
               >

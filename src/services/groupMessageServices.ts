@@ -1,10 +1,14 @@
+import { Query } from "appwrite";
+import { mutate } from "swr";
+import {
+  GroupChatDetails,
+  GroupMessageDetails,
+  IUserDetails,
+} from "../interfaces";
+import { compareCreatedAt } from "../utils";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { IGroup, IGroupMessage, IUserDetails } from "../interfaces";
-import { Query } from "appwrite";
 import { updateUserDetails } from "./userDetailsServices";
-import { mutate } from "swr";
-import { compareCreatedAt } from "../utils";
 
 type IInitGroup = {
   name: string;
@@ -25,7 +29,7 @@ export async function createGroup({
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUPS,
     { name, description, members, admins },
-  )) as IGroup;
+  )) as GroupChatDetails;
 
   if (avatar) {
     setTimeout(() => {
@@ -33,7 +37,7 @@ export async function createGroup({
     }, 1000);
   }
 
-  return doc as IGroup;
+  return doc as GroupChatDetails;
 }
 
 export async function getUserGroups(userDetailsDocID: string) {
@@ -54,11 +58,8 @@ export async function getGroupMessages(groupID: string, cursor?: string) {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
-  )) as IGroup;
-  return [
-    groupDoc.groupMessages.sort(compareCreatedAt),
-    groupDoc.groupMessages.length,
-  ] as [IGroupMessage[], number];
+  )) as GroupChatDetails;
+  return groupDoc.groupMessages.sort(compareCreatedAt) as GroupMessageDetails[];
 }
 
 export async function sendGroupMessage(
@@ -101,7 +102,7 @@ export async function sendGroupMessage(
       )
       .catch(() => {});
 
-    return msg as IGroupMessage;
+    return msg as GroupMessageDetails;
   } catch (error: any) {
     throw error;
   }
@@ -136,19 +137,19 @@ export async function getGroupDetails(groupID: string) {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
-  )) as IGroup;
+  )) as GroupChatDetails;
 }
 
 export async function updateGroupDetails(
   groupID: string,
-  details: Partial<IGroup>,
+  details: Partial<GroupChatDetails>,
 ) {
   return (await api.updateDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
     details,
-  )) as IGroup;
+  )) as GroupChatDetails;
 }
 
 export async function deleteGroupAvatar(groupID: string) {
@@ -192,7 +193,7 @@ export async function editMembers(groupID: string, memberIDs: string[]) {
 }
 
 export async function clearGroupMessageAttachments(groupID: string) {
-  const [messages] = await getGroupMessages(groupID);
+  const messages = await getGroupMessages(groupID);
   let attachments = ([] as string[])
     .concat(...messages.map((message) => message.attachments))
     .filter((attach) => !!attach);
@@ -203,7 +204,7 @@ export async function clearGroupMessageAttachments(groupID: string) {
 }
 
 export async function clearGroupMessages(groupID: string) {
-  const [messages] = await getGroupMessages(groupID);
+  const messages = await getGroupMessages(groupID);
   let attachments = ([] as string[])
     .concat(...messages.map((message) => message.attachments))
     .filter((attach) => !!attach);
@@ -255,4 +256,19 @@ export async function getGroupUnreadMessagesCount(
     ],
   );
   return total;
+}
+
+export async function deleteSelectedGroupMessages({
+  deleter,
+  groupID,
+  messageIDs,
+}: {
+  deleter: string;
+  groupID: string;
+  messageIDs: string[];
+}) {
+  for (const messageID of messageIDs) {
+    await deleteGroupMessage(deleter, groupID, messageID);
+  }
+  return true;
 }

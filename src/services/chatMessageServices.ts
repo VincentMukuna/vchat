@@ -1,9 +1,9 @@
 import { Query } from "appwrite";
-import { IChat, IChatMessage, IUserDetails } from "../interfaces";
+import { DirectChatDetails, DirectMessageDetails, IUserDetails } from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { compareCreatedAt } from "../utils";
-type sendMessageProps = {
+export type SendMessageDTO = {
   senderID: string;
   recepientID: string;
   body: string;
@@ -13,7 +13,7 @@ type sendMessageProps = {
 
 export async function sendChatMessage(
   chatID: string,
-  sentMessage: sendMessageProps,
+  sentMessage: SendMessageDTO,
 ) {
   let message = {
     chatDoc: chatID,
@@ -42,38 +42,37 @@ export async function sendChatMessage(
       { ...message, attachments: attachmentIDs },
     );
     //change last message id in chats db
-    api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
+    await api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
       changeLog: "newtext",
       changerID: sentMessage.senderID,
     });
 
-    return msg as IChatMessage;
+    return msg as DirectMessageDetails;
   } catch (error: any) {
     throw error;
   }
 }
 
-export async function getChatMessages(chatID: string, cursor?: string) {
+export async function getChatMessages(chatID: string) {
   let chatDoc = (await api.getDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_CHATS,
     chatID,
-  )) as IChat;
+  )) as DirectChatDetails;
 
-  return [
-    chatDoc.chatMessages.sort(compareCreatedAt),
-    chatDoc.chatMessages.length,
-  ] as [IChatMessage[], number];
+  return chatDoc.chatMessages.sort(compareCreatedAt) as DirectMessageDetails[];
 }
 
 export async function clearChatMessages(chatID: string) {
-  let [messages] = await getChatMessages(chatID);
+  let messages= await getChatMessages(chatID);
   messages.forEach((message) => {
     if (message.attachments.length > 0) {
       message.attachments.forEach((attachmentID) => {
         api
           .deleteFile(SERVER.BUCKET_ID_CHAT_ATTACHMENTS, attachmentID)
-          .catch((e) => {});
+          .catch((e) => {
+
+          });
       });
     }
   });
@@ -87,7 +86,7 @@ export async function clearChatMessages(chatID: string) {
       .catch((e) => {});
   });
 
-  api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
+  await api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
     changeLog: "cleared",
   });
 }
@@ -99,7 +98,7 @@ export async function getChatDoc(chatID: string) {
       SERVER.COLLECTION_ID_CHATS,
       chatID,
     );
-    return chatDoc as IChat;
+    return chatDoc as DirectChatDetails;
   } catch (error) {
     throw new Error("Error getting chat doc");
   }
@@ -108,7 +107,7 @@ export async function getChatDoc(chatID: string) {
 export async function deleteChatMessage(
   deleterID: string,
   chatID: string,
-  message: IChatMessage,
+  message: DirectMessageDetails,
   attachments: string[] = [],
 ) {
   if (attachments.every((attachment) => typeof attachment === "string")) {
@@ -137,17 +136,17 @@ export async function getUserChats(userDetailsID: string) {
   )) as IUserDetails;
 
   let chatIDs = deets.chats.map((chat) => chat.$id);
-  let chats: IChat[] = [];
+  let chats: DirectChatDetails[] = [];
   if (chatIDs.length > 0) {
     let { documents } = await api.listDocuments(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_CHATS,
       [Query.equal("$id", [...chatIDs])],
     );
-    chats = documents as IChat[];
+    chats = documents as DirectChatDetails[];
   }
 
-  return chats as IChat[];
+  return chats as DirectChatDetails[];
 }
 
 export async function getChatUnreadMessagesCount(
