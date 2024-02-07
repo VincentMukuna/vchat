@@ -2,26 +2,27 @@ import {
   Avatar,
   Button,
   Icon,
-  Modal,
   ModalBody,
   ModalCloseButton,
-  ModalContent,
   ModalFooter,
   ModalHeader,
-  ModalOverlay,
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
 import { MapPinIcon, UserIcon } from "@heroicons/react/20/solid";
-import { blueDark, gray, slateDark } from "@radix-ui/colors";
+import { blueDark, gray } from "@radix-ui/colors";
+import { motion } from "framer-motion";
 import { useState } from "react";
-import { addContact } from "../../services/userDetailsServices";
+import toast from "react-hot-toast";
+import { mutate, useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { mutate, useSWRConfig } from "swr";
-import toast from "react-hot-toast";
-import { DirectChatDetails, GroupChatDetails, IUserDetails } from "../../interfaces";
-import { motion } from "framer-motion";
+import {
+  DirectChatDetails,
+  GroupChatDetails,
+  IUserDetails,
+} from "../../interfaces";
+import { addContact } from "../../services/userDetailsServices";
 
 interface UserProfileProps {
   onClose: () => void;
@@ -40,7 +41,10 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
 
   function getConversations() {
     if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (GroupChatDetails | DirectChatDetails)[];
+      return cache.get("conversations")?.data as (
+        | GroupChatDetails
+        | DirectChatDetails
+      )[];
     } else return [] as (GroupChatDetails | DirectChatDetails)[];
   }
   const handleClick = async () => {
@@ -52,7 +56,9 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
 
     if (isPersonal) {
       chatWithUser = chats.find((chat) =>
-        chat.participants.every((participant) => participant.$id === user.$id),
+        chat.participants.every(
+          (participant) => participant.$id === currentUserDetails.$id,
+        ),
       );
     } else {
       chatWithUser = chats.find((chat) =>
