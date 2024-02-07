@@ -180,7 +180,7 @@ export async function getChatUnreadMessagesCount(
   return total;
 }
 
-export async function deleteSelectedGroupMessages({
+export async function deleteSelectedDirectChatMessages({
   deleter,
   groupID,
   messages,
