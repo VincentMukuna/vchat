@@ -1,32 +1,11 @@
-import { mutate, useSWRConfig } from "swr";
-import { IUserDetails } from "../../interfaces";
-import { addContact } from "../../services/userDetailsServices";
-import { useAuth } from "../../context/AuthContext";
-import { toast } from "react-hot-toast";
-import {
-  Avatar,
-  Button,
-  Card,
-  Icon,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useColorMode,
-  useDisclosure,
-} from "@chakra-ui/react";
-import api from "../../services/api";
-import { SERVER } from "../../utils/config";
-import { MapPinIcon, UserIcon } from "@heroicons/react/20/solid";
-import { blueDark, gray, slateDark, slateDarkA } from "@radix-ui/colors";
-import { useChatsContext } from "../../context/ChatsContext";
-import { ReactNode, createContext, useContext, useState } from "react";
-import UserProfileModal from "../Profile/UserProfileModal";
-import { openModal } from "../../components/Modal";
+import { Avatar, Card } from "@chakra-ui/react";
+import { UserIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
+import { ReactNode, createContext, useContext } from "react";
+import { openModal } from "../../components/Modal";
+import { useAuth } from "../../context/AuthContext";
+import { IUserDetails } from "../../interfaces";
+import UserProfileModal from "../Profile/UserProfileModal";
 
 interface UserContextValue {
   user: IUserDetails;
