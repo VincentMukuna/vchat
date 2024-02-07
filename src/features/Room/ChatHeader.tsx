@@ -26,19 +26,22 @@ import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { slateDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
+import toast from "react-hot-toast";
 import useSWR, { mutate, useSWRConfig } from "swr";
+import { confirmAlert } from "../../components/Alert/alertStore";
 import { DeleteIcon } from "../../components/Icons";
 import { useRoomContext } from "../../context/RoomContext";
 import {
+  ChatMessage,
   DirectMessageDetails,
   GroupMessageDetails,
   IUserDetails,
 } from "../../interfaces";
+import { deleteSelectedDirectChatMessages } from "../../services/chatMessageServices";
 import {
   deleteSelectedGroupMessages,
   getGroupDetails,
 } from "../../services/groupMessageServices";
-import { SERVER } from "../../utils/config";
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
@@ -57,20 +60,15 @@ function ChatHeader() {
     selectedChat,
     setMsgsCount,
   } = useChatsContext();
-  const { selectedMessages, setSelectedMessages } = useRoomContext();
-  //if either selectedChat or currentUserDetails is not available, return null
+  const {
+    selectedMessages,
+    setSelectedMessages,
+    isGroup,
+    isPersonal,
+    roomMessagesKey,
+  } = useRoomContext();
 
   if (!selectedChat || !currentUserDetails) return null;
-
-  const isGroup = !!(
-    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
-  );
-  const isPersonal =
-    !isGroup &&
-    selectedChat.participants.every(
-      (participant: IUserDetails) =>
-        participant.$id === currentUserDetails?.$id,
-    );
 
   const isAdmin =
     isGroup && selectedChat.admins.includes(currentUserDetails.$id);
@@ -86,40 +84,52 @@ function ChatHeader() {
     (member) => (member as IUserDetails).$id === currentUserDetails.$id,
   );
 
-  async function handleDeleteSelectedMessages() {
-    const chatMessagesKey = selectedChat!.$id + "-messages";
-
-    let messages = cache.get(chatMessagesKey)?.data as (
-      | DirectMessageDetails
-      | GroupMessageDetails
-    )[];
-
-    let toBeDeletedMessages = selectedMessages;
-
-    if (!isAdmin) {
-      //remove messages not sent by user
-      toBeDeletedMessages = toBeDeletedMessages.filter(
-        (msg) => msg.senderID === currentUserDetails!.$id,
-      );
-    }
-
-    mutate(
-      chatMessagesKey,
-      messages.filter((msg) => {
-        return !toBeDeletedMessages.some(
-          (toBeDeletedMsg) => toBeDeletedMsg.$id === msg.$id,
-        );
-      }),
-      false,
-    );
-
-    setSelectedMessages([]);
+  function canDeleteBasedOnPermissions(messages: ChatMessage[]) {
     if (isGroup) {
-      await deleteSelectedGroupMessages({
-        deleter: currentUserDetails!.$id,
-        groupID: selectedChat.$id,
-        messages: toBeDeletedMessages as GroupMessageDetails[],
-      });
+      if (isAdmin) {
+        return true;
+      }
+    }
+    return messages.every((msg) => msg.senderID === currentUserDetails?.$id);
+  }
+
+  async function handleDeleteSelectedMessages() {
+    if (!currentUserDetails || !selectedChat || !roomMessagesKey) return;
+    const currentMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
+    const selectedMessageIds = selectedMessages.map((msg) => msg.$id);
+    if (canDeleteBasedOnPermissions(selectedMessages)) {
+      //optimistic update
+      mutate(
+        roomMessagesKey,
+        currentMessages.filter((msg) => !selectedMessageIds.includes(msg.$id)),
+        { revalidate: false },
+      );
+
+      //actual update
+      let promise: Promise<void>;
+      if (isGroup) {
+        promise = deleteSelectedGroupMessages({
+          deleter: currentUserDetails.$id,
+          groupID: selectedChat.$id,
+          messages: selectedMessages as GroupMessageDetails[],
+        });
+      } else {
+        promise = deleteSelectedDirectChatMessages({
+          deleter: currentUserDetails.$id,
+          groupID: selectedChat.$id,
+          messages: selectedMessages as DirectMessageDetails[],
+        });
+      }
+
+      promise
+        .then(() => {
+          toast.success("Messages deleted");
+          setSelectedMessages([]);
+        })
+        .catch((e) => {
+          toast.error("Something went wrong");
+          mutate(roomMessagesKey);
+        });
     }
   }
   return (
@@ -167,11 +177,21 @@ function ChatHeader() {
       <div className="absolute ml-auto right-1 top-4 ">
         <Tooltip label="Delete selected messages" placement="left">
           <IconButton
-            hidden={selectedMessages.length === 0}
+            hidden={
+              selectedMessages.length === 0 ||
+              !canDeleteBasedOnPermissions(selectedMessages)
+            }
             variant={"ghost"}
             aria-label="delete selected messages"
             icon={<DeleteIcon className="w-6 h-6" />}
-            onClick={() => handleDeleteSelectedMessages()}
+            onClick={() => {
+              confirmAlert({
+                message: "Delete these messages? This action is irreversible",
+                title: "Delete message",
+                confirmText: "Delete",
+                onConfirm: () => handleDeleteSelectedMessages(),
+              });
+            }}
           />
         </Tooltip>
         {(!isGroup || isGroupMember) && (
