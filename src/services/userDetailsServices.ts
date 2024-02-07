@@ -1,10 +1,9 @@
-import { AppwriteException, Models, Query } from "appwrite";
+import { Models, Query } from "appwrite";
+import toast from "react-hot-toast";
+import { DirectChatDetails, IUserDetails } from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { DirectChatDetails, IUserDetails } from "../interfaces";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";
-import toast from "react-hot-toast";
-import { mutate } from "swr";
 export async function getSession() {
   try {
     let user = await api.getAccount();
@@ -77,10 +76,17 @@ export async function addContact(
     participants: chat.participants.map((participant) => participant.$id),
   }));
   for (let chat of chatsArray) {
-    if (isPersonal && chat.participants.every((id) => id === addeeDetailsID)) {
-      return { existed: true, chat: chats[chat.chatIndex] as DirectChatDetails };
-    } else if (chat.participants.includes(addeeDetailsID)) {
-      return { existed: true, chat: chats[chat.chatIndex] as DirectChatDetails };
+    if (isPersonal && chat.participants.every((id) => id === adderDetailsID)) {
+      console.log("Personal chat existed");
+      return {
+        existed: true,
+        chat: chats[chat.chatIndex] as DirectChatDetails,
+      };
+    } else if (!isPersonal && chat.participants.includes(addeeDetailsID)) {
+      return {
+        existed: true,
+        chat: chats[chat.chatIndex] as DirectChatDetails,
+      };
     }
   }
 
