@@ -78,11 +78,14 @@ interface IUserDetails extends Models.Document {
   changeLog: UserChangeLogTypes;
   online: boolean;
 }
+
+type ChatMessage = DirectMessageDetails | GroupMessageDetails;
 export type {
-  IUserDetails,
-  DirectMessageDetails,
+  ChatMessage,
   DirectChatDetails,
+  DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
+  IUserDetails,
   UserPrefs,
 };
