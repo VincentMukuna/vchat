@@ -175,7 +175,14 @@ function ChatHeader() {
         </span>
       </button>
       <div className="absolute ml-auto right-1 top-4 ">
-        <Tooltip label="Delete selected messages" placement="left">
+        <Tooltip
+          hidden={
+            selectedMessages.length === 0 ||
+            !canDeleteBasedOnPermissions(selectedMessages)
+          }
+          label="Delete selected messages"
+          placement="left"
+        >
           <IconButton
             hidden={
               selectedMessages.length === 0 ||
