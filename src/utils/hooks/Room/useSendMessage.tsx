@@ -69,6 +69,7 @@ export default function useSendMessage() {
       | DirectMessageDetails
       | GroupMessageDetails
     )[];
+    setSending(false);
 
     msgSentPromise.then((msg) => {
       mutate(

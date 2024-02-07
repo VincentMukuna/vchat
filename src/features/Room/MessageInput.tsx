@@ -2,6 +2,7 @@ import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
 import { PaperClipIcon } from "@heroicons/react/20/solid";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { slate } from "@radix-ui/colors";
+import { Models } from "appwrite";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -13,15 +14,11 @@ import {
 } from "use-file-picker/validators";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import {
-  DirectMessageDetails,
-  GroupMessageDetails,
-  IUserDetails,
-} from "../../interfaces";
-import { sendChatMessage } from "../../services/chatMessageServices";
-import { sendGroupMessage } from "../../services/groupMessageServices";
+import { useRoomContext } from "../../context/RoomContext";
+import { DirectMessageDetails, GroupMessageDetails } from "../../interfaces";
 import { SERVER } from "../../utils/config";
 import { FileTypeValidator } from "../../utils/fileValidators";
+import useSendMessage from "../../utils/hooks/Room/useSendMessage";
 
 type InputProps = {};
 
@@ -36,18 +33,35 @@ function createOptimisticMessageProps() {
     optimistic: true,
   };
 }
+export interface DirectMessageSendDto extends Models.Document {
+  optimistic: boolean;
+  senderID: string;
+  recepientID: string;
+  body: string;
+  read: boolean;
+  chatDoc: string;
+  attachments: File[];
+}
+
+export interface GroupMessageSendDto extends Models.Document {
+  attachments: File[];
+  senderID: string;
+  body: string;
+  groupDoc: string;
+}
 
 const MessageInput = ({}: InputProps) => {
-  const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
-  const [sending, setSending] = useState(false);
   const { selectedChat, recepient } = useChatsContext();
   if (!selectedChat) return null;
   const [messageBody, setMessageBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
   const { colorMode } = useColorMode();
   let { mutate, cache } = useSWRConfig();
+  const { isGroup, isPersonal, roomMessagesKey } = useRoomContext();
+  const inputRef = useRef<null | HTMLTextAreaElement>(null);
+  const { sendMessage, sending } = useSendMessage();
 
   useEffect(() => {
     if (inputRef.current) {
@@ -80,16 +94,6 @@ const MessageInput = ({}: InputProps) => {
     },
   });
 
-  const isGroup = !!(
-    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
-  );
-  const isPersonal: boolean =
-    !isGroup &&
-    selectedChat.participants.every(
-      (participant: IUserDetails) =>
-        participant.$id === currentUserDetails?.$id,
-    );
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > 1498) {
       toast.error("Text too long");
@@ -103,105 +107,36 @@ const MessageInput = ({}: InputProps) => {
     if (messageBody.trim() === "") {
       return;
     }
-    setSending(true);
     setMessageBody("");
     setAttachments([]);
+    if (isGroup) {
+      let message: GroupMessageSendDto = {
+        $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
+        $databaseId: SERVER.DATABASE_ID,
+        attachments: attachments,
+        senderID: currentUserDetails.$id,
+        body: messageBody,
+        groupDoc: selectedChat.$id,
+        ...createOptimisticMessageProps(),
+      };
+      await sendMessage(message);
+    } else {
+      if (!recepient) return;
+      let message: DirectMessageSendDto = {
+        $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
+        $databaseId: SERVER.DATABASE_ID,
+        senderID: currentUserDetails.$id,
+        recepientID: recepient.$id,
+        body: messageBody,
+        read: isPersonal ? true : false,
+        chatDoc: selectedChat.$id,
+        attachments: attachments,
+        ...createOptimisticMessageProps(),
+      };
+      await sendMessage(message);
+    }
 
-    let message = isGroup
-      ? {
-          $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
-          $databaseId: SERVER.DATABASE_ID,
-          attachments: filesContent,
-          senderID: currentUserDetails.$id,
-          body: messageBody,
-          groupDoc: selectedChat.$id,
-          ...createOptimisticMessageProps(),
-        }
-      : {
-          $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
-          $databaseId: SERVER.DATABASE_ID,
-          senderID: currentUserDetails.$id,
-          recepientID: recepient?.$id,
-          body: messageBody,
-          read: isPersonal ? true : false,
-          chatDoc: selectedChat.$id,
-          attachments: filesContent,
-          ...createOptimisticMessageProps(),
-        };
-
-    const roomMessages = cache.get(chatMessagesKey)?.data as (
-      | DirectMessageDetails
-      | GroupMessageDetails
-    )[];
-
-    console.log("roomMessages", roomMessages);
-
-    const newMessages = [message, ...(roomMessages || [])];
-
-    await mutate(chatMessagesKey, newMessages, {
-      revalidate: false,
-    });
-
-    let container = document.getElementById(
-      "messages-container",
-    ) as HTMLDivElement;
-    container.scrollTo({ top: 0, behavior: "smooth" });
-    mutate(`lastMessage ${selectedChat.$id}`, message, { revalidate: false });
-    let msgSentPromise = isGroup
-      ? sendGroupMessage(selectedChat.$id, {
-          body: message.body,
-          senderID: message.senderID,
-          attachments: attachments,
-        })
-      : sendChatMessage(selectedChat.$id, {
-          body: messageBody,
-          recepientID: (recepient as IUserDetails).$id,
-          senderID: currentUserDetails.$id,
-          attachments: attachments,
-          read: isPersonal ? true : false,
-        });
-
-    let messages = cache.get(chatMessagesKey)?.data as (
-      | DirectMessageDetails
-      | GroupMessageDetails
-    )[];
-
-    msgSentPromise.then((msg) => {
-      mutate(
-        chatMessagesKey,
-        messages?.map((ucMessage) => {
-          if (ucMessage.$id === message.$id) {
-            return { revalidated: true, ...msg };
-          }
-          return ucMessage;
-        }),
-        { revalidate: false },
-      );
-    });
-
-    msgSentPromise.catch((e) => {
-      mutate(
-        chatMessagesKey,
-        messages?.filter((ucMessage) => ucMessage.$id !== message.$id),
-        { revalidate: false },
-      );
-
-      let lastMessage = cache.get(`lastMessage ${selectedChat.$id}`)?.data as
-        | DirectMessageDetails
-        | GroupMessageDetails;
-      if (lastMessage?.$id === message.$id) {
-        mutate(`lastMessage ${selectedChat.$id}`, messages.at(0), {
-          revalidate: false,
-        });
-      }
-
-      toast.error("Error sending message");
-    });
-
-    msgSentPromise.finally(() => {
-      setSending(false);
-      clear();
-    });
+    clear();
   };
 
   useEffect(() => {
