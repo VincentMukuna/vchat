@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 //@ts-ignore
-import { Box, Center, useToast } from "@chakra-ui/react";
+import { Box, Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import useSWR, { useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import chatSVG from "../../assets/groupChat.svg";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
@@ -13,20 +13,14 @@ import {
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
-  IUserDetails,
 } from "../../interfaces";
 import api from "../../services/api";
-import {
-  deleteChatMessage,
-  getChatMessages,
-} from "../../services/chatMessageServices";
-import {
-  deleteGroupMessage,
-  getGroupMessages,
-} from "../../services/groupMessageServices";
+import { deleteChatMessage } from "../../services/chatMessageServices";
+import { deleteGroupMessage } from "../../services/groupMessageServices";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import { compareCreatedAt } from "../../utils";
 import { SERVER } from "../../utils/config";
+import useRoomMessages from "../../utils/hooks/Room/useRoomMessages";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
@@ -38,52 +32,13 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, setSelectedChat } = useChatsContext();
-  const { selectedMessages, setSelectedMessages } = useRoomContext();
-
-  const chakraToast = useToast();
+  const { selectedMessages, setSelectedMessages, isGroup, isPersonal } =
+    useRoomContext();
   const [showDetails] = useState(false);
 
   if (!currentUserDetails) return null;
 
-  const isGroup = !!(
-    selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
-  );
-
-  const isPersonal =
-    selectedChat &&
-    !isGroup &&
-    selectedChat?.participants.every(
-      (participant: IUserDetails) =>
-        participant.$id === currentUserDetails?.$id,
-    );
-
-  async function getRoomMessages() {
-    if (!selectedChat) return undefined;
-    if (isGroup) {
-      const messages = await getGroupMessages(selectedChat.$id);
-      return messages;
-    }
-    const messages = await getChatMessages(selectedChat.$id);
-    return messages;
-  }
-
-  function getFallbackMessages() {
-    if (!selectedChat) return undefined;
-    if (isGroup) {
-      return selectedChat.groupMessages.sort(
-        compareCreatedAt,
-      ) as GroupMessageDetails[];
-    } else {
-      return selectedChat.chatMessages.sort(
-        compareCreatedAt,
-      ) as DirectMessageDetails[];
-    }
-  }
-  const { data, isLoading, error, mutate, isValidating } = useSWR(
-    () => (selectedChat ? `${selectedChat.$id}-messages` : null),
-    getRoomMessages,
-    { fallbackData: getFallbackMessages() },
-  );
+  const { data, isLoading, error, mutate, isValidating } = useRoomMessages();
 
   const handleDeleteMessage = async (
     message: DirectMessageDetails | GroupMessageDetails,
@@ -223,11 +178,13 @@ function Room() {
             <p className="text-sm"> Can't get messages at the moment! </p>
           </Center>
         ) : (
-          <Messages
-            messages={data!}
-            onDelete={handleDeleteMessage}
-            isLoading={isLoading}
-          ></Messages>
+          data && (
+            <Messages
+              messages={data}
+              onDelete={handleDeleteMessage}
+              isLoading={isLoading}
+            ></Messages>
+          )
         )}
 
         <MessageInput />
