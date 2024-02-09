@@ -13,7 +13,6 @@ import {
   IconButton,
   Menu,
   MenuButton,
-  Tooltip,
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
@@ -28,8 +27,6 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 import toast from "react-hot-toast";
 import useSWR, { mutate, useSWRConfig } from "swr";
-import { confirmAlert } from "../../components/Alert/alertStore";
-import { DeleteIcon } from "../../components/Icons";
 import { useRoomContext } from "../../context/RoomContext";
 import {
   ChatMessage,
@@ -45,6 +42,7 @@ import {
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
+import SelectedChatOptions from "./SelectedChatOptions";
 
 function ChatHeader() {
   const { currentUserDetails } = useAuth();
@@ -175,32 +173,7 @@ function ChatHeader() {
         </span>
       </button>
       <div className="absolute ml-auto right-1 top-4 ">
-        <Tooltip
-          hidden={
-            selectedMessages.length === 0 ||
-            !canDeleteBasedOnPermissions(selectedMessages)
-          }
-          label="Delete selected messages"
-          placement="left"
-        >
-          <IconButton
-            hidden={
-              selectedMessages.length === 0 ||
-              !canDeleteBasedOnPermissions(selectedMessages)
-            }
-            variant={"ghost"}
-            aria-label="delete selected messages"
-            icon={<DeleteIcon className="w-6 h-6" />}
-            onClick={() => {
-              confirmAlert({
-                message: "Delete these messages? This action is irreversible",
-                title: "Delete message",
-                confirmText: "Delete",
-                onConfirm: () => handleDeleteSelectedMessages(),
-              });
-            }}
-          />
-        </Tooltip>
+        <SelectedChatOptions />
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">
             <MenuButton
