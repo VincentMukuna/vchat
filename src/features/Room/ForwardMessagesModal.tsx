@@ -145,7 +145,11 @@ export default function ForwardMessagesModal({
                 />
                 <div className="flex flex-col ">
                   <span>
-                    {isGroup ? conversation.name : otherParticipant!.name}
+                    {isGroup
+                      ? conversation.name
+                      : isPersonal
+                      ? "You"
+                      : otherParticipant!.name}
                   </span>
                   <span className="text-xs italic line-clamp-1">
                     {isGroup
