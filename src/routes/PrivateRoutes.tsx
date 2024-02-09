@@ -1,9 +1,10 @@
-import { Outlet, Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Loading from "../pages/Loading";
 
 const PrivateRoutes = () => {
   let { currentUserDetails, isLoading } = useAuth();
+
   return isLoading ? (
     <Loading />
   ) : currentUserDetails ? (

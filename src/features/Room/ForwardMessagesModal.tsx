@@ -137,7 +137,11 @@ export default function ForwardMessagesModal({
                 <Avatar
                   size={"md"}
                   icon={<UserIcon className="w-5 h-5" />}
-                  src={conversation.avatarURL}
+                  src={
+                    isGroup
+                      ? conversation.avatarURL
+                      : otherParticipant!.avatarURL
+                  }
                 />
                 <div className="flex flex-col ">
                   <span>
