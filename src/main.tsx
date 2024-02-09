@@ -1,29 +1,24 @@
 import ReactDOM from "react-dom/client";
 
-import App from "./App";
 import {
   ChakraProvider,
   ColorModeScript,
   ThemeConfig,
   extendTheme,
 } from "@chakra-ui/react";
-import {
-  Navigate,
-  RouterProvider,
-  createBrowserRouter,
-} from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import App from "./App";
+import Chats from "./features/Chats/ChatsList";
+import Profile from "./features/Profile/Profile";
+import Settings from "./features/Settings/Settings";
+import Users from "./features/Users/UsersList";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./routes/PrivateRoutes";
-import Home from "./pages/Home";
-import Chats from "./features/Chats/ChatsList";
-import Users from "./features/Users/UsersList";
-import Profile from "./features/Profile/Profile";
-import Settings from "./features/Settings/Settings";
-import { blueDark, gray, slateDark } from "@radix-ui/colors";
-import { modalTheme } from "./services/theming/modalTheme";
-import { butttonTheme } from "./services/theming/buttonTheme";
 import { avatarTheme } from "./services/theming/avatarTheme";
+import { butttonTheme } from "./services/theming/buttonTheme";
+import { modalTheme } from "./services/theming/modalTheme";
 
 const router = createBrowserRouter([
   {

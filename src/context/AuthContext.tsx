@@ -1,25 +1,24 @@
 import {
+  ReactNode,
   createContext,
-  useState,
   useContext,
   useEffect,
-  ReactNode,
+  useState,
 } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
 
+import toast from "react-hot-toast";
+import { preload } from "swr";
+import { unstable_serialize } from "swr/infinite";
 import { IUserDetails } from "../interfaces";
+import api from "../services/api";
+import { createDetailsDoc } from "../services/registerUserService";
 import {
   getCurrentUserDetails,
   getUsers,
 } from "../services/userDetailsServices";
-import api from "../services/api";
-import { createDetailsDoc } from "../services/registerUserService";
-import toast from "react-hot-toast";
-import { preload } from "swr";
-import { getConversations } from "../features/Chats/ChatsList";
-import { unstable_serialize } from "swr/infinite";
 
 type AuthProviderProps = {
   children: ReactNode;
