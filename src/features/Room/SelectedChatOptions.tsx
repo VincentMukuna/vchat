@@ -34,7 +34,7 @@ export default function SelectedChatOptions() {
             !canDeleteBasedOnPermissions(selectedMessages)
           }
           variant={"ghost"}
-          aria-label="delete selected messages"
+          aria-label="Delete"
           icon={<DeleteIcon className="w-4 h-4" />}
           onClick={() => {
             confirmAlert({
@@ -46,16 +46,22 @@ export default function SelectedChatOptions() {
           }}
         />
       </Tooltip>
-      <IconButton
-        aria-label="forward messages"
-        variant={"ghost"}
-        icon={<ArrowUturnRightIcon className="w-4 h-4" />}
-        onClick={() => {
-          openModal(
-            <ForwardMessagesModal selectedMessages={selectedMessages} />,
-          );
-        }}
-      />
+      <Tooltip
+        hidden={selectedMessages.length === 0}
+        label="Forward"
+        placement="left"
+      >
+        <IconButton
+          aria-label="forward messages"
+          variant={"ghost"}
+          icon={<ArrowUturnRightIcon className="w-4 h-4" />}
+          onClick={() => {
+            openModal(
+              <ForwardMessagesModal selectedMessages={selectedMessages} />,
+            );
+          }}
+        />
+      </Tooltip>
     </HStack>
   );
 }
