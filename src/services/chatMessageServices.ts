@@ -193,3 +193,29 @@ export async function deleteSelectedDirectChatMessages({
     await deleteChatMessage(deleter, groupID, message);
   }
 }
+
+type messageForwardDto = {
+  chatDoc: string;
+  senderID: string;
+  recepientID: string;
+  body: string;
+  read: boolean;
+};
+
+export async function forwardDirectMessages(
+  chatID: string,
+  senderID: string,
+  messages: messageForwardDto[],
+) {
+  let prevMessages = await getChatMessages(chatID);
+  await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHATS,
+    chatID,
+    {
+      changeLog: "newtext",
+      changerID: senderID,
+      chatMessages: [...prevMessages, ...messages],
+    },
+  );
+}

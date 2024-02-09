@@ -1,4 +1,4 @@
-import { defineStyle, defineStyleConfig, theme } from "@chakra-ui/react";
+import { defineStyle, defineStyleConfig } from "@chakra-ui/react";
 import { blueDark, gray, tomato } from "@radix-ui/colors";
 
 const solid = defineStyle((theme) => ({
@@ -10,6 +10,7 @@ const solid = defineStyle((theme) => ({
           color: gray.gray1,
         }
       : { bg: theme.colorScheme === "red" ? tomato.tomato10 : blueDark.blue7 },
+  color: theme.colorMode === "dark" && gray.gray2,
 }));
 
 export const butttonTheme = defineStyleConfig({

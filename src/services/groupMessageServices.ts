@@ -53,7 +53,7 @@ export async function getUserGroups(userDetailsDocID: string) {
   }
 }
 
-export async function getGroupMessages(groupID: string, cursor?: string) {
+export async function getGroupMessages(groupID: string) {
   let groupDoc = (await api.getDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUPS,
@@ -270,4 +270,28 @@ export async function deleteSelectedGroupMessages({
   for (const message of messages) {
     await deleteGroupMessage(deleter, groupID, message);
   }
+}
+
+type messageForwardDto = {
+  groupDoc: string;
+  senderID: string;
+  body: string;
+};
+
+export async function forwardGroupMessages(
+  groupID: string,
+  senderID: string,
+  messages: messageForwardDto[],
+) {
+  let prevMessages = await getGroupMessages(groupID);
+  await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUPS,
+    groupID,
+    {
+      changeLog: "newtext",
+      changerID: senderID,
+      groupMessages: [...prevMessages, ...messages],
+    },
+  );
 }

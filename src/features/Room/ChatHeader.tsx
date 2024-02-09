@@ -172,7 +172,7 @@ function ChatHeader() {
           {isGroup ? selectedChat.description : recepient?.about || "about"}
         </span>
       </button>
-      <div className="absolute ml-auto right-1 top-4 ">
+      <div className="absolute flex ml-auto right-1 top-4">
         <SelectedChatOptions />
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">
