@@ -11,7 +11,7 @@ import {
 import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 
-import { AspectRatio, Avatar, Image } from "@chakra-ui/react";
+import { AspectRatio, Avatar, Checkbox, Image } from "@chakra-ui/react";
 import useSWR from "swr";
 import { getFormattedDateTime } from "../../../services/dateServices";
 import { getUserDetails } from "../../../services/userDetailsServices";
@@ -39,12 +39,19 @@ const Message = forwardRef<any, MessageProps>(
     const { currentUserDetails } = useAuth();
 
     const { selectedChat } = useChatsContext();
+    const {} = useRoomContext();
     if (!currentUserDetails || !selectedChat) return;
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const {
+      selectedMessages,
+      setSelectedMessages,
+      editing,
+      setEditing,
+      isSelectingMessages,
+    } = useRoomContext();
     const [newMessage, setNewMessage] = useState(message.body);
-
+    const isEditing = editing === message.$id;
     const isOptimistic = !!message?.optimistic;
 
     const isGroupMessage =
@@ -58,7 +65,6 @@ const Message = forwardRef<any, MessageProps>(
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
 
-    const { selectedMessages, setSelectedMessages } = useRoomContext();
     const isSelected = selectedMessages.some((msg) => msg.$id === message.$id);
 
     const { data: senderDetails } = useSWR(
@@ -166,28 +172,27 @@ const Message = forwardRef<any, MessageProps>(
         onMouseLeave={() => setShowHoverCard(false)}
         ref={ref}
         tabIndex={0}
-        onClick={() => {
-          if (!isSelected) {
-            setSelectedMessages((prev) => [...prev, message]);
-          } else {
-            setSelectedMessages((prev) =>
-              prev.filter((msg) => msg.$id !== message.$id),
-            );
-          }
-        }}
       >
         <div
-          className={`relative gap-1 flex cursor-pointer ${
+          className={`relative gap-2 flex cursor-pointer ${
             isMine ? "flex-row-reverse" : ""
-          } items-start focus:outline-0 focus:outline-slate-600 transition-all
-            ${
-              isSelected
-                ? "bg-slate-300 dark:bg-slate-800 p-2 rounded-md ring-1 ring-offset-2 ring-slate-500 dark:ring-gray-800 dark:ring-offset-gray-700"
-                : ""
-            }
-          
+          } items-start focus:outline-0 focus:outline-slate-600 transition-all          
             `}
         >
+          <Checkbox
+            isChecked={isSelected}
+            hidden={!isSelectingMessages}
+            className="self-center mx-2"
+            onChange={(e) => {
+              if (!isSelected) {
+                setSelectedMessages((prev) => [...prev, message]);
+              } else {
+                setSelectedMessages((prev) =>
+                  prev.filter((msg) => msg.$id !== message.$id),
+                );
+              }
+            }}
+          />
           <Avatar
             visibility={prevSameSender ? "hidden" : "visible"}
             src={
@@ -219,15 +224,10 @@ const Message = forwardRef<any, MessageProps>(
               </AspectRatio>
             )}
             <div
-              onClick={() => setIsEditing(true)}
               className={`flex flex-col relative
                 px-3  pt-2   ${
                   isMine
-                    ? `${
-                        isSelected
-                          ? "bg-slate-500"
-                          : "bg-slate-300 dark:bg-gray4/90"
-                      } dark:text-black rounded-tr-none self-end`
+                    ? `bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end`
                     : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
                 } rounded-xl 
 
@@ -237,7 +237,6 @@ const Message = forwardRef<any, MessageProps>(
                 <EditMessageForm
                   message={message}
                   newMessage={newMessage}
-                  setIsEditing={setIsEditing}
                   setNewMessage={setNewMessage}
                 />
               ) : (
@@ -282,7 +281,7 @@ const Message = forwardRef<any, MessageProps>(
                 hidden={!isMine}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIsEditing((prev) => !prev);
+                  setEditing(editing === message.$id ? null : message.$id);
                 }}
               >
                 <PencilIcon className="w-4 h-4" />

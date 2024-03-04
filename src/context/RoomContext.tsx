@@ -8,24 +8,29 @@ import { SERVER } from "../utils/config";
 import { useAuth } from "./AuthContext";
 import { useChatsContext } from "./ChatsContext";
 
-type ContextMessage = DirectMessageDetails | GroupMessageDetails;
+type ChatMessage = DirectMessageDetails | GroupMessageDetails;
 
 interface RoomContextData {
-  selectedMessages: ContextMessage[];
-  setSelectedMessages: React.Dispatch<React.SetStateAction<ContextMessage[]>>;
+  selectedMessages: ChatMessage[];
+  setSelectedMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  editing: string | null;
+  setEditing: React.Dispatch<React.SetStateAction<string | null>>;
   isGroup: boolean;
   isPersonal: boolean;
   roomMessagesKey: string;
+  isSelectingMessages: boolean;
+  setIsSelectingMessages: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleIsSelectingMessages: () => void;
 }
 
 export const RoomContext = createContext<RoomContextData | null>(null);
 
 export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
-  const [selectedMessages, setSelectedMessages] = useState<ContextMessage[]>(
-    [],
-  );
+  const [selectedMessages, setSelectedMessages] = useState<ChatMessage[]>([]);
   const { selectedChat } = useChatsContext();
   const { currentUserDetails } = useAuth();
+  const [editing, setEditing] = useState<string | null>(null);
+  const [isSelectingMessages, setIsSelectingMessages] = useState(false);
   const isGroup = !!(
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
@@ -40,12 +45,27 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
         participant.$id === currentUserDetails?.$id,
     );
 
+  function toggleIsSelectingMessages() {
+    if (isSelectingMessages) {
+      setIsSelectingMessages(false);
+      return;
+    }
+    setEditing(null);
+    setSelectedMessages([]);
+    setIsSelectingMessages(true);
+  }
+
   const contextData = {
     selectedMessages: selectedMessages,
     setSelectedMessages,
     isGroup,
     isPersonal,
     roomMessagesKey,
+    editing,
+    setEditing,
+    isSelectingMessages,
+    toggleIsSelectingMessages,
+    setIsSelectingMessages,
   };
 
   return (

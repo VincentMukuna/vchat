@@ -32,8 +32,13 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, setSelectedChat } = useChatsContext();
-  const { selectedMessages, setSelectedMessages, isGroup, isPersonal } =
-    useRoomContext();
+  const {
+    selectedMessages,
+    setSelectedMessages,
+    isGroup,
+    isPersonal,
+    setIsSelectingMessages,
+  } = useRoomContext();
   const [showDetails] = useState(false);
 
   if (!currentUserDetails) return null;
@@ -85,6 +90,7 @@ function Room() {
   }, [selectedChat]);
 
   useCommand("Escape", () => {
+    setIsSelectingMessages(false);
     setSelectedMessages([]);
   });
 
