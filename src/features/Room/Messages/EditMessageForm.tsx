@@ -7,22 +7,21 @@ import api from "../../../services/api";
 
 type EditMessageFormProps = {
   message: ChatMessage;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
   newMessage: string;
   setNewMessage: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function EditMessageForm({
   message,
-  setIsEditing,
   newMessage,
   setNewMessage,
 }: EditMessageFormProps) {
-  const { roomMessagesKey } = useRoomContext();
+  const { roomMessagesKey, setEditing } = useRoomContext();
+
   const { cache } = useSWRConfig();
   const handleEditMessage = async () => {
+    setEditing(null);
     if (newMessage !== message.body) {
-      setIsEditing(false);
       const roomMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
       mutate(roomMessagesKey);
 
@@ -49,15 +48,14 @@ export default function EditMessageForm({
       <Input
         autoFocus
         value={newMessage}
-        onBlur={() => {
-          setIsEditing(false);
-        }}
         onChange={(e) => {
           setNewMessage(e.target.value.slice(0, 1499));
         }}
       />
 
-      <Button className="self-end">Save</Button>
+      <Button type="submit" className="self-end">
+        Save
+      </Button>
     </form>
   );
 }
