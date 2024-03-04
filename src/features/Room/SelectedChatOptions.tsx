@@ -46,13 +46,10 @@ export default function SelectedChatOptions() {
           }}
         />
       </Tooltip>
-      <Tooltip
-        hidden={selectedMessages.length === 0}
-        label="Forward"
-        placement="left"
-      >
+      <Tooltip label="Forward" placement="left">
         <IconButton
           aria-label="forward messages"
+          hidden={selectedMessages.length === 0}
           variant={"ghost"}
           icon={<ArrowUturnRightIcon className="w-4 h-4" />}
           onClick={() => {

@@ -11,27 +11,18 @@ import {
 import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 
-import {
-  AspectRatio,
-  Avatar,
-  IconButton,
-  Image,
-  Input,
-  InputGroup,
-  InputRightElement,
-} from "@chakra-ui/react";
-import useSWR, { mutate } from "swr";
+import { AspectRatio, Avatar, Image } from "@chakra-ui/react";
+import useSWR from "swr";
 import { getFormattedDateTime } from "../../../services/dateServices";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
-import { CheckIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import Blueticks from "../../../components/Blueticks";
 import { openModal } from "../../../components/Modal";
 import { useRoomContext } from "../../../context/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
+import EditMessageForm from "./EditMessageForm";
 
 interface MessageProps {
   message: DirectMessageDetails | GroupMessageDetails;
@@ -144,28 +135,6 @@ const Message = forwardRef<any, MessageProps>(
       await onDelete(message);
     };
 
-    const handleEditMessage = async () => {
-      if (newMessage !== message.body) {
-        setIsEditing(false);
-
-        let editPs = api
-          .updateDocument(
-            message.$databaseId,
-            message.$collectionId,
-            message.$id,
-            { body: newMessage },
-          )
-          .then(() => {
-            toast.success("Message edited succesfully ");
-          })
-          .catch((err: any) => {
-            toast.error("Something went wrong! ");
-          });
-
-        mutate(selectedChat?.$id);
-      }
-    };
-
     function shouldShowHoverCard() {
       if (isOptimistic) {
         return false;
@@ -210,7 +179,7 @@ const Message = forwardRef<any, MessageProps>(
         <div
           className={`relative gap-1 flex cursor-pointer ${
             isMine ? "flex-row-reverse" : ""
-          } items-start focus:outline-1 focus:outline-slate-600 transition-all
+          } items-start focus:outline-0 focus:outline-slate-600 transition-all
             ${
               isSelected
                 ? "bg-slate-300 dark:bg-slate-800 p-2 rounded-md ring-1 ring-offset-2 ring-slate-500 dark:ring-gray-800 dark:ring-offset-gray-700"
@@ -252,7 +221,7 @@ const Message = forwardRef<any, MessageProps>(
             <div
               onClick={() => setIsEditing(true)}
               className={`flex flex-col relative
-                px-2  pt-1   ${
+                px-3  pt-2   ${
                   isMine
                     ? `${
                         isSelected
@@ -264,46 +233,16 @@ const Message = forwardRef<any, MessageProps>(
 
                  w-fit max-w-[400px]   `}
             >
-              {isMine ? (
-                isEditing ? (
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleEditMessage();
-                    }}
-                  >
-                    <InputGroup>
-                      <InputRightElement>
-                        <IconButton
-                          aria-label="save changes"
-                          onClick={handleEditMessage}
-                          bg={"inherit"}
-                          icon={
-                            <CheckIcon className="w-4 h-4 text-dark-gray1" />
-                          }
-                        />
-                      </InputRightElement>
-
-                      <Input
-                        autoFocus
-                        value={newMessage}
-                        onBlur={() => {
-                          setIsEditing(false);
-                        }}
-                        onChange={(e) => {
-                          setNewMessage(e.target.value.slice(0, 1499));
-                        }}
-                      />
-                    </InputGroup>
-                  </form>
-                ) : (
-                  <p className="text-[0.9rem] leading-relaxed tracking-wide">
-                    {newMessage}
-                  </p>
-                )
+              {isEditing ? (
+                <EditMessageForm
+                  message={message}
+                  newMessage={newMessage}
+                  setIsEditing={setIsEditing}
+                  setNewMessage={setNewMessage}
+                />
               ) : (
-                <p className="text-[0.8rem] md:text-[0.9rem]  leading-relaxed tracking-wide">
-                  {message.body}
+                <p className="text-[0.9rem] leading-relaxed tracking-wide">
+                  {newMessage}
                 </p>
               )}
               {isMine && <Blueticks read={message.read} />}

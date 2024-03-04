@@ -15,7 +15,7 @@ interface RoomContextData {
   setSelectedMessages: React.Dispatch<React.SetStateAction<ContextMessage[]>>;
   isGroup: boolean;
   isPersonal: boolean;
-  roomMessagesKey?: string;
+  roomMessagesKey: string;
 }
 
 export const RoomContext = createContext<RoomContextData | null>(null);

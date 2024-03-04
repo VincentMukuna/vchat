@@ -69,7 +69,6 @@ const MessageInput = ({}: InputProps) => {
     }
   }, [selectedChat]);
 
-  const chatMessagesKey = selectedChat.$id + "-messages";
   const { openFilePicker, filesContent, clear } = useFilePicker({
     accept: [".jpg", ".png"],
     multiple: false,
