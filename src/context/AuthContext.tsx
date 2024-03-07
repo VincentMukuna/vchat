@@ -3,9 +3,10 @@ import {
   createContext,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
 
@@ -25,6 +26,7 @@ type AuthProviderProps = {
 };
 
 export interface IAuthContext {
+  intended: string;
   isLoading: boolean;
   currentUser: Models.User<Models.Preferences> | null;
   currentUserDetails: IUserDetails | null;
@@ -46,12 +48,14 @@ export interface IAuthContext {
 const AuthContext = createContext<IAuthContext | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const { pathname } = useLocation();
   const [currentUser, setCurrentUser] =
     useState<Models.User<Models.Preferences> | null>(null);
   const [currentUserDetails, setCurrentUserDetails] =
     useState<IUserDetails | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
+  const intendedRef = useRef<string>("/");
   const navigate = useNavigate();
 
   const getUserDetails = async (user: Models.User<Models.Preferences>) => {
@@ -77,7 +81,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
-      navigate("home");
+      navigate(intendedRef.current);
     } catch (error) {
       setIsLoading(false);
       navigate("login");
@@ -117,10 +121,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     setCurrentUserDetails(userDeets);
   }
   useEffect(() => {
+    intendedRef.current = pathname;
     (currentUser && currentUserDetails) || getUserOnLoad();
   }, []);
 
   let contextData = {
+    intended: intendedRef.current,
     isLoading,
     currentUser,
     currentUserDetails,
