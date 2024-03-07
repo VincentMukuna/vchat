@@ -1,16 +1,22 @@
+import { Button, Stack, useColorMode } from "@chakra-ui/react";
+import { blueDark, gray } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import Search from "../../components/Search";
+import VSkeleton from "../../components/VSkeleton";
 import { useAuth } from "../../context/AuthContext";
 import { IUserDetails } from "../../interfaces";
 import { getUsers, searchUsers } from "../../services/userDetailsServices";
-import User, { UserAbout, UserAvatar, UserDescription } from "./User";
-import { Button, Stack, useColorMode } from "@chakra-ui/react";
-import { blueDark, gray } from "@radix-ui/colors";
-import Search from "../../components/Search";
-import { useInfinite } from "../../utils/hooks/useInfinite";
-import { motion } from "framer-motion";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import VSkeleton from "../../components/VSkeleton";
+import { useInfinite } from "../../utils/hooks/useInfinite";
+import User, { UserAbout, UserAvatar, UserDescription } from "./User";
 
-function UsersList({ onUserClick }: { onUserClick?: () => void }) {
+function UsersList({
+  onUserClick,
+  className,
+}: {
+  onUserClick?: () => void;
+  className: string;
+}) {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
   const { colorMode } = useColorMode();
@@ -27,7 +33,11 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
   } = useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
   if (error) {
     return (
-      <div className="flex flex-col items-center gap-8 p-4 text-gray-300">
+      <div
+        className={
+          "flex flex-col items-center gap-8 p-4 text-gray-300 " + className
+        }
+      >
         <div>
           <p>Whoops!</p>
           <p>An error occurred while fetching users</p>
@@ -88,32 +98,34 @@ function UsersList({ onUserClick }: { onUserClick?: () => void }) {
             </>
           ) : (
             <>
-              {([] as IUserDetails[])
-                .concat(...(users ? users : []))
-                .filter((user) => (user ? true : false))
-                ?.map((user) => (
-                  <User key={user.$id} user={user}>
-                    <UserAvatar />
-                    <UserDescription>
-                      <UserAbout />
-                    </UserDescription>
-                  </User>
-                ))}
-              {totalRef.current >
-                ([] as IUserDetails[]).concat(...users!).length && (
-                <Button
-                  variant={"ghost"}
-                  onClick={() => {
-                    setSize(size + 1);
-                  }}
-                  isLoading={isValidating}
-                  w={"full"}
-                  flexShrink={0}
-                  mb={2}
-                >
-                  {isValidating ? "Fetching" : "See more"}
-                </Button>
-              )}
+              <div className="flex flex-col space-y-1 overflow-y-auto max-h-[75dvh]">
+                {([] as IUserDetails[])
+                  .concat(...(users ? users : []))
+                  .filter((user) => (user ? true : false))
+                  ?.map((user) => (
+                    <User key={user.$id} user={user}>
+                      <UserAvatar />
+                      <UserDescription>
+                        <UserAbout />
+                      </UserDescription>
+                    </User>
+                  ))}
+                {totalRef.current >
+                  ([] as IUserDetails[]).concat(...users!).length && (
+                  <Button
+                    variant={"ghost"}
+                    onClick={() => {
+                      setSize(size + 1);
+                    }}
+                    isLoading={isValidating}
+                    w={"full"}
+                    flexShrink={0}
+                    mb={2}
+                  >
+                    {isValidating ? "Fetching" : "See more"}
+                  </Button>
+                )}
+              </div>
             </>
           )}
         </Stack>
