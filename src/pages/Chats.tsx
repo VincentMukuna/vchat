@@ -11,7 +11,7 @@ function Chats() {
     <AuthenticatedLayout>
       <Sidebar>
         <SideBarHeader title={"Chats"} className="" />
-        <ChatsList className="px-3 overflow-y-auto mt-18" />
+        <ChatsList className="px-3 mt-18" />
       </Sidebar>
       <Box
         className={`absolute flex transition-opacity  h-full   inset-0 md:relative grow ${

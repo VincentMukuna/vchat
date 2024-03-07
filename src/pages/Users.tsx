@@ -9,7 +9,6 @@ export default function Users() {
         <SideBarHeader title={"Users"} className="" />
         <UsersList className="px-3 overflow-y-auto mt-18" />
       </Sidebar>
-      Details
     </AuthenticatedLayout>
   );
 }
