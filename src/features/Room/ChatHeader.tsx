@@ -131,7 +131,7 @@ function ChatHeader() {
     }
   }
   return (
-    <section className="relative flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-slate1 bg-gray2 text-dark-gray2">
+    <section className="relative flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-blue1 bg-gray2 text-dark-gray2">
       <IconButton
         bg={"transparent"}
         as={motion.button}

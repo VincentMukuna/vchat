@@ -55,7 +55,7 @@ function User({
                 );
               }
         }
-        className={`transition-all gap-1 flex items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 w-full`}
+        className={`transition-all gap-1 flex items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-blue3/25 w-full`}
       >
         <UserContext.Provider value={{ user: user }}>
           {children}

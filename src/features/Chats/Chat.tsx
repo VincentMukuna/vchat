@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 
-import {
-  IUserDetails,
-  DirectChatDetails,
-  GroupChatDetails,
-  DirectMessageDetails,
-  GroupMessageDetails,
-} from "../../interfaces";
-import { getFormatedDate } from "../../services/dateServices";
+import { Avatar, AvatarBadge, Card } from "@chakra-ui/react";
+import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { greenDark } from "@radix-ui/colors";
+import { Query } from "appwrite";
+import { motion } from "framer-motion";
+import useSWR, { useSWRConfig } from "swr";
+import Blueticks from "../../components/Blueticks";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import useSWR, { useSWRConfig } from "swr";
+import {
+  DirectChatDetails,
+  DirectMessageDetails,
+  GroupChatDetails,
+  GroupMessageDetails,
+  IUserDetails,
+} from "../../interfaces";
 import api from "../../services/api";
-import { Avatar, AvatarBadge, Card } from "@chakra-ui/react";
-import Blueticks from "../../components/Blueticks";
-import { Query } from "appwrite";
-import { SERVER } from "../../utils/config";
-import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { grayDark, greenDark } from "@radix-ui/colors";
-import { motion } from "framer-motion";
-import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
 import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
+import { getFormatedDate } from "../../services/dateServices";
+import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
 import { compareCreatedAt } from "../../utils";
+import { SERVER } from "../../utils/config";
 
 interface IChatProps {
   conversation: DirectChatDetails | GroupChatDetails;
@@ -123,7 +123,10 @@ const Chat = ({ conversation }: IChatProps) => {
 
   useEffect(() => {
     if (unreadCount && unreadCount > 0) {
-      let chats = cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
+      let chats = cache.get("conversations")?.data as (
+        | DirectChatDetails
+        | GroupChatDetails
+      )[];
       if (!chats) return;
       chats.sort((a, b) => {
         const unreadCountA = cache.get(`unread-${a.$id}`)?.data || 0;
@@ -141,9 +144,13 @@ const Chat = ({ conversation }: IChatProps) => {
         return 0;
       });
 
-      globalMutate<(DirectChatDetails | GroupChatDetails)[]>("conversations", chats, {
-        revalidate: false,
-      });
+      globalMutate<(DirectChatDetails | GroupChatDetails)[]>(
+        "conversations",
+        chats,
+        {
+          revalidate: false,
+        },
+      );
     }
   }, [unreadCount]);
   useEffect(() => {
@@ -175,8 +182,8 @@ const Chat = ({ conversation }: IChatProps) => {
           setRecepient(contactDetails);
           setSelectedChat(conversation);
         }}
-        className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-slate6 ${
-          isActive ? "bg-dark-slate5 dark:bg-dark-slate3" : ""
+        className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
+          isActive ? "bg-dark-slate5 dark:bg-dark-blue3" : ""
         }`}
       >
         <Avatar
