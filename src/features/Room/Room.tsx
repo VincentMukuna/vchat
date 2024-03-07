@@ -81,6 +81,7 @@ function Room() {
 
   useEffect(() => {
     setSelectedMessages([]);
+    setIsSelectingMessages(false);
   }, [selectedChat]);
 
   useEffect(() => {
@@ -151,7 +152,7 @@ function Room() {
 
   if (!selectedChat) {
     return (
-      <motion.div className="flex flex-col items-center w-full h-full ">
+      <motion.div className="flex flex-col items-center justify-center w-full h-full ">
         <motion.img
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -159,7 +160,7 @@ function Room() {
           transition={{ duration: 0.2 }}
           src={chatSVG}
           alt=""
-          className="w-[4\6] h-4/6 p-4 max-w-md"
+          className="w-[3\6] h-3/6 p-4 max-w-md"
         />
         <p>Vchat</p>
         <p>Click on Chat to start messaging</p>
@@ -175,7 +176,7 @@ function Room() {
         initial="slide-from-right"
         animate="slide-in"
         exit="slide-from-right"
-        className="grid h-full grid-flow-row grid-rows-[85px_auto_60px] dark:bg-dark-gray4 grow "
+        className="grid h-full grid-flow-row grid-rows-[85px_auto_65px] dark:bg-dark-blue1 grow"
       >
         <ChatHeader />
         {error ? (
@@ -198,7 +199,7 @@ function Room() {
       <aside
         className={`hidden ${
           showDetails && "absolute inset-0"
-        } md:static  md:max-w-[20rem] grow basis-40 border-l transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
+        } md:static  md:max-w-[20rem] grow basis-40 border-l dark:border-dark-slate4 transition-all xl:flex  flex flex-col items-center pt-6 pb-4`}
       >
         <RoomDetails />
         <RoomDetailsFooter />
