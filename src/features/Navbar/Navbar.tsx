@@ -3,9 +3,8 @@ import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark, slateDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
-import { useAppSelector } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import { logUserOut } from "../../services/sessionServices";
 import { MyProfile } from "./MyProfile";
@@ -35,10 +34,11 @@ const Navbar = () => {
     setCurrentUserDetails,
     setCurrentUser,
   } = useAuth();
-  const { activePage, setActivePage } = useAppSelector();
   if (!currentUser || !currentUserDetails) return null;
 
   const { colorMode, toggleColorMode } = useColorMode();
+
+  const { pathname } = useLocation();
 
   return (
     <nav className="grow-0 md:flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-blue2 md:h-full gap-3">
@@ -61,16 +61,12 @@ const Navbar = () => {
               bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
               textColor={colorMode === "light" ? indigo.indigo3 : "black"}
             >
-              <Link
-                to={tab.value}
-                onClick={() => {
-                  setActivePage(tab.title);
-                }}
-                className="relative mb-3"
-              >
+              <Link to={tab.value} className="relative mb-3">
                 <div
                   className={` md:w-1 md:h-full w-full h-1 bg-dark-blue7 rounded-full absolute  -bottom-2 md:bottom-0 left-[2px]  md:-left-1 transition-opacity ${
-                    activePage === tab.title ? "visible" : "invisible"
+                    pathname.split("/").includes(tab.value.substring(1))
+                      ? "visible"
+                      : "invisible"
                   }`}
                 />
                 <IconButton

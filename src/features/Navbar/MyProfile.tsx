@@ -2,7 +2,6 @@ import { Avatar, Tooltip, useColorMode } from "@chakra-ui/react";
 import { UserIcon } from "@heroicons/react/20/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { Link, redirect } from "react-router-dom";
-import { useAppSelector } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import { getCurrentUserDetails } from "../../services/userDetailsServices";
 
@@ -15,7 +14,6 @@ export const MyProfile = () => {
     setCurrentUser,
   } = useAuth();
   if (!currentUser || !currentUserDetails) return null;
-  const { setActivePage } = useAppSelector();
 
   return (
     <Tooltip
@@ -37,7 +35,6 @@ export const MyProfile = () => {
           getCurrentUserDetails(currentUser).then((deets) => {
             setCurrentUserDetails(deets);
           });
-          setActivePage("Profile");
         }}
       >
         <Avatar

@@ -10,7 +10,6 @@ import {
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useAppSelector } from "../../context/AppContext";
 
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
@@ -40,7 +39,6 @@ interface SideBarHeaderProps {
 }
 
 export function SideBarHeader({ title, className }: SideBarHeaderProps) {
-  const { activePage } = useAppSelector();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
   return (

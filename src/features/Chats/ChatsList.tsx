@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import useSWR, { useSWRConfig } from "swr";
-import { useAppSelector } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import {
   DirectChatDetails,
@@ -48,8 +47,6 @@ export async function getConversations(userDetailsID: string) {
 
 const ChatsList = ({ className }: { className: string }) => {
   const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
-  const { setActivePage } = useAppSelector();
-
   const navigate = useNavigate();
 
   const { colorMode } = useColorMode();
@@ -128,7 +125,6 @@ const ChatsList = ({ className }: { className: string }) => {
           leftIcon={<UserPlusIcon className="w-5 h-5 " />}
           onClick={() => {
             navigate("users");
-            setActivePage("Users");
           }}
         >
           Create Chat
