@@ -1,29 +1,17 @@
 import {
-  Button,
   FocusLock,
-  HStack,
   Input,
   InputGroup,
   InputLeftElement,
   Popover,
   PopoverAnchor,
   PopoverContent,
-  PopoverTrigger,
-  SkeletonCircle,
-  SkeletonText,
   useDisclosure,
 } from "@chakra-ui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
-import UsersList from "../features/Users/UsersList";
+import { blueDark, gray } from "@radix-ui/colors";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import api from "../services/api";
-import { SERVER } from "../utils/config";
-import { Query } from "appwrite";
-import { IUserDetails } from "../interfaces";
-import React, { Children, useRef, useState } from "react";
-import User from "../features/Users/User";
-import { blue, gray, slateDark } from "@radix-ui/colors";
-import { CircleLoader, ClipLoader } from "react-spinners";
 import VSkeleton from "./VSkeleton";
 
 function Search({
@@ -85,7 +73,7 @@ function Search({
       </PopoverAnchor>
       <PopoverContent
         bg={gray.gray1}
-        _dark={{ bg: slateDark.slate1 }}
+        _dark={{ bg: blueDark.blue1 }}
         _focus={{
           border: "none",
           shadow: "0 0 0 1px gray",
