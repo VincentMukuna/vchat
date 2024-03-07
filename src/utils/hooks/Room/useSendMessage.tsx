@@ -38,7 +38,10 @@ export default function useSendMessage() {
       return;
     }
 
-    const newMessages = [message, ...roomMessages];
+    const newMessages = [
+      { ...message, attachments: message.optimisticAttachments },
+      ...roomMessages,
+    ];
 
     await mutate(roomMessagesKey, newMessages, {
       revalidate: false,

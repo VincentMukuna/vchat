@@ -6,7 +6,6 @@ import { Models } from "appwrite";
 import { motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
@@ -57,9 +56,9 @@ const MessageInput = ({}: InputProps) => {
   if (!selectedChat) return null;
   const [messageBody, setMessageBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
+
   const { colorMode } = useColorMode();
-  let { mutate, cache } = useSWRConfig();
-  const { isGroup, isPersonal, roomMessagesKey } = useRoomContext();
+  const { isGroup, isPersonal } = useRoomContext();
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const { sendMessage, sending } = useSendMessage();
 
@@ -106,8 +105,9 @@ const MessageInput = ({}: InputProps) => {
     if (messageBody.trim() === "") {
       return;
     }
+
     setMessageBody("");
-    setAttachments([]);
+
     if (isGroup) {
       let message: GroupMessageSendDto = {
         $collectionId: SERVER.COLLECTION_ID_GROUP_MESSAGES,
@@ -116,6 +116,7 @@ const MessageInput = ({}: InputProps) => {
         senderID: currentUserDetails.$id,
         body: messageBody,
         groupDoc: selectedChat.$id,
+        optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
       await sendMessage(message);
@@ -130,10 +131,13 @@ const MessageInput = ({}: InputProps) => {
         read: isPersonal ? true : false,
         chatDoc: selectedChat.$id,
         attachments: attachments,
+        optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
       await sendMessage(message);
     }
+
+    setAttachments([]);
 
     clear();
   };
@@ -142,18 +146,19 @@ const MessageInput = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
   return (
-    <footer className="relative flex flex-col justify-start px-2 py-1 mx-2 mb-2 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray5 dark:bg-dark-slate1">
+    <footer className="relative flex flex-col justify-start px-2 py-1 mx-4 mb-4 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray5 dark:bg-dark-gray3 focus-within:ring-2 dark:ring-dark-indigo5 ring-dark-indigo8 ring-offset-[3px] dark:ring-offset-dark-blue1 ring-offset-gray-100">
       <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
         <div className="flex items-center w-full h-full gap-2 ps-1">
           <div className="relative flex h-full">
             <IconButton
               as={motion.button}
+              variant={"ghost"}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
               bg={"inherit"}
               aria-label="add attachment"
               title="add attachment"
-              icon={<PaperClipIcon className="w-5 h-5 -rotate-45" />}
+              icon={<PaperClipIcon className="w-4 h-4" />}
               onClick={() => {
                 clear();
                 openFilePicker();
@@ -196,7 +201,7 @@ const MessageInput = ({}: InputProps) => {
           <IconButton
             variant={"ghost"}
             aria-label="send"
-            icon={<PaperAirplaneIcon className="w-4 h-4" />}
+            icon={<PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />}
             type="submit"
             isDisabled={sending || !messageBody.trim()}
           />

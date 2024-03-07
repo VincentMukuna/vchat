@@ -94,7 +94,7 @@ const Message = forwardRef<any, MessageProps>(
     function getMessageAttachments() {
       let attachments: URL[] = [];
       message.attachments.forEach(async (attachmentID: any) => {
-        if (attachmentID?.content) {
+        if (isOptimistic) {
           attachments.push(attachmentID.content);
         } else {
           try {
@@ -227,8 +227,8 @@ const Message = forwardRef<any, MessageProps>(
               className={`flex flex-col relative
                 px-3  pt-2   ${
                   isMine
-                    ? `bg-slate-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end`
-                    : "bg-dark-sky4/80 dark:bg-dark-sky4/95 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
+                    ? `bg-indigo-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end`
+                    : "bg-dark-gray7 dark:bg-dark-indigo4 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
                 } rounded-xl 
 
                  w-fit max-w-[400px]   `}
