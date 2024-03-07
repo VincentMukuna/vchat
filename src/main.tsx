@@ -6,13 +6,16 @@ import {
   ThemeConfig,
   extendTheme,
 } from "@chakra-ui/react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  Navigate,
+  RouterProvider,
+  createBrowserRouter,
+} from "react-router-dom";
 import App from "./App";
-import Chats from "./features/Chats/ChatsList";
+import Chats from "./features/Chats/Chats";
 import Profile from "./features/Profile/Profile";
 import Settings from "./features/Settings/Settings";
-import Users from "./features/Users/UsersList";
-import Home from "./pages/Home";
+import Users from "./features/Users/Users";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import PrivateRoutes from "./routes/PrivateRoutes";
@@ -24,33 +27,30 @@ const router = createBrowserRouter([
   {
     element: <App />,
     children: [
+      //protected routes should be children of PrivateRoutes
       {
-        path: "",
+        path: "/",
         element: <PrivateRoutes />,
         children: [
           {
-            path: "home",
-            element: <Home />,
-            children: [
-              { index: true, path: "", element: <Chats /> },
-
-              {
-                path: "chats",
-                element: <Chats />,
-              },
-              {
-                path: "users",
-                element: <Users />,
-              },
-              {
-                path: "profile",
-                element: <Profile />,
-              },
-              {
-                path: "settings",
-                element: <Settings />,
-              },
-            ],
+            path: "",
+            element: <Navigate to={"/chats"} />,
+          },
+          {
+            path: "chats",
+            element: <Chats />,
+          },
+          {
+            path: "users",
+            element: <Users />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
           },
         ],
       },
