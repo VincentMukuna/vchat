@@ -1,10 +1,10 @@
-import { useAuth } from "../../context/AuthContext";
-import { useAppSelector } from "../../context/AppContext";
-import { getCurrentUserDetails } from "../../services/userDetailsServices";
-import { Link, redirect } from "react-router-dom";
 import { Avatar, Tooltip, useColorMode } from "@chakra-ui/react";
-import { indigo, indigoDark } from "@radix-ui/colors";
 import { UserIcon } from "@heroicons/react/20/solid";
+import { indigo, indigoDark } from "@radix-ui/colors";
+import { Link, redirect } from "react-router-dom";
+import { useAppSelector } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
+import { getCurrentUserDetails } from "../../services/userDetailsServices";
 
 export const MyProfile = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -30,7 +30,7 @@ export const MyProfile = () => {
       rounded={"md"}
     >
       <Link
-        to={"profile"}
+        to={"/profile"}
         className="mt-4 "
         onClick={() => {
           redirect("profile");
