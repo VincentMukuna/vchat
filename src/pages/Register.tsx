@@ -1,12 +1,11 @@
+import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { blue, blueDark, gray } from "@radix-ui/colors";
-import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
-import api from "../services/api";
-import { motion } from "framer-motion";
-import { useAuth } from "../context/AuthContext";
-import PasswordInput from "../components/PasswordInput";
 import OauthSignUp from "../components/OauthSignUp";
+import PasswordInput from "../components/PasswordInput";
+import { useAuth } from "../context/AuthContext";
+import api from "../services/api";
 
 function Register() {
   const { register, currentUser } = useAuth();
@@ -15,7 +14,7 @@ function Register() {
   const { colorMode } = useColorMode();
   useEffect(() => {
     if (currentUser) {
-      navigate("/home");
+      navigate("/");
     }
   }, [currentUser]);
 

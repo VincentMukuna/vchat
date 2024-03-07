@@ -12,12 +12,12 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import App from "./App";
-import Chats from "./features/Chats/Chats";
-import Profile from "./features/Profile/Profile";
-import Settings from "./features/Settings/Settings";
-import Users from "./features/Users/Users";
+import Chats from "./pages/Chats";
 import Login from "./pages/Login";
+import Profile from "./pages/Profile";
 import Register from "./pages/Register";
+import Settings from "./pages/Settings";
+import Users from "./pages/Users";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import { avatarTheme } from "./services/theming/avatarTheme";
 import { butttonTheme } from "./services/theming/buttonTheme";
