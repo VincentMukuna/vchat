@@ -1,18 +1,18 @@
 /** @type {import('tailwindcss').Config} */
+import defaultTheme from "tailwindcss/defaultTheme";
 
-import { Config } from "tailwindcss";
 import {
   blueDark,
-  indigo,
-  indigoDark,
+  grassDark,
   gray,
   grayDark,
+  indigo,
+  indigoDark,
+  mauveDark,
+  skyDark,
+  slateDark,
   tomato,
   tomatoDark,
-  grassDark,
-  slateDark,
-  skyDark,
-  mauveDark,
 } from "@radix-ui/colors";
 /**
  * @type Config
@@ -37,6 +37,9 @@ export default {
         ...indigo,
         ...tomato,
         ...gray,
+      },
+      fontFamily: {
+        sans: ["Asap", ...defaultTheme.fontFamily.sans],
       },
     },
   },
