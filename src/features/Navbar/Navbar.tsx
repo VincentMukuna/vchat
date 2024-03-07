@@ -1,30 +1,28 @@
-import { useAuth } from "../../context/AuthContext";
-import { useAppSelector } from "../../context/AppContext";
-import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
-import { logUserOut } from "../../services/sessionServices";
-import { Link } from "react-router-dom";
-import { IconButton, Indicator, Tooltip, useColorMode } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
-import {
-  blue,
-  grayDark,
-  indigo,
-  indigoDark,
-  slateDark,
-} from "@radix-ui/colors";
+import { IconButton, Tooltip, useColorMode } from "@chakra-ui/react";
 import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
-import { MyProfile } from "./MyProfile";
+import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import { indigo, indigoDark, slateDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
+import { useAppSelector } from "../../context/AppContext";
+import { useAuth } from "../../context/AuthContext";
+import { logUserOut } from "../../services/sessionServices";
+import { MyProfile } from "./MyProfile";
 
 const tabs = [
-  { value: "", icon: <ChatIcon className="w-6 h-6" />, title: "Chats" },
   {
-    value: "users",
+    value: "/chats",
+    icon: <ChatIcon className="w-6 h-6" />,
+    title: "Chats",
+  },
+  {
+    value: "/users",
     icon: <UserIconOutline className="w-6 h-6" />,
     title: "Users",
   },
   {
-    value: "settings",
+    value: "/settings",
     icon: <WheelIcon className="w-6 h-6" />,
     title: "Settings",
   },
@@ -43,7 +41,7 @@ const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <nav className="grow-0 md:flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-slate2 md:h-full gap-3">
+    <nav className="grow-0 md:flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-blue2 md:h-full gap-3">
       <div className="hidden md:flex">
         <MyProfile />
       </div>
