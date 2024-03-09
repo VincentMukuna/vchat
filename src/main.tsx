@@ -6,16 +6,18 @@ import {
   ThemeConfig,
   extendTheme,
 } from "@chakra-ui/react";
+import React from "react";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
 import App from "./App";
+import NoSelectedChat from "./components/NoSelectedChat";
+import Room from "./features/Room/Room";
 import Chats from "./pages/Chats";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
-import Register from "./pages/Register";
 import Settings from "./pages/Settings";
 import Users from "./pages/Users";
 import PrivateRoutes from "./routes/PrivateRoutes";
@@ -39,6 +41,16 @@ const router = createBrowserRouter([
           {
             path: "chats",
             element: <Chats />,
+            children: [
+              {
+                path: "",
+                element: <NoSelectedChat />,
+              },
+              {
+                path: ":chatId",
+                element: <Room />,
+              },
+            ],
           },
           {
             path: "users",
@@ -49,7 +61,7 @@ const router = createBrowserRouter([
             element: <Settings />,
           },
           {
-            path: "profile",
+            path: "profileS",
             element: <Profile />,
           },
         ],
@@ -60,7 +72,10 @@ const router = createBrowserRouter([
       },
       {
         path: "register",
-        element: <Register />,
+        async lazy() {
+          let x = await import("./pages/Register");
+          return { Component: x.default };
+        },
       },
     ],
   },
@@ -80,10 +95,10 @@ const theme = extendTheme({
 });
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <>
+  <React.StrictMode>
     <ColorModeScript initialColorMode="dark" />
     <ChakraProvider theme={theme}>
       <RouterProvider router={router} />
     </ChakraProvider>
-  </>,
+  </React.StrictMode>,
 );
