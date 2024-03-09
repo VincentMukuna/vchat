@@ -5,7 +5,7 @@ import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useSWR, { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -118,9 +118,7 @@ const ChatsList = ({ className }: { className: string }) => {
         <div className="flex flex-col space-y-1 overflow-y-auto max-h-[83dvh]">
           {(conversations ? conversations : currentUserDetails.groups).map(
             (conversation) => (
-              <Link to={`${conversation.$id}`} key={conversation.$id}>
-                <Chat conversation={conversation} />
-              </Link>
+              <Chat conversation={conversation} />
             ),
           )}
         </div>

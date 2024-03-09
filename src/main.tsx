@@ -13,7 +13,6 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import App from "./App";
-import NoSelectedChat from "./components/NoSelectedChat";
 import Room from "./features/Room/Room";
 import Chats from "./pages/Chats";
 import Login from "./pages/Login";
@@ -39,15 +38,11 @@ const router = createBrowserRouter([
             element: <Navigate to={"/chats"} />,
           },
           {
-            path: "chats",
+            path: "chats/*",
             element: <Chats />,
             children: [
               {
-                path: "",
-                element: <NoSelectedChat />,
-              },
-              {
-                path: ":chatId",
+                path: "*",
                 element: <Room />,
               },
             ],
@@ -61,7 +56,7 @@ const router = createBrowserRouter([
             element: <Settings />,
           },
           {
-            path: "profileS",
+            path: "profile",
             element: <Profile />,
           },
         ],
