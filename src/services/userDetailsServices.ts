@@ -1,9 +1,15 @@
+import { compareUpdatedAt } from "@/utils";
 import { Models, Query } from "appwrite";
 import toast from "react-hot-toast";
-import { DirectChatDetails, IUserDetails } from "../interfaces";
+import {
+  DirectChatDetails,
+  GroupChatDetails,
+  IUserDetails,
+} from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";
+import { getUserGroups } from "./groupMessageServices";
 export async function getSession() {
   try {
     let user = await api.getAccount();
@@ -202,4 +208,29 @@ export async function searchUsers(name: string) {
       return [];
     }
   } else return [];
+}
+
+export async function getConversations(userDetailsID: string) {
+  if (!userDetailsID) return [];
+  let conversations: (GroupChatDetails | DirectChatDetails)[] = [];
+
+  const res = await Promise.allSettled([
+    getUserChats(userDetailsID),
+    getUserGroups(userDetailsID),
+  ]);
+
+  conversations = ([] as (DirectChatDetails | GroupChatDetails)[]).concat(
+    ...(res
+      .map((resVal) =>
+        resVal.status === "fulfilled" ? resVal.value : undefined,
+      )
+      .filter((x) => x !== undefined) as (
+      | DirectChatDetails
+      | GroupChatDetails
+    )[][]),
+  );
+
+  conversations.sort(compareUpdatedAt);
+
+  return conversations;
 }
