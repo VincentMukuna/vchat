@@ -28,10 +28,6 @@ const ChatsList = ({ className }: { className: string }) => {
 
   const { cache } = useSWRConfig();
   if (!currentUser || !currentUserDetails) return null;
-
-  // Local state to store chats data
-
-  // Fetch chats data using useSWR
   let {
     data: conversations,
     error: chatsError,
@@ -99,7 +95,7 @@ const ChatsList = ({ className }: { className: string }) => {
           py={"6"}
           leftIcon={<UserPlusIcon className="w-5 h-5 " />}
           onClick={() => {
-            navigate("users");
+            navigate("/users");
           }}
         >
           Create Chat
