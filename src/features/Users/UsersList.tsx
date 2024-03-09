@@ -98,7 +98,7 @@ function UsersList({
             </>
           ) : (
             <>
-              <div className="flex flex-col space-y-1 overflow-y-auto max-h-[75dvh]">
+              <div className="flex flex-col space-y-1 overflow-y-auto  max-h-[70dvh] md:max-h-[75dvh]">
                 {([] as IUserDetails[])
                   .concat(...(users ? users : []))
                   .filter((user) => (user ? true : false))

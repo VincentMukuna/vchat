@@ -22,7 +22,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/20/solid";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
-import { slateDark } from "@radix-ui/colors";
+import { blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import toast from "react-hot-toast";
@@ -210,7 +210,7 @@ function ChatHeader() {
         size={["md"]}
       >
         <DrawerOverlay />
-        <DrawerContent bg={slateDark.slate1}>
+        <DrawerContent bg={blueDark.blue1}>
           <DrawerCloseButton />
           <DrawerHeader>
             <RoomDetailsHeader />

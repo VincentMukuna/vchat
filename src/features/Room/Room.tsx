@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 //@ts-ignore
+import NoSelectedChat from "@/components/NoSelectedChat";
 import { Box, Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
@@ -139,7 +140,7 @@ function Room() {
     }
   }, [selectedChat]);
 
-  if (!selectedChat) return null;
+  if (!selectedChat) return <NoSelectedChat />;
   return (
     <>
       <Box

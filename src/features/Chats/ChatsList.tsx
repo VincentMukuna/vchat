@@ -115,7 +115,7 @@ const ChatsList = ({ className }: { className: string }) => {
         animate="slide-in"
         exit="slide-from-right"
       >
-        <div className="flex flex-col space-y-1 overflow-y-auto max-h-[83dvh]">
+        <div className={"flex flex-col space-y-1 overflow-y-clip " + className}>
           {(conversations ? conversations : currentUserDetails.groups).map(
             (conversation) => (
               <Chat conversation={conversation} />

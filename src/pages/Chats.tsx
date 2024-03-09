@@ -1,3 +1,4 @@
+import { useChatsContext } from "@/context/ChatsContext";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
@@ -7,15 +8,16 @@ import Sidebar, { SideBarHeader } from "../features/Sidebar/Sidebar";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 
 function Chats() {
+  const { selectedChat } = useChatsContext();
   return (
     <AuthenticatedLayout>
       <Sidebar>
         <SideBarHeader title={"Chats"} className="" />
-        <ChatsList className="px-3 mt-18" />
+        <ChatsList className="" />
       </Sidebar>
       <Box
         className={`absolute flex transition-opacity  h-full   inset-0 md:relative grow ${
-          false ? "z-10" : "invisible md:visible"
+          selectedChat ? "z-10" : "invisible md:visible"
         }`}
       >
         <AnimatePresence>

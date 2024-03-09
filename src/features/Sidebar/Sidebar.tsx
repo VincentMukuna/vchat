@@ -25,7 +25,7 @@ const Sidebar = ({ children }: SidebarProps) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   return (
-    <aside className="bg-gray2 px-1 dark:bg-dark-blue1 border-r dark:border-dark-slate3 dark:text-gray2   shrink basis-[25rem] grow md:max-w-[25rem]">
+    <aside className="bg-gray2 px-1 relative max-h-full overflow-auto dark:bg-dark-blue1 border-r dark:border-dark-slate3 dark:text-gray2   shrink basis-[25rem] grow md:max-w-[25rem]">
       {children}
     </aside>
   );
@@ -44,7 +44,7 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
   return (
     <div
       className={
-        "flex items-center w-full h-24 px-4 font-semibold tracking-widest " +
+        "flex items-center w-full h-24 px-4 font-semibold tracking-widest sticky bg-gray2 dark:bg-dark-blue1 top-0 left-0 right-0 z-10" +
         className
       }
     >
