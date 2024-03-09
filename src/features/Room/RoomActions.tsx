@@ -1,28 +1,28 @@
-import { Button, MenuDivider, MenuItem, MenuList } from "@chakra-ui/react";
-import { Alert, confirmAlert } from "../../components/Alert/alertStore";
-import { useChatsContext } from "../../context/ChatsContext";
-import { clearChatMessages } from "../../services/chatMessageServices";
-import toast from "react-hot-toast";
-import { openModal } from "../../components/Modal";
-import EditMembers from "../Groups/Actions/EditMembers";
-import { GroupChatDetails } from "../../interfaces";
-import AddMembers from "../Groups/Actions/AddMembers";
-import { mutate, useSWRConfig } from "swr";
-import { useAuth } from "../../context/AuthContext";
-import { slateDark } from "@radix-ui/colors";
-import EditGroupAdmins from "../Groups/Actions/EditGroupAdmins";
+import { MenuDivider, MenuItem, MenuList } from "@chakra-ui/react";
 import {
   PencilIcon,
   TrashIcon,
   UserMinusIcon,
   UserPlusIcon,
 } from "@heroicons/react/20/solid";
+import { slateDark } from "@radix-ui/colors";
+import toast from "react-hot-toast";
+import { useSWRConfig } from "swr";
+import { confirmAlert } from "../../components/Alert/alertStore";
+import { openModal } from "../../components/Modal";
+import { useAuth } from "../../context/AuthContext";
+import { useChatsContext } from "../../context/ChatsContext";
+import { GroupChatDetails } from "../../interfaces";
+import { clearChatMessages } from "../../services/chatMessageServices";
 import { clearGroupMessages } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
+import AddMembers from "../Groups/Actions/AddMembers";
+import EditGroupAdmins from "../Groups/Actions/EditGroupAdmins";
+import EditMembers from "../Groups/Actions/EditMembers";
 
 const RoomActions = () => {
   const { selectedChat } = useChatsContext();
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
 
   const { currentUserDetails } = useAuth();
 
@@ -33,7 +33,8 @@ const RoomActions = () => {
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
   const isAdmin =
-    isGroup && (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
+    isGroup &&
+    (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
 
   async function handleClearRoomMessages() {
     const chatMessagesKey = selectedChat!.$id + "-messages";
@@ -99,7 +100,9 @@ const RoomActions = () => {
           <MenuItem
             py={"1"}
             onClick={() =>
-              openModal(<EditMembers group={selectedChat as GroupChatDetails} />)
+              openModal(
+                <EditMembers group={selectedChat as GroupChatDetails} />,
+              )
             }
             bg={"transparent"}
             icon={<UserMinusIcon className="w-4 h-4" />}
@@ -113,7 +116,9 @@ const RoomActions = () => {
             bg={"transparent"}
             onClick={() =>
               openModal(
-                <EditGroupAdmins selectedGroup={selectedChat as GroupChatDetails} />,
+                <EditGroupAdmins
+                  selectedGroup={selectedChat as GroupChatDetails}
+                />,
               )
             }
             icon={<PencilIcon className="w-4 h-4" />}

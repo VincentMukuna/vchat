@@ -1,22 +1,26 @@
+import { Button, HStack } from "@chakra-ui/react";
+import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import { TrashIcon } from "@heroicons/react/24/solid";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { useSWRConfig } from "swr";
+import { confirmAlert } from "../../../components/Alert/alertStore";
+import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { DirectChatDetails, GroupChatDetails, IUserDetails } from "../../../interfaces";
+import {
+  DirectChatDetails,
+  GroupChatDetails,
+  IUserDetails,
+} from "../../../interfaces";
 import {
   deleteGroup,
   leaveGroup,
 } from "../../../services/groupMessageServices";
-import { mutate, useSWRConfig } from "swr";
-import { Button, HStack } from "@chakra-ui/react";
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
-import toast from "react-hot-toast";
-import { useAuth } from "../../../context/AuthContext";
 import { deleteContact } from "../../../services/userDetailsServices";
-import { confirmAlert } from "../../../components/Alert/alertStore";
-import { motion } from "framer-motion";
 import { SERVER } from "../../../utils/config";
 
 export const RoomDetailsFooter = () => {
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const { recepient, setSelectedChat, selectedChat } = useChatsContext();
 
   if (selectedChat === undefined) return null;
@@ -35,7 +39,10 @@ export const RoomDetailsFooter = () => {
     (selectedChat as GroupChatDetails).admins.includes(currentUserDetails!.$id);
   function getConversations() {
     if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
+      return cache.get("conversations")?.data as (
+        | DirectChatDetails
+        | GroupChatDetails
+      )[];
     } else return [];
   }
 

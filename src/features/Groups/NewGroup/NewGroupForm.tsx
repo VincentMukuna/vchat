@@ -1,19 +1,19 @@
 import { useState } from "react";
 
-import { mutate, useSWRConfig } from "swr";
+import toast from "react-hot-toast";
+import { useSWRConfig } from "swr";
+import { useAuth } from "../../../context/AuthContext";
 import { IUserDetails } from "../../../interfaces";
 import { createGroup } from "../../../services/groupMessageServices";
-import toast from "react-hot-toast";
-import { useAuth } from "../../../context/AuthContext";
+import FormStepper from "./FormStepper";
 import AddMembersForm from "./NewGroupAddMembersForm";
 import GroupDetailsForm from "./NewGroupDetailsForm";
-import FormStepper from "./FormStepper";
 
 const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
 
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
 
   const [groupDetails, setGroupDetails] = useState<{
     name: string;

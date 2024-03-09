@@ -3,37 +3,32 @@ import {
   AvatarGroup,
   Button,
   Checkbox,
-  HStack,
   ModalBody,
   ModalCloseButton,
   ModalFooter,
   ModalHeader,
-  SkeletonCircle,
-  SkeletonText,
-  Stack,
   VStack,
-  useCheckboxGroup,
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
+import { UserIcon } from "@heroicons/react/20/solid";
+import { gray, slateDark } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import useSWR, { useSWRConfig } from "swr";
+import { confirmAlert } from "../../../components/Alert/alertStore";
+import Search from "../../../components/Search";
+import VSkeleton from "../../../components/VSkeleton";
+import { useAuth } from "../../../context/AuthContext";
 import { GroupChatDetails, IUserDetails } from "../../../interfaces";
-import useSWR, { mutate, useSWRConfig } from "swr";
 import {
   editMembers,
   getGroupDetails,
 } from "../../../services/groupMessageServices";
-import { blueDark, gray, slateDark } from "@radix-ui/colors";
 import { getUsers, searchUsers } from "../../../services/userDetailsServices";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { useInfinite } from "../../../utils/hooks/useInfinite";
-import Search from "../../../components/Search";
-import { UserIcon } from "@heroicons/react/20/solid";
-import { motion } from "framer-motion";
-import { useAuth } from "../../../context/AuthContext";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
-import VSkeleton from "../../../components/VSkeleton";
-import { confirmAlert } from "../../../components/Alert/alertStore";
 
 const AddMembers = ({ group }: { group: GroupChatDetails }) => {
   const { currentUserDetails } = useAuth();
@@ -41,7 +36,7 @@ const AddMembers = ({ group }: { group: GroupChatDetails }) => {
   const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>
     getGroupDetails(group.$id),
   );
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const { data, isLoading, error, size, setSize, isValidating, totalRef } =
     useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
 
@@ -165,7 +160,7 @@ const AddMembers = ({ group }: { group: GroupChatDetails }) => {
                     .map((user: IUserDetails, index) => {
                       return (
                         <div
-                          className="flex items-center w-full  group gap-1 "
+                          className="flex items-center w-full gap-1 group "
                           key={user.$id}
                         >
                           <Checkbox

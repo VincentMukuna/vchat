@@ -1,9 +1,3 @@
-import { DirectChatDetails, GroupChatDetails } from "../../../interfaces";
-import {
-  updateGroupAvatar,
-  updateGroupDetails,
-} from "../../../services/groupMessageServices";
-import { mutate, useSWRConfig } from "swr";
 import {
   Avatar,
   Button,
@@ -12,27 +6,36 @@ import {
   Input,
   ModalBody,
   ModalCloseButton,
-  ModalContent,
   ModalFooter,
   ModalHeader,
   Textarea,
   useModalContext,
 } from "@chakra-ui/react";
-import toast from "react-hot-toast";
+import { PencilIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { useAuth } from "../../../context/AuthContext";
+import toast from "react-hot-toast";
+import { useSWRConfig } from "swr";
+import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
   FileSizeValidator,
 } from "use-file-picker/validators";
-import { useFilePicker } from "use-file-picker";
-import { PencilIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { motion } from "framer-motion";
+import { DirectChatDetails, GroupChatDetails } from "../../../interfaces";
+import {
+  updateGroupAvatar,
+  updateGroupDetails,
+} from "../../../services/groupMessageServices";
 
-export const EditGroupDetailsForm = ({ group }: { group: GroupChatDetails }) => {
+export const EditGroupDetailsForm = ({
+  group,
+}: {
+  group: GroupChatDetails;
+}) => {
   const { setSelectedChat } = useChatsContext();
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const { onClose } = useModalContext();
   const [details, setDetails] = useState({
     name: group.name,
@@ -63,7 +66,10 @@ export const EditGroupDetailsForm = ({ group }: { group: GroupChatDetails }) => 
       });
 
       promise.then((updatedChatDoc) => {
-        let chats = cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
+        let chats = cache.get("conversations")?.data as (
+          | DirectChatDetails
+          | GroupChatDetails
+        )[];
         let updatedChats = chats.map((chat) => {
           if (chat.$id === group.$id) {
             return {
@@ -98,7 +104,10 @@ export const EditGroupDetailsForm = ({ group }: { group: GroupChatDetails }) => 
     try {
       setSaving(true);
       let updatedGroupDoc = await updateGroupDetails(group.$id, details);
-      let chats = cache.get("conversations")?.data as (DirectChatDetails | GroupChatDetails)[];
+      let chats = cache.get("conversations")?.data as (
+        | DirectChatDetails
+        | GroupChatDetails
+      )[];
       let updatedChats = chats.map((chat) => {
         if (chat.$id === updatedGroupDoc.$id) {
           return updatedGroupDoc;

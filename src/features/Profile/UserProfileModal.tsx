@@ -14,7 +14,7 @@ import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { mutate, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import {
@@ -36,7 +36,7 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
   const { setSelectedChat, setRecepient } = useChatsContext();
   const { colorMode } = useColorMode();
   const [loading, setLoading] = useState(false);
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const isPersonal = user.$id === currentUserDetails.$id;
 
   function getConversations() {

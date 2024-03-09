@@ -2,34 +2,29 @@ import {
   Avatar,
   Button,
   Checkbox,
-  CheckboxGroup,
-  HStack,
   ModalBody,
   ModalCloseButton,
-  ModalContent,
   ModalFooter,
   ModalHeader,
-  SkeletonCircle,
-  SkeletonText,
   Stack,
   useCheckboxGroup,
   useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces";
-import useSWR, { mutate, useSWRConfig } from "swr";
+import { UserIcon } from "@heroicons/react/20/solid";
+import { blueDark, gray } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+import useSWR, { useSWRConfig } from "swr";
+import { confirmAlert } from "../../../components/Alert/alertStore";
+import VSkeleton from "../../../components/VSkeleton";
+import { useAuth } from "../../../context/AuthContext";
+import { GroupChatDetails } from "../../../interfaces";
 import {
   editMembers,
   getGroupDetails,
 } from "../../../services/groupMessageServices";
-import { useEffect, useState } from "react";
-import { blueDark, gray } from "@radix-ui/colors";
-import toast from "react-hot-toast";
-import { confirmAlert } from "../../../components/Alert/alertStore";
-import { useAuth } from "../../../context/AuthContext";
-import { UserIcon } from "@heroicons/react/20/solid";
-import VSkeleton from "../../../components/VSkeleton";
-import { motion } from "framer-motion";
 
 const EditMembers = ({ group }: { group: GroupChatDetails }) => {
   const { data: roomDetails, isLoading } = useSWR(`details ${group.$id}`, () =>
@@ -38,6 +33,7 @@ const EditMembers = ({ group }: { group: GroupChatDetails }) => {
   const { colorMode } = useColorMode();
   const { onClose } = useModalContext();
   const { currentUserDetails } = useAuth();
+  const { mutate } = useSWRConfig();
 
   const { value, getCheckboxProps, setValue } = useCheckboxGroup();
   let canSave = roomDetails?.members.every((member: any) =>

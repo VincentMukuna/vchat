@@ -10,26 +10,31 @@ import {
   useModalContext,
 } from "@chakra-ui/react";
 import { gray, slateDark } from "@radix-ui/colors";
-import React, { useState } from "react";
-import User, { UserAvatar, UserDescription } from "../../Users/User";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces";
+import { motion } from "framer-motion";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import useSWR, { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
+import { useChatsContext } from "../../../context/ChatsContext";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces";
 import {
   getGroupDetails,
   updateGroupDetails,
 } from "../../../services/groupMessageServices";
-import useSWR, { mutate } from "swr";
-import toast from "react-hot-toast";
-import { useChatsContext } from "../../../context/ChatsContext";
-import { motion } from "framer-motion";
+import User, { UserAvatar, UserDescription } from "../../Users/User";
 
-const EditGroupAdmins = ({ selectedGroup }: { selectedGroup: GroupChatDetails }) => {
+const EditGroupAdmins = ({
+  selectedGroup,
+}: {
+  selectedGroup: GroupChatDetails;
+}) => {
   const { currentUserDetails } = useAuth();
   const { setSelectedChat } = useChatsContext();
   if (!currentUserDetails) return null;
   const { colorMode } = useColorMode();
   const { onClose } = useModalContext();
   const [newAdmins, setNewAdmins] = useState(selectedGroup.admins);
+  const { mutate } = useSWRConfig();
 
   const { data: group } = useSWR(`details ${selectedGroup.$id}`, () =>
     getGroupDetails(selectedGroup.$id),

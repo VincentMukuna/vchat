@@ -4,7 +4,6 @@ import { Box, Center } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
-import chatSVG from "../../assets/groupChat.svg";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import { useRoomContext } from "../../context/RoomContext";
@@ -32,13 +31,8 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, setSelectedChat } = useChatsContext();
-  const {
-    selectedMessages,
-    setSelectedMessages,
-    isGroup,
-    isPersonal,
-    setIsSelectingMessages,
-  } = useRoomContext();
+  const { setSelectedMessages, isGroup, isPersonal, setIsSelectingMessages } =
+    useRoomContext();
   const [showDetails] = useState(false);
 
   if (!currentUserDetails) return null;
@@ -78,11 +72,6 @@ function Room() {
       toast.error("Something went wrong");
     }
   };
-
-  useEffect(() => {
-    setSelectedMessages([]);
-    setIsSelectingMessages(false);
-  }, [selectedChat]);
 
   useEffect(() => {
     if (selectedChat) {
@@ -150,23 +139,7 @@ function Room() {
     }
   }, [selectedChat]);
 
-  if (!selectedChat) {
-    return (
-      <motion.div className="flex flex-col items-center justify-center w-full h-full ">
-        <motion.img
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.5 }}
-          transition={{ duration: 0.2 }}
-          src={chatSVG}
-          alt=""
-          className="w-[3\6] h-3/6 p-4 max-w-md"
-        />
-        <p>Vchat</p>
-        <p>Click on Chat to start messaging</p>
-      </motion.div>
-    );
-  }
+  if (!selectedChat) return null;
   return (
     <>
       <Box

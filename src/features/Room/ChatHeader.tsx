@@ -26,11 +26,14 @@ import { slateDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import toast from "react-hot-toast";
-import useSWR, { mutate, useSWRConfig } from "swr";
+import { useNavigate } from "react-router-dom";
+import useSWR, { useSWRConfig } from "swr";
 import { useRoomContext } from "../../context/RoomContext";
 import {
   ChatMessage,
+  DirectChatDetails,
   DirectMessageDetails,
+  GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
 } from "../../interfaces";
@@ -48,7 +51,7 @@ function ChatHeader() {
   const { currentUserDetails } = useAuth();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const breakpoint = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
   const btnRef = useRef(null);
   const {
@@ -58,7 +61,7 @@ function ChatHeader() {
     selectedChat,
     setMsgsCount,
   } = useChatsContext();
-  const {
+  let {
     selectedMessages,
     setSelectedMessages,
     isGroup,
@@ -66,17 +69,23 @@ function ChatHeader() {
     roomMessagesKey,
   } = useRoomContext();
 
-  if (!selectedChat || !currentUserDetails) return null;
+  const navigate = useNavigate();
+
+  const selectedChatDetails = selectedChat as
+    | GroupChatDetails
+    | DirectChatDetails;
+
+  if (!currentUserDetails) return null;
 
   const isAdmin =
-    isGroup && selectedChat.admins.includes(currentUserDetails.$id);
+    isGroup && selectedChatDetails.admins.includes(currentUserDetails.$id);
 
   const { data: group } = useSWR(
     () => {
       if (!isGroup) return undefined;
-      return `details ${selectedChat.$id}`;
+      return `details ${selectedChatDetails.$id}`;
     },
-    () => getGroupDetails(selectedChat.$id),
+    () => getGroupDetails(selectedChatDetails.$id),
   );
   const isGroupMember = group?.members.some(
     (member) => (member as IUserDetails).$id === currentUserDetails.$id,
@@ -92,7 +101,7 @@ function ChatHeader() {
   }
 
   async function handleDeleteSelectedMessages() {
-    if (!currentUserDetails || !selectedChat || !roomMessagesKey) return;
+    if (!currentUserDetails || !selectedChatDetails || !roomMessagesKey) return;
     const currentMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
     const selectedMessageIds = selectedMessages.map((msg) => msg.$id);
     if (canDeleteBasedOnPermissions(selectedMessages)) {
@@ -108,13 +117,13 @@ function ChatHeader() {
       if (isGroup) {
         promise = deleteSelectedGroupMessages({
           deleter: currentUserDetails.$id,
-          groupID: selectedChat.$id,
+          groupID: selectedChatDetails.$id,
           messages: selectedMessages as GroupMessageDetails[],
         });
       } else {
         promise = deleteSelectedDirectChatMessages({
           deleter: currentUserDetails.$id,
-          groupID: selectedChat.$id,
+          groupID: selectedChatDetails.$id,
           messages: selectedMessages as DirectMessageDetails[],
         });
       }
@@ -141,13 +150,14 @@ function ChatHeader() {
         icon={<ArrowLeftIcon className="w-5 h-5 " />}
         aria-label="Close Chat"
         onClick={(e) => {
+          navigate("/chats");
           setSelectedChat(undefined);
           setRecepient(undefined);
           setMsgsCount(0);
         }}
       ></IconButton>
       <Avatar
-        src={selectedChat.avatarURL || recepient?.avatarURL}
+        src={selectedChatDetails?.avatarURL || recepient?.avatarURL}
         icon={
           isGroup ? (
             <UsersIcon className="w-[26px] h-[26px]" />
@@ -166,10 +176,16 @@ function ChatHeader() {
         className="relative flex flex-col grow"
       >
         <span className="max-w-[8rem] transition-all overflow-hidden text-base font-semibold tracking-wide sm:text-lg text-ellipsis whitespace-nowrap md:max-w-none">
-          {isGroup ? selectedChat.name : isPersonal ? "You" : recepient?.name}
+          {isGroup
+            ? selectedChatDetails.name
+            : isPersonal
+            ? "You"
+            : recepient?.name}
         </span>
         <span className="relative max-w-[9rem] overflow-hidden text-xs tracking-wide whitespace-nowrap text-dark-gray5 dark:text-gray6 text-ellipsis">
-          {isGroup ? selectedChat.description : recepient?.about || "about"}
+          {isGroup
+            ? selectedChatDetails.description
+            : recepient?.about || "about"}
         </span>
       </button>
       <div className="absolute flex ml-auto right-1 top-4">

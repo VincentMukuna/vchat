@@ -1,5 +1,4 @@
 import { Query } from "appwrite";
-import { mutate } from "swr";
 import {
   GroupChatDetails,
   GroupMessageDetails,
@@ -33,7 +32,7 @@ export async function createGroup({
 
   if (avatar) {
     setTimeout(() => {
-      uploadGroupAvatar(doc.$id, avatar).then(() => mutate("conversations"));
+      uploadGroupAvatar(doc.$id, avatar);
     }, 1000);
   }
 

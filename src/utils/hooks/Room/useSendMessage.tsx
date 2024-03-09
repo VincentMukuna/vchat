@@ -1,6 +1,6 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { mutate, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { useRoomContext } from "../../../context/RoomContext";
@@ -21,7 +21,7 @@ export default function useSendMessage() {
   const { currentUserDetails } = useAuth();
   const { selectedChat, recepient } = useChatsContext();
   const { roomMessagesKey, isGroup, isPersonal } = useRoomContext();
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
 
   async function sendMessage(
     message: GroupMessageSendDto | DirectMessageSendDto,
@@ -44,7 +44,9 @@ export default function useSendMessage() {
     ];
 
     await mutate(roomMessagesKey, newMessages, {
-      revalidate: false,
+      revalidate: true,
+    }).then((val) => {
+      console.log("Message sent", val);
     });
 
     let container = document.getElementById(

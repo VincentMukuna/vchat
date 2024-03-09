@@ -10,7 +10,7 @@ import {
 import { UserIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { mutate, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import {
   ChatMessage,
@@ -30,7 +30,7 @@ export default function ForwardMessagesModal({
   const { currentUserDetails } = useAuth();
   const { onClose } = useModalContext();
   const [selectedChat, setSelectedChat] = useState<string>("");
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const conversations = cache.get("conversations")?.data as (
     | GroupChatDetails
     | DirectChatDetails

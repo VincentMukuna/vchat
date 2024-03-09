@@ -1,5 +1,5 @@
 import toast from "react-hot-toast";
-import { mutate, useSWRConfig } from "swr";
+import { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { useRoomContext } from "../../../context/RoomContext";
@@ -14,7 +14,7 @@ import { deleteSelectedGroupMessages } from "../../../services/groupMessageServi
 export default function useDeleteSelectedMessages() {
   const { currentUserDetails } = useAuth();
 
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const { selectedChat } = useChatsContext();
   const {
     selectedMessages,
