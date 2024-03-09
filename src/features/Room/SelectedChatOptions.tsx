@@ -16,9 +16,9 @@ export default function SelectedChatOptions() {
   const { selectedMessages, isSelectingMessages, toggleIsSelectingMessages } =
     useRoomContext();
 
-  if (!selectedChat || !currentUserDetails) return null;
   const { canDeleteBasedOnPermissions, deleteSelectedMessages } =
     useDeleteSelectedMessages();
+  if (!selectedChat || !currentUserDetails) return null;
 
   return (
     <HStack>
