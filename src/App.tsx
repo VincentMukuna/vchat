@@ -7,6 +7,7 @@ import { SWRConfig } from "swr/_internal";
 import Alerter from "./components/Alert/Alerter";
 import VModal from "./components/Modal";
 import { AuthProvider } from "./context/AuthContext";
+import { ChatsProvider } from "./context/ChatsContext";
 import ErrorBoundary from "./pages/ErrorBoundary";
 import { localStorageProvider } from "./services/localStorageProvider";
 
@@ -32,11 +33,13 @@ function App() {
 
         <SWRConfig value={{ provider: localStorageProvider }}>
           <AuthProvider>
-            <Alerter />
-            <VModal />
-            <div className="fixed inset-0 flex items-center justify-center bg-gray1 dark:bg-dark-blue1">
-              <Outlet />
-            </div>
+            <ChatsProvider>
+              <Alerter />
+              <VModal />
+              <div className="fixed inset-0 flex items-center justify-center bg-gray1 dark:bg-dark-blue1">
+                <Outlet />
+              </div>
+            </ChatsProvider>
           </AuthProvider>
         </SWRConfig>
       </ErrorBoundary>

@@ -1,4 +1,3 @@
-import { ChatsProvider } from "@/context/ChatsContext";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
@@ -10,23 +9,21 @@ import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 function Chats() {
   return (
     <AuthenticatedLayout>
-      <ChatsProvider>
-        <Sidebar>
-          <SideBarHeader title={"Chats"} className="" />
-          <ChatsList className="px-3 mt-18" />
-        </Sidebar>
-        <Box
-          className={`absolute flex transition-opacity  h-full   inset-0 md:relative grow ${
-            false ? "z-10" : "invisible md:visible"
-          }`}
-        >
-          <AnimatePresence>
-            <RoomProvider>
-              <Outlet />
-            </RoomProvider>
-          </AnimatePresence>
-        </Box>
-      </ChatsProvider>
+      <Sidebar>
+        <SideBarHeader title={"Chats"} className="" />
+        <ChatsList className="px-3 mt-18" />
+      </Sidebar>
+      <Box
+        className={`absolute flex transition-opacity  h-full   inset-0 md:relative grow ${
+          false ? "z-10" : "invisible md:visible"
+        }`}
+      >
+        <AnimatePresence>
+          <RoomProvider>
+            <Outlet />
+          </RoomProvider>
+        </AnimatePresence>
+      </Box>
     </AuthenticatedLayout>
   );
 }
