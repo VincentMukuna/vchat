@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
@@ -67,6 +67,10 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
     toggleIsSelectingMessages,
     setIsSelectingMessages,
   };
+  useEffect(() => {
+    setSelectedMessages([]);
+    setIsSelectingMessages(false);
+  }, [selectedChat]);
 
   return (
     <RoomContext.Provider value={contextData}>{children}</RoomContext.Provider>
