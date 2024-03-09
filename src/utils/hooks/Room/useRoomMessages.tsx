@@ -10,7 +10,6 @@ export default function useRoomMessages() {
   const { selectedChat } = useChatsContext();
   const { isGroup, roomMessagesKey } = useRoomContext();
   const { cache } = useSWRConfig();
-
   const isFirstRender = cache.get(roomMessagesKey!) === undefined;
 
   async function getRoomMessages() {
