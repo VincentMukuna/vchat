@@ -15,4 +15,4 @@ export const SERVER = {
   FUNCTION_ID_FUNCS: "funcs",
   OAUTH_SUCCESS: import.meta.env.VITE_OAUTH_SUCCESS,
   OAUTH_FAILURE: import.meta.env.VITE_OAUTH_FAILURE,
-};
+} as const;
