@@ -163,7 +163,7 @@ const Message = forwardRef<any, MessageProps>(
     return (
       <motion.article
         layout
-        initial={isMine && message?.revalidated ? {} : { opacity: 0 }}
+        initial={isMine && isOptimistic ? {} : { opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={isOptimistic ? {} : { opacity: 0, scale: 0.8 }}
         transition={{ duration: 0.3 }}
