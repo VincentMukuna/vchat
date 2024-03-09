@@ -1,10 +1,11 @@
+import { getConversations } from "@/services/userDetailsServices";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import useSWR, { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -13,40 +14,14 @@ import {
   IUserDetails,
 } from "../../interfaces";
 import api from "../../services/api";
-import { getUserChats } from "../../services/chatMessageServices";
-import { getUserGroups } from "../../services/groupMessageServices";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import { compareUpdatedAt } from "../../utils";
 import { SERVER } from "../../utils/config";
 import Chat from "./Chat";
 
-export async function getConversations(userDetailsID: string) {
-  if (!userDetailsID) return [];
-  let conversations: (GroupChatDetails | DirectChatDetails)[] = [];
-
-  const res = await Promise.allSettled([
-    getUserChats(userDetailsID),
-    getUserGroups(userDetailsID),
-  ]);
-
-  conversations = ([] as (DirectChatDetails | GroupChatDetails)[]).concat(
-    ...(res
-      .map((resVal) =>
-        resVal.status === "fulfilled" ? resVal.value : undefined,
-      )
-      .filter((x) => x !== undefined) as (
-      | DirectChatDetails
-      | GroupChatDetails
-    )[][]),
-  );
-
-  conversations.sort(compareUpdatedAt);
-
-  return conversations;
-}
-
 const ChatsList = ({ className }: { className: string }) => {
-  const { currentUser, currentUserDetails, refreshUserDetails } = useAuth();
+  const { currentUser, currentUserDetails } = useAuth();
+  const { chatID } = useParams();
   const navigate = useNavigate();
 
   const { colorMode } = useColorMode();
@@ -143,7 +118,9 @@ const ChatsList = ({ className }: { className: string }) => {
         <div className="flex flex-col space-y-1 overflow-y-auto max-h-[83dvh]">
           {(conversations ? conversations : currentUserDetails.groups).map(
             (conversation) => (
-              <Chat key={conversation.$id} conversation={conversation} />
+              <Link to={`${conversation.$id}`} key={conversation.$id}>
+                <Chat conversation={conversation} />
+              </Link>
             ),
           )}
         </div>
