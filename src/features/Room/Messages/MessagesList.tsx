@@ -29,6 +29,9 @@ function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
                   i={i}
                   prev={messages[i + 1]}
                   next={messages[i - 1]}
+                  replyingTo={messages.find(
+                    (msg) => msg.$id === message.replying,
+                  )}
                 />
               ))}
             </AnimatePresence>

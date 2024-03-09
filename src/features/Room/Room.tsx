@@ -149,7 +149,7 @@ function Room() {
         initial="slide-from-right"
         animate="slide-in"
         exit="slide-from-right"
-        className="grid h-full grid-flow-row grid-rows-[85px_auto_65px] dark:bg-dark-blue1 grow"
+        className="grid h-full grid-flow-row grid-rows-[85px_5fr_1fr] dark:bg-dark-blue1 grow"
       >
         <ChatHeader />
         {error ? (

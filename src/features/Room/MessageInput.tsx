@@ -1,5 +1,9 @@
 import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
-import { PaperClipIcon } from "@heroicons/react/20/solid";
+import {
+  ArrowUturnLeftIcon,
+  PaperClipIcon,
+  XMarkIcon,
+} from "@heroicons/react/20/solid";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { slate } from "@radix-ui/colors";
 import { Models } from "appwrite";
@@ -13,7 +17,7 @@ import {
 } from "use-file-picker/validators";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { useRoomContext } from "../../context/RoomContext";
+import { RoomActionTypes, useRoomContext } from "../../context/RoomContext";
 import { DirectMessageDetails, GroupMessageDetails } from "../../interfaces";
 import { SERVER } from "../../utils/config";
 import { FileTypeValidator } from "../../utils/fileValidators";
@@ -58,7 +62,7 @@ const MessageInput = ({}: InputProps) => {
   const [attachments, setAttachments] = useState<File[]>([]);
 
   const { colorMode } = useColorMode();
-  const { isGroup, isPersonal } = useRoomContext();
+  const { isGroup, isPersonal, roomState, dispatch } = useRoomContext();
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const { sendMessage, sending } = useSendMessage();
 
@@ -116,6 +120,7 @@ const MessageInput = ({}: InputProps) => {
         senderID: currentUserDetails.$id,
         body: messageBody,
         groupDoc: selectedChat.$id,
+        replying: roomState.replyingTo?.$id,
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
@@ -131,6 +136,7 @@ const MessageInput = ({}: InputProps) => {
         read: isPersonal ? true : false,
         chatDoc: selectedChat.$id,
         attachments: attachments,
+        replying: roomState.replyingTo?.$id,
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
@@ -145,69 +151,93 @@ const MessageInput = ({}: InputProps) => {
   useEffect(() => {
     setMessageBody("");
   }, [selectedChat]);
+
   return (
-    <footer className="relative flex flex-col justify-start px-2 py-1 mx-4 mb-4 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray5 dark:bg-dark-gray3 focus-within:ring-2 dark:ring-dark-indigo5 ring-dark-indigo8 ring-offset-[3px] dark:ring-offset-dark-blue1 ring-offset-gray-100">
-      <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
-        <div className="flex items-center w-full h-full gap-2 ps-1">
-          <div className="relative flex h-full">
-            <IconButton
-              as={motion.button}
-              variant={"ghost"}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.98 }}
-              bg={"inherit"}
-              aria-label="add attachment"
-              title="add attachment"
-              icon={<PaperClipIcon className="w-4 h-4" />}
-              onClick={() => {
-                clear();
-                openFilePicker();
-              }}
-            ></IconButton>
-            {attachments.length > 0 && (
-              <Badge
-                colorScheme="green"
-                className="absolute right-0 "
-                rounded={"full"}
-                size="2xl"
-              >
-                {attachments.length}
-              </Badge>
-            )}
+    <div className="flex flex-col">
+      {roomState.replyingTo && (
+        <div className="flex items-center gap-4 px-4 py-2 pb-4 mx-4 -mb-2 rounded-t-md bg-gray4 dark:bg-gray-800">
+          <ArrowUturnLeftIcon className="w-4 h-4" />
+          <div className="flex flex-col ps-6">
+            <span className="text-xs">{roomState.replyingTo.sender.name}</span>
+            <span>{roomState.replyingTo.body}</span>
           </div>
-
-          <Textarea
-            ref={inputRef}
-            placeholder="Type a message"
-            _placeholder={{
-              color: colorMode === "dark" ? "slate.300" : "gray.700",
-            }}
-            value={messageBody}
-            onChange={handleChange}
-            onBlur={handleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit();
-              }
-            }}
-            color={colorMode === "dark" ? slate.slate2 : "black"}
-            variant={"unstyled"}
-            resize={"none"}
-            rows={1}
-            autoFocus
-          />
-
           <IconButton
             variant={"ghost"}
-            aria-label="send"
-            icon={<PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />}
-            type="submit"
-            isDisabled={sending || !messageBody.trim()}
+            aria-label="cancel reply"
+            className="ml-auto"
+            icon={<XMarkIcon className="w-4 h-4" />}
+            onClick={() =>
+              dispatch({
+                type: RoomActionTypes.EXIT_REPLYING_TO,
+                payload: null,
+              })
+            }
           />
         </div>
-      </form>
-    </footer>
+      )}
+      <footer className="relative flex flex-col justify-start px-2 py-1 mx-4 mb-4 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray5 dark:bg-dark-gray3 focus-within:ring-2 dark:ring-dark-indigo5 ring-dark-indigo8 ring-offset-[3px] dark:ring-offset-dark-blue1 ring-offset-gray-100">
+        <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
+          <div className="flex items-center w-full h-full gap-2 ps-1">
+            <div className="relative flex h-full">
+              <IconButton
+                as={motion.button}
+                variant={"ghost"}
+                whileHover={{ scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                bg={"inherit"}
+                aria-label="add attachment"
+                title="add attachment"
+                icon={<PaperClipIcon className="w-4 h-4" />}
+                onClick={() => {
+                  clear();
+                  openFilePicker();
+                }}
+              ></IconButton>
+              {attachments.length > 0 && (
+                <Badge
+                  colorScheme="green"
+                  className="absolute right-0 "
+                  rounded={"full"}
+                  size="2xl"
+                >
+                  {attachments.length}
+                </Badge>
+              )}
+            </div>
+
+            <Textarea
+              ref={inputRef}
+              placeholder="Type a message"
+              _placeholder={{
+                color: colorMode === "dark" ? "slate.300" : "gray.700",
+              }}
+              value={messageBody}
+              onChange={handleChange}
+              onBlur={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit();
+                }
+              }}
+              color={colorMode === "dark" ? slate.slate2 : "black"}
+              variant={"unstyled"}
+              resize={"none"}
+              rows={1}
+              autoFocus
+            />
+
+            <IconButton
+              variant={"ghost"}
+              aria-label="send"
+              icon={<PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />}
+              type="submit"
+              isDisabled={sending || !messageBody.trim()}
+            />
+          </div>
+        </form>
+      </footer>
+    </div>
   );
 };
 

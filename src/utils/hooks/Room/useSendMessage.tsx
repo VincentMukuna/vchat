@@ -44,9 +44,7 @@ export default function useSendMessage() {
     ];
 
     await mutate(roomMessagesKey, newMessages, {
-      revalidate: true,
-    }).then((val) => {
-      console.log("Message sent", val);
+      revalidate: false,
     });
 
     let container = document.getElementById(
@@ -61,12 +59,14 @@ export default function useSendMessage() {
           body: message.body,
           senderID: message.senderID,
           attachments: message.attachments,
+          replying: message.replying,
         })
       : sendChatMessage(selectedChat.$id, {
           body: message.body,
           recepientID: (recepient as IUserDetails).$id,
           senderID: currentUserDetails.$id,
           attachments: message.attachments,
+          replying: message.replying,
           read: isPersonal ? true : false,
         });
 

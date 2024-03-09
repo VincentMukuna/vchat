@@ -12,6 +12,7 @@ export type SendMessageDTO = {
   recepientID: string;
   body: string;
   attachments?: File[];
+  replying?: string | null;
   read: boolean;
 };
 
@@ -25,6 +26,7 @@ export async function sendChatMessage(
     recepientID: sentMessage.recepientID,
     body: sentMessage.body,
     read: sentMessage.read,
+    replying: sentMessage.replying,
     attachments: sentMessage.attachments,
   };
 

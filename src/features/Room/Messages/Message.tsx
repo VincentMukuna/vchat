@@ -16,11 +16,12 @@ import useSWR from "swr";
 import { getFormattedDateTime } from "../../../services/dateServices";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
+import { ArrowUturnLeftIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import Blueticks from "../../../components/Blueticks";
 import { openModal } from "../../../components/Modal";
-import { useRoomContext } from "../../../context/RoomContext";
+import { RoomActionTypes, useRoomContext } from "../../../context/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
 import EditMessageForm from "./EditMessageForm";
 
@@ -32,14 +33,14 @@ interface MessageProps {
   i: number;
   prev?: DirectMessageDetails | GroupMessageDetails;
   next?: DirectMessageDetails | GroupMessageDetails;
+  replyingTo?: DirectMessageDetails | GroupMessageDetails | null;
 }
 
 const Message = forwardRef<any, MessageProps>(
-  ({ message, onDelete, i, prev, next }, ref) => {
+  ({ message, onDelete, i, prev, next, replyingTo }, ref) => {
     const { currentUserDetails } = useAuth();
 
     const { selectedChat } = useChatsContext();
-    const {} = useRoomContext();
     if (!currentUserDetails || !selectedChat) return;
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
@@ -49,6 +50,8 @@ const Message = forwardRef<any, MessageProps>(
       editing,
       setEditing,
       isSelectingMessages,
+      roomState,
+      dispatch,
     } = useRoomContext();
     const [newMessage, setNewMessage] = useState(message.body);
     const isEditing = editing === message.$id;
@@ -162,6 +165,7 @@ const Message = forwardRef<any, MessageProps>(
 
     return (
       <motion.article
+        id={message.$id}
         layout
         initial={
           isMine || isOptimistic || message?.revalidated ? {} : { opacity: 0 }
@@ -172,6 +176,25 @@ const Message = forwardRef<any, MessageProps>(
         style={{ originX: isMine ? 1 : 0 }}
         onMouseEnter={() => setShowHoverCard(true)}
         onMouseLeave={() => setShowHoverCard(false)}
+        onClick={() => {
+          if (isSelectingMessages) {
+            if (!isSelected) {
+              setSelectedMessages((prev) => [...prev, message]);
+            } else {
+              setSelectedMessages((prev) =>
+                prev.filter((msg) => msg.$id !== message.$id),
+              );
+            }
+          } else {
+            dispatch({
+              type: RoomActionTypes.SET_REPLYING_TO,
+              payload: {
+                ...message,
+                sender: isMine ? currentUserDetails : senderDetails,
+              },
+            });
+          }
+        }}
         ref={ref}
         tabIndex={0}
       >
@@ -214,6 +237,7 @@ const Message = forwardRef<any, MessageProps>(
             }}
             cursor={isGroupMessage ? "pointer" : ""}
           />
+
           <div className="flex flex-col gap-1 mt-3">
             {attachments.length > 0 && (
               <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
@@ -225,6 +249,7 @@ const Message = forwardRef<any, MessageProps>(
                 />
               </AspectRatio>
             )}
+
             <div
               className={`flex flex-col relative
                 px-3  pt-2   ${
@@ -242,9 +267,37 @@ const Message = forwardRef<any, MessageProps>(
                   setNewMessage={setNewMessage}
                 />
               ) : (
-                <p className="text-[0.9rem] leading-relaxed tracking-wide">
+                <div className="text-[0.9rem] leading-relaxed tracking-wide">
+                  {prevSameSender ? null : (
+                    <div
+                      className={`mb-1 text-xs  ${
+                        isMine ? "text-gray-600" : "text-gray-400"
+                      }`}
+                    >
+                      {isMine ? "You" : senderDetails?.name}
+                    </div>
+                  )}
+                  {replyingTo && (
+                    <div
+                      className="flex items-center gap-4 text-xs text-gray-700 rounded-t-md"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document
+                          .getElementById(replyingTo.$id)
+                          ?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "end",
+                          });
+                      }}
+                    >
+                      <div className="flex flex-col italic line-clamp-2">
+                        <span>{replyingTo.body}</span>
+                      </div>
+                    </div>
+                  )}
                   {newMessage}
-                </p>
+                </div>
               )}
               {isMine && <Blueticks read={message.read} />}
               <div
@@ -259,6 +312,9 @@ const Message = forwardRef<any, MessageProps>(
               </div>
             </div>
           </div>
+          {replyingTo ? (
+            <ArrowUturnLeftIcon className="self-center w-3 h-3 text-gray-500" />
+          ) : null}
 
           {shouldShowHoverCard() && !isSelected && (
             <div

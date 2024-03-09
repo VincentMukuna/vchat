@@ -29,6 +29,7 @@ interface GroupMessageDetails extends Models.Document {
   body: string;
   attachments: string[];
   read: boolean;
+  replying: string | null;
 }
 interface UserPrefs extends Models.Preferences {
   detailsDocID: string;
@@ -53,6 +54,7 @@ interface DirectMessageDetails extends Models.Document {
   body: string;
   read: boolean;
   attachments: string[];
+  replying: string | null;
 }
 
 type UserChangeLogTypes =

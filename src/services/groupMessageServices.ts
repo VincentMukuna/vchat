@@ -67,6 +67,7 @@ export async function sendGroupMessage(
     senderID: string;
     body: string;
     attachments: File[] | null;
+    replying: string | null;
   },
 ) {
   try {
