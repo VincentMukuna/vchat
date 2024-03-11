@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { DeleteIcon, PencilIcon } from "../../../components/Icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
@@ -16,6 +16,7 @@ import useSWR from "swr";
 import { getFormattedDateTime } from "../../../services/dateServices";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
+import useIntersectionObserver from "@/utils/hooks/useIntersectionObserver";
 import { ArrowUturnLeftIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { confirmAlert } from "../../../components/Alert/alertStore";
@@ -24,6 +25,7 @@ import { openModal } from "../../../components/Modal";
 import { RoomActionTypes, useRoomContext } from "../../../context/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
 import EditMessageForm from "./EditMessageForm";
+import { useMessages } from "./MessagesList";
 
 interface MessageProps {
   message: DirectMessageDetails | GroupMessageDetails;
@@ -53,7 +55,10 @@ const Message = forwardRef<any, MessageProps>(
       roomState,
       dispatch,
     } = useRoomContext();
+    const { messagesListRef } = useMessages();
     const [newMessage, setNewMessage] = useState(message.body);
+    const [read, setRead] = useState(message.read);
+    const messageRef = useRef(null);
     const isEditing = editing === message.$id;
     const isOptimistic = !!message?.optimistic;
 
@@ -66,7 +71,6 @@ const Message = forwardRef<any, MessageProps>(
       );
     const isMine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
-    const nextSameSender = next?.senderID === message.senderID;
 
     const isSelected = selectedMessages.some((msg) => msg.$id === message.$id);
 
@@ -94,6 +98,7 @@ const Message = forwardRef<any, MessageProps>(
         setAttachments([...data]);
       }
     }, [data]);
+
     function getMessageAttachments() {
       let attachments: URL[] = [];
       message.attachments.forEach(async (attachmentID: any) => {
@@ -116,9 +121,10 @@ const Message = forwardRef<any, MessageProps>(
     }
 
     const setReadMessage = async () => {
-      if (message.optimistic) {
+      if (message.optimistic || read) {
         return;
       }
+      setRead(true);
       try {
         await api.updateDocument(
           message.$databaseId,
@@ -163,8 +169,21 @@ const Message = forwardRef<any, MessageProps>(
       return false;
     }
 
+    //call read message after message is in view for 2 seconds
+
+    useIntersectionObserver({
+      root: messagesListRef as React.RefObject<HTMLElement>,
+      target: messageRef,
+      onInView: () => {
+        console.log("reading " + message.body);
+      },
+      time: 2000,
+      observe: !isMine && !isOptimistic && !read,
+    });
+
     return (
       <motion.article
+        ref={ref}
         id={message.$id}
         layout
         initial={
@@ -195,7 +214,6 @@ const Message = forwardRef<any, MessageProps>(
             });
           }
         }}
-        ref={ref}
         tabIndex={0}
       >
         <div
@@ -251,6 +269,7 @@ const Message = forwardRef<any, MessageProps>(
             )}
 
             <div
+              ref={messageRef}
               className={`flex flex-col relative
                 px-3  pt-2   ${
                   isMine
@@ -299,7 +318,7 @@ const Message = forwardRef<any, MessageProps>(
                   {newMessage}
                 </div>
               )}
-              {isMine && <Blueticks read={message.read} />}
+              {isMine && <Blueticks read={read} />}
               <div
                 className={`self-end text-[0.54rem] tracking-wider mb-1
                ${

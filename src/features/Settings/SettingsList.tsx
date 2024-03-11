@@ -51,7 +51,7 @@ const SettingsList = () => {
             setCurrentUser(null);
             setCurrentUserDetails(null);
             logUserOut();
-            navigate("../../login");
+            navigate("/login");
           }}
           className="flex items-center w-full h-full max-w-sm p-3"
         >
