@@ -120,7 +120,7 @@ const Message = forwardRef<any, MessageProps>(
       return attachments;
     }
 
-    const setReadMessage = async () => {
+    const markMessageasRead = async () => {
       if (message.optimistic || read) {
         return;
       }
@@ -140,11 +140,6 @@ const Message = forwardRef<any, MessageProps>(
         );
       } catch (error) {}
     };
-    useEffect(() => {
-      if (!isMine && !isOptimistic && !message.read) {
-        setReadMessage();
-      }
-    }, []);
 
     const handleDelete = async () => {
       await onDelete(message);
@@ -175,7 +170,7 @@ const Message = forwardRef<any, MessageProps>(
       root: messagesListRef as React.RefObject<HTMLElement>,
       target: messageRef,
       onInView: () => {
-        console.log("reading " + message.body);
+        markMessageasRead();
       },
       time: 2000,
       observe: !isMine && !isOptimistic && !read,
@@ -226,7 +221,7 @@ const Message = forwardRef<any, MessageProps>(
             isChecked={isSelected}
             hidden={!isSelectingMessages}
             className="self-center mx-2"
-            onChange={(e) => {
+            onClick={(e) => {
               if (!isSelected) {
                 setSelectedMessages((prev) => [...prev, message]);
               } else {
@@ -298,7 +293,7 @@ const Message = forwardRef<any, MessageProps>(
                   )}
                   {replyingTo && (
                     <div
-                      className="flex items-center gap-4 text-xs text-gray-700 rounded-t-md"
+                      className={`flex items-center gap-4 text-xs opacity-50 rounded-t-md`}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
