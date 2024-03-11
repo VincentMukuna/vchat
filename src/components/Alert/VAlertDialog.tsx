@@ -9,10 +9,10 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { Alert, clearAlert } from "./alertStore";
-import { red, redDark, tomato, tomatoA, tomatoDark } from "@radix-ui/colors";
+import { tomato, tomatoA } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { Alert, clearAlert } from "./alertStore";
 
 type VAlertDialogProps = { alert: Alert };
 
@@ -76,7 +76,7 @@ const VAlertDialog = ({ alert }: VAlertDialogProps) => {
             bg={tomatoA.tomatoA10}
             opacity={0.8}
             _hover={{ bg: tomato.tomato9 }}
-            color={"gray.100"}
+            color={"white"}
             onClick={() => {
               alert.onConfirm();
               handleAlertClose();
