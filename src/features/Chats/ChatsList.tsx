@@ -114,7 +114,7 @@ const ChatsList = ({ className }: { className: string }) => {
         <div className={"flex flex-col space-y-1 overflow-y-clip " + className}>
           {(conversations ? conversations : currentUserDetails.groups).map(
             (conversation) => (
-              <Chat conversation={conversation} />
+              <Chat key={conversation.$id} conversation={conversation} />
             ),
           )}
         </div>
