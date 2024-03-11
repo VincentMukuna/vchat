@@ -1,4 +1,4 @@
-import {
+import React, {
   createContext,
   useContext,
   useEffect,
@@ -41,6 +41,7 @@ export enum RoomActionTypes {
   CLEAR_SELECTED_MESSAGES = "CLEAR_SELECTED_MESSAGES",
   TOGGLE_SELECTING_MESSAGES = "TOGGLE_SELECTING_MESSAGES",
   SET_EDITING = "SET_EDITING",
+  SET_INPUT_REF = "SET_INPUT_REF",
 }
 
 interface RoomAction {
@@ -52,12 +53,14 @@ interface RoomState {
   editing: boolean;
   isSelectingMessages: boolean;
   replyingTo: (ChatMessage & { sender: IUserDetails }) | null;
+  inputRef: React.RefObject<HTMLTextAreaElement> | null;
 }
 const initialRoomState = {
   selectedMessages: [],
   editing: false,
   isSelectingMessages: false,
   replyingTo: null,
+  inputRef: null,
 };
 
 function roomReducer(state: RoomState, action: RoomAction) {
@@ -75,6 +78,9 @@ function roomReducer(state: RoomState, action: RoomAction) {
         ),
       };
     case "SET_REPLYING_TO":
+      if (state.inputRef?.current) {
+        state.inputRef.current.focus();
+      }
       return {
         ...state,
         replyingTo: action.payload,
@@ -100,6 +106,13 @@ function roomReducer(state: RoomState, action: RoomAction) {
         ...state,
         editing: action.payload,
       };
+
+    case "SET_INPUT_REF":
+      return {
+        ...state,
+        inputRef: action.payload,
+      };
+
     default:
       return state;
   }

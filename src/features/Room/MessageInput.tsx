@@ -66,12 +66,6 @@ const MessageInput = ({}: InputProps) => {
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
   const { sendMessage, sending } = useSendMessage();
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [selectedChat]);
-
   const { openFilePicker, filesContent, clear } = useFilePicker({
     accept: [".jpg", ".png"],
     multiple: false,
@@ -96,6 +90,12 @@ const MessageInput = ({}: InputProps) => {
     },
   });
 
+  useEffect(() => {
+    if (inputRef.current) {
+      dispatch({ type: RoomActionTypes.SET_INPUT_REF, payload: inputRef });
+    }
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (e.target.value.length > 1498) {
       toast.error("Text too long");
@@ -111,6 +111,7 @@ const MessageInput = ({}: InputProps) => {
     }
 
     setMessageBody("");
+    dispatch({ type: RoomActionTypes.EXIT_REPLYING_TO, payload: null });
 
     if (isGroup) {
       let message: GroupMessageSendDto = {
@@ -224,7 +225,6 @@ const MessageInput = ({}: InputProps) => {
               variant={"unstyled"}
               resize={"none"}
               rows={1}
-              autoFocus
             />
 
             <IconButton
