@@ -129,8 +129,10 @@ const Chat = ({ conversation }: IChatProps) => {
       )[];
       if (!chats) return;
       chats.sort((a, b) => {
-        const unreadCountA = cache.get(`unread-${a.$id}`)?.data || 0;
-        const unreadCountB = cache.get(`unread-${b.$id}`)?.data || 0;
+        const unreadCountA =
+          (cache.get(`unread-${a.$id}`)?.data as number) || 1;
+        const unreadCountB =
+          (cache.get(`unread-${b.$id}`)?.data as number) || 1;
         if (unreadCountA && unreadCountB) {
           return unreadCountB - unreadCountA;
         }
@@ -171,6 +173,7 @@ const Chat = ({ conversation }: IChatProps) => {
   return (
     <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
       <Card
+        id={conversation.$id}
         as={"article"}
         bg={"inherit"}
         shadow={"none"}
@@ -178,7 +181,7 @@ const Chat = ({ conversation }: IChatProps) => {
         py={3}
         ps={3}
         rounded={"md"}
-        onClick={() => {
+        onClick={(e) => {
           setRecepient(contactDetails);
           setSelectedChat(conversation);
         }}
@@ -231,7 +234,9 @@ const Chat = ({ conversation }: IChatProps) => {
         </div>
         <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
           <span className="flex text-[10px] tracking-wide ">
-            {getFormatedDate(conversation.$updatedAt)}
+            {getFormatedDate(
+              lastMessage?.$createdAt || conversation.$updatedAt,
+            )}
           </span>
         </div>
       </Card>

@@ -22,7 +22,7 @@ export default function useRoomMessages() {
       return messages;
     }
     const messages = await getChatMessages(selectedChat.$id);
-    return messages;
+    return messages.sort(compareCreatedAt);
   }
 
   function getFallbackMessages() {
