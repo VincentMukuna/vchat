@@ -81,7 +81,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
       setIsLoading(false);
-      navigate(intendedRef.current);
+      if (
+        intendedRef.current === "/login" ||
+        intendedRef.current === "/register"
+      ) {
+        navigate("/chats");
+      } else {
+        navigate(intendedRef.current);
+      }
     } catch (error) {
       setIsLoading(false);
       navigate("login");
