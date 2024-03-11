@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { useAuth } from "../../context/AuthContext";
 import {
   DirectChatDetails,
@@ -15,7 +15,7 @@ import {
 } from "../../interfaces";
 import api from "../../services/api";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import { compareUpdatedAt } from "../../utils";
+import { compareCreatedAt } from "../../utils";
 import { SERVER } from "../../utils/config";
 import Chat from "./Chat";
 
@@ -25,8 +25,6 @@ const ChatsList = ({ className }: { className: string }) => {
   const navigate = useNavigate();
 
   const { colorMode } = useColorMode();
-
-  const { cache } = useSWRConfig();
   if (!currentUser || !currentUserDetails) return null;
   let {
     data: conversations,
@@ -36,7 +34,12 @@ const ChatsList = ({ className }: { className: string }) => {
   } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
     fallbackData: ([] as (GroupChatDetails | DirectChatDetails)[])
       .concat(currentUserDetails.groups)
-      .sort(compareUpdatedAt),
+      .sort((a, b) => {
+        return compareCreatedAt(
+          a.groupMessages[0] || a,
+          b.groupMessages[0] || b,
+        );
+      }),
   });
 
   useEffect(() => {
@@ -111,7 +114,10 @@ const ChatsList = ({ className }: { className: string }) => {
         animate="slide-in"
         exit="slide-from-right"
       >
-        <div className={"flex flex-col space-y-1 overflow-y-clip " + className}>
+        <div
+          id="chats-container"
+          className={"flex flex-col space-y-1 overflow-y-clip " + className}
+        >
           {(conversations ? conversations : currentUserDetails.groups).map(
             (conversation) => (
               <Chat key={conversation.$id} conversation={conversation} />
