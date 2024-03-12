@@ -25,23 +25,16 @@ import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import useSWR, { useSWRConfig } from "swr";
-import { useRoomContext } from "../../context/RoomContext";
+import { useRoomContext } from "../../context/Room/RoomContext";
 import {
   ChatMessage,
   DirectChatDetails,
-  DirectMessageDetails,
   GroupChatDetails,
-  GroupMessageDetails,
   IUserDetails,
 } from "../../interfaces";
-import { deleteSelectedDirectChatMessages } from "../../services/chatMessageServices";
-import {
-  deleteSelectedGroupMessages,
-  getGroupDetails,
-} from "../../services/groupMessageServices";
+import { getGroupDetails } from "../../services/groupMessageServices";
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
@@ -61,13 +54,7 @@ function ChatHeader() {
     selectedChat,
     setMsgsCount,
   } = useChatsContext();
-  let {
-    selectedMessages,
-    setSelectedMessages,
-    isGroup,
-    isPersonal,
-    roomMessagesKey,
-  } = useRoomContext();
+  let { isGroup, isPersonal } = useRoomContext();
 
   const navigate = useNavigate();
 
@@ -100,45 +87,6 @@ function ChatHeader() {
     return messages.every((msg) => msg.senderID === currentUserDetails?.$id);
   }
 
-  async function handleDeleteSelectedMessages() {
-    if (!currentUserDetails || !selectedChatDetails || !roomMessagesKey) return;
-    const currentMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
-    const selectedMessageIds = selectedMessages.map((msg) => msg.$id);
-    if (canDeleteBasedOnPermissions(selectedMessages)) {
-      //optimistic update
-      mutate(
-        roomMessagesKey,
-        currentMessages.filter((msg) => !selectedMessageIds.includes(msg.$id)),
-        { revalidate: false },
-      );
-
-      //actual update
-      let promise: Promise<void>;
-      if (isGroup) {
-        promise = deleteSelectedGroupMessages({
-          deleter: currentUserDetails.$id,
-          groupID: selectedChatDetails.$id,
-          messages: selectedMessages as GroupMessageDetails[],
-        });
-      } else {
-        promise = deleteSelectedDirectChatMessages({
-          deleter: currentUserDetails.$id,
-          groupID: selectedChatDetails.$id,
-          messages: selectedMessages as DirectMessageDetails[],
-        });
-      }
-
-      promise
-        .then(() => {
-          toast.success("Messages deleted");
-          setSelectedMessages([]);
-        })
-        .catch((e) => {
-          toast.error("Something went wrong");
-          mutate(roomMessagesKey);
-        });
-    }
-  }
   return (
     <section className="relative flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-blue1 bg-gray2 text-dark-gray2">
       <IconButton

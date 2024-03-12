@@ -1,7 +1,7 @@
 import useSWR, { useSWRConfig } from "swr";
 import { compareCreatedAt } from "../..";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { useRoomContext } from "../../../context/RoomContext";
+import { useRoomContext } from "../../../context/Room/RoomContext";
 import { DirectMessageDetails, GroupMessageDetails } from "../../../interfaces";
 import { getChatMessages } from "../../../services/chatMessageServices";
 import { getGroupMessages } from "../../../services/groupMessageServices";

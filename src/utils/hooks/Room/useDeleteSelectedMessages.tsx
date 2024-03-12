@@ -2,7 +2,10 @@ import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { useRoomContext } from "../../../context/RoomContext";
+import {
+  RoomActionTypes,
+  useRoomContext,
+} from "../../../context/Room/RoomContext";
 import {
   ChatMessage,
   DirectMessageDetails,
@@ -16,13 +19,7 @@ export default function useDeleteSelectedMessages() {
 
   const { cache, mutate } = useSWRConfig();
   const { selectedChat } = useChatsContext();
-  const {
-    selectedMessages,
-    setSelectedMessages,
-    isGroup,
-    isPersonal,
-    roomMessagesKey,
-  } = useRoomContext();
+  const { isGroup, roomMessagesKey, roomState, dispatch } = useRoomContext();
 
   if (!selectedChat || !currentUserDetails)
     throw new Error("No user details found");
@@ -42,8 +39,8 @@ export default function useDeleteSelectedMessages() {
   async function deleteSelectedMessages() {
     if (!currentUserDetails || !selectedChat || !roomMessagesKey) return;
     const currentMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
-    const selectedMessageIds = selectedMessages.map((msg) => msg.$id);
-    if (canDeleteBasedOnPermissions(selectedMessages)) {
+    const selectedMessageIds = roomState.selectedMessages.map((msg) => msg.$id);
+    if (canDeleteBasedOnPermissions(roomState.selectedMessages)) {
       //optimistic update
       mutate(
         roomMessagesKey,
@@ -57,20 +54,23 @@ export default function useDeleteSelectedMessages() {
         promise = deleteSelectedGroupMessages({
           deleter: currentUserDetails.$id,
           groupID: selectedChat.$id,
-          messages: selectedMessages as GroupMessageDetails[],
+          messages: roomState.selectedMessages as GroupMessageDetails[],
         });
       } else {
         promise = deleteSelectedDirectChatMessages({
           deleter: currentUserDetails.$id,
           groupID: selectedChat.$id,
-          messages: selectedMessages as DirectMessageDetails[],
+          messages: roomState.selectedMessages as DirectMessageDetails[],
         });
       }
 
       promise
         .then(() => {
           toast.success("Messages deleted");
-          setSelectedMessages([]);
+          dispatch({
+            type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,
+            payload: null,
+          });
         })
         .catch((e) => {
           toast.error("Something went wrong");

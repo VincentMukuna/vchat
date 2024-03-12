@@ -17,7 +17,10 @@ import {
 } from "use-file-picker/validators";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { RoomActionTypes, useRoomContext } from "../../context/RoomContext";
+import {
+  RoomActionTypes,
+  useRoomContext,
+} from "../../context/Room/RoomContext";
 import { DirectMessageDetails, GroupMessageDetails } from "../../interfaces";
 import { SERVER } from "../../utils/config";
 import { FileTypeValidator } from "../../utils/fileValidators";

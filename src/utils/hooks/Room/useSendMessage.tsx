@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { useRoomContext } from "../../../context/RoomContext";
+import { useRoomContext } from "../../../context/Room/RoomContext";
 import {
   DirectMessageSendDto,
   GroupMessageSendDto,

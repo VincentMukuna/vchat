@@ -1,7 +1,10 @@
 import { Button, Input } from "@chakra-ui/react";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
-import { useRoomContext } from "../../../context/RoomContext";
+import {
+  RoomActionTypes,
+  useRoomContext,
+} from "../../../context/Room/RoomContext";
 import { ChatMessage } from "../../../interfaces";
 import api from "../../../services/api";
 
@@ -16,11 +19,11 @@ export default function EditMessageForm({
   newMessage,
   setNewMessage,
 }: EditMessageFormProps) {
-  const { roomMessagesKey, setEditing } = useRoomContext();
+  const { roomMessagesKey, roomState, dispatch } = useRoomContext();
 
   const { cache, mutate } = useSWRConfig();
   const handleEditMessage = async () => {
-    setEditing(null);
+    dispatch({ type: RoomActionTypes.SET_EDITING, payload: null });
     if (newMessage !== message.body) {
       const roomMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
       mutate(roomMessagesKey);

@@ -22,7 +22,10 @@ import { motion } from "framer-motion";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import Blueticks from "../../../components/Blueticks";
 import { openModal } from "../../../components/Modal";
-import { RoomActionTypes, useRoomContext } from "../../../context/RoomContext";
+import {
+  RoomActionTypes,
+  useRoomContext,
+} from "../../../context/Room/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
 import EditMessageForm from "./EditMessageForm";
 import { useMessages } from "./MessagesList";
@@ -46,20 +49,12 @@ const Message = forwardRef<any, MessageProps>(
     if (!currentUserDetails || !selectedChat) return;
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
-    const {
-      selectedMessages,
-      setSelectedMessages,
-      editing,
-      setEditing,
-      isSelectingMessages,
-      roomState,
-      dispatch,
-    } = useRoomContext();
+    const { roomState, dispatch } = useRoomContext();
     const { messagesListRef } = useMessages();
     const [newMessage, setNewMessage] = useState(message.body);
     const [read, setRead] = useState(message.read);
     const messageRef = useRef(null);
-    const isEditing = editing === message.$id;
+    const isEditing = roomState.editing === message.$id;
     const isOptimistic = !!message?.optimistic;
 
     const isGroupMessage =
@@ -72,7 +67,9 @@ const Message = forwardRef<any, MessageProps>(
     const isMine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
 
-    const isSelected = selectedMessages.some((msg) => msg.$id === message.$id);
+    const isSelected = roomState.selectedMessages.some(
+      (msg) => msg.$id === message.$id,
+    );
 
     const { data: senderDetails } = useSWR(
       () => {
@@ -191,14 +188,11 @@ const Message = forwardRef<any, MessageProps>(
         onMouseEnter={() => setShowHoverCard(true)}
         onMouseLeave={() => setShowHoverCard(false)}
         onClick={() => {
-          if (isSelectingMessages) {
-            if (!isSelected) {
-              setSelectedMessages((prev) => [...prev, message]);
-            } else {
-              setSelectedMessages((prev) =>
-                prev.filter((msg) => msg.$id !== message.$id),
-              );
-            }
+          if (roomState.isSelectingMessages) {
+            dispatch({
+              type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
+              payload: message,
+            });
           } else {
             dispatch({
               type: RoomActionTypes.SET_REPLYING_TO,
@@ -219,16 +213,13 @@ const Message = forwardRef<any, MessageProps>(
         >
           <Checkbox
             isChecked={isSelected}
-            hidden={!isSelectingMessages}
+            hidden={!roomState.isSelectingMessages}
             className="self-center mx-2"
             onClick={(e) => {
-              if (!isSelected) {
-                setSelectedMessages((prev) => [...prev, message]);
-              } else {
-                setSelectedMessages((prev) =>
-                  prev.filter((msg) => msg.$id !== message.$id),
-                );
-              }
+              dispatch({
+                type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
+                payload: message.$id,
+              });
             }}
           />
           <Avatar
@@ -353,7 +344,10 @@ const Message = forwardRef<any, MessageProps>(
                 hidden={!isMine}
                 onClick={(e) => {
                   e.stopPropagation();
-                  setEditing(editing === message.$id ? null : message.$id);
+                  dispatch({
+                    type: RoomActionTypes.SET_EDITING,
+                    payload: message.$id,
+                  });
                 }}
               >
                 <PencilIcon className="w-4 h-4" />

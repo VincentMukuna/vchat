@@ -7,7 +7,10 @@ import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { useRoomContext } from "../../context/RoomContext";
+import {
+  RoomActionTypes,
+  useRoomContext,
+} from "../../context/Room/RoomContext";
 import {
   DirectChatDetails,
   DirectMessageDetails,
@@ -32,8 +35,7 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, setSelectedChat } = useChatsContext();
-  const { setSelectedMessages, isGroup, isPersonal, setIsSelectingMessages } =
-    useRoomContext();
+  const { isGroup, isPersonal, roomState, dispatch } = useRoomContext();
   const [showDetails] = useState(false);
 
   if (!currentUserDetails) return null;
@@ -81,8 +83,10 @@ function Room() {
   }, [selectedChat]);
 
   useCommand("Escape", () => {
-    setIsSelectingMessages(false);
-    setSelectedMessages([]);
+    dispatch({
+      type: RoomActionTypes.EXIT_SELECTING_MESSAGES,
+      payload: null,
+    });
   });
 
   useEffect(() => {

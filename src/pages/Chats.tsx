@@ -2,7 +2,7 @@ import { useChatsContext } from "@/context/ChatsContext";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
-import { RoomProvider } from "../context/RoomContext";
+import { RoomProvider } from "../context/Room/RoomContext";
 import ChatsList from "../features/Chats/ChatsList";
 import Sidebar, { SideBarHeader } from "../features/Sidebar/Sidebar";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
