@@ -149,7 +149,18 @@ function Room() {
                 return msg;
               }),
               { revalidate: false },
-            );
+            ).then((value: any) => {
+              //remove edited suffix
+              mutate(
+                value.map((msg: any) => {
+                  if (msg.$id === newMessage.$id + "-edited") {
+                    return { ...msg, $id: newMessage.$id };
+                  }
+                  return msg;
+                }),
+                { revalidate: false },
+              );
+            });
           };
 
           const handleReadText = (readTextId: string) => {
@@ -218,45 +229,6 @@ function Room() {
           });
 
           matchAndExecute(changeLog, matchers);
-
-          //   if (
-          //     response.payload.changeLog === "addadmin" ||
-          //     response.payload.changeLog === "removeadmin" ||
-          //     response.payload.changeLog === "changedetails" ||
-          //     response.payload.changeLog === "editmembers"
-          //   ) {
-          //     setSelectedChat(response.payload);
-          //     globalMutate(`details ${selectedChat!.$id}`, response.payload, {
-          //       revalidate: false,
-          //     });
-          //   }
-          //   else if (
-          //     response.payload.changeLog === "newtext" ||
-          //     response.payload.changeLog === "deletetext" ||
-          //     response.payload.changeLog === "readtext"
-          //   ) {
-          //     mutate(
-          //       isGroup
-          //         ? response.payload.groupMessages.sort(compareCreatedAt)
-          //         : response.payload.chatMessages.sort(compareCreatedAt),
-          //       { revalidate: false },
-          //     ).then((value) => {
-          //       globalMutate(
-          //         `lastMessage ${selectedChat.$id}`,
-          //         (value as (DirectMessageDetails | GroupMessageDetails)[]).at(0),
-
-          //         { revalidate: false },
-          //       );
-          //     });
-          //   } else if (
-          //     response.payload.changeLog === "clearmessages" ||
-          //     response.payload.changeLog === "cleared"
-          //   ) {
-          //     mutate([], { revalidate: false });
-          //     globalMutate(`lastMessage ${selectedChat.$id}`, undefined, {
-          //       revalidate: false,
-          //     });
-          //   }
         },
       );
 
@@ -264,7 +236,7 @@ function Room() {
         unsubscribe();
       };
     }
-  }, [selectedChat]);
+  }, [selectedChat, data, isGroup, currentUserDetails, mutate, globalMutate]);
 
   if (!selectedChat) return <NoSelectedChat />;
   return (
@@ -295,7 +267,7 @@ function Room() {
           )
         )}
 
-        <MessageInput />
+        <MessageInput key={selectedChat.$id} />
       </Box>
       <aside
         className={`hidden ${
