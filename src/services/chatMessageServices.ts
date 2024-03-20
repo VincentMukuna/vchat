@@ -53,7 +53,7 @@ export async function sendChatMessage(
       SERVER.COLLECTION_ID_CHATS,
       chatID,
       {
-        changeLog: "newtext",
+        changeLog: `message/create/${msg.$id}`,
         changerID: sentMessage.senderID,
       },
     );
@@ -137,7 +137,7 @@ export async function deleteChatMessage(
     message.$id,
   );
   api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHATS, chatID, {
-    changeLog: "deletetext",
+    changeLog: `message/delete/${message.$id}`,
     changerID: `${deleterID}`,
   });
 }

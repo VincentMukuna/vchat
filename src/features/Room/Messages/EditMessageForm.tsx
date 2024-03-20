@@ -1,3 +1,4 @@
+import { useChatsContext } from "@/context/ChatsContext";
 import { Button, Input } from "@chakra-ui/react";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
@@ -19,7 +20,10 @@ export default function EditMessageForm({
   newMessage,
   setNewMessage,
 }: EditMessageFormProps) {
-  const { roomMessagesKey, roomState, dispatch } = useRoomContext();
+  const { roomMessagesKey, roomState, dispatch, isGroup } = useRoomContext();
+  const { selectedChat } = useChatsContext();
+
+  if (!selectedChat) return null;
 
   const { cache, mutate } = useSWRConfig();
   const handleEditMessage = async () => {
@@ -44,6 +48,17 @@ export default function EditMessageForm({
           message.$id,
           { body: newMessage },
         )
+        .then((msg) => {
+          api.updateDocument(
+            selectedChat.$databaseId,
+            selectedChat.$collectionId,
+            selectedChat.$id,
+            {
+              changeLog: `message/edit/${message.$id}`,
+              changerID: msg.senderID,
+            },
+          );
+        })
         .catch((err: any) => {
           toast.error("Something went wrong! ");
           mutate(
@@ -64,6 +79,9 @@ export default function EditMessageForm({
       onSubmit={(e) => {
         e.preventDefault();
         handleEditMessage();
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
       }}
       className="flex flex-col gap-3 p-2"
     >

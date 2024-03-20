@@ -31,3 +31,43 @@ export function pluck(obj: any, keys: string) {
     return acc;
   }, {} as any);
 }
+
+//function to find an object in an array
+//of objects by id
+export function findById(arr: any[], id: string, idKey: string = "$id") {
+  return arr.find((item) => item[idKey] === id);
+}
+
+//function to find an object in an array
+//of objects by id and update it with new data
+export function findAndUpdate(
+  arr: any[],
+  id: string,
+  data: any,
+  idKey: string = "$id",
+) {
+  return arr.map((item) => {
+    if (item[idKey] === id) {
+      return { ...item, ...data };
+    }
+    return item;
+  });
+}
+
+//a function to match a given string with
+//regexps in a map which has regexps as keys
+//and their corresponding callbacks as values
+//this callbacks should receive arrays of matches
+
+export function matchAndExecute(
+  input: string,
+  matchers: Map<RegExp, (matches: RegExpMatchArray) => any>,
+) {
+  for (let [matcher, callback] of matchers) {
+    let matches = input.match(matcher);
+    if (matches) {
+      return callback(matches);
+    }
+  }
+  return null;
+}

@@ -81,6 +81,7 @@ export async function sendGroupMessage(
         attachmentIDs.push($id);
       }
     }
+   
     let msg = await api.createDocument(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_GROUP_MESSAGES,
@@ -90,17 +91,18 @@ export async function sendGroupMessage(
         attachments: attachmentIDs,
       },
     );
-    api
-      .updateDocument(
-        SERVER.DATABASE_ID,
-        SERVER.COLLECTION_ID_GROUPS,
-        groupID,
-        {
-          changeLog: "newtext",
-          changerID: message.senderID,
-        },
-      )
-      .catch(() => {});
+
+     api
+       .updateDocument(
+         SERVER.DATABASE_ID,
+         SERVER.COLLECTION_ID_GROUPS,
+         groupID,
+         {
+           changeLog: `message/create/${msg.$id}`,
+           changerID: message.senderID,
+         },
+       )
+       .catch(() => {});
 
     return msg as GroupMessageDetails;
   } catch (error: any) {
@@ -121,15 +123,23 @@ export async function deleteGroupMessage(
         .catch(() => {});
     }
   }
+ 
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUP_MESSAGES,
     message.$id,
   );
-  api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUPS, groupID, {
-    changeLog: "deletetext",
-    changerID: `${deleterID}`,
-  });
+
+   api.updateDocument(
+     SERVER.DATABASE_ID,
+     SERVER.COLLECTION_ID_GROUPS,
+     groupID,
+     {
+       changeLog: `message/delete/${message.$id}`,
+       changerID: `${deleterID}`,
+     },
+   );
+  
 }
 
 export async function getGroupDetails(groupID: string) {

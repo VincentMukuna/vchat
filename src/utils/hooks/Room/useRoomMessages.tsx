@@ -40,6 +40,6 @@ export default function useRoomMessages() {
   return useSWR(
     () => (selectedChat ? `${selectedChat.$id}-messages` : null),
     getRoomMessages,
-    {},
+    { fallbackData: getFallbackMessages() },
   );
 }

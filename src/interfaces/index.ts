@@ -1,18 +1,16 @@
 import { Models } from "appwrite";
 
-type GroupChangeLogTypes =
-  | "addmember"
-  | "addadmin"
-  | "newtext"
-  | "removeadmin"
-  | "editmembers"
-  | "changedetails"
-  | "editavatar"
-  | "edittext"
-  | "deletetext"
-  | "created"
-  | "readtext"
-  | "clearmessages";
+export const CHAT_MESSAGES_CHANGE_LOG_REGEXES = {
+  deletemessage: /message\/delete\/([a-zA-Z0-9_-]+)/,
+  newmessage: /message\/create\/([a-zA-Z0-9_-]+)/,
+  editmessage: /message\/edit\/([a-zA-Z0-9_-]+)/,
+  readmessage: /message\/read\/([a-zA-Z0-9_-]+)/,
+  clearmessages: /message\/clearAll/,
+} as const;
+
+export const CHAT_DETAILS_CHANGE_LOG_REGEXES = {} as const;
+
+type GroupChangeLogTypes = string;
 interface GroupChatDetails extends Models.Document {
   name: string;
   description: string;
@@ -24,7 +22,7 @@ interface GroupChatDetails extends Models.Document {
   changeLog: GroupChangeLogTypes;
 }
 interface GroupMessageDetails extends Models.Document {
-  groupDoc: [GroupChatDetails] | string;
+  groupDoc: GroupChatDetails | string;
   senderID: string;
   body: string;
   attachments: string[];
@@ -38,13 +36,7 @@ interface UserPrefs extends Models.Preferences {
 interface DirectChatDetails extends Models.Document {
   chatMessages: DirectMessageDetails[];
   participants: [IUserDetails, IUserDetails] | [IUserDetails];
-  changeLog?:
-    | "newtext"
-    | "deletetext"
-    | "edittext"
-    | "cleared"
-    | "created"
-    | "readtext";
+  changeLog?: string;
 }
 
 interface DirectMessageDetails extends Models.Document {
