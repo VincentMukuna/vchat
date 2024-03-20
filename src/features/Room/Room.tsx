@@ -250,7 +250,7 @@ function Room() {
         exit="slide-from-right"
         className={`grid h-full grid-rows-[1fr_6fr_0.2fr] bg-gray2 dark:bg-dark-blue1 grow`}
       >
-        <ChatHeader />
+        <ChatHeader key={`header-${selectedChat.$id}`} />
         {error ? (
           <Center className="flex-col w-full h-full">
             Whoops!
@@ -259,7 +259,7 @@ function Room() {
         ) : (
           data && (
             <Messages
-              key={selectedChat.$id}
+              key={`messagesList-${selectedChat.$id}`}
               messages={data}
               onDelete={handleDeleteMessage}
               isLoading={isLoading}
@@ -267,7 +267,7 @@ function Room() {
           )
         )}
 
-        <MessageInput key={selectedChat.$id} />
+        <MessageInput key={`input-${selectedChat.$id}`} />
       </Box>
       <aside
         className={`hidden ${

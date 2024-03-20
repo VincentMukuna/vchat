@@ -3,6 +3,7 @@ import { blueDark, gray, tomato } from "@radix-ui/colors";
 
 const solid = defineStyle((theme) => ({
   bgColor: theme.colorScheme === "red" ? tomato.tomato10 : blueDark.blue5,
+  rounded: "full",
   _hover:
     theme.colorMode === "light"
       ? {
