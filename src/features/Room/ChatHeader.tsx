@@ -45,7 +45,12 @@ function ChatHeader() {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { cache, mutate } = useSWRConfig();
-  const breakpoint = useBreakpointValue({ base: "sm", md: "md", lg: "lg" });
+  const breakpoint = useBreakpointValue({
+    base: "base",
+    sm: "sm",
+    md: "md",
+    lg: "lg",
+  });
   const btnRef = useRef(null);
   const {
     recepient,
@@ -88,7 +93,7 @@ function ChatHeader() {
   }
 
   return (
-    <section className="relative flex items-center w-full h-full gap-3 px-2 dark:text-gray1 dark:bg-dark-blue1 bg-gray2 text-dark-gray2">
+    <section className="relative flex items-center w-full h-full gap-3 p-4 px-2 dark:text-gray1 dark:bg-dark-blue1 bg-gray2 text-dark-gray2">
       <IconButton
         bg={"transparent"}
         as={motion.button}
@@ -114,6 +119,7 @@ function ChatHeader() {
           )
         }
         size={"md"}
+        hidden={breakpoint === "base"}
       />
       <button
         onClick={() => {
@@ -121,7 +127,7 @@ function ChatHeader() {
             onOpen();
           }
         }}
-        className="relative flex flex-col grow"
+        className="relative flex flex-col grow shrink"
       >
         <span className="max-w-[8rem] transition-all overflow-hidden text-base font-semibold tracking-wide sm:text-lg text-ellipsis whitespace-nowrap md:max-w-none">
           {isGroup
@@ -136,7 +142,7 @@ function ChatHeader() {
             : recepient?.about || "about"}
         </span>
       </button>
-      <div className="absolute flex ml-auto right-1 top-4">
+      <div className="flex ml-auto ">
         <SelectedChatOptions />
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">

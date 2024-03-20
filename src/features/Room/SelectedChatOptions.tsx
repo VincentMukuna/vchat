@@ -23,7 +23,7 @@ export default function SelectedChatOptions() {
   if (!selectedChat || !currentUserDetails) return null;
 
   return (
-    <HStack>
+    <HStack spacing={1}>
       <Tooltip label="select" placement="left">
         <IconButton
           aria-label="forward messages"

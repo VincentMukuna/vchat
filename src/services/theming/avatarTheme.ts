@@ -1,13 +1,12 @@
 import { avatarAnatomy } from "@chakra-ui/anatomy";
-import { createMultiStyleConfigHelpers, defineStyle } from "@chakra-ui/react";
-import { grayDark } from "@radix-ui/colors";
+import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(avatarAnatomy.keys);
 
 const baseStyle = definePartsStyle((theme) => ({
   container: {
-    bg: theme.colorMode === "dark" ? grayDark.gray7 : grayDark.gray10,
+    // bg: theme.colorMode === "dark" ? grayDark.gray7 : grayDark.gray10,
   },
 }));
 

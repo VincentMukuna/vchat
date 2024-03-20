@@ -9,7 +9,6 @@ import VModal from "./components/Modal";
 import { AuthProvider } from "./context/AuthContext";
 import { ChatsProvider } from "./context/ChatsContext";
 import ErrorBoundary from "./pages/ErrorBoundary";
-import { localStorageProvider } from "./services/localStorageProvider";
 
 function App() {
   const { colorMode } = useColorMode();
@@ -31,7 +30,7 @@ function App() {
           }}
         />
 
-        <SWRConfig value={{ provider: localStorageProvider }}>
+        <SWRConfig>
           <AuthProvider>
             <ChatsProvider>
               <Alerter />

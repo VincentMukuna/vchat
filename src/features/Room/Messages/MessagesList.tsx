@@ -1,5 +1,4 @@
-import { AnimatePresence } from "framer-motion";
-import { createContext, useContext, useRef } from "react";
+import { createContext, memo, useContext, useRef } from "react";
 import { SyncLoader } from "react-spinners";
 import { DirectMessageDetails, GroupMessageDetails } from "../../../interfaces";
 import Message from "./Message";
@@ -29,25 +28,20 @@ function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
     >
       <div
         id="messages-container"
-        className="flex flex-col-reverse h-full p-2 pb-4 overflow-y-scroll gap-y-2"
+        className="flex flex-col-reverse self-stretch h-full p-2 pb-4 overflow-y-scroll grow"
       >
         {messages.length > 0 ? (
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
-            <AnimatePresence mode="popLayout">
-              {messages.map((message, i) => (
-                <Message
-                  message={message}
-                  onDelete={onDelete}
-                  key={message.$id}
-                  i={i}
-                  prev={messages[i + 1]}
-                  next={messages[i - 1]}
-                  replyingTo={messages.find(
-                    (msg) => msg.$id === message.replying,
-                  )}
-                />
-              ))}
-            </AnimatePresence>
+            {messages.map((message, i) => (
+              <Message
+                message={message}
+                onDelete={onDelete}
+                key={message.$id}
+                i={i}
+                prev={messages[i + 1]}
+                next={messages[i - 1]}
+              />
+            ))}
           </MessagesContext.Provider>
         ) : isLoading ? (
           <div className="flex items-center self-center h-full justify-self-center">
@@ -66,7 +60,7 @@ function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
   );
 }
 
-export default MessagesList;
+export default memo(MessagesList);
 
 export const useMessages = () => {
   const { messagesListRef } = useContext(MessagesContext);

@@ -16,13 +16,13 @@ function Chats() {
         <ChatsList className="" />
       </Sidebar>
       <Box
-        className={`absolute flex transition-opacity  h-full   inset-0 md:relative grow ${
-          selectedChat ? "z-10" : "invisible md:visible"
+        className={`absolute flex transition-opacity  h-full   inset-0 lg:relative grow ${
+          selectedChat ? "z-10" : "invisible lg:visible"
         }`}
       >
         <AnimatePresence>
           <RoomProvider>
-            <Outlet />
+            <Outlet key={selectedChat?.$id} />
           </RoomProvider>
         </AnimatePresence>
       </Box>

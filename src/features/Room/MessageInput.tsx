@@ -1,9 +1,5 @@
 import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
-import {
-  ArrowUturnLeftIcon,
-  PaperClipIcon,
-  XMarkIcon,
-} from "@heroicons/react/20/solid";
+import { PaperClipIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { slate } from "@radix-ui/colors";
 import { Models } from "appwrite";
@@ -109,10 +105,6 @@ const MessageInput = ({}: InputProps) => {
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (messageBody.trim() === "") {
-      return;
-    }
-
     setMessageBody("");
     dispatch({ type: RoomActionTypes.EXIT_REPLYING_TO, payload: null });
 
@@ -124,7 +116,7 @@ const MessageInput = ({}: InputProps) => {
         senderID: currentUserDetails.$id,
         body: messageBody,
         groupDoc: selectedChat.$id,
-        replying: roomState.replyingTo?.$id,
+        replying: JSON.stringify(roomState.replyingTo),
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
@@ -140,7 +132,7 @@ const MessageInput = ({}: InputProps) => {
         read: isPersonal ? true : false,
         chatDoc: selectedChat.$id,
         attachments: attachments,
-        replying: roomState.replyingTo?.$id,
+        replying: JSON.stringify(roomState.replyingTo),
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
@@ -159,11 +151,12 @@ const MessageInput = ({}: InputProps) => {
   return (
     <div className="flex flex-col">
       {roomState.replyingTo && (
-        <div className="flex items-center gap-4 px-4 py-2 pb-4 mx-4 -mb-2 rounded-t-md bg-gray4 dark:bg-gray-800">
-          <ArrowUturnLeftIcon className="w-4 h-4" />
-          <div className="flex flex-col ps-6">
-            <span className="text-xs">{roomState.replyingTo.sender.name}</span>
-            <span>{roomState.replyingTo.body}</span>
+        <div className="flex items-center gap-4 py-2 mx-4 ps-5 border-s-4">
+          <div className="flex flex-col max-w-xs overflow-hidden ps-6 line-clamp-1">
+            <span className="text-xs line-clamp-1">
+              {roomState.replyingTo.sender.name}
+            </span>
+            <span className="line-clamp-2">{roomState.replyingTo.body}</span>
           </div>
           <IconButton
             variant={"ghost"}
@@ -176,10 +169,11 @@ const MessageInput = ({}: InputProps) => {
                 payload: null,
               })
             }
+            rounded={"full"}
           />
         </div>
       )}
-      <footer className="relative flex flex-col justify-start px-2 py-1 mx-4 mb-4 overflow-hidden rounded-lg dark:text-dark-blue12 bg-gray5 dark:bg-dark-gray3 focus-within:ring-2 dark:ring-dark-indigo5 ring-dark-indigo8 ring-offset-[3px] dark:ring-offset-dark-blue1 ring-offset-gray-100">
+      <footer className="relative flex flex-col justify-start px-2 py-1 mx-4 my-2 overflow-hidden rounded-3xl dark:text-dark-blue12 bg-gray5 dark:bg-dark-gray3 ">
         <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
           <div className="flex items-center w-full h-full gap-2 ps-1">
             <div className="relative flex h-full">
@@ -196,6 +190,7 @@ const MessageInput = ({}: InputProps) => {
                   clear();
                   openFilePicker();
                 }}
+                rounded={"full"}
               ></IconButton>
               {attachments.length > 0 && (
                 <Badge
@@ -236,6 +231,7 @@ const MessageInput = ({}: InputProps) => {
               icon={<PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />}
               type="submit"
               isDisabled={sending || !messageBody.trim()}
+              rounded={"full"}
             />
           </div>
         </form>

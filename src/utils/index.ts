@@ -24,4 +24,10 @@ export function compareCreatedAt(a: any, b: any) {
   }
 }
 
-export function composeMessage() {}
+//function to pluck properties from an object given a comma-separated string
+export function pluck(obj: any, keys: string) {
+  return keys.split(",").reduce((acc, key) => {
+    acc[key.trim()] = obj[key.trim()];
+    return acc;
+  }, {} as any);
+}

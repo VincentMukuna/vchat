@@ -1,5 +1,4 @@
 import { Avatar, Card } from "@chakra-ui/react";
-import { UserIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { ReactNode, createContext, useContext } from "react";
 import { openModal } from "../../components/Modal";
@@ -69,13 +68,7 @@ export default User;
 
 export const UserAvatar = ({ size }: { size?: string }) => {
   const { user } = useContext(UserContext)!;
-  return (
-    <Avatar
-      size={size}
-      icon={<UserIcon className="w-[26px] h-[26px]" />}
-      src={user.avatarURL}
-    />
-  );
+  return <Avatar size={size} name={user.name} src={user.avatarURL} />;
 };
 
 export const UserDescription = ({ children }: { children?: ReactNode }) => {

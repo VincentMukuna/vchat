@@ -98,13 +98,13 @@ function UsersList({
             </>
           ) : (
             <>
-              <div className="flex flex-col space-y-1 overflow-y-auto  max-h-[70dvh] md:max-h-[75dvh]">
+              <div className="flex flex-col space-y-1 overflow-y-auto overflow-x-hidden  max-h-[70dvh] md:max-h-[75dvh]">
                 {([] as IUserDetails[])
                   .concat(...(users ? users : []))
                   .filter((user) => (user ? true : false))
                   ?.map((user) => (
                     <User key={user.$id} user={user}>
-                      <UserAvatar />
+                      <UserAvatar size="sm" />
                       <UserDescription>
                         <UserAbout />
                       </UserDescription>

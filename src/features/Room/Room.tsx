@@ -35,7 +35,7 @@ function Room() {
   const { currentUserDetails } = useAuth();
   const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, setSelectedChat } = useChatsContext();
-  const { isGroup, isPersonal, roomState, dispatch } = useRoomContext();
+  const { isGroup, isPersonal, dispatch, roomState } = useRoomContext();
   const [showDetails] = useState(false);
 
   if (!currentUserDetails) return null;
@@ -75,12 +75,6 @@ function Room() {
       toast.error("Something went wrong");
     }
   };
-
-  useEffect(() => {
-    if (selectedChat) {
-      globalMutate(`unread-${selectedChat.$id}`, 0, { revalidate: false });
-    }
-  }, [selectedChat]);
 
   useCommand("Escape", () => {
     dispatch({
@@ -154,7 +148,7 @@ function Room() {
         initial="slide-from-right"
         animate="slide-in"
         exit="slide-from-right"
-        className="grid h-full grid-flow-row grid-rows-[85px_6fr_1fr] dark:bg-dark-blue1 grow"
+        className={`grid h-full grid-rows-[1fr_6fr_0.2fr] bg-gray2 dark:bg-dark-blue1 grow`}
       >
         <ChatHeader />
         {error ? (
@@ -165,6 +159,7 @@ function Room() {
         ) : (
           data && (
             <Messages
+              key={selectedChat.$id}
               messages={data}
               onDelete={handleDeleteMessage}
               isLoading={isLoading}

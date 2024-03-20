@@ -102,6 +102,7 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
       <ModalBody className="flex flex-col items-center justify-center gap-2">
         <Avatar
           size={"2xl"}
+          name={user.name}
           icon={<UserIcon className="w-16 h-16" />}
           src={user.avatarURL}
         />

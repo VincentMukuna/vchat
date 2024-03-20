@@ -26,7 +26,16 @@ export default function EditMessageForm({
     dispatch({ type: RoomActionTypes.SET_EDITING, payload: null });
     if (newMessage !== message.body) {
       const roomMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
-      mutate(roomMessagesKey);
+      mutate(
+        roomMessagesKey,
+        roomMessages.map((msg) => {
+          if (msg.$id === message.$id) {
+            return { ...msg, body: newMessage };
+          }
+          return msg;
+        }),
+        { revalidate: false },
+      );
 
       let editPs = api
         .updateDocument(
@@ -37,6 +46,16 @@ export default function EditMessageForm({
         )
         .catch((err: any) => {
           toast.error("Something went wrong! ");
+          mutate(
+            roomMessagesKey,
+            roomMessages.map((msg) => {
+              if (msg.$id === message.$id) {
+                return { ...msg, body: message.body };
+              }
+              return msg;
+            }),
+            { revalidate: false },
+          );
         });
     }
   };

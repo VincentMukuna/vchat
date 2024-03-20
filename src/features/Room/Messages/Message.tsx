@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
 import { DeleteIcon, PencilIcon } from "../../../components/Icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
@@ -12,15 +12,11 @@ import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 
 import { AspectRatio, Avatar, Checkbox, Image } from "@chakra-ui/react";
-import useSWR from "swr";
-import { getFormattedDateTime } from "../../../services/dateServices";
+import useSWR, { useSWRConfig } from "swr";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
 import useIntersectionObserver from "@/utils/hooks/useIntersectionObserver";
-import { ArrowUturnLeftIcon } from "@heroicons/react/20/solid";
-import { motion } from "framer-motion";
 import { confirmAlert } from "../../../components/Alert/alertStore";
-import Blueticks from "../../../components/Blueticks";
 import { openModal } from "../../../components/Modal";
 import {
   RoomActionTypes,
@@ -29,6 +25,8 @@ import {
 import UserProfileModal from "../../Profile/UserProfileModal";
 import EditMessageForm from "./EditMessageForm";
 import { useMessages } from "./MessagesList";
+
+import { pluck } from "@/utils";
 
 interface MessageProps {
   message: DirectMessageDetails | GroupMessageDetails;
@@ -45,6 +43,7 @@ const Message = forwardRef<any, MessageProps>(
   ({ message, onDelete, i, prev, next, replyingTo }, ref) => {
     const { currentUserDetails } = useAuth();
 
+    const { mutate, cache } = useSWRConfig();
     const { selectedChat } = useChatsContext();
     if (!currentUserDetails || !selectedChat) return;
     const [attachments, setAttachments] = useState<URL[] | []>([]);
@@ -57,6 +56,10 @@ const Message = forwardRef<any, MessageProps>(
     const isEditing = roomState.editing === message.$id;
     const isOptimistic = !!message?.optimistic;
 
+    const replying = useMemo(() => {
+      return JSON.parse(message.replying!);
+    }, [message.replying]);
+
     const isGroupMessage =
       message.$collectionId === SERVER.COLLECTION_ID_GROUP_MESSAGES;
     const isAdmin =
@@ -66,6 +69,7 @@ const Message = forwardRef<any, MessageProps>(
       );
     const isMine = message.senderID === currentUserDetails.$id;
     const prevSameSender = prev?.senderID === message.senderID;
+    const nextSameSender = next?.senderID === message.senderID;
 
     const isSelected = roomState.selectedMessages.some(
       (msg) => msg.$id === message.$id,
@@ -122,6 +126,11 @@ const Message = forwardRef<any, MessageProps>(
         return;
       }
       setRead(true);
+      mutate(
+        `unread-${selectedChat.$id}`,
+        cache.get(`unread-${selectedChat.$id}`)?.data - 1,
+        { revalidate: false },
+      );
       try {
         await api.updateDocument(
           message.$databaseId,
@@ -135,7 +144,13 @@ const Message = forwardRef<any, MessageProps>(
           selectedChat.$id,
           { changeLog: "readtext" },
         );
-      } catch (error) {}
+      } catch (error) {
+        mutate(
+          `unread-${selectedChat.$id}`,
+          cache.get(`unread-${selectedChat.$id}`)?.data + 1,
+          { revalidate: false },
+        );
+      }
     };
 
     const handleDelete = async () => {
@@ -172,98 +187,151 @@ const Message = forwardRef<any, MessageProps>(
       time: 2000,
       observe: !isMine && !isOptimistic && !read,
     });
-
     return (
-      <motion.article
-        ref={ref}
+      <article
         id={message.$id}
-        layout
-        initial={
-          isMine || isOptimistic || message?.revalidated ? {} : { opacity: 0 }
-        }
-        animate={{ opacity: 1 }}
-        exit={isOptimistic ? {} : { opacity: 0, scale: 0.8 }}
-        transition={{ duration: 0.3 }}
-        style={{ originX: isMine ? 1 : 0 }}
+        ref={ref}
         onMouseEnter={() => setShowHoverCard(true)}
         onMouseLeave={() => setShowHoverCard(false)}
-        onClick={() => {
-          if (roomState.isSelectingMessages) {
-            dispatch({
-              type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
-              payload: message,
-            });
-          } else {
-            dispatch({
-              type: RoomActionTypes.SET_REPLYING_TO,
-              payload: {
-                ...message,
-                sender: isMine ? currentUserDetails : senderDetails,
-              },
-            });
-          }
-        }}
-        tabIndex={0}
+        tabIndex={1}
+        className="flex flex-col transition-all"
       >
         <div
-          className={`relative gap-2 flex cursor-pointer ${
+          className={`relative gap-1 flex   ${
             isMine ? "flex-row-reverse" : ""
-          } items-start focus:outline-0 focus:outline-slate-600 transition-all          
+          } items-end focus:outline-0 focus:outline-slate-600 transition-all   
+          
+          ${prevSameSender ? "" : "mt-3"}
+
+          ${nextSameSender ? "" : "mb-3"}
+          
+          
             `}
         >
           <Checkbox
             isChecked={isSelected}
             hidden={!roomState.isSelectingMessages}
             className="self-center mx-2"
-            onClick={(e) => {
+            onChange={(e) => {
               dispatch({
                 type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
-                payload: message.$id,
+                payload: message,
               });
+              e.stopPropagation();
             }}
           />
-          <Avatar
-            visibility={prevSameSender ? "hidden" : "visible"}
-            src={
-              isMine ? currentUserDetails?.avatarURL : senderDetails?.avatarURL
-            }
-            name={
-              isMine ? currentUserDetails.name : (senderDetails?.name as string)
-            }
-            size="sm"
+          {!isMine && (
+            <Avatar
+              visibility={prevSameSender ? "hidden" : "visible"}
+              src={
+                isMine
+                  ? currentUserDetails?.avatarURL
+                  : senderDetails?.avatarURL
+              }
+              name={
+                isMine
+                  ? currentUserDetails.name
+                  : (senderDetails?.name as string)
+              }
+              size="sm"
+              onClick={() => {
+                openModal(
+                  <UserProfileModal
+                    onClose={() => {}}
+                    user={senderDetails as IUserDetails}
+                  />,
+                );
+              }}
+              cursor={isGroupMessage ? "pointer" : ""}
+              className="mb-2"
+            />
+          )}
+
+          <div
             onClick={() => {
-              openModal(
-                <UserProfileModal
-                  onClose={() => {}}
-                  user={senderDetails as IUserDetails}
-                />,
-              );
+              if (roomState.isSelectingMessages) {
+                dispatch({
+                  type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
+                  payload: message,
+                });
+              } else {
+                dispatch({
+                  type: RoomActionTypes.SET_REPLYING_TO,
+                  payload: {
+                    ...message,
+                    body: newMessage.slice(0, 100),
+                    sender: pluck(
+                      isMine ? currentUserDetails : senderDetails,
+                      "name,avatarURL",
+                    ),
+                  },
+                });
+              }
             }}
-            cursor={isGroupMessage ? "pointer" : ""}
-          />
+            className="grid gap-1 cursor-pointer"
+          >
+            <div>
+              {attachments.length > 0 && (
+                <AspectRatio maxW="10rem" w={220} ratio={4 / 3}>
+                  <Image
+                    src={attachments[0] as any}
+                    objectFit="cover"
+                    borderRadius={"md"}
+                    sizes="150px"
+                  />
+                </AspectRatio>
+              )}
+            </div>
+            {replying && (
+              <div
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
 
-          <div className="flex flex-col gap-1 mt-3">
-            {attachments.length > 0 && (
-              <AspectRatio maxW="250px" w={220} ratio={4 / 3}>
-                <Image
-                  src={attachments[0] as any}
-                  objectFit="cover"
-                  borderRadius={"md"}
-                  sizes="150px"
-                />
-              </AspectRatio>
+                  const replying = document.getElementById(
+                    JSON.parse(message.replying!).$id,
+                  );
+
+                  replying?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center",
+                    inline: "nearest",
+                  });
+
+                  replying?.focus();
+                }}
+                className="sm:max-w-[22rem] max-w-[80vw] border-indigo-500 text-gray-500 mt-2 dark:text-gray-400 py-1 overflow-hidden border-s-4 ps-4"
+              >
+                <span className="line-clamp-2">{replying?.body}</span>
+              </div>
             )}
-
             <div
               ref={messageRef}
-              className={`flex flex-col relative
-                px-3  pt-2   ${
+              className={`flex flex-col relative min-w-[3rem] gap-1 rounded-3xl  sm:max-w-[22rem] max-w-[80vw] 
+                p-3 ps-3 py-2
+                ${
                   isMine
-                    ? `bg-indigo-300 dark:bg-gray4/90 dark:text-black rounded-tr-none self-end`
-                    : "bg-dark-gray7 dark:bg-dark-indigo4 dark:text-dark-gray12 rounded-tl-none text-gray-100 min-w-[5rem] "
-                } rounded-xl 
+                    ? `bg-indigo-200 dark:bg-indigo-800 dark:text-dark-gray12  self-end me-4`
+                    : "bg-gray7 dark:bg-dark-gray6/90   text-gray-100s"
+                } 
 
-                 w-fit max-w-[400px]   `}
+                ${
+                  prevSameSender
+                    ? isMine
+                      ? "rounded-tr-md"
+                      : "rounded-tl-md"
+                    : ""
+                }
+
+                ${
+                  nextSameSender
+                    ? isMine
+                      ? "rounded-br-md"
+                      : "rounded-bl-md"
+                    : ""
+                }
+                
+                `}
             >
               {isEditing ? (
                 <EditMessageForm
@@ -273,57 +341,14 @@ const Message = forwardRef<any, MessageProps>(
                 />
               ) : (
                 <div className="text-[0.9rem] leading-relaxed tracking-wide">
-                  {prevSameSender ? null : (
-                    <div
-                      className={`mb-1 text-xs  ${
-                        isMine ? "text-gray-600" : "text-gray-400"
-                      }`}
-                    >
-                      {isMine ? "You" : senderDetails?.name}
-                    </div>
-                  )}
-                  {replyingTo && (
-                    <div
-                      className={`flex items-center gap-4 text-xs opacity-50 rounded-t-md`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        document
-                          .getElementById(replyingTo.$id)
-                          ?.scrollIntoView({
-                            behavior: "smooth",
-                            block: "end",
-                          });
-                      }}
-                    >
-                      <div className="flex flex-col italic line-clamp-2">
-                        <span>{replyingTo.body}</span>
-                      </div>
-                    </div>
-                  )}
                   {newMessage}
                 </div>
               )}
-              {isMine && <Blueticks read={read} />}
-              <div
-                className={`self-end text-[0.54rem] tracking-wider mb-1
-               ${
-                 isMine
-                   ? "dark:text-gray-500 justify-end text mx-3"
-                   : "dark:text-gray-400 "
-               }`}
-              >
-                {" " + getFormattedDateTime(message.$createdAt)}
-              </div>
             </div>
           </div>
-          {replyingTo ? (
-            <ArrowUturnLeftIcon className="self-center w-3 h-3 text-gray-500" />
-          ) : null}
-
           {shouldShowHoverCard() && !isSelected && (
             <div
-              className={`flex self-end gap-2 mb-5 ${
+              className={`flex self-end gap-2 mb-2 ${
                 showHoverCard ? "" : "invisible"
               }`}
             >
@@ -355,7 +380,7 @@ const Message = forwardRef<any, MessageProps>(
             </div>
           )}
         </div>
-      </motion.article>
+      </article>
     );
   },
 );
