@@ -1,3 +1,4 @@
+import useConversations from "@/utils/hooks/Chats/useConversations";
 import {
   Avatar,
   Button,
@@ -14,15 +15,13 @@ import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
+import { DirectChatDetails, IUserDetails } from "../../interfaces";
 import {
-  DirectChatDetails,
-  GroupChatDetails,
-  IUserDetails,
-} from "../../interfaces";
-import { addContact } from "../../services/userDetailsServices";
+  addContact,
+  createPersonalChat,
+} from "../../services/userDetailsServices";
 
 interface UserProfileProps {
   onClose: () => void;
@@ -33,38 +32,35 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
   const { onClose: onModalClose } = useModalContext();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
-  const { setSelectedChat, setRecepient } = useChatsContext();
+  const { setSelectedChat, setRecepient, addConversation } = useChatsContext();
   const { colorMode } = useColorMode();
   const [loading, setLoading] = useState(false);
-  const { cache, mutate } = useSWRConfig();
   const isPersonal = user.$id === currentUserDetails.$id;
 
-  function getConversations() {
-    if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (
-        | GroupChatDetails
-        | DirectChatDetails
-      )[];
-    } else return [] as (GroupChatDetails | DirectChatDetails)[];
-  }
+  const { data: conversations } = useConversations();
   const handleClick = async () => {
     setLoading(true);
-    let chats = getConversations().filter(
-      (convo) => convo.$collectionId === "chats",
-    ) as DirectChatDetails[];
+    let chats =
+      (conversations?.filter(
+        (convo) => convo.$collectionId === "chats",
+      ) as DirectChatDetails[]) || [];
     let chatWithUser: DirectChatDetails | undefined;
 
     if (isPersonal) {
-      chatWithUser = chats.find((chat) =>
-        chat.participants.every(
-          (participant) => participant.$id === currentUserDetails.$id,
-        ),
+      //find personal chat
+      chatWithUser = chats.find(
+        (chat) =>
+          chat.participants.length === 1 &&
+          chat.participants.every(
+            (participant) => participant.$id === currentUserDetails.$id,
+          ),
       );
     } else {
       chatWithUser = chats.find((chat) =>
         chat.participants.some((participant) => participant.$id === user.$id),
       );
     }
+
     if (chatWithUser) {
       setLoading(false);
       onClose();
@@ -72,16 +68,15 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
       setSelectedChat(chatWithUser);
       setRecepient(user);
     } else {
-      let addContactStatus = addContact(currentUserDetails.$id, user.$id);
+      const addContactStatus = isPersonal
+        ? createPersonalChat(currentUserDetails.$id)
+        : addContact(currentUserDetails.$id, user.$id);
+
       addContactStatus
         .then((result) => {
-          setSelectedChat(result.chat);
+          setSelectedChat(result);
           setRecepient(user);
-          if (!result.existed) {
-            mutate("conversations", [result.chat, ...getConversations()], {
-              revalidate: false,
-            });
-          }
+          addConversation(result);
         })
         .finally(() => {
           setLoading(false);
@@ -95,9 +90,9 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
   };
   return (
     <>
-      <ModalHeader alignSelf={"center"}>{`${
-        user.name.split(" ")[0]
-      }'s Profile`}</ModalHeader>
+      <ModalHeader alignSelf={"center"}>
+        {`${user.name.split(" ")[0]}'s Profile`}
+      </ModalHeader>
       <ModalCloseButton />
       <ModalBody className="flex flex-col items-center justify-center gap-2">
         <Avatar
