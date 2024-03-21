@@ -1,4 +1,5 @@
 import { useChatsContext } from "@/context/ChatsContext";
+import MessagesProvider from "@/context/MessagesContext";
 import { Box } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
@@ -22,7 +23,9 @@ function Chats() {
       >
         <AnimatePresence>
           <RoomProvider>
-            <Outlet key={selectedChat?.$id} />
+            <MessagesProvider>
+              <Outlet key={selectedChat?.$id} />
+            </MessagesProvider>
           </RoomProvider>
         </AnimatePresence>
       </Box>
@@ -31,3 +34,5 @@ function Chats() {
 }
 
 export default Chats;
+
+export const Component = Chats;
