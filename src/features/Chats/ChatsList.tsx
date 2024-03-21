@@ -1,4 +1,5 @@
 import { useChatsContext } from "@/context/ChatsContext";
+import { getChatDoc } from "@/services/chatMessageServices";
 import { matchAndExecute } from "@/utils";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Button, useColorMode } from "@chakra-ui/react";
@@ -36,6 +37,7 @@ const ChatsList = ({ className }: { className: string }) => {
       `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {
         const changeLog = response.payload.changeLog;
+        console.log(changeLog);
         const conversations = [
           ...response.payload.groups,
           ...response.payload.chats,
@@ -43,11 +45,17 @@ const ChatsList = ({ className }: { className: string }) => {
 
         const matchers = new Map();
 
-        const handleNewConversation = (id: string) => {
+        const handleNewConversation = async (id: string) => {
+          console.log("new convo: ", id);
           const newConversation = conversations.find(
             (convo) => convo.$id === id,
           );
-          newConversation && addConversation(newConversation);
+          if (newConversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
+            let chatDoc = await getChatDoc(newConversation.$id);
+            addConversation(chatDoc);
+          } else {
+            newConversation && addConversation(newConversation);
+          }
         };
 
         const handleDeletedConversation = (id: string) => {

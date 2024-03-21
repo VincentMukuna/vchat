@@ -45,7 +45,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
   const { update: updateConversations } = useSWROptimistic("conversations");
 
   const addConversation = (conversation: Conversation) => {
-    updateConversations([...conversations, conversation]);
+    updateConversations([conversation, ...conversations]);
   };
 
   const deleteConversation = (conversationId: string) => {
