@@ -27,6 +27,7 @@ import EditMessageForm from "./EditMessageForm";
 import { useMessages } from "./MessagesList";
 
 import { pluck } from "@/utils";
+import SystemMessage from "./SystemMessage";
 
 interface MessageProps {
   message: DirectMessageDetails | GroupMessageDetails;
@@ -68,6 +69,7 @@ const Message = forwardRef<any, MessageProps>(
         currentUserDetails.$id,
       );
     const isMine = message.senderID === currentUserDetails.$id;
+    const isSystem = message.senderID === "system";
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
 
@@ -77,7 +79,7 @@ const Message = forwardRef<any, MessageProps>(
 
     const { data: senderDetails } = useSWR(
       () => {
-        if (isMine) return null;
+        if (isMine || isSystem) return null;
         else return `${message.senderID}-details`;
       },
       () => getUserDetails(message.senderID),
@@ -89,7 +91,10 @@ const Message = forwardRef<any, MessageProps>(
     );
 
     const { data } = useSWR(
-      `${message.$id} attachments`,
+      () => {
+        if (isSystem) return null;
+        return `${message.$id} attachments`;
+      },
       getMessageAttachments,
       {},
     );
@@ -185,8 +190,12 @@ const Message = forwardRef<any, MessageProps>(
         markMessageasRead();
       },
       time: 2000,
-      observe: !isMine && !isOptimistic && !read,
+      observe: !isMine && !isOptimistic && !read && !isSystem,
     });
+
+    if (isSystem) {
+      return <SystemMessage message={message} />;
+    }
     return (
       <article
         id={message.$id}
