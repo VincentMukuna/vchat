@@ -41,6 +41,7 @@ export const MyProfile = () => {
           size={"md"}
           src={currentUserDetails.avatarURL}
           icon={<UserIcon className="w-7 h-7" />}
+          name={currentUserDetails.name}
         />
       </Link>
     </Tooltip>
