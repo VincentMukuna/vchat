@@ -13,12 +13,9 @@ import {
   createBrowserRouter,
 } from "react-router-dom";
 import App from "./App";
-import Room from "./features/Room/Room";
-import Chats from "./pages/Chats";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
-import Users from "./pages/Users";
 import PrivateRoutes from "./routes/PrivateRoutes";
 import { avatarTheme } from "./services/theming/avatarTheme";
 import { butttonTheme } from "./services/theming/buttonTheme";
@@ -39,17 +36,23 @@ const router = createBrowserRouter([
           },
           {
             path: "chats/*",
-            element: <Chats />,
+            lazy: () => {
+              return import("./pages/Chats");
+            },
             children: [
               {
                 path: "*",
-                element: <Room />,
+                lazy: () => {
+                  return import("./features/Room/Room");
+                },
               },
             ],
           },
           {
             path: "users",
-            element: <Users />,
+            lazy: () => {
+              return import("./pages/Users");
+            },
           },
           {
             path: "settings",
