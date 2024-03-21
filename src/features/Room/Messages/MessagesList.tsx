@@ -1,15 +1,8 @@
-import { createContext, memo, useContext, useRef } from "react";
-import { SyncLoader } from "react-spinners";
-import { DirectMessageDetails, GroupMessageDetails } from "../../../interfaces";
+import { useMessages } from "@/context/MessagesContext";
+import { createContext, memo, useRef } from "react";
 import Message from "./Message";
 
-interface MessagesProps {
-  messages: (DirectMessageDetails | GroupMessageDetails)[];
-  onDelete: (
-    message: DirectMessageDetails | GroupMessageDetails,
-  ) => Promise<void>;
-  isLoading: boolean;
-}
+interface MessagesProps {}
 
 type MessagesContextType = {
   messagesListRef: React.RefObject<HTMLDivElement> | null;
@@ -19,8 +12,9 @@ const MessagesContext = createContext<MessagesContextType>({
   messagesListRef: null,
 });
 
-function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
+function MessagesList({}: MessagesProps) {
   const messageListRef = useRef<HTMLDivElement>(null);
+  const { messages } = useMessages();
   return (
     <div
       ref={messageListRef}
@@ -34,19 +28,14 @@ function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
             {messages.map((message, i) => (
               <Message
+                messagesListRef={messageListRef}
                 message={message}
-                onDelete={onDelete}
                 key={message.$id}
-                i={i}
                 prev={messages[i + 1]}
                 next={messages[i - 1]}
               />
             ))}
           </MessagesContext.Provider>
-        ) : isLoading ? (
-          <div className="flex items-center self-center h-full justify-self-center">
-            <SyncLoader size={8} />
-          </div>
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">
             <div className="text-lg font-bold tracking-wider">No Messages</div>
@@ -61,8 +50,3 @@ function MessagesList({ messages, onDelete, isLoading }: MessagesProps) {
 }
 
 export default memo(MessagesList);
-
-export const useMessages = () => {
-  const { messagesListRef } = useContext(MessagesContext);
-  return { messagesListRef };
-};

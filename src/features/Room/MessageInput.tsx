@@ -1,3 +1,4 @@
+import { useMessages } from "@/context/MessagesContext";
 import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
 import { PaperClipIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
@@ -20,7 +21,6 @@ import {
 import { DirectMessageDetails, GroupMessageDetails } from "../../interfaces";
 import { SERVER } from "../../utils/config";
 import { FileTypeValidator } from "../../utils/fileValidators";
-import useSendMessage from "../../utils/hooks/Room/useSendMessage";
 
 type InputProps = {};
 
@@ -54,16 +54,16 @@ export interface GroupMessageSendDto extends Models.Document {
 
 const MessageInput = ({}: InputProps) => {
   const { currentUserDetails } = useAuth();
-  if (!currentUserDetails) return;
+
   const { selectedChat, recepient } = useChatsContext();
-  if (!selectedChat) return null;
+  const { addMessage } = useMessages();
+  if (!selectedChat || !currentUserDetails) return null;
   const [messageBody, setMessageBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
 
   const { colorMode } = useColorMode();
   const { isGroup, isPersonal, roomState, dispatch } = useRoomContext();
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
-  const { sendMessage, sending } = useSendMessage();
 
   const { openFilePicker, filesContent, clear } = useFilePicker({
     accept: [".jpg", ".png"],
@@ -120,7 +120,7 @@ const MessageInput = ({}: InputProps) => {
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
-      await sendMessage(message);
+      await addMessage(message);
     } else {
       if (!recepient) return;
       let message: DirectMessageSendDto = {
@@ -136,7 +136,7 @@ const MessageInput = ({}: InputProps) => {
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
-      await sendMessage(message);
+      await addMessage(message);
     }
 
     setAttachments([]);
@@ -230,7 +230,7 @@ const MessageInput = ({}: InputProps) => {
               aria-label="send"
               icon={<PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />}
               type="submit"
-              isDisabled={sending || !messageBody.trim()}
+              isDisabled={!messageBody.trim()}
               rounded={"full"}
             />
           </div>

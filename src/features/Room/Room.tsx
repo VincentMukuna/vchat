@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 //@ts-ignore
 import NoSelectedChat from "@/components/NoSelectedChat";
-import { Box, Center } from "@chakra-ui/react";
+import { useMessages } from "@/context/MessagesContext";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
+import { Box } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import {
@@ -16,15 +16,11 @@ import {
   DirectChatDetails,
   DirectMessageDetails,
   GroupChatDetails,
-  GroupMessageDetails,
 } from "../../interfaces";
 import api from "../../services/api";
-import { deleteChatMessage } from "../../services/chatMessageServices";
-import { deleteGroupMessage } from "../../services/groupMessageServices";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import { compareCreatedAt, matchAndExecute } from "../../utils";
+import { matchAndExecute } from "../../utils";
 import { SERVER } from "../../utils/config";
-import useRoomMessages from "../../utils/hooks/Room/useRoomMessages";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
@@ -34,48 +30,22 @@ import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 
 function Room() {
   const { currentUserDetails } = useAuth();
-  const { mutate: globalMutate } = useSWRConfig();
   const { selectedChat, setSelectedChat } = useChatsContext();
-  const { isGroup, isPersonal, dispatch, roomState } = useRoomContext();
+  const { isGroup, isPersonal, dispatch, roomState, roomMessagesKey } =
+    useRoomContext();
   const [showDetails] = useState(false);
+  const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
+  const { update: updateLastMessage } = useSWROptimistic(
+    `lastMessage ${selectedChat?.$id}`,
+  );
+
+  const { update: updateRoomDetails } = useSWROptimistic(
+    `details ${selectedChat?.$id}`,
+  );
 
   if (!currentUserDetails) return null;
 
-  const { data, isLoading, error, mutate, isValidating } = useRoomMessages();
-
-  const handleDeleteMessage = async (
-    message: DirectMessageDetails | GroupMessageDetails,
-  ) => {
-    if (!selectedChat) return;
-    let newMessages = data?.filter((msg) => msg.$id !== message.$id);
-    mutate(newMessages, {
-      revalidate: false,
-      rollbackOnError: true,
-    });
-    globalMutate(
-      `lastMessage ${selectedChat.$id}`,
-      newMessages && newMessages.sort(compareCreatedAt).at(0),
-      { revalidate: false },
-    );
-
-    try {
-      if (isGroup) {
-        await deleteGroupMessage(
-          currentUserDetails.$id,
-          selectedChat.$id,
-          message as GroupMessageDetails,
-        );
-      } else {
-        await deleteChatMessage(
-          currentUserDetails.$id,
-          selectedChat.$id,
-          message as DirectMessageDetails,
-        );
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
+  const { addMessage, messages, deleteMessage } = useMessages();
 
   useCommand("Escape", () => {
     dispatch({
@@ -99,34 +69,30 @@ function Room() {
           const changeLog = response.payload.changeLog;
 
           const handleNewMessage = (newTextId: string) => {
-            mutate(
+            updateRoomMessages(
               isGroup
                 ? [
                     response.payload.groupMessages.find(
                       (msg: any) => msg.$id === newTextId,
                     ),
-                    ...(data || []),
+                    ...(messages || []),
                   ]
                 : [
                     response.payload.chatMessages.find(
                       (msg: any) => msg.$id === newTextId,
                     ),
-                    ...(data || []),
+                    ...(messages || []),
                   ],
               { revalidate: false },
             ).then((value: any) => {
-              globalMutate(
-                `lastMessage ${selectedChat.$id}`,
-                (value as DirectMessageDetails[]).at(0),
-                { revalidate: false },
-              );
+              updateLastMessage((value as DirectMessageDetails[]).at(0));
             });
           };
 
           const handleDeleteMessage = (deletedTextId: string) => {
-            mutate(data?.filter((msg) => msg.$id !== deletedTextId), {
-              revalidate: false,
-            });
+            updateRoomMessages(
+              messages?.filter((msg) => msg.$id !== deletedTextId),
+            );
           };
 
           const handleEditMessage = (editedTextId: string) => {
@@ -137,8 +103,8 @@ function Room() {
               : response.payload.chatMessages.find(
                   (msg: any) => msg.$id === editedTextId,
                 );
-            mutate(
-              data?.map((msg) => {
+            updateRoomMessages(
+              messages?.map((msg) => {
                 if (msg.$id === editedTextId) {
                   return {
                     ...msg,
@@ -148,24 +114,22 @@ function Room() {
                 }
                 return msg;
               }),
-              { revalidate: false },
             ).then((value: any) => {
               //remove edited suffix
-              mutate(
+              updateRoomMessages(
                 value.map((msg: any) => {
                   if (msg.$id === newMessage.$id + "-edited") {
                     return { ...msg, $id: newMessage.$id };
                   }
                   return msg;
                 }),
-                { revalidate: false },
               );
             });
           };
 
           const handleReadText = (readTextId: string) => {
-            mutate(
-              data?.map((msg) => {
+            updateRoomMessages(
+              messages.map((msg) => {
                 if (msg.$id === readTextId) {
                   return { ...msg, read: true, $id: msg.$id + "-read" };
                 }
@@ -176,50 +140,46 @@ function Room() {
           };
 
           const handleClearMessages = () => {
-            mutate([], { revalidate: false });
-            globalMutate(`lastMessage ${selectedChat.$id}`, undefined, {
-              revalidate: false,
-            });
+            updateRoomMessages([], { revalidate: false });
+            updateLastMessage(undefined);
           };
 
           const handleOtherChanges = () => {
             setSelectedChat(response.payload);
-            globalMutate(`details ${selectedChat!.$id}`, response.payload, {
-              revalidate: false,
-            });
+            updateRoomDetails(response.payload);
           };
 
           const matchers = new Map();
 
           matchers.set(
-            CHAT_MESSAGES_CHANGE_LOG_REGEXES.newmessage,
+            CHAT_MESSAGES_CHANGE_LOG_REGEXES.newMessage,
             (matches: string[]) => {
               handleNewMessage(matches.at(1)!);
             },
           );
 
           matchers.set(
-            CHAT_MESSAGES_CHANGE_LOG_REGEXES.deletemessage,
+            CHAT_MESSAGES_CHANGE_LOG_REGEXES.deleteMessage,
             (matches: string[]) => {
               handleDeleteMessage(matches.at(1)!);
             },
           );
 
           matchers.set(
-            CHAT_MESSAGES_CHANGE_LOG_REGEXES.editmessage,
+            CHAT_MESSAGES_CHANGE_LOG_REGEXES.editMessage,
             (matches: string[]) => {
               handleEditMessage(matches.at(1)!);
             },
           );
 
           matchers.set(
-            CHAT_MESSAGES_CHANGE_LOG_REGEXES.readmessage,
+            CHAT_MESSAGES_CHANGE_LOG_REGEXES.readMessage,
             (matches: string[]) => {
               handleReadText(matches.at(1)!);
             },
           );
 
-          matchers.set(CHAT_MESSAGES_CHANGE_LOG_REGEXES.clearmessages, () => {
+          matchers.set(CHAT_MESSAGES_CHANGE_LOG_REGEXES.clearMessages, () => {
             handleClearMessages();
           });
 
@@ -236,7 +196,17 @@ function Room() {
         unsubscribe();
       };
     }
-  }, [selectedChat, data, isGroup, currentUserDetails, mutate, globalMutate]);
+  }, [
+    currentUserDetails,
+    dispatch,
+    isGroup,
+    isPersonal,
+    messages,
+    selectedChat,
+    updateLastMessage,
+    updateRoomMessages,
+    updateRoomDetails,
+  ]);
 
   if (!selectedChat) return <NoSelectedChat />;
   return (
@@ -251,22 +221,7 @@ function Room() {
         className={`grid h-full grid-rows-[1fr_6fr_0.2fr] bg-gray2 dark:bg-dark-blue1 grow`}
       >
         <ChatHeader key={`header-${selectedChat.$id}`} />
-        {error ? (
-          <Center className="flex-col w-full h-full">
-            Whoops!
-            <p className="text-sm"> Can't get messages at the moment! </p>
-          </Center>
-        ) : (
-          data && (
-            <Messages
-              key={`messagesList-${selectedChat.$id}`}
-              messages={data}
-              onDelete={handleDeleteMessage}
-              isLoading={isLoading}
-            ></Messages>
-          )
-        )}
-
+        <Messages key={`messagesList-${selectedChat.$id}`}></Messages>
         <MessageInput key={`input-${selectedChat.$id}`} />
       </Box>
       <aside
@@ -282,3 +237,5 @@ function Room() {
 }
 
 export default Room;
+
+export const Component = Room;

@@ -12,7 +12,7 @@ import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 
 import { AspectRatio, Avatar, Checkbox, Image } from "@chakra-ui/react";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
 import useIntersectionObserver from "@/utils/hooks/useIntersectionObserver";
@@ -24,38 +24,41 @@ import {
 } from "../../../context/Room/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
 import EditMessageForm from "./EditMessageForm";
-import { useMessages } from "./MessagesList";
 
+import { useMessages } from "@/context/MessagesContext";
 import { pluck } from "@/utils";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import SystemMessage from "./SystemMessage";
 
 interface MessageProps {
   message: DirectMessageDetails | GroupMessageDetails;
-  onDelete: (
-    message: DirectMessageDetails | GroupMessageDetails,
-  ) => Promise<void>;
-  i: number;
+  messagesListRef: React.RefObject<HTMLElement>;
   prev?: DirectMessageDetails | GroupMessageDetails;
   next?: DirectMessageDetails | GroupMessageDetails;
-  replyingTo?: DirectMessageDetails | GroupMessageDetails | null;
 }
 
 const Message = forwardRef<any, MessageProps>(
-  ({ message, onDelete, i, prev, next, replyingTo }, ref) => {
+  ({ message, messagesListRef, prev, next }, ref) => {
     const { currentUserDetails } = useAuth();
-
-    const { mutate, cache } = useSWRConfig();
     const { selectedChat } = useChatsContext();
-    if (!currentUserDetails || !selectedChat) return;
+    const { deleteMessage } = useMessages();
+    const { roomState, dispatch } = useRoomContext();
+    const { update: updateUnreadCount } = useSWROptimistic(
+      `unread-${selectedChat!.$id}`,
+    );
+    const { data: unreadCount } = useSWR(`unread-${selectedChat!.$id}`);
+
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
-    const { roomState, dispatch } = useRoomContext();
-    const { messagesListRef } = useMessages();
+
     const [newMessage, setNewMessage] = useState(message.body);
     const [read, setRead] = useState(message.read);
+
     const messageRef = useRef(null);
+
     const isEditing = roomState.editing === message.$id;
     const isOptimistic = !!message?.optimistic;
+    if (!currentUserDetails || !selectedChat) return;
 
     const replying = useMemo(() => {
       return JSON.parse(message.replying!);
@@ -131,11 +134,7 @@ const Message = forwardRef<any, MessageProps>(
         return;
       }
       setRead(true);
-      mutate(
-        `unread-${selectedChat.$id}`,
-        cache.get(`unread-${selectedChat.$id}`)?.data - 1,
-        { revalidate: false },
-      );
+      updateUnreadCount(unreadCount - 1);
       try {
         await api.updateDocument(
           message.$databaseId,
@@ -150,16 +149,12 @@ const Message = forwardRef<any, MessageProps>(
           { changeLog: "readtext" },
         );
       } catch (error) {
-        mutate(
-          `unread-${selectedChat.$id}`,
-          cache.get(`unread-${selectedChat.$id}`)?.data + 1,
-          { revalidate: false },
-        );
+        updateUnreadCount(unreadCount + 1);
       }
     };
 
     const handleDelete = async () => {
-      await onDelete(message);
+      await deleteMessage(message.$id);
     };
 
     function shouldShowHoverCard() {
