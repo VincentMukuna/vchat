@@ -12,3 +12,5 @@ export default function Users() {
     </AuthenticatedLayout>
   );
 }
+
+export const Component = Users;
