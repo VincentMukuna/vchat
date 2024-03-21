@@ -1,52 +1,74 @@
-import { getConversations } from "@/services/userDetailsServices";
+import { useChatsContext } from "@/context/ChatsContext";
+import { matchAndExecute } from "@/utils";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
-import useSWR from "swr";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import {
-  DirectChatDetails,
-  GroupChatDetails,
   IUserDetails,
+  USER_DETAILS_CHANGE_LOG_REGEXES,
 } from "../../interfaces";
 import api from "../../services/api";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import { compareCreatedAt } from "../../utils";
 import { SERVER } from "../../utils/config";
 import Chat from "./Chat";
 
 const ChatsList = ({ className }: { className: string }) => {
   const { currentUser, currentUserDetails } = useAuth();
-  const { chatID } = useParams();
   const navigate = useNavigate();
 
   const { colorMode } = useColorMode();
+  const {
+    addConversation,
+    conversations: { conversations, chatsError, chatsLoading },
+    deleteConversation,
+  } = useChatsContext();
   if (!currentUser || !currentUserDetails) return null;
-  let {
-    data: conversations,
-    error: chatsError,
-    mutate,
-    isLoading,
-  } = useSWR("conversations", () => getConversations(currentUserDetails.$id), {
-    fallbackData: ([] as (GroupChatDetails | DirectChatDetails)[])
-      .concat(currentUserDetails.groups)
-      .sort((a, b) => {
-        return compareCreatedAt(
-          a.groupMessages[0] || a,
-          b.groupMessages[0] || b,
-        );
-      }),
-  });
+  const { update: updateConversations } = useSWROptimistic("conversations");
 
   useEffect(() => {
     const unsubscribe = api.subscribe<IUserDetails>(
       `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {
-        mutate();
+        const changeLog = response.payload.changeLog;
+        const conversations = [
+          ...response.payload.groups,
+          ...response.payload.chats,
+        ];
+
+        const matchers = new Map();
+
+        const handleNewConversation = (id: string) => {
+          const newConversation = conversations.find(
+            (convo) => convo.$id === id,
+          );
+          newConversation && addConversation(newConversation);
+        };
+
+        const handleDeletedConversation = (id: string) => {
+          deleteConversation(id);
+        };
+
+        matchers.set(
+          USER_DETAILS_CHANGE_LOG_REGEXES.createConversation,
+          (matches: string[]) => {
+            handleNewConversation(matches.at(1)!);
+          },
+        );
+
+        matchers.set(
+          USER_DETAILS_CHANGE_LOG_REGEXES.deleteConversation,
+          (matches: string[]) => {
+            handleDeletedConversation(matches.at(1)!);
+          },
+        );
+
+        matchAndExecute(changeLog, matchers);
       },
     );
 
@@ -67,7 +89,7 @@ const ChatsList = ({ className }: { className: string }) => {
           width={"44"}
           rounded={"md"}
           onClick={() => {
-            mutate();
+            updateConversations(undefined, { revalidate: true });
             toast("Reloading");
           }}
           bg={blueDark.blue5}
@@ -82,7 +104,7 @@ const ChatsList = ({ className }: { className: string }) => {
         </Button>
       </div>
     );
-  } else if (!isLoading && conversations && conversations.length < 1) {
+  } else if (!chatsLoading && conversations && conversations.length < 1) {
     return (
       <div className="flex flex-col items-center gap-6 mt-4">
         <div className="flex flex-col items-center justify-center ">
@@ -118,11 +140,9 @@ const ChatsList = ({ className }: { className: string }) => {
           id="chats-container"
           className={"flex flex-col space-y-1 overflow-y-clip " + className}
         >
-          {(conversations ? conversations : currentUserDetails.groups).map(
-            (conversation) => (
-              <Chat key={conversation.$id} conversation={conversation} />
-            ),
-          )}
+          {(conversations ? conversations : []).map((conversation) => (
+            <Chat key={conversation.$id} conversation={conversation} />
+          ))}
         </div>
       </motion.div>
     );
