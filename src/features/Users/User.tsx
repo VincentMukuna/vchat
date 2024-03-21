@@ -1,6 +1,7 @@
 import { Avatar, Card } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ReactNode, createContext, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { openModal } from "../../components/Modal";
 import { useAuth } from "../../context/AuthContext";
 import { IUserDetails } from "../../interfaces";
@@ -24,6 +25,7 @@ function User({
   children: ReactNode;
 }) {
   const { currentUserDetails } = useAuth();
+  const navigate = useNavigate();
   if (!currentUserDetails) return null;
 
   return (
@@ -48,6 +50,7 @@ function User({
                   <UserProfileModal
                     onClose={() => {
                       onCloseModal && onCloseModal();
+                      navigate("/chats");
                     }}
                     user={user}
                   />,
