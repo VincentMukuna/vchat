@@ -9,9 +9,7 @@ export const CHAT_MESSAGES_CHANGE_LOG_REGEXES = {
 } as const;
 
 export const CHAT_DETAILS_CHANGE_LOG_REGEXES = {} as const;
-
-type GroupChangeLogTypes = string;
-interface GroupChatDetails extends Models.Document {
+export interface GroupChatDetails extends Models.Document {
   name: string;
   description: string;
   avatarID: string | null;
@@ -19,9 +17,9 @@ interface GroupChatDetails extends Models.Document {
   admins: string[];
   members: (IUserDetails | string)[];
   groupMessages: GroupMessageDetails[];
-  changeLog: GroupChangeLogTypes;
+  changeLog: string;
 }
-interface GroupMessageDetails extends Models.Document {
+export interface GroupMessageDetails extends Models.Document {
   groupDoc: GroupChatDetails | string;
   senderID: string;
   body: string;
@@ -29,17 +27,17 @@ interface GroupMessageDetails extends Models.Document {
   read: boolean;
   replying: string | null;
 }
-interface UserPrefs extends Models.Preferences {
+export interface UserPrefs extends Models.Preferences {
   detailsDocID: string;
 }
 
-interface DirectChatDetails extends Models.Document {
+export interface DirectChatDetails extends Models.Document {
   chatMessages: DirectMessageDetails[];
   participants: [IUserDetails, IUserDetails] | [IUserDetails];
   changeLog?: string;
 }
 
-interface DirectMessageDetails extends Models.Document {
+export interface DirectMessageDetails extends Models.Document {
   chatDoc: DirectChatDetails | string;
   senderID: string;
   recepientID: string;
@@ -49,13 +47,7 @@ interface DirectMessageDetails extends Models.Document {
   replying: string | null;
 }
 
-type UserChangeLogTypes =
-  | "newchat"
-  | "deletechat"
-  | "newgroup"
-  | "removegroup"
-  | "editdetails";
-interface IUserDetails extends Models.Document {
+export interface IUserDetails extends Models.Document {
   name: string;
   userID: string;
   avatarID: string | null;
@@ -69,17 +61,9 @@ interface IUserDetails extends Models.Document {
   email: string;
   groups: GroupChatDetails[];
   chats: DirectChatDetails[];
-  changeLog: UserChangeLogTypes;
+  changeLog: string;
   online: boolean;
 }
 
-type ChatMessage = DirectMessageDetails | GroupMessageDetails;
-export type {
-  ChatMessage,
-  DirectChatDetails,
-  DirectMessageDetails,
-  GroupChatDetails,
-  GroupMessageDetails,
-  IUserDetails,
-  UserPrefs,
-};
+export type ChatMessage = DirectMessageDetails | GroupMessageDetails;
+export type Conversation = DirectChatDetails | GroupChatDetails;
