@@ -3,7 +3,6 @@ import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import { TrashIcon } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
@@ -20,8 +19,8 @@ import { deleteContact } from "../../../services/userDetailsServices";
 import { SERVER } from "../../../utils/config";
 
 export const RoomDetailsFooter = () => {
-  const { cache, mutate } = useSWRConfig();
-  const { recepient, setSelectedChat, selectedChat } = useChatsContext();
+  const { recepient, setSelectedChat, selectedChat, deleteConversation } =
+    useChatsContext();
 
   if (selectedChat === undefined) return null;
   const { currentUserDetails } = useAuth();
@@ -37,24 +36,10 @@ export const RoomDetailsFooter = () => {
   const isAdmin =
     isGroup &&
     (selectedChat as GroupChatDetails).admins.includes(currentUserDetails!.$id);
-  function getConversations() {
-    if (cache.get("conversations")?.data) {
-      return cache.get("conversations")?.data as (
-        | DirectChatDetails
-        | GroupChatDetails
-      )[];
-    } else return [];
-  }
 
   function removeConversation() {
     let chatID = selectedChat!.$id;
-    mutate(
-      "conversations",
-      getConversations().filter((conversation) => conversation.$id !== chatID),
-      {
-        revalidate: false,
-      },
-    );
+    deleteConversation(chatID);
     setSelectedChat(undefined);
   }
   function handleDeleteChat() {

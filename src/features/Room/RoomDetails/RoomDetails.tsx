@@ -1,30 +1,19 @@
+import { Avatar, AvatarGroup, IconButton, VStack } from "@chakra-ui/react";
+import { PencilIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { motion } from "framer-motion";
+import useSWR from "swr";
+import { openModal } from "../../../components/Modal";
+import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { GroupChatDetails, IUserDetails } from "../../../interfaces";
-import { getGroupDetails } from "../../../services/groupMessageServices";
-import useSWR from "swr";
-import { getChatDoc } from "../../../services/chatMessageServices";
 import api from "../../../services/api";
-import { SERVER } from "../../../utils/config";
-import {
-  Avatar,
-  AvatarGroup,
-  Editable,
-  EditableInput,
-  EditablePreview,
-  IconButton,
-  Modal,
-  VStack,
-} from "@chakra-ui/react";
-import { PencilIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { getFormatedDate } from "../../../services/dateServices";
-import { useAuth } from "../../../context/AuthContext";
-import { openModal } from "../../../components/Modal";
+import { getGroupDetails } from "../../../services/groupMessageServices";
+import { SERVER } from "../../../utils/config";
 import { EditGroupDetailsForm } from "./EditGroupDetailsForm";
-import { motion } from "framer-motion";
 
 const RoomDetails = () => {
-  const { selectedChat, recepient, setSelectedChat, msgsCount } =
-    useChatsContext();
+  const { selectedChat, recepient } = useChatsContext();
   const { currentUserDetails } = useAuth();
 
   if (!currentUserDetails) return null;
@@ -33,7 +22,8 @@ const RoomDetails = () => {
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
   const isAdmin =
-    isGroup && (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
+    isGroup &&
+    (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
 
   const { data: roomDetails } = useSWR(
     () => {
@@ -82,7 +72,9 @@ const RoomDetails = () => {
                   variant={"outline"}
                   onClick={() =>
                     openModal(
-                      <EditGroupDetailsForm group={selectedChat as GroupChatDetails} />,
+                      <EditGroupDetailsForm
+                        group={selectedChat as GroupChatDetails}
+                      />,
                     )
                   }
                   icon={

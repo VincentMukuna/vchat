@@ -1,5 +1,6 @@
 import { sendSystemMessage } from "@/services/systemMessageService";
 import { SERVER } from "@/utils/config";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Avatar,
   Button,
@@ -18,7 +19,7 @@ import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import VSkeleton from "../../../components/VSkeleton";
 import { useAuth } from "../../../context/AuthContext";
@@ -35,11 +36,14 @@ const EditMembers = ({ group }: { group: GroupChatDetails }) => {
   const { colorMode } = useColorMode();
   const { onClose } = useModalContext();
   const { currentUserDetails } = useAuth();
-  const { mutate } = useSWRConfig();
 
   const { value, getCheckboxProps, setValue } = useCheckboxGroup();
   let canSave = roomDetails?.members.every((member: any) =>
     value.includes(member.$id),
+  );
+
+  const { update: updateRoomDetails } = useSWROptimistic(
+    `details ${group.$id}`,
   );
 
   const handleEditMembers = () => {
@@ -51,7 +55,7 @@ const EditMembers = ({ group }: { group: GroupChatDetails }) => {
         onClose();
         editMembers(group.$id, value as string[])
           .then((newDoc) => {
-            mutate(`details ${group.$id}`, newDoc, { revalidate: false });
+            updateRoomDetails(newDoc);
           })
           .catch(() => {
             toast.error("Something went wrong");

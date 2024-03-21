@@ -1,5 +1,6 @@
 import { sendSystemMessage } from "@/services/systemMessageService";
 import { SERVER } from "@/utils/config";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Button,
   Checkbox,
@@ -15,7 +16,7 @@ import { gray, slateDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { GroupChatDetails, IUserDetails } from "../../../interfaces";
@@ -36,10 +37,12 @@ const EditGroupAdmins = ({
   const { colorMode } = useColorMode();
   const { onClose } = useModalContext();
   const [newAdmins, setNewAdmins] = useState(selectedGroup.admins);
-  const { mutate } = useSWRConfig();
 
   const { data: group } = useSWR(`details ${selectedGroup.$id}`, () =>
     getGroupDetails(selectedGroup.$id),
+  );
+  const { update: updateRoomDetails } = useSWROptimistic(
+    `details ${group?.$id}`,
   );
 
   function handleEditAdmins() {
@@ -47,7 +50,7 @@ const EditGroupAdmins = ({
     onClose();
     updateGroupDetails(group.$id, { admins: newAdmins, changeLog: "addadmin" })
       .then((newDoc) => {
-        mutate(`details ${group.$id}`, newDoc, { revalidate: false });
+        updateRoomDetails(newDoc);
         setSelectedChat(newDoc);
       })
       .catch(() => {

@@ -1,5 +1,6 @@
 import { memo, useEffect, useState } from "react";
 
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Avatar, AvatarBadge, Card, useColorMode } from "@chakra-ui/react";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
@@ -29,7 +30,8 @@ interface IChatProps {
 
 const Chat = memo(
   ({ conversation }: IChatProps) => {
-    const { cache, mutate: globalMutate } = useSWRConfig();
+    const { cache } = useSWRConfig();
+    const { update: updateConversations } = useSWROptimistic("conversations");
     const { currentUserDetails, currentUser } = useAuth();
     if (!currentUserDetails) return null;
     const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
@@ -150,15 +152,9 @@ const Chat = memo(
           return 0;
         });
 
-        globalMutate<(DirectChatDetails | GroupChatDetails)[]>(
-          "conversations",
-          chats,
-          {
-            revalidate: false,
-          },
-        );
+        updateConversations(chats);
       }
-    }, [unreadCount]);
+    }, [unreadCount, cache, updateConversations]);
     useEffect(() => {
       if (isPersonal) {
         setContactDetails(currentUserDetails);

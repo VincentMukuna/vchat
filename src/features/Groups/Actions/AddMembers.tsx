@@ -1,5 +1,6 @@
 import { sendSystemMessage } from "@/services/systemMessageService";
 import { SERVER } from "@/utils/config";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Avatar,
   AvatarGroup,
@@ -18,7 +19,7 @@ import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import Search from "../../../components/Search";
 import VSkeleton from "../../../components/VSkeleton";
@@ -38,7 +39,9 @@ const AddMembers = ({ group }: { group: GroupChatDetails }) => {
   const { data: roomDetails } = useSWR(`details ${group.$id}`, () =>
     getGroupDetails(group.$id),
   );
-  const { cache, mutate } = useSWRConfig();
+  const { update: updateConversationDetails } = useSWROptimistic(
+    `details ${group.$id}`,
+  );
   const { data, isLoading, error, size, setSize, isValidating, totalRef } =
     useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
 
@@ -54,22 +57,17 @@ const AddMembers = ({ group }: { group: GroupChatDetails }) => {
   ) as string[];
 
   const handleAddMembers = () => {
-    const details = cache.get(`details ${group.$id}`)?.data;
-    mutate(
-      `details ${group.$id}`,
-      {
-        ...details,
-        members: [...newMembers, ...(roomDetails?.members as IUserDetails[])],
-      },
-      { revalidate: false },
-    );
+    updateConversationDetails({
+      ...roomDetails,
+      members: [...newMembers, ...(roomDetails?.members as IUserDetails[])],
+    });
     onClose();
     editMembers(
       group.$id,
       newMembers.map((member) => member.$id).concat(memberIDs),
     )
       .then((newDoc) => {
-        mutate(`details ${group.$id}`, newDoc, { revalidate: false });
+        updateConversationDetails(newDoc);
       })
       .catch(() => {
         toast.error("Something went wrong");

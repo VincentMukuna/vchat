@@ -1,8 +1,11 @@
 import {
+  Conversation,
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
 } from "@/interfaces";
+import useConversations from "@/utils/hooks/Chats/useConversations";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { createContext, useContext, useState } from "react";
 
 type ChatsProviderProps = {
@@ -15,9 +18,14 @@ interface IChatsContextData {
     React.SetStateAction<GroupChatDetails | DirectChatDetails | undefined>
   >;
   recepient: IUserDetails | undefined;
+  conversations: {
+    conversations: Conversation[];
+    chatsError: any;
+    chatsLoading: boolean;
+  };
   setRecepient: React.Dispatch<React.SetStateAction<IUserDetails | undefined>>;
-  msgsCount: number;
-  setMsgsCount: React.Dispatch<React.SetStateAction<number>>;
+  addConversation: (conversation: Conversation) => void;
+  deleteConversation: (conversationId: string) => void;
 }
 const ChatsContext = createContext<IChatsContextData | null>(null);
 
@@ -26,17 +34,34 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     DirectChatDetails | GroupChatDetails
   >();
   const [recepient, setRecepient] = useState<IUserDetails>();
-  const [msgsCount, setMsgsCount] = useState(0);
 
   //get app users' details
+
+  const {
+    data: conversations,
+    error: chatsError,
+    isLoading: chatsLoading,
+  } = useConversations();
+  const { update: updateConversations } = useSWROptimistic("conversations");
+
+  const addConversation = (conversation: Conversation) => {
+    updateConversations([...conversations, conversation]);
+  };
+
+  const deleteConversation = (conversationId: string) => {
+    updateConversations(
+      conversations.filter((convo) => convo.$id !== conversationId),
+    );
+  };
 
   const contextData = {
     selectedChat,
     setSelectedChat,
     recepient,
     setRecepient,
-    msgsCount,
-    setMsgsCount,
+    conversations: { conversations, chatsError, chatsLoading },
+    addConversation,
+    deleteConversation,
   };
 
   return (

@@ -1,3 +1,6 @@
+import { useMessages } from "@/context/MessagesContext";
+import { useRoomContext } from "@/context/Room/RoomContext";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { MenuDivider, MenuItem, MenuList } from "@chakra-ui/react";
 import {
   PencilIcon,
@@ -7,7 +10,6 @@ import {
 } from "@heroicons/react/20/solid";
 import { slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { confirmAlert } from "../../components/Alert/alertStore";
 import { openModal } from "../../components/Modal";
 import { useAuth } from "../../context/AuthContext";
@@ -22,12 +24,18 @@ import EditMembers from "../Groups/Actions/EditMembers";
 
 const RoomActions = () => {
   const { selectedChat } = useChatsContext();
-  const { cache, mutate } = useSWRConfig();
+  const { roomMessagesKey } = useRoomContext();
+  const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
+  const { update: updateLastMessage } = useSWROptimistic(
+    `lastMessage ${selectedChat!.$id}`,
+  );
+
+  const { messages } = useMessages();
 
   const { currentUserDetails } = useAuth();
 
   if (!currentUserDetails) return null;
-  if (!selectedChat) return null;
+  if (!selectedChat || !roomMessagesKey) return null;
 
   const isGroup = !!(
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
@@ -37,29 +45,18 @@ const RoomActions = () => {
     (selectedChat as GroupChatDetails).admins.includes(currentUserDetails.$id);
 
   async function handleClearRoomMessages() {
-    const chatMessagesKey = selectedChat!.$id + "-messages";
-    const messages = cache.get(chatMessagesKey)?.data;
-
     (isGroup
       ? clearGroupMessages(selectedChat.$id, currentUserDetails!)
       : clearChatMessages(selectedChat!.$id, currentUserDetails!)
     )
       .then(() => {
-        mutate(
-          chatMessagesKey,
-          messages.filter((msg: any) => msg.$id !== "system"),
-          { revalidate: false },
-        );
-        mutate(`lastMessage ${selectedChat!.$id}`, undefined, {
-          revalidate: false,
-        });
+        updateRoomMessages(messages.filter((msg: any) => msg.$id !== "system"));
+        updateLastMessage(undefined);
       })
       .catch((e) => {
         toast.error("Something went wrong");
-        mutate(chatMessagesKey, messages, { revalidate: false });
-        mutate(`lastMessage ${selectedChat!.$id}`, messages.at(0), {
-          revalidate: false,
-        });
+        updateRoomMessages(messages);
+        updateLastMessage(messages.at(0));
       });
   }
 

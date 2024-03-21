@@ -26,7 +26,7 @@ import { blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import { useRoomContext } from "../../context/Room/RoomContext";
 import {
   ChatMessage,
@@ -44,7 +44,6 @@ function ChatHeader() {
   const { currentUserDetails } = useAuth();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { cache, mutate } = useSWRConfig();
   const breakpoint = useBreakpointValue({
     base: "base",
     sm: "sm",
@@ -52,13 +51,8 @@ function ChatHeader() {
     lg: "lg",
   });
   const btnRef = useRef(null);
-  const {
-    recepient,
-    setSelectedChat,
-    setRecepient,
-    selectedChat,
-    setMsgsCount,
-  } = useChatsContext();
+  const { recepient, setSelectedChat, setRecepient, selectedChat } =
+    useChatsContext();
   let { isGroup, isPersonal } = useRoomContext();
 
   const navigate = useNavigate();
@@ -106,7 +100,6 @@ function ChatHeader() {
           navigate("/chats");
           setSelectedChat(undefined);
           setRecepient(undefined);
-          setMsgsCount(0);
         }}
       ></IconButton>
       <Avatar

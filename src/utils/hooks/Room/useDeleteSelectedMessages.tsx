@@ -1,5 +1,5 @@
+import { useMessages } from "@/context/MessagesContext";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import {
@@ -13,13 +13,14 @@ import {
 } from "../../../interfaces";
 import { deleteSelectedDirectChatMessages } from "../../../services/chatMessageServices";
 import { deleteSelectedGroupMessages } from "../../../services/groupMessageServices";
+import useSWROptimistic from "../useSWROptimistic";
 
 export default function useDeleteSelectedMessages() {
   const { currentUserDetails } = useAuth();
-
-  const { cache, mutate } = useSWRConfig();
   const { selectedChat } = useChatsContext();
   const { isGroup, roomMessagesKey, roomState, dispatch } = useRoomContext();
+  const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
+  const { messages } = useMessages();
 
   if (!selectedChat || !currentUserDetails)
     throw new Error("No user details found");
@@ -38,14 +39,11 @@ export default function useDeleteSelectedMessages() {
 
   async function deleteSelectedMessages() {
     if (!currentUserDetails || !selectedChat || !roomMessagesKey) return;
-    const currentMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
     const selectedMessageIds = roomState.selectedMessages.map((msg) => msg.$id);
     if (canDeleteBasedOnPermissions(roomState.selectedMessages)) {
       //optimistic update
-      mutate(
-        roomMessagesKey,
-        currentMessages.filter((msg) => !selectedMessageIds.includes(msg.$id)),
-        { revalidate: false },
+      updateRoomMessages(
+        messages.filter((msg) => !selectedMessageIds.includes(msg.$id)),
       );
 
       //actual update
@@ -74,7 +72,7 @@ export default function useDeleteSelectedMessages() {
         })
         .catch((e) => {
           toast.error("Something went wrong");
-          mutate(roomMessagesKey);
+          updateRoomMessages(messages);
         });
     }
   }

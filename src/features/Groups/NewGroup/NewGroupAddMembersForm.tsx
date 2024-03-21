@@ -1,27 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { IUserDetails } from "../../../interfaces";
-import useSWR from "swr";
-import { getUsers, searchUsers } from "../../../services/userDetailsServices";
-import { useAuth } from "../../../context/AuthContext";
 import {
   Avatar,
   AvatarGroup,
   Button,
   Checkbox,
-  Divider,
   VStack,
   useColorMode,
 } from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../../../context/AuthContext";
+import { IUserDetails } from "../../../interfaces";
+import { getUsers, searchUsers } from "../../../services/userDetailsServices";
 
-import { motion } from "framer-motion";
-import { useStepper } from "./FormStepper";
-import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
-import toast from "react-hot-toast";
-import User, { UserAvatar, UserDescription } from "../../Users/User";
-import Search from "../../../components/Search";
-import { useInfinite } from "../../../utils/hooks/useInfinite";
 import { UserIcon } from "@heroicons/react/20/solid";
+import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
+import Search from "../../../components/Search";
 import VSkeleton from "../../../components/VSkeleton";
+import { useInfinite } from "../../../utils/hooks/useInfinite";
+import User, { UserAvatar, UserDescription } from "../../Users/User";
+import { useStepper } from "./FormStepper";
 
 interface AddMembersProps {
   members: IUserDetails[];
@@ -45,16 +43,8 @@ const NewGroupAddMembersForm = ({
   if (!currentUserDetails) return null;
   const { prev, next } = useStepper();
 
-  const {
-    data,
-    isLoading,
-    error,
-    mutate,
-    size,
-    setSize,
-    isValidating,
-    totalRef,
-  } = useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
+  const { data, isLoading, size, setSize, isValidating, totalRef } =
+    useInfinite<IUserDetails>(getUsers, "users", /users-(\w+)/, []);
 
   const users = data ? ([] as IUserDetails[]).concat(...data) : [];
   const { colorMode } = useColorMode();

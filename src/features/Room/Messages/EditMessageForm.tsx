@@ -1,7 +1,8 @@
 import { useChatsContext } from "@/context/ChatsContext";
+import { useMessages } from "@/context/MessagesContext";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Button, Input } from "@chakra-ui/react";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import {
   RoomActionTypes,
   useRoomContext,
@@ -22,23 +23,21 @@ export default function EditMessageForm({
 }: EditMessageFormProps) {
   const { roomMessagesKey, roomState, dispatch, isGroup } = useRoomContext();
   const { selectedChat } = useChatsContext();
+  const { messages } = useMessages();
+  const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
 
   if (!selectedChat) return null;
-
-  const { cache, mutate } = useSWRConfig();
   const handleEditMessage = async () => {
     dispatch({ type: RoomActionTypes.SET_EDITING, payload: null });
     if (newMessage !== message.body) {
-      const roomMessages = cache.get(roomMessagesKey)?.data as ChatMessage[];
-      mutate(
-        roomMessagesKey,
+      const roomMessages = messages;
+      updateRoomMessages(
         roomMessages.map((msg) => {
           if (msg.$id === message.$id) {
             return { ...msg, body: newMessage };
           }
           return msg;
         }),
-        { revalidate: false },
       );
 
       let editPs = api
@@ -61,15 +60,13 @@ export default function EditMessageForm({
         })
         .catch((err: any) => {
           toast.error("Something went wrong! ");
-          mutate(
-            roomMessagesKey,
+          updateRoomMessages(
             roomMessages.map((msg) => {
               if (msg.$id === message.$id) {
                 return { ...msg, body: message.body };
               }
               return msg;
             }),
-            { revalidate: false },
           );
         });
     }

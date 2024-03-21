@@ -1,3 +1,5 @@
+import { useChatsContext } from "@/context/ChatsContext";
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Avatar,
   Button,
@@ -10,14 +12,8 @@ import {
 import { UserIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useAuth } from "../../context/AuthContext";
-import {
-  ChatMessage,
-  DirectChatDetails,
-  GroupChatDetails,
-  IUserDetails,
-} from "../../interfaces";
+import { ChatMessage, IUserDetails } from "../../interfaces";
 import { forwardDirectMessages } from "../../services/chatMessageServices";
 import { forwardGroupMessages } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";
@@ -29,20 +25,21 @@ export default function ForwardMessagesModal({
 }) {
   const { currentUserDetails } = useAuth();
   const { onClose } = useModalContext();
-  const [selectedChat, setSelectedChat] = useState<string>("");
-  const { cache, mutate } = useSWRConfig();
-  const conversations = cache.get("conversations")?.data as (
-    | GroupChatDetails
-    | DirectChatDetails
-  )[];
+  const [selectedChatId, setSelectedChatId] = useState<string>("");
+  const { update: updateRoomMessages } = useSWROptimistic(
+    `${selectedChatId}-messages`,
+  );
+  const {
+    conversations: { conversations },
+  } = useChatsContext();
   if (!conversations || !currentUserDetails) return null;
   async function handleForwardMessages() {
     try {
-      if (!selectedChat) return;
+      if (!selectedChatId) return;
       if (!currentUserDetails) return;
 
       const selectedChatDetails = conversations.find(
-        (convo) => convo.$id === selectedChat,
+        (convo) => convo.$id === selectedChatId,
       )!;
       const isGroup =
         selectedChatDetails.$collectionId === SERVER.COLLECTION_ID_GROUPS;
@@ -63,30 +60,33 @@ export default function ForwardMessagesModal({
 
       if (isGroup) {
         let messages = selectedMessages.map((msg) => ({
-          groupDoc: selectedChat,
+          groupDoc: selectedChatId,
           senderID: currentUserDetails!.$id,
           body: msg.body,
         }));
         await forwardGroupMessages(
-          selectedChat,
+          selectedChatId,
           currentUserDetails.$id,
           messages,
         );
       } else {
         let messages = selectedMessages.map((msg) => ({
-          chatDoc: selectedChat,
+          chatDoc: selectedChatId,
           senderID: currentUserDetails!.$id,
           recepientID: otherParticipant!.$id,
           body: msg.body,
           read: isPersonal ? true : false,
         }));
         await forwardDirectMessages(
-          selectedChat,
+          selectedChatId,
           currentUserDetails.$id,
           messages,
         );
       }
-      mutate(`${selectedChat}-messages`);
+      updateRoomMessages([], {
+        revalidate: true,
+        optimisticData: (data) => [...selectedMessages, ...(data || [])],
+      });
       toast.success("Messages forwarded successfully");
     } catch (error) {
       toast.error("Failed to forward messages");
@@ -124,14 +124,14 @@ export default function ForwardMessagesModal({
               <li
                 key={conversation.$id}
                 className={`flex items-center gap-2 ${
-                  selectedChat === conversation.$id ? "bg-slate-800" : ""
+                  selectedChatId === conversation.$id ? "bg-slate-800" : ""
                 } p-2 rounded-md`}
                 onClick={() => {
-                  if (selectedChat === conversation.$id) {
-                    setSelectedChat("");
+                  if (selectedChatId === conversation.$id) {
+                    setSelectedChatId("");
                     return;
                   }
-                  setSelectedChat(conversation.$id);
+                  setSelectedChatId(conversation.$id);
                 }}
               >
                 <Avatar

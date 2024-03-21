@@ -1,11 +1,17 @@
 import { Models } from "appwrite";
 
 export const CHAT_MESSAGES_CHANGE_LOG_REGEXES = {
-  deletemessage: /message\/delete\/([a-zA-Z0-9_-]+)/,
-  newmessage: /message\/create\/([a-zA-Z0-9_-]+)/,
-  editmessage: /message\/edit\/([a-zA-Z0-9_-]+)/,
-  readmessage: /message\/read\/([a-zA-Z0-9_-]+)/,
-  clearmessages: /message\/clearAll/,
+  deleteMessage: /message\/delete\/([a-zA-Z0-9_-]+)/,
+  newMessage: /message\/create\/([a-zA-Z0-9_-]+)/,
+  editMessage: /message\/edit\/([a-zA-Z0-9_-]+)/,
+  readMessage: /message\/read\/([a-zA-Z0-9_-]+)/,
+  clearMessages: /message\/clearAll/,
+} as const;
+
+export const USER_DETAILS_CHANGE_LOG_REGEXES = {
+  deleteConversation: /conversations\/delete\/([a-zA-Z0-9_-]+)/,
+  createConversation: /conversations\/create\/([a-zA-Z0-9_-]+)/,
+  editConversation: /conversations\/edit\/([a-zA-Z0-9_-]+)/,
 } as const;
 
 export const CHAT_DETAILS_CHANGE_LOG_REGEXES = {} as const;

@@ -51,7 +51,7 @@ export default function MessagesProvider({
   ) => {
     // add message to messages
     if (!messages || !currentUserDetails) return;
-    const newMessages = [...messages, message];
+    const newMessages = [message, ...messages];
 
     //optimistically add message
     updateRoomMessages(newMessages);
@@ -88,7 +88,6 @@ export default function MessagesProvider({
     if (!messages || !currentUserDetails) return;
     //get message by id and remove it
     const message = messages.find((message) => message.$id === id);
-
     if (!message) return;
 
     //optimistically remove message
@@ -100,13 +99,13 @@ export default function MessagesProvider({
       if (isGroup) {
         await deleteGroupMessage(
           currentUserDetails.$id,
-          message.groupDoc,
+          selectedChat!.$id,
           message as GroupMessageDetails,
         );
       } else {
         await deleteChatMessage(
           currentUserDetails.$id,
-          message.chatDoc,
+          selectedChat!.$id,
           message as DirectMessageDetails,
         );
       }

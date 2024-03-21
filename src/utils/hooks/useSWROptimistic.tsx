@@ -5,9 +5,18 @@ const useSWROptimistic = (key: string) => {
 
   const optimisticUpdate = (
     data: any,
-    { revalidate } = { revalidate: false },
+    {
+      revalidate,
+      optimisticData,
+    }: {
+      revalidate?: boolean;
+      optimisticData?: (data: any) => any;
+    } = {
+      revalidate: false,
+      optimisticData: (data: any) => data,
+    },
   ) => {
-    return mutate(key, data, { revalidate });
+    return mutate(key, data, { revalidate, optimisticData });
   };
 
   return {

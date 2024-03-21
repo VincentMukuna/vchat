@@ -1,3 +1,4 @@
+import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Avatar,
   Button,
@@ -23,7 +24,7 @@ import {
 } from "use-file-picker/validators";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { DirectChatDetails, GroupChatDetails } from "../../../interfaces";
+import { GroupChatDetails } from "../../../interfaces";
 import {
   updateGroupAvatar,
   updateGroupDetails,
@@ -36,6 +37,13 @@ export const EditGroupDetailsForm = ({
 }) => {
   const { setSelectedChat } = useChatsContext();
   const { cache, mutate } = useSWRConfig();
+  const {
+    conversations: { conversations },
+  } = useChatsContext();
+  const { update: updateConversations } = useSWROptimistic("conversations");
+  const { update: updateRoomDetails } = useSWROptimistic(
+    `details ${group.$id}`,
+  );
   const { onClose } = useModalContext();
   const [details, setDetails] = useState({
     name: group.name,
@@ -66,10 +74,7 @@ export const EditGroupDetailsForm = ({
       });
 
       promise.then((updatedChatDoc) => {
-        let chats = cache.get("conversations")?.data as (
-          | DirectChatDetails
-          | GroupChatDetails
-        )[];
+        let chats = conversations;
         let updatedChats = chats.map((chat) => {
           if (chat.$id === group.$id) {
             return {
@@ -80,7 +85,7 @@ export const EditGroupDetailsForm = ({
           }
           return chat;
         });
-        mutate("conversations", updatedChats);
+        updateConversations(updatedChats);
         setSelectedChat(updatedChatDoc);
         toast.success("Avatar changed");
       });
@@ -104,18 +109,15 @@ export const EditGroupDetailsForm = ({
     try {
       setSaving(true);
       let updatedGroupDoc = await updateGroupDetails(group.$id, details);
-      let chats = cache.get("conversations")?.data as (
-        | DirectChatDetails
-        | GroupChatDetails
-      )[];
+      let chats = conversations;
       let updatedChats = chats.map((chat) => {
         if (chat.$id === updatedGroupDoc.$id) {
           return updatedGroupDoc;
         }
         return chat;
       });
-      mutate(`details ${group.$id}`, updatedGroupDoc, { revalidate: false });
-      mutate("conversations", updatedChats, { revalidate: false });
+      updateRoomDetails(updatedGroupDoc);
+      updateConversations(updatedChats);
       setSelectedChat(updatedGroupDoc);
     } catch (error) {
       toast.error(`Can't change ${group.name} 's details right now `);

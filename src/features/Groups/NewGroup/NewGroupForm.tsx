@@ -1,7 +1,7 @@
 import { useState } from "react";
 
+import { useChatsContext } from "@/context/ChatsContext";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { IUserDetails } from "../../../interfaces";
 import { createGroup } from "../../../services/groupMessageServices";
@@ -12,8 +12,7 @@ import GroupDetailsForm from "./NewGroupDetailsForm";
 const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
-
-  const { cache, mutate } = useSWRConfig();
+  const { addConversation } = useChatsContext();
 
   const [groupDetails, setGroupDetails] = useState<{
     name: string;
@@ -40,9 +39,7 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
       error: "Couldn't create group",
     });
     promise.then((doc) => {
-      mutate("conversations", [doc, ...cache.get("conversations")?.data], {
-        revalidate: false,
-      });
+      addConversation(doc);
     });
     promise.finally(() => onClose());
   };
