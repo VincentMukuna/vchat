@@ -41,11 +41,15 @@ const RoomActions = () => {
     const messages = cache.get(chatMessagesKey)?.data;
 
     (isGroup
-      ? clearGroupMessages(selectedChat.$id)
-      : clearChatMessages(selectedChat!.$id)
+      ? clearGroupMessages(selectedChat.$id, currentUserDetails!)
+      : clearChatMessages(selectedChat!.$id, currentUserDetails!)
     )
       .then(() => {
-        mutate(chatMessagesKey, [], { revalidate: false });
+        mutate(
+          chatMessagesKey,
+          messages.filter((msg: any) => msg.$id !== "system"),
+          { revalidate: false },
+        );
         mutate(`lastMessage ${selectedChat!.$id}`, undefined, {
           revalidate: false,
         });
