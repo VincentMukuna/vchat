@@ -71,40 +71,44 @@ export async function editUserDetails(
   );
 }
 
+export const createPersonalChat = async (userDetailsID: string) => {
+  let chats = await getUserChats(userDetailsID);
+  let chat = chats.find(
+    (chat) =>
+      chat.participants.length === 1 &&
+      chat.participants[0].$id === userDetailsID,
+  ) as DirectChatDetails;
+  if (chat) return { ...chat, existed: true };
+  return (await api.createDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHATS,
+    {
+      participants: [userDetailsID],
+    },
+  )) as DirectChatDetails;
+};
+
 export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
-): Promise<{ existed: boolean; chat: DirectChatDetails }> {
-  const isPersonal = addeeDetailsID === adderDetailsID;
+): Promise<DirectChatDetails> {
   //check if chat doc exists
   let chats = await getUserChats(adderDetailsID);
-  let chatsArray = chats.map((chat, i) => ({
-    chatIndex: i,
-    participants: chat.participants.map((participant) => participant.$id),
-  }));
-  for (let chat of chatsArray) {
-    if (isPersonal && chat.participants.every((id) => id === adderDetailsID)) {
-      return {
-        existed: true,
-        chat: chats[chat.chatIndex] as DirectChatDetails,
-      };
-    } else if (!isPersonal && chat.participants.includes(addeeDetailsID)) {
-      return {
-        existed: true,
-        chat: chats[chat.chatIndex] as DirectChatDetails,
-      };
-    }
-  }
+  let result: DirectChatDetails | undefined;
+  result = chats.find(
+    (chat) =>
+      chat.participants.length === 2 &&
+      chat.participants.some(
+        (participant) => participant.$id === addeeDetailsID,
+      ),
+  );
 
-  //Only add one chat Id if its a personal chat
+  if (result) return { ...result, existed: true };
   let doc = await api.createDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_CHATS,
     {
-      participants:
-        adderDetailsID === addeeDetailsID
-          ? [addeeDetailsID]
-          : [adderDetailsID, addeeDetailsID],
+      participants: [adderDetailsID, addeeDetailsID],
     },
   );
 
@@ -115,16 +119,17 @@ export async function addContact(
   sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHAT_MESSAGES, {
     body: `${user?.name} created this chat. You can now start chatting`,
     chatDoc: doc.$id,
+    recepientID: "system",
   });
 
   api.updateDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     addeeDetailsID,
-    { changeLog: "newchat" },
+    { changeLog: `conversations/create/${doc.$id}` },
   );
 
-  return { existed: false, chat: doc as DirectChatDetails };
+  return doc as DirectChatDetails;
 }
 
 export async function deleteContact(chatID: string, contactDetailsID: string) {
@@ -139,7 +144,7 @@ export async function deleteContact(chatID: string, contactDetailsID: string) {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     contactDetailsID,
-    { changeLog: "deletechat" },
+    { changeLog: `conversations/delete/${chatID}` },
   );
 }
 
@@ -196,7 +201,7 @@ export async function deleteUser(userID: string) {
     },
   });
 
-  let response = JSON.parse(deleteResponse.response) as {
+  let response = JSON.parse(deleteResponse.responseBody) as {
     ok: boolean;
     message: string;
   };
@@ -241,6 +246,5 @@ export async function getConversations(userDetailsID: string) {
   );
 
   conversations.sort(compareUpdatedAt);
-
   return conversations;
 }
