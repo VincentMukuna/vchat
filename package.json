@@ -17,7 +17,7 @@
     "@radix-ui/colors": "^3.0.0-rc.4",
     "@types/react-window": "^1.8.8",
     "@vercel/analytics": "^1.0.2",
-    "appwrite": "^11.0.0",
+    "appwrite": "^13.0.2",
     "date-fns": "^2.30.0",
     "framer-motion": "^10.16.4",
     "react": "^18.2.0",
