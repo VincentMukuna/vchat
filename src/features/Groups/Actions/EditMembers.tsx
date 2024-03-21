@@ -1,3 +1,5 @@
+import { sendSystemMessage } from "@/services/systemMessageService";
+import { SERVER } from "@/utils/config";
 import {
   Avatar,
   Button,
@@ -57,6 +59,11 @@ const EditMembers = ({ group }: { group: GroupChatDetails }) => {
       },
       title: "Remove members",
       onCancel: () => {},
+    });
+
+    sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUP_MESSAGES, {
+      groupDoc: group.$id,
+      body: `${currentUserDetails!.name} removed members from the group`,
     });
   };
 

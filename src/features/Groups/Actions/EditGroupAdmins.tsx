@@ -1,3 +1,5 @@
+import { sendSystemMessage } from "@/services/systemMessageService";
+import { SERVER } from "@/utils/config";
 import {
   Button,
   Checkbox,
@@ -51,6 +53,10 @@ const EditGroupAdmins = ({
       .catch(() => {
         toast.error("Something went wrong");
       });
+    sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUP_MESSAGES, {
+      groupDoc: selectedGroup.$id,
+      body: `${currentUserDetails!.name} made changes to the group admins`,
+    });
   }
   return (
     <>

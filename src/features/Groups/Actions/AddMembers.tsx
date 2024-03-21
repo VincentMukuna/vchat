@@ -1,3 +1,5 @@
+import { sendSystemMessage } from "@/services/systemMessageService";
+import { SERVER } from "@/utils/config";
 import {
   Avatar,
   AvatarGroup,
@@ -12,7 +14,7 @@ import {
   useModalContext,
 } from "@chakra-ui/react";
 import { UserIcon } from "@heroicons/react/20/solid";
-import { gray, slateDark } from "@radix-ui/colors";
+import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -72,6 +74,12 @@ const AddMembers = ({ group }: { group: GroupChatDetails }) => {
       .catch(() => {
         toast.error("Something went wrong");
       });
+    sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUP_MESSAGES, {
+      groupDoc: group.$id,
+      body: `${currentUserDetails!.name} added ${newMembers.length} user${
+        newMembers.length > 1 ? "s" : ""
+      } to the group`,
+    });
   };
 
   return (
@@ -109,7 +117,7 @@ const AddMembers = ({ group }: { group: GroupChatDetails }) => {
                 borderWidth={1}
                 px={2}
                 pt={4}
-                bg={colorMode === "light" ? gray.gray3 : slateDark.slate2}
+                bg={colorMode === "light" ? gray.gray3 : blueDark.blue2}
                 rounded={"md"}
                 mt={2}
                 spacing={0}
