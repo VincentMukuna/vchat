@@ -7,6 +7,7 @@ import {
 import { compareCreatedAt } from "../utils";
 import { SERVER } from "../utils/config";
 import api from "./api";
+import { sendSystemMessage } from "./systemMessageService";
 import { updateUserDetails } from "./userDetailsServices";
 
 type IInitGroup = {
@@ -81,7 +82,7 @@ export async function sendGroupMessage(
         attachmentIDs.push($id);
       }
     }
-   
+
     let msg = await api.createDocument(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_GROUP_MESSAGES,
@@ -92,17 +93,17 @@ export async function sendGroupMessage(
       },
     );
 
-     api
-       .updateDocument(
-         SERVER.DATABASE_ID,
-         SERVER.COLLECTION_ID_GROUPS,
-         groupID,
-         {
-           changeLog: `message/create/${msg.$id}`,
-           changerID: message.senderID,
-         },
-       )
-       .catch(() => {});
+    api
+      .updateDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_GROUPS,
+        groupID,
+        {
+          changeLog: `message/create/${msg.$id}`,
+          changerID: message.senderID,
+        },
+      )
+      .catch(() => {});
 
     return msg as GroupMessageDetails;
   } catch (error: any) {
@@ -123,23 +124,17 @@ export async function deleteGroupMessage(
         .catch(() => {});
     }
   }
- 
+
   await api.deleteDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_GROUP_MESSAGES,
     message.$id,
   );
 
-   api.updateDocument(
-     SERVER.DATABASE_ID,
-     SERVER.COLLECTION_ID_GROUPS,
-     groupID,
-     {
-       changeLog: `message/delete/${message.$id}`,
-       changerID: `${deleterID}`,
-     },
-   );
-  
+  api.updateDocument(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUPS, groupID, {
+    changeLog: `message/delete/${message.$id}`,
+    changerID: `${deleterID}`,
+  });
 }
 
 export async function getGroupDetails(groupID: string) {
@@ -213,8 +208,15 @@ export async function clearGroupMessageAttachments(groupID: string) {
   });
 }
 
-export async function clearGroupMessages(groupID: string) {
-  const messages = await getGroupMessages(groupID);
+export async function clearGroupMessages(
+  groupID: string,
+  clearer?: IUserDetails,
+) {
+  const messages = (await getGroupMessages(groupID)).filter(
+    (msg) => msg.senderID !== "system",
+  );
+
+  if (messages.length === 0) return;
   let attachments = ([] as string[])
     .concat(...messages.map((message) => message.attachments))
     .filter((attach) => !!attach);
@@ -228,6 +230,11 @@ export async function clearGroupMessages(groupID: string) {
       .catch((e) => {});
   });
   updateGroupDetails(groupID, { changeLog: "clearmessages" });
+  clearer &&
+    sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUP_MESSAGES, {
+      body: `${clearer.name} cleared the chat. All messages have been deleted.`,
+      groupDoc: groupID,
+    });
   attachments.forEach((attachment) => {
     api.deleteFile(SERVER.BUCKET_ID_GROUP_ATTACHMENTS, attachment);
   });

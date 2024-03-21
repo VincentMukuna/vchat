@@ -7,6 +7,7 @@ import {
 import { compareCreatedAt } from "../utils";
 import { SERVER } from "../utils/config";
 import api from "./api";
+import { sendSystemMessage } from "./systemMessageService";
 export type SendMessageDTO = {
   senderID: string;
   recepientID: string;
@@ -74,8 +75,16 @@ export async function getChatMessages(chatID: string) {
   return chatDoc.chatMessages.sort(compareCreatedAt) as DirectMessageDetails[];
 }
 
-export async function clearChatMessages(chatID: string) {
-  let messages = await getChatMessages(chatID);
+export async function clearChatMessages(
+  chatID: string,
+  clearer?: IUserDetails,
+) {
+  const messages = (await getChatMessages(chatID)).filter(
+    (msg) => msg.senderID !== "system",
+  );
+  if (messages.length === 0) {
+    return;
+  }
   messages.forEach((message) => {
     if (message.attachments.length > 0) {
       message.attachments.forEach((attachmentID) => {
@@ -94,6 +103,17 @@ export async function clearChatMessages(chatID: string) {
       )
       .catch((e) => {});
   });
+
+  clearer &&
+    (await sendSystemMessage(
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHAT_MESSAGES,
+      {
+        body: `${clearer?.name} cleared the chat. All messages have been deleted.`,
+        chatDoc: chatID,
+        recepientID: "system",
+      },
+    ));
 
   await api.updateDocument(
     SERVER.DATABASE_ID,
