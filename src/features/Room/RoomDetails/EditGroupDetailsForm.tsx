@@ -16,7 +16,6 @@ import { PencilIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useSWRConfig } from "swr";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
@@ -36,7 +35,6 @@ export const EditGroupDetailsForm = ({
   group: GroupChatDetails;
 }) => {
   const { setSelectedChat } = useChatsContext();
-  const { cache, mutate } = useSWRConfig();
   const {
     conversations: { conversations },
   } = useChatsContext();
