@@ -175,11 +175,14 @@ export async function getUserChats(userDetailsID: string) {
     let { documents } = await api.listDocuments(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_CHATS,
-      [Query.equal("$id", [...chatIDs])],
+      [
+        Query.equal("$id", [...chatIDs]),
+        Query.orderDesc("$updatedAt"),
+        Query.limit(100),
+      ],
     );
     chats = documents as DirectChatDetails[];
   }
-
   return chats as DirectChatDetails[];
 }
 
