@@ -1,7 +1,8 @@
 import { Models, Query } from "appwrite";
+import { IUserDetails } from "../interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
-import { IUserDetails } from "../interfaces";
+import { sendSystemMessage } from "./systemMessageService";
 import { deleteUser } from "./userDetailsServices";
 
 export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
@@ -49,12 +50,24 @@ export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
 }
 export async function addUserToGlobalChat(userDetailsID: string) {
   try {
-    return (await api.updateDocument(
-      SERVER.DATABASE_ID,
-      SERVER.COLLECTION_ID_USERS,
-      userDetailsID,
-      { groups: [SERVER.DOCUMENT_ID_GLOBAL_CHAT] },
-    )) as IUserDetails;
+    return (await api
+      .updateDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_USERS,
+        userDetailsID,
+        { groups: [SERVER.DOCUMENT_ID_GLOBAL_CHAT] },
+      )
+      .then((val) => {
+        sendSystemMessage(
+          SERVER.DATABASE_ID,
+          SERVER.COLLECTION_ID_GROUP_MESSAGES,
+          {
+            groupDoc: SERVER.DOCUMENT_ID_GLOBAL_CHAT,
+            body: `${val.name || "New User"} joined the chat`,
+          },
+        );
+        return val;
+      })) as IUserDetails;
   } catch (error) {
     throw new Error("Error adding user to global chat...");
   }
