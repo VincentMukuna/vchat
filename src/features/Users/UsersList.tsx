@@ -104,7 +104,7 @@ function UsersList({
                   .filter((user) => (user ? true : false))
                   ?.map((user) => (
                     <User key={user.$id} user={user}>
-                      <UserAvatar size="sm" />
+                      <UserAvatar />
                       <UserDescription>
                         <UserAbout />
                       </UserDescription>
