@@ -10,6 +10,7 @@ import { SERVER } from "../utils/config";
 import api from "./api";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";
 import { getUserGroups } from "./groupMessageServices";
+import { sendSystemMessage } from "./systemMessageService";
 export async function getSession() {
   try {
     let user = await api.getAccount();
@@ -74,7 +75,7 @@ export async function addContact(
   adderDetailsID: string,
   addeeDetailsID: string,
 ): Promise<{ existed: boolean; chat: DirectChatDetails }> {
-  const isPersonal = adderDetailsID === adderDetailsID;
+  const isPersonal = addeeDetailsID === adderDetailsID;
   //check if chat doc exists
   let chats = await getUserChats(adderDetailsID);
   let chatsArray = chats.map((chat, i) => ({
@@ -83,7 +84,6 @@ export async function addContact(
   }));
   for (let chat of chatsArray) {
     if (isPersonal && chat.participants.every((id) => id === adderDetailsID)) {
-      console.log("Personal chat existed");
       return {
         existed: true,
         chat: chats[chat.chatIndex] as DirectChatDetails,
@@ -107,6 +107,16 @@ export async function addContact(
           : [adderDetailsID, addeeDetailsID],
     },
   );
+
+  let user = doc.participants.find(
+    (participant: any) => participant.$id === adderDetailsID,
+  );
+
+  sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_CHAT_MESSAGES, {
+    body: `${user?.name} created this chat. You can now start chatting`,
+    chatDoc: doc.$id,
+  });
+
   api.updateDocument(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
