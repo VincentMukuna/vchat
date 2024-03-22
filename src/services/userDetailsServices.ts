@@ -1,4 +1,7 @@
-import { sortDocumentsByUpdateAtDesc } from "@/utils";
+import {
+  sortDocumentsByCreationDateDesc,
+  sortDocumentsByUpdateAtDesc,
+} from "@/utils";
 import { Models, Query } from "appwrite";
 import toast from "react-hot-toast";
 import {
@@ -244,11 +247,29 @@ export async function getConversations(userDetailsID: string) {
       | GroupChatDetails
     )[][]),
   );
-  return conversations;
+
+  return sortConversations(conversations);
 }
 
 const sortConversations = (
   usConversations: (GroupChatDetails | DirectChatDetails)[],
 ) => {
   let conversations = usConversations.toSorted(sortDocumentsByUpdateAtDesc);
+  //if conversation is grp sort by last created groupMessage
+  //if conversation is direct sort by last created chatMessage
+  //if conversation has no message sort by its createdAt
+  conversations.sort((a, b) => {
+    let aLastMessage =
+      a.$collectionId === SERVER.COLLECTION_ID_CHATS
+        ? a.chatMessages.toSorted(sortDocumentsByCreationDateDesc)?.at(0)
+        : a.groupMessages.toSorted(sortDocumentsByCreationDateDesc)?.at(0);
+    let bLastMessage =
+      b.$collectionId === SERVER.COLLECTION_ID_CHATS
+        ? b.chatMessages.toSorted(sortDocumentsByCreationDateDesc)?.at(0)
+        : b.groupMessages.toSorted(sortDocumentsByCreationDateDesc)?.at(0);
+    let aTime = aLastMessage?.$createdAt || a.$updatedAtAt;
+    let bTime = bLastMessage?.$createdAt || b.$updatedAt;
+    return bTime - aTime;
+  });
+  return conversations;
 };
