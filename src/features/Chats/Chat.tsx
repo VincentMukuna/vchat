@@ -174,7 +174,6 @@ const Chat = memo(
       <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
         <Card
           id={conversation.$id}
-          as={"article"}
           bg={"inherit"}
           shadow={"none"}
           direction={"row"}
