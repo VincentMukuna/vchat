@@ -6,11 +6,7 @@ import toast from "react-hot-toast";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import {
-  DirectChatDetails,
-  GroupChatDetails,
-  IUserDetails,
-} from "../../../interfaces";
+import { DirectChatDetails, GroupChatDetails } from "../../../interfaces";
 import {
   deleteGroup,
   leaveGroup,
@@ -27,12 +23,6 @@ export const RoomDetailsFooter = () => {
   const isGroup = !!(
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
-  const isPersonal =
-    !isGroup &&
-    selectedChat.participants.every(
-      (participant: IUserDetails) =>
-        participant.$id === currentUserDetails?.$id,
-    );
   const isAdmin =
     isGroup &&
     (selectedChat as GroupChatDetails).admins.includes(currentUserDetails!.$id);
