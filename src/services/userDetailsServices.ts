@@ -1,3 +1,4 @@
+import { sortDocumentsByUpdateAtDesc } from "@/utils";
 import { Models, Query } from "appwrite";
 import toast from "react-hot-toast";
 import {
@@ -245,3 +246,9 @@ export async function getConversations(userDetailsID: string) {
   );
   return conversations;
 }
+
+const sortConversations = (
+  usConversations: (GroupChatDetails | DirectChatDetails)[],
+) => {
+  let conversations = usConversations.toSorted(sortDocumentsByUpdateAtDesc);
+};

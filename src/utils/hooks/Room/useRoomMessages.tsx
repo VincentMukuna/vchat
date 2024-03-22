@@ -1,5 +1,5 @@
 import useSWR, { useSWRConfig } from "swr";
-import { compareCreatedAt } from "../..";
+import { sortDocumentsByCreationDateDesc } from "../..";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { useRoomContext } from "../../../context/Room/RoomContext";
 import { DirectMessageDetails, GroupMessageDetails } from "../../../interfaces";
@@ -22,18 +22,18 @@ export default function useRoomMessages() {
       return messages;
     }
     const messages = await getChatMessages(selectedChat.$id);
-    return messages.sort(compareCreatedAt);
+    return messages.sort(sortDocumentsByCreationDateDesc);
   }
 
   function getFallbackMessages() {
     if (!selectedChat) return undefined;
     if (isGroup) {
       return selectedChat.groupMessages.sort(
-        compareCreatedAt,
+        sortDocumentsByCreationDateDesc,
       ) as GroupMessageDetails[];
     } else {
       return selectedChat.chatMessages.sort(
-        compareCreatedAt,
+        sortDocumentsByCreationDateDesc,
       ) as DirectMessageDetails[];
     }
   }

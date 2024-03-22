@@ -1,4 +1,9 @@
-export function compareUpdatedAt(a: any, b: any) {
+import { Models } from "appwrite";
+
+export function sortDocumentsByUpdateAtDesc(
+  a: Models.Document,
+  b: Models.Document,
+) {
   const dateA = new Date(a.$updatedAt);
   const dateB = new Date(b.$updatedAt);
 
@@ -11,7 +16,10 @@ export function compareUpdatedAt(a: any, b: any) {
   }
 }
 
-export function compareCreatedAt(a: any, b: any) {
+export function sortDocumentsByCreationDateDesc(
+  a: Models.Document,
+  b: Models.Document,
+) {
   const dateA = new Date(a.$createdAt);
   const dateB = new Date(b.$createdAt);
 

@@ -4,7 +4,7 @@ import {
   DirectMessageDetails,
   IUserDetails,
 } from "../interfaces";
-import { compareCreatedAt } from "../utils";
+import { sortDocumentsByCreationDateDesc } from "../utils";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
@@ -72,7 +72,9 @@ export async function getChatMessages(chatID: string) {
     chatID,
   )) as DirectChatDetails;
 
-  return chatDoc.chatMessages.sort(compareCreatedAt) as DirectMessageDetails[];
+  return chatDoc.chatMessages.sort(
+    sortDocumentsByCreationDateDesc,
+  ) as DirectMessageDetails[];
 }
 
 export async function clearChatMessages(

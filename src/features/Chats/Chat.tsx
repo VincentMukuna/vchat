@@ -21,7 +21,7 @@ import api from "../../services/api";
 import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
 import { getFormatedDate } from "../../services/dateServices";
 import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
-import { compareCreatedAt } from "../../utils";
+import { sortDocumentsByCreationDateDesc } from "../../utils";
 import { SERVER } from "../../utils/config";
 
 interface IChatProps {
@@ -72,10 +72,10 @@ const Chat = memo(
     function getLastMessageFallback() {
       if (isGroup) {
         let messages = conversation.groupMessages as GroupMessageDetails[];
-        return messages.sort(compareCreatedAt).at(0);
+        return messages.sort(sortDocumentsByCreationDateDesc).at(0);
       }
       let messages = conversation.chatMessages as DirectMessageDetails[];
-      return messages.sort(compareCreatedAt).at(0);
+      return messages.sort(sortDocumentsByCreationDateDesc).at(0);
     }
 
     const { data: lastMessage } = useSWR(
