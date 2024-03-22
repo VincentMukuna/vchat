@@ -1,4 +1,3 @@
-import { compareUpdatedAt } from "@/utils";
 import { Models, Query } from "appwrite";
 import toast from "react-hot-toast";
 import {
@@ -244,7 +243,5 @@ export async function getConversations(userDetailsID: string) {
       | GroupChatDetails
     )[][]),
   );
-
-  conversations.sort(compareUpdatedAt);
   return conversations;
 }
