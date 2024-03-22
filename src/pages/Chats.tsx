@@ -1,7 +1,6 @@
 import { useChatsContext } from "@/context/ChatsContext";
 import MessagesProvider from "@/context/MessagesContext";
 import { Box } from "@chakra-ui/react";
-import { AnimatePresence } from "framer-motion";
 import { Outlet } from "react-router-dom";
 import { RoomProvider } from "../context/Room/RoomContext";
 import ChatsList from "../features/Chats/ChatsList";
@@ -21,13 +20,11 @@ function Chats() {
           selectedChat ? "z-10" : "invisible lg:visible"
         }`}
       >
-        <AnimatePresence>
-          <RoomProvider>
-            <MessagesProvider>
-              <Outlet key={selectedChat?.$id} />
-            </MessagesProvider>
-          </RoomProvider>
-        </AnimatePresence>
+        <RoomProvider>
+          <MessagesProvider>
+            <Outlet key={selectedChat?.$id} />
+          </MessagesProvider>
+        </RoomProvider>
       </Box>
     </AuthenticatedLayout>
   );

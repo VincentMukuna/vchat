@@ -4,7 +4,6 @@ import NoSelectedChat from "@/components/NoSelectedChat";
 import { useMessages } from "@/context/MessagesContext";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Box } from "@chakra-ui/react";
-import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import {
@@ -18,7 +17,6 @@ import {
   GroupChatDetails,
 } from "../../interfaces";
 import api from "../../services/api";
-import { VARIANTS_MANAGER } from "../../services/variants";
 import { matchAndExecute } from "../../utils";
 import { SERVER } from "../../utils/config";
 import useCommand from "../../utils/hooks/useCommand";
@@ -212,12 +210,6 @@ function Room() {
   return (
     <>
       <Box
-        as={motion.main}
-        key="chatbox"
-        variants={VARIANTS_MANAGER}
-        initial="slide-from-right"
-        animate="slide-in"
-        exit="slide-from-right"
         className={`grid h-full grid-rows-[1fr_6fr_0.2fr] bg-gray2 dark:bg-dark-blue1 grow`}
       >
         <ChatHeader key={`header-${selectedChat.$id}`} />
