@@ -129,7 +129,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
   useEffect(() => {
     intendedRef.current = pathname;
-    (currentUser && currentUserDetails) || getUserOnLoad();
+    if (currentUser && currentUserDetails) return;
+    getUserOnLoad();
   }, []);
 
   let contextData = {
