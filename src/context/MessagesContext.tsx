@@ -27,7 +27,7 @@ const MessagesContext = createContext<MessageContext | undefined>(undefined);
 
 type MessageContext = {
   messages: Message[];
-  addMessage: (message: any) => Promise<any>;
+  createMessage: (message: any) => Promise<any>;
   deleteMessage: (id: string) => Promise<any>;
 };
 
@@ -46,7 +46,7 @@ export default function MessagesProvider({
     `lastMessage ${selectedChat?.$id}`,
   );
 
-  const addMessage = async (
+  const createMessage = async (
     message: GroupMessageSendDto | DirectMessageSendDto,
   ) => {
     // add message to messages
@@ -117,7 +117,11 @@ export default function MessagesProvider({
 
   return (
     <MessagesContext.Provider
-      value={{ messages: messages || [], addMessage, deleteMessage }}
+      value={{
+        messages: messages || [],
+        createMessage,
+        deleteMessage,
+      }}
     >
       {children}
     </MessagesContext.Provider>

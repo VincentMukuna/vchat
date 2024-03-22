@@ -56,7 +56,7 @@ const MessageInput = ({}: InputProps) => {
   const { currentUserDetails } = useAuth();
 
   const { selectedChat, recepient } = useChatsContext();
-  const { addMessage } = useMessages();
+  const { createMessage } = useMessages();
   if (!selectedChat || !currentUserDetails) return null;
   const [messageBody, setMessageBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -120,7 +120,7 @@ const MessageInput = ({}: InputProps) => {
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
-      await addMessage(message);
+      await createMessage(message);
     } else {
       if (!recepient) return;
       let message: DirectMessageSendDto = {
@@ -136,7 +136,7 @@ const MessageInput = ({}: InputProps) => {
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
-      await addMessage(message);
+      await createMessage(message);
     }
 
     setAttachments([]);
