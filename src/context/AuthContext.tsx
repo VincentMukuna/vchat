@@ -10,16 +10,12 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
 
+import Loading from "@/pages/Loading";
 import toast from "react-hot-toast";
-import { preload } from "swr";
-import { unstable_serialize } from "swr/infinite";
 import { IUserDetails } from "../interfaces";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
-import {
-  getCurrentUserDetails,
-  getUsers,
-} from "../services/userDetailsServices";
+import { getCurrentUserDetails } from "../services/userDetailsServices";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -65,33 +61,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return await createDetailsDoc(user);
     }
   };
-
-  async function preloadUsers(key: string) {
-    return await getUsers();
-  }
-
   const getUserOnLoad = async () => {
     try {
       const user = await api.getAccount();
       const userDetails = await getUserDetails(user);
-      preload(
-        unstable_serialize(() => "users"),
-        preloadUsers,
-      );
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
-      setIsLoading(false);
       if (
         intendedRef.current === "/login" ||
-        intendedRef.current === "/register"
+        intendedRef.current === "/register" ||
+        intendedRef.current === "/"
       ) {
         navigate("/chats");
       } else {
         navigate(intendedRef.current);
       }
     } catch (error) {
-      setIsLoading(false);
       navigate("login");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -144,6 +132,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     register,
     logIn,
   };
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
