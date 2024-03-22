@@ -1,10 +1,16 @@
 import { CheckIcon } from "@heroicons/react/20/solid";
 
-const Blueticks = ({ read }: { read: boolean }) => {
+const Blueticks = ({
+  read,
+  className,
+}: {
+  read: boolean;
+  className?: string;
+}) => {
   return (
     <div
-      className={`flex self-end absolute bottom-1 right-1 ${
-        read ? "text-dark-blue7" : ""
+      className={`flex  ${read ? "text-dark-blue7" : ""} ${
+        className && className
       }`}
     >
       <CheckIcon className="w-3 h-3 -mr-2 transition-colors" />
