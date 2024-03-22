@@ -18,7 +18,7 @@ interface IChatsContextData {
     React.SetStateAction<GroupChatDetails | DirectChatDetails | undefined>
   >;
   recepient: IUserDetails | undefined;
-  conversations: {
+  conversationsData: {
     conversations: Conversation[];
     chatsError: any;
     chatsLoading: boolean;
@@ -34,9 +34,6 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     DirectChatDetails | GroupChatDetails
   >();
   const [recepient, setRecepient] = useState<IUserDetails>();
-
-  //get app users' details
-
   const {
     data: conversations,
     error: chatsError,
@@ -59,7 +56,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     setSelectedChat,
     recepient,
     setRecepient,
-    conversations: { conversations, chatsError, chatsLoading },
+    conversationsData: { conversations, chatsError, chatsLoading },
     addConversation,
     deleteConversation,
   };

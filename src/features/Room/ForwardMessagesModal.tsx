@@ -30,7 +30,7 @@ export default function ForwardMessagesModal({
     `${selectedChatId}-messages`,
   );
   const {
-    conversations: { conversations },
+    conversationsData: { conversations },
   } = useChatsContext();
   if (!conversations || !currentUserDetails) return null;
   async function handleForwardMessages() {

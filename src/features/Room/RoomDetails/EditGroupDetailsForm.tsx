@@ -36,7 +36,7 @@ export const EditGroupDetailsForm = ({
 }) => {
   const { setSelectedChat } = useChatsContext();
   const {
-    conversations: { conversations },
+    conversationsData: { conversations },
   } = useChatsContext();
   const { update: updateConversations } = useSWROptimistic("conversations");
   const { update: updateRoomDetails } = useSWROptimistic(
