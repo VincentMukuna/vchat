@@ -11,7 +11,6 @@ type MessagesContextType = {
 const MessagesContext = createContext<MessagesContextType>({
   messagesListRef: null,
 });
-
 function MessagesList({}: MessagesProps) {
   const messageListRef = useRef<HTMLDivElement>(null);
   const { messages } = useMessages();
@@ -28,6 +27,7 @@ function MessagesList({}: MessagesProps) {
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
             {messages.map((message, i) => (
               <Message
+                initialRender={i < 12}
                 messagesListRef={messageListRef}
                 message={message}
                 key={message.$id}

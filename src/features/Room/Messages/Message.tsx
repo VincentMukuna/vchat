@@ -35,10 +35,11 @@ interface MessageProps {
   messagesListRef: React.RefObject<HTMLElement>;
   prev?: DirectMessageDetails | GroupMessageDetails;
   next?: DirectMessageDetails | GroupMessageDetails;
+  initialRender?: boolean;
 }
 
 const Message = forwardRef<any, MessageProps>(
-  ({ message, messagesListRef, prev, next }, ref) => {
+  ({ message, messagesListRef, prev, next, initialRender }, ref) => {
     const { currentUserDetails } = useAuth();
     const { selectedChat } = useChatsContext();
     const { deleteMessage } = useMessages();
@@ -188,9 +189,24 @@ const Message = forwardRef<any, MessageProps>(
       observe: !isMine && !isOptimistic && !read && !isSystem,
     });
 
+    const [shouldRender, setShouldRender] = useState(initialRender);
+    useEffect(() => {
+      !shouldRender &&
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            setShouldRender(true);
+          });
+        });
+    }, []);
+
+    if (!shouldRender) {
+      return null;
+    }
+
     if (isSystem) {
       return <SystemMessage message={message} />;
     }
+
     return (
       <article
         id={message.$id}
@@ -224,6 +240,7 @@ const Message = forwardRef<any, MessageProps>(
               e.stopPropagation();
             }}
           />
+
           {!isMine && (
             <Avatar
               visibility={prevSameSender ? "hidden" : "visible"}
@@ -247,10 +264,8 @@ const Message = forwardRef<any, MessageProps>(
                 );
               }}
               cursor={isGroupMessage ? "pointer" : ""}
-              className="mb-2"
             />
           )}
-
           <div
             onClick={() => {
               if (roomState.isSelectingMessages) {
@@ -276,7 +291,13 @@ const Message = forwardRef<any, MessageProps>(
           >
             <div>
               {attachments.length > 0 && (
-                <AspectRatio maxW="10rem" w={220} ratio={4 / 3}>
+                <AspectRatio
+                  maxW="10rem"
+                  w={220}
+                  ratio={4 / 3}
+                  mx={isMine ? 4 : 0}
+                  mt={2}
+                >
                   <Image
                     src={attachments[0] as any}
                     objectFit="cover"
@@ -350,6 +371,7 @@ const Message = forwardRef<any, MessageProps>(
               )}
             </div>
           </div>
+
           {shouldShowHoverCard() && !isSelected && (
             <div
               className={`flex self-end gap-2 mb-2 ${
