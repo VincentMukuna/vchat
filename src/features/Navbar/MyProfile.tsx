@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 import { getCurrentUserDetails } from "../../services/userDetailsServices";
 
 export const MyProfile = () => {
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const {
     currentUser,
     currentUserDetails,
