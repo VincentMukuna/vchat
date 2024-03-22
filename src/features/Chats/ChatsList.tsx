@@ -1,22 +1,14 @@
 import { useChatsContext } from "@/context/ChatsContext";
-import { getChatDoc } from "@/services/chatMessageServices";
-import { matchAndExecute } from "@/utils";
+import useUserChatsSubscription from "@/utils/hooks/Chats/useUserChatsSubscription";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
-import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import {
-  IUserDetails,
-  USER_DETAILS_CHANGE_LOG_REGEXES,
-} from "../../interfaces";
-import api from "../../services/api";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import { SERVER } from "../../utils/config";
 import Chat from "./Chat";
 
 const ChatsList = ({ className }: { className: string }) => {
@@ -25,65 +17,13 @@ const ChatsList = ({ className }: { className: string }) => {
 
   const { colorMode } = useColorMode();
   const {
-    addConversation,
-    conversations: { conversations, chatsError, chatsLoading },
-    deleteConversation,
+    conversationsData: { conversations, chatsError, chatsLoading },
   } = useChatsContext();
   if (!currentUser || !currentUserDetails) return null;
   const { update: updateConversations } = useSWROptimistic("conversations");
 
-  useEffect(() => {
-    const unsubscribe = api.subscribe<IUserDetails>(
-      `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
-      (response) => {
-        const changeLog = response.payload.changeLog;
-        console.log(changeLog);
-        const conversations = [
-          ...response.payload.groups,
-          ...response.payload.chats,
-        ];
-
-        const matchers = new Map();
-
-        const handleNewConversation = async (id: string) => {
-          console.log("new convo: ", id);
-          const newConversation = conversations.find(
-            (convo) => convo.$id === id,
-          );
-          if (newConversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
-            let chatDoc = await getChatDoc(newConversation.$id);
-            addConversation(chatDoc);
-          } else {
-            newConversation && addConversation(newConversation);
-          }
-        };
-
-        const handleDeletedConversation = (id: string) => {
-          deleteConversation(id);
-        };
-
-        matchers.set(
-          USER_DETAILS_CHANGE_LOG_REGEXES.createConversation,
-          (matches: string[]) => {
-            handleNewConversation(matches.at(1)!);
-          },
-        );
-
-        matchers.set(
-          USER_DETAILS_CHANGE_LOG_REGEXES.deleteConversation,
-          (matches: string[]) => {
-            handleDeletedConversation(matches.at(1)!);
-          },
-        );
-
-        matchAndExecute(changeLog, matchers);
-      },
-    );
-
-    return () => {
-      unsubscribe();
-    };
-  }, [currentUserDetails]);
+  //subscribe to realtime user chats changes
+  useUserChatsSubscription();
 
   if (chatsError) {
     return (
