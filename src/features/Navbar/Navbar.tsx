@@ -63,7 +63,7 @@ const Navbar = () => {
             >
               <Link to={tab.value} className="relative mb-3">
                 <div
-                  className={` md:w-1 md:h-full w-full h-1 bg-dark-blue7 rounded-full absolute  -bottom-2 md:bottom-0 left-[2px]  md:-left-1 transition-opacity ${
+                  className={` md:w-1 md:h-full w-full h-1 bg-dark-indigo10 rounded-full absolute  -bottom-2 md:bottom-0 left-[2px]  md:-left-1 transition-opacity ${
                     pathname.split("/").includes(tab.value.substring(1))
                       ? "visible"
                       : "invisible"
