@@ -1,5 +1,5 @@
 import { useColorMode } from "@chakra-ui/react";
-import { slate, slateDark } from "@radix-ui/colors";
+import { slateDark } from "@radix-ui/colors";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
@@ -20,7 +20,7 @@ function App() {
           toastOptions={{
             style: {
               backgroundColor: darkMode ? slateDark.slate4 : slateDark.slate12,
-              color: darkMode ? slate.slate1 : slateDark.slate1,
+              color: darkMode ? "white" : slateDark.slate1,
             },
           }}
         />

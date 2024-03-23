@@ -64,12 +64,6 @@ export function roomReducer(state: RoomState, action: RoomAction) {
         selectedMessages: [],
         isSelectingMessages: false,
       };
-    case "SET_EDITING":
-      return {
-        ...state,
-        editing: action.payload,
-      };
-
     case "SET_INPUT_REF":
       return {
         ...state,

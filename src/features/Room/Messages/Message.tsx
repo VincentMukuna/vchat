@@ -22,13 +22,13 @@ import {
   useRoomContext,
 } from "../../../context/Room/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
-import EditMessageForm from "./EditMessageForm";
 
 import Blueticks from "@/components/Blueticks";
 import { useMessages } from "@/context/MessagesContext";
 import { pluck } from "@/utils";
 import useReadMessage from "@/utils/hooks/Room/useReadMessage";
 import { ClockIcon } from "@heroicons/react/24/outline";
+import EditMessageForm from "./EditMessageModal";
 import SystemMessage from "./SystemMessage";
 
 interface MessageProps {
@@ -48,10 +48,6 @@ const Message = forwardRef<any, MessageProps>(
 
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
-
-    const [newMessage, setNewMessage] = useState(message.body);
-
-    const isEditing = roomState.editing === message.$id;
     const isOptimistic = !!message?.optimistic;
     if (!currentUserDetails || !selectedChat) return;
 
@@ -242,7 +238,7 @@ const Message = forwardRef<any, MessageProps>(
                   type: RoomActionTypes.SET_REPLYING_TO,
                   payload: {
                     ...message,
-                    body: newMessage.slice(0, 100),
+                    body: message.body.slice(0, 100),
                     sender: pluck(
                       isMine ? currentUserDetails : senderDetails,
                       "name,avatarURL",
@@ -322,19 +318,9 @@ const Message = forwardRef<any, MessageProps>(
                 
                 `}
             >
-              {isEditing ? (
-                <EditMessageForm
-                  message={message}
-                  newMessage={newMessage}
-                  setNewMessage={setNewMessage}
-                />
-              ) : (
-                <>
-                  <div className="text-[0.9rem] leading-relaxed tracking-wide">
-                    {newMessage}
-                  </div>
-                </>
-              )}
+              <div className="text-[0.9rem] leading-relaxed tracking-wide">
+                {message.body}
+              </div>
             </div>
           </div>
           {isMine &&
@@ -367,10 +353,7 @@ const Message = forwardRef<any, MessageProps>(
                 hidden={!isMine}
                 onClick={(e) => {
                   e.stopPropagation();
-                  dispatch({
-                    type: RoomActionTypes.SET_EDITING,
-                    payload: message.$id,
-                  });
+                  openModal(<EditMessageForm message={message} />);
                 }}
               >
                 <PencilIcon className="w-4 h-4" />

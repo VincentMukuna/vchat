@@ -30,7 +30,6 @@ export enum RoomActionTypes {
   CLEAR_SELECTED_MESSAGES = "CLEAR_SELECTED_MESSAGES",
   TOGGLE_IS_SELECTING_MESSAGES = "TOGGLE_IS_SELECTING_MESSAGES",
   EXIT_SELECTING_MESSAGES = "EXIT_SELECTING_MESSAGES",
-  SET_EDITING = "SET_EDITING",
   SET_INPUT_REF = "SET_INPUT_REF",
 }
 
@@ -40,7 +39,6 @@ export interface RoomAction {
 }
 export interface RoomState {
   selectedMessages: ChatMessage[];
-  editing: string | null;
   isSelectingMessages: boolean;
   replyingTo: (ChatMessage & { sender: IUserDetails }) | null;
   inputRef: React.RefObject<HTMLTextAreaElement> | null;
