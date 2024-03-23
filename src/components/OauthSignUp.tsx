@@ -20,7 +20,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
           </div>
         </div>
       </div>
-      <div className="grid gap-2 transition-all md:gap-6 md:grid-cols-2">
+      <div className="grid gap-2 transition-all md:grid-cols-2">
         <Button
           as={motion.button}
           whileHover={{ scale: 1.01 }}
