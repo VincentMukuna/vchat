@@ -24,6 +24,7 @@ export interface GroupChatDetails extends Models.Document {
   members: (IUserDetails | string)[];
   groupMessages: GroupMessageDetails[];
   changeLog: string;
+  changerID: string;
 }
 export interface GroupMessageDetails extends Models.Document {
   groupDoc: GroupChatDetails | string;
@@ -41,6 +42,7 @@ export interface DirectChatDetails extends Models.Document {
   chatMessages: DirectMessageDetails[];
   participants: [IUserDetails, IUserDetails] | [IUserDetails];
   changeLog?: string;
+  changerID: string;
 }
 
 export interface DirectMessageDetails extends Models.Document {
