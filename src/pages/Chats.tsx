@@ -1,7 +1,7 @@
 import { useChatsContext } from "@/context/ChatsContext";
 import MessagesProvider from "@/context/MessagesContext";
+import Room from "@/features/Room/Room";
 import { Box } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
 import { RoomProvider } from "../context/Room/RoomContext";
 import ChatsList from "../features/Chats/ChatsList";
 import Sidebar, { SideBarHeader } from "../features/Sidebar/Sidebar";
@@ -22,7 +22,7 @@ function Chats() {
       >
         <RoomProvider>
           <MessagesProvider>
-            <Outlet key={selectedChat?.$id} />
+            <Room key={selectedChat?.$id} />
           </MessagesProvider>
         </RoomProvider>
       </Box>

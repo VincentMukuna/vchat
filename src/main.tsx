@@ -39,14 +39,6 @@ const router = createBrowserRouter([
             lazy: () => {
               return import("./pages/Chats");
             },
-            children: [
-              {
-                path: "*",
-                lazy: () => {
-                  return import("./features/Room/Room");
-                },
-              },
-            ],
           },
           {
             path: "users",
