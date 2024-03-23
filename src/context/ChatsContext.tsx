@@ -4,8 +4,9 @@ import {
   GroupChatDetails,
   IUserDetails,
 } from "@/interfaces";
+import { sortConversations } from "@/services/userDetailsServices";
+import { SERVER } from "@/utils/config";
 import useConversations from "@/utils/hooks/Chats/useConversations";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { createContext, useContext, useState } from "react";
 
 type ChatsProviderProps = {
@@ -26,6 +27,11 @@ interface IChatsContextData {
   setRecepient: React.Dispatch<React.SetStateAction<IUserDetails | undefined>>;
   addConversation: (conversation: Conversation) => void;
   deleteConversation: (conversationId: string) => void;
+  selectConversation: (
+    conversationId: string,
+    recepient?: IUserDetails,
+  ) => void;
+  updateConversation: (conversation: Conversation) => void;
 }
 const ChatsContext = createContext<IChatsContextData | null>(null);
 
@@ -38,17 +44,46 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     data: conversations,
     error: chatsError,
     isLoading: chatsLoading,
+    mutate: updateConversations,
   } = useConversations();
-  const { update: updateConversations } = useSWROptimistic("conversations");
+
+  const selectConversation = (
+    conversationId: string,
+    recepient?: IUserDetails,
+  ) => {
+    const conversation = conversations.find((c) => c.$id === conversationId);
+
+    setSelectedChat(conversation);
+    if (conversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
+      setRecepient(recepient);
+    }
+  };
 
   const addConversation = (conversation: Conversation) => {
-    updateConversations([conversation, ...conversations]);
+    updateConversations([conversation, ...conversations], {
+      revalidate: false,
+    });
   };
 
   const deleteConversation = (conversationId: string) => {
     updateConversations(
       conversations.filter((convo) => convo.$id !== conversationId),
+      { revalidate: false },
     );
+  };
+
+  const updateConversation = (conversation: Conversation) => {
+    const newConversations = conversations.map((c) => {
+      if (c.$id === conversation.$id) {
+        return conversation;
+      } else {
+        return c;
+      }
+    });
+
+    updateConversations(sortConversations(newConversations), {
+      revalidate: false,
+    });
   };
 
   const contextData = {
@@ -59,6 +94,8 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     conversationsData: { conversations, chatsError, chatsLoading },
     addConversation,
     deleteConversation,
+    selectConversation,
+    updateConversation,
   };
 
   return (
