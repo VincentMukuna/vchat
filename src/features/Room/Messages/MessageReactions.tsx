@@ -37,6 +37,7 @@ const MessageReactions = ({
 
   const isLiked = reactions.likes.includes(currentUserDetails!.$id);
   const likesCount = reactions.likes.length;
+  const isMine = message.senderID === currentUserDetails!.$id;
 
   if (likesCount === 0 && !hoverCardShowing) return null;
 
@@ -120,6 +121,7 @@ const MessageReactions = ({
   }
 
   const handleLike = async () => {
+    if (isMine) return;
     if (isLiked) {
       unLike();
     } else {
@@ -128,7 +130,9 @@ const MessageReactions = ({
   };
   return (
     <Button
-      onClick={() => handleLike()}
+      onClick={() => {
+        handleLike();
+      }}
       variant={"ghost"}
       aria-label="like message"
       size={"xs"}
