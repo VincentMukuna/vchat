@@ -223,9 +223,9 @@ const Message = forwardRef<any, MessageProps>(
             isMine ? "flex-row-reverse" : ""
           } items-end focus:outline-0 focus:outline-slate-600 transition-all   
           
-          ${prevSameSender ? "" : "mt-3"}
+          ${prevSameSender ? "" : "mt-1.5"}
 
-          ${nextSameSender ? "" : "mb-3"}
+          ${nextSameSender ? "" : "mb-1.5"}
           
           
             `}

@@ -62,10 +62,10 @@ function Login() {
           <div className="grid gap-4 p-6 border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
             <div className="flex flex-col space-y-2 ">
               <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
-                Log in to your account
+                Log in to VChat
               </h1>
               <h2 className="text-sm font-normal tracking-wide below text-gray11 dark:text-indigo2/60">
-                Enter your email below
+                Enter your email and password below
               </h2>
             </div>
 

@@ -15,7 +15,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
         </div>
 
         <div className="relative text-xs font-medium text-gray9 -top-2">
-          <div className="px-4 uppercase bg-gray1 dark:bg-dark-slate1">
+          <div className="px-4 uppercase rounded-full bg-gray1 dark:bg-dark-blue1">
             Or Continue With
           </div>
         </div>
@@ -26,6 +26,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           variant={"outline"}
+          rounded={"full"}
           leftIcon={
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -51,6 +52,7 @@ const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
           as={motion.button}
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
+          rounded={"full"}
           variant={"outline"}
           leftIcon={
             <svg

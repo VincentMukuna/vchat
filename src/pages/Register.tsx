@@ -58,10 +58,10 @@ function Register() {
           <div className="grid gap-6 p-6 overflow-hidden border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
             <div className="flex flex-col space-y-2 ">
               <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
-                Create an account
+                Create a VChat account
               </h1>
               <h2 className="text-sm tracking-wide below text-gray11 dark:text-indigo2/60">
-                Enter your email below
+                Enter your credentials below
               </h2>
             </div>
 
