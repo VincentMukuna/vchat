@@ -26,10 +26,6 @@ export default function useConversations() {
     },
   );
 
-  if (swrRes.error) {
-    console.log("Chats Error: ", swrRes.error);
-  }
-
   useEffect(() => {
     setCachedChats(swrRes.data);
   }, [swrRes.data]);

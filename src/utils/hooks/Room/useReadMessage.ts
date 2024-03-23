@@ -53,7 +53,6 @@ function useReadMessage(
     root: messagesListRef,
     target: messageRef,
     onInView() {
-      console.log(`marking ${message.body} as read`);
       markMessageasRead();
     },
     time: 2000,
