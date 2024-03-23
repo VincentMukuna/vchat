@@ -1,3 +1,5 @@
+import { SVGProps } from "react";
+
 type IconProps = {
   className?: string;
   mini?: boolean;
@@ -200,3 +202,24 @@ export const DeleteIcon = ({ className }: IconProps) => {
     </svg>
   );
 };
+
+export function SolarCheckReadLinear(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        d="m4 12.9l3.143 3.6L15 7.5m5 .063l-8.572 9L11 16"
+      ></path>
+    </svg>
+  );
+}
