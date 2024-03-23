@@ -17,16 +17,11 @@ function App() {
     <>
       <ErrorBoundary>
         <Toaster
-          gutter={2}
           toastOptions={{
             style: {
               backgroundColor: darkMode ? slateDark.slate4 : slateDark.slate12,
               color: darkMode ? slate.slate1 : slateDark.slate1,
             },
-          }}
-          containerStyle={{
-            maxHeight: "100px",
-            overflow: "hidden",
           }}
         />
 
