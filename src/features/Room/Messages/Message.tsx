@@ -25,13 +25,15 @@ import UserProfileModal from "../../Profile/UserProfileModal";
 
 import Blueticks from "@/components/Blueticks";
 import { useMessages } from "@/context/MessagesContext";
-import { pluck } from "@/utils";
 import useReadMessage from "@/utils/hooks/Room/useReadMessage";
+import { pluck } from "@/utils/utils";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import EditMessageForm from "./EditMessageModal";
+import MessageReactions from "./MessageReactions";
 import SystemMessage from "./SystemMessage";
 
 interface MessageProps {
+  i: number;
   message: DirectMessageDetails | GroupMessageDetails;
   messagesListRef: React.RefObject<HTMLElement>;
   prev?: DirectMessageDetails | GroupMessageDetails;
@@ -40,7 +42,7 @@ interface MessageProps {
 }
 
 const Message = forwardRef<any, MessageProps>(
-  ({ message, prev, next, initialRender, messagesListRef }, ref) => {
+  ({ message, prev, next, initialRender, messagesListRef, i }, ref) => {
     const { currentUserDetails } = useAuth();
     const { selectedChat } = useChatsContext();
     const { deleteMessage } = useMessages();
@@ -293,7 +295,7 @@ const Message = forwardRef<any, MessageProps>(
             <div
               ref={messageRef}
               className={`flex flex-col relative min-w-[3rem] gap-1 rounded-3xl  sm:max-w-[22rem] max-w-[80vw] 
-                p-3 ps-3 py-2
+                p-3 ps-3 py-2 z-10
                 ${
                   isMine
                     ? `bg-indigo-200 dark:bg-indigo-800 dark:text-dark-gray12  self-end me-4`
@@ -318,17 +320,36 @@ const Message = forwardRef<any, MessageProps>(
                 
                 `}
             >
-              <div className="text-[0.9rem] leading-relaxed tracking-wide">
+              <div className="text-[0.9rem] leading-relaxed tracking-wide flex ">
                 {message.body}
+                <div className="relative self-end top-1">
+                  {isMine &&
+                    i === 0 &&
+                    !showHoverCard &&
+                    (isOptimistic ? (
+                      <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
+                    ) : (
+                      <Blueticks
+                        read={message.read}
+                        className="relative bottom-1 dark:text-blue-400"
+                      />
+                    ))}
+                </div>
               </div>
             </div>
           </div>
-          {isMine &&
-            (isOptimistic ? (
-              <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
-            ) : (
-              <Blueticks read={message.read} className="relative bottom-1" />
-            ))}
+          {true && (
+            <div
+              className={`relative flex gap-1 z-0 ${
+                isMine ? "start-2" : "-start-2 "
+              } `}
+            >
+              <MessageReactions
+                message={message}
+                hoverCardShowing={showHoverCard}
+              />
+            </div>
+          )}
 
           {shouldShowHoverCard() && !isSelected && (
             <div

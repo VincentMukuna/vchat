@@ -101,3 +101,12 @@ export const getUnreadCount = (conversation: Conversation, userId: string) => {
 export const isGroup = (conversation: Conversation) => {
   return conversation.$collectionId === SERVER.COLLECTION_ID_GROUPS;
 };
+
+//utilities to read to and from json
+export const fromJson = (json: string) => {
+  return JSON.parse(json);
+};
+
+export const toJson = (obj: any) => {
+  return JSON.stringify(obj);
+};

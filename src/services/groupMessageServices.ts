@@ -4,8 +4,8 @@ import {
   GroupMessageDetails,
   IUserDetails,
 } from "../interfaces";
-import { sortDocumentsByCreationDateDesc } from "../utils";
 import { SERVER } from "../utils/config";
+import { sortDocumentsByCreationDateDesc } from "../utils/utils";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 import { updateUserDetails } from "./userDetailsServices";
@@ -313,5 +313,17 @@ export async function forwardGroupMessages(
       changerID: senderID,
       groupMessages: [...prevMessages, ...messages],
     },
+  );
+}
+
+export async function updateGroupMessage(
+  messageID: string,
+  message: Partial<GroupMessageDetails>,
+) {
+  await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUP_MESSAGES,
+    messageID,
+    message,
   );
 }

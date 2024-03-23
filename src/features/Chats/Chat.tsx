@@ -16,8 +16,11 @@ import {
   IUserDetails,
 } from "../../interfaces";
 import { getFormatedDate } from "../../services/dateServices";
-import { getUnreadCount, sortDocumentsByCreationDateDesc } from "../../utils";
 import { SERVER } from "../../utils/config";
+import {
+  getUnreadCount,
+  sortDocumentsByCreationDateDesc,
+} from "../../utils/utils";
 
 interface IChatProps {
   conversation: DirectChatDetails | GroupChatDetails;

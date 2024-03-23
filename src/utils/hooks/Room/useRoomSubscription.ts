@@ -9,8 +9,8 @@ import {
   GroupChatDetails,
 } from "@/interfaces";
 import api from "@/services/api";
-import { matchAndExecute } from "@/utils";
 import { SERVER } from "@/utils/config";
+import { fromJson, matchAndExecute, toJson } from "@/utils/utils";
 import { useEffect } from "react";
 import useSWROptimistic from "../useSWROptimistic";
 
@@ -117,6 +117,68 @@ const useRoomSubscription = () => {
             updateLastMessage(undefined);
           };
 
+          const handleLike = (messageId: string) => {
+            const newLiker = response.payload.changerID;
+            updateRoomMessages(
+              messages.map((msg) => {
+                if (msg.$id === messageId) {
+                  return {
+                    ...msg,
+                    $id: msg.$id + "-liked",
+                    reactions: toJson({
+                      likes: msg.reactions
+                        ? [...fromJson(msg.reactions).likes, newLiker]
+                        : [newLiker],
+                    }),
+                  };
+                }
+                return msg;
+              }),
+              { revalidate: false },
+            ).then((value: any) => {
+              //remove liked suffix
+              updateRoomMessages(
+                value.map((msg: any) => {
+                  if (msg.$id === messageId + "-liked") {
+                    return { ...msg, $id: messageId };
+                  }
+                  return msg;
+                }),
+              );
+            });
+          };
+
+          const handleUnlike = (messageId: string) => {
+            const newUnliker = response.payload.changerID;
+            updateRoomMessages(
+              messages.map((msg) => {
+                if (msg.$id === messageId) {
+                  return {
+                    ...msg,
+                    $id: msg.$id + "-unliked",
+                    reactions: toJson({
+                      likes: fromJson(
+                        msg.reactions || `{"likes":[]}`,
+                      ).likes.filter((id: string) => id !== newUnliker),
+                    }),
+                  };
+                }
+                return msg;
+              }),
+              { revalidate: false },
+            ).then((value: any) => {
+              //remove unliked suffix
+              updateRoomMessages(
+                value.map((msg: any) => {
+                  if (msg.$id === messageId + "-unliked") {
+                    return { ...msg, $id: messageId };
+                  }
+                  return msg;
+                }),
+              );
+            });
+          };
+
           const handleOtherChanges = () => {
             setSelectedChat(response.payload);
             updateRoomDetails(response.payload);
@@ -155,6 +217,20 @@ const useRoomSubscription = () => {
           matchers.set(CHAT_MESSAGES_CHANGE_LOG_REGEXES.clearMessages, () => {
             handleClearMessages();
           });
+
+          matchers.set(
+            CHAT_MESSAGES_CHANGE_LOG_REGEXES.likeMessage,
+            (matches: string[]) => {
+              handleLike(matches.at(1)!);
+            },
+          );
+
+          matchers.set(
+            CHAT_MESSAGES_CHANGE_LOG_REGEXES.unlikeMessage,
+            (matches: string[]) => {
+              handleUnlike(matches.at(1)!);
+            },
+          );
 
           //match any other change
           matchers.set(/.*/, () => {

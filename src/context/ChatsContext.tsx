@@ -5,9 +5,9 @@ import {
   IUserDetails,
 } from "@/interfaces";
 import { sortConversations } from "@/services/userDetailsServices";
-import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils";
 import { SERVER } from "@/utils/config";
 import useConversations from "@/utils/hooks/Chats/useConversations";
+import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
 import { createContext, useContext, useState } from "react";
 import { mutate } from "swr";
 

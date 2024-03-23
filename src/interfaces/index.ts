@@ -6,6 +6,8 @@ export const CHAT_MESSAGES_CHANGE_LOG_REGEXES = {
   editMessage: /message\/edit\/([a-zA-Z0-9_-]+)/,
   readMessage: /message\/read\/([a-zA-Z0-9_-]+)/,
   clearMessages: /message\/clearAll/,
+  likeMessage: /message\/like\/([a-zA-Z0-9_-]+)/,
+  unlikeMessage: /message\/unlike\/([a-zA-Z0-9_-]+)/,
 } as const;
 
 export const USER_DETAILS_CHANGE_LOG_REGEXES = {
@@ -33,6 +35,7 @@ export interface GroupMessageDetails extends Models.Document {
   attachments: string[];
   read: boolean;
   replying: string | null;
+  reactions: string | null;
 }
 export interface UserPrefs extends Models.Preferences {
   detailsDocID: string;
@@ -53,6 +56,7 @@ export interface DirectMessageDetails extends Models.Document {
   read: boolean;
   attachments: string[];
   replying: string | null;
+  reactions: string | null;
 }
 
 export interface IUserDetails extends Models.Document {

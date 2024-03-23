@@ -7,8 +7,8 @@ import {
   IUserDetails,
 } from "@/interfaces";
 import api from "@/services/api";
-import { getUnreadCount, matchAndExecute } from "@/utils";
 import { SERVER } from "@/utils/config";
+import { getUnreadCount, matchAndExecute } from "@/utils/utils";
 import { Button, CloseButton } from "@chakra-ui/react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";

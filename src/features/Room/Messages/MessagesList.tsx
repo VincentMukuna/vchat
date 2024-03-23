@@ -27,6 +27,7 @@ function MessagesList({}: MessagesProps) {
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
             {messages.map((message, i) => (
               <Message
+                i={i}
                 initialRender={i < 12}
                 messagesListRef={messageListRef}
                 message={message}

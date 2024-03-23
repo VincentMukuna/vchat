@@ -1,7 +1,7 @@
 import {
   sortDocumentsByCreationDateDesc,
   sortDocumentsByUpdateAtDesc,
-} from "@/utils";
+} from "@/utils/utils";
 import { Models, Query } from "appwrite";
 import toast from "react-hot-toast";
 import {

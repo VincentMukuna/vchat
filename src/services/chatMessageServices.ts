@@ -4,8 +4,8 @@ import {
   DirectMessageDetails,
   IUserDetails,
 } from "../interfaces";
-import { sortDocumentsByCreationDateDesc } from "../utils";
 import { SERVER } from "../utils/config";
+import { sortDocumentsByCreationDateDesc } from "../utils/utils";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 export type SendMessageDTO = {
@@ -245,5 +245,29 @@ export async function forwardDirectMessages(
       changerID: senderID,
       chatMessages: [...prevMessages, ...messages],
     },
+  );
+}
+
+export async function updateDirectMessage(
+  messageID: string,
+  message: Partial<DirectMessageDetails>,
+) {
+  await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHAT_MESSAGES,
+    messageID,
+    message,
+  );
+}
+
+export async function updateChatDetails(
+  chatID: string,
+  details: Partial<DirectChatDetails>,
+) {
+  await api.updateDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHATS,
+    chatID,
+    details,
   );
 }

@@ -3,8 +3,8 @@ import { useChatsContext } from "@/context/ChatsContext";
 import { IUserDetails, USER_DETAILS_CHANGE_LOG_REGEXES } from "@/interfaces";
 import api from "@/services/api";
 import { getChatDoc } from "@/services/chatMessageServices";
-import { matchAndExecute } from "@/utils";
 import { SERVER } from "@/utils/config";
+import { matchAndExecute } from "@/utils/utils";
 import { useEffect } from "react";
 
 const useUserChatsSubscription = () => {
