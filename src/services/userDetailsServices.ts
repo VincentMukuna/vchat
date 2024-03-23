@@ -251,7 +251,7 @@ export async function getConversations(userDetailsID: string) {
   return sortConversations(conversations);
 }
 
-const sortConversations = (
+export const sortConversations = (
   usConversations: (GroupChatDetails | DirectChatDetails)[],
 ) => {
   let conversations = usConversations.toSorted(sortDocumentsByUpdateAtDesc);

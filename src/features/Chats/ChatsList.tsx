@@ -1,4 +1,5 @@
 import { useChatsContext } from "@/context/ChatsContext";
+import useChatsListSubscription from "@/utils/hooks/Chats/useChatsListSubscription";
 import useUserChatsSubscription from "@/utils/hooks/Chats/useUserChatsSubscription";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Button, useColorMode } from "@chakra-ui/react";
@@ -24,6 +25,8 @@ const ChatsList = ({ className }: { className: string }) => {
 
   //subscribe to realtime user chats changes
   useUserChatsSubscription();
+
+  useChatsListSubscription();
 
   if (chatsError) {
     return (

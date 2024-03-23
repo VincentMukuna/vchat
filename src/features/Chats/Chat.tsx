@@ -1,12 +1,10 @@
 import { memo, useEffect, useState } from "react";
 
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Avatar, AvatarBadge, Card, useColorMode } from "@chakra-ui/react";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
-import { Query } from "appwrite";
 import { motion } from "framer-motion";
-import useSWR, { useSWRConfig } from "swr";
+import useSWR from "swr";
 import Blueticks from "../../components/Blueticks";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
@@ -17,11 +15,8 @@ import {
   GroupMessageDetails,
   IUserDetails,
 } from "../../interfaces";
-import api from "../../services/api";
-import { getChatUnreadMessagesCount } from "../../services/chatMessageServices";
 import { getFormatedDate } from "../../services/dateServices";
-import { getGroupUnreadMessagesCount } from "../../services/groupMessageServices";
-import { sortDocumentsByCreationDateDesc } from "../../utils";
+import { getUnreadCount, sortDocumentsByCreationDateDesc } from "../../utils";
 import { SERVER } from "../../utils/config";
 
 interface IChatProps {
@@ -30,9 +25,7 @@ interface IChatProps {
 
 const Chat = memo(
   ({ conversation }: IChatProps) => {
-    const { cache } = useSWRConfig();
-    const { update: updateConversations } = useSWROptimistic("conversations");
-    const { currentUserDetails, currentUser } = useAuth();
+    const { currentUserDetails } = useAuth();
     if (!currentUserDetails) return null;
     const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
     const [contactDetails, setContactDetails] = useState<
@@ -51,25 +44,7 @@ const Chat = memo(
           participant.$id === currentUserDetails.$id,
       );
 
-    async function getLastMessage() {
-      try {
-        let { documents, total } = await api.listDocuments(
-          conversation.$databaseId,
-          isGroup
-            ? SERVER.COLLECTION_ID_GROUP_MESSAGES
-            : SERVER.COLLECTION_ID_CHAT_MESSAGES,
-          [
-            Query.equal(isGroup ? "groupDoc" : "chatDoc", conversation?.$id),
-            Query.orderDesc("$createdAt"),
-            Query.limit(1),
-          ],
-        );
-
-        return documents[0] as DirectMessageDetails | GroupMessageDetails;
-      } catch (error) {}
-    }
-
-    function getLastMessageFallback() {
+    function getLastMessage() {
       if (isGroup) {
         let messages = conversation.groupMessages as GroupMessageDetails[];
         return messages.sort(sortDocumentsByCreationDateDesc).at(0);
@@ -81,80 +56,13 @@ const Chat = memo(
     const { data: lastMessage } = useSWR(
       `lastMessage ${conversation.$id}`,
       getLastMessage,
-      {
-        fallbackData: getLastMessageFallback(),
-        revalidateOnMount: false,
-        revalidateIfStale: false,
-        revalidateOnFocus: false,
-      },
     );
-    function getMyUnreadCountFallback() {
-      if (!currentUserDetails) return undefined;
-      if (isGroup) {
-        let messages = conversation.groupMessages as GroupMessageDetails[];
-        let unreadCount = messages
-          .filter((msg) => msg.senderID !== currentUserDetails.$id)
-          .filter((msg) => !msg.read).length;
-        return unreadCount;
-      }
-      let messages = conversation.chatMessages as DirectMessageDetails[];
-      let unreadCount = messages
-        .filter((msg) => msg.senderID !== currentUserDetails.$id)
-        .filter((msg) => !msg.read).length;
 
-      return unreadCount;
-    }
     const { data: unreadCount } = useSWR(
-      `unread-${conversation.$id}`,
-      () => {
-        if (isGroup) {
-          return getGroupUnreadMessagesCount(
-            conversation.$id,
-            currentUserDetails.$id,
-          );
-        }
-        return getChatUnreadMessagesCount(
-          conversation.$id,
-          currentUserDetails.$id,
-        );
-      },
-      {
-        fallbackData: getMyUnreadCountFallback(),
-        refreshInterval: 60000,
-        revalidateIfStale: false,
-        shouldRetryOnError: false,
-        revalidateOnMount: false,
-      },
+      `messages/${conversation.$id}/unread`,
+      () => getUnreadCount(conversation, currentUserDetails.$id),
+      {},
     );
-
-    useEffect(() => {
-      if (unreadCount && unreadCount > 0) {
-        let chats = cache.get("conversations")?.data as (
-          | DirectChatDetails
-          | GroupChatDetails
-        )[];
-        if (!chats) return;
-        chats.sort((a, b) => {
-          const unreadCountA =
-            (cache.get(`unread-${a.$id}`)?.data as number) || 1;
-          const unreadCountB =
-            (cache.get(`unread-${b.$id}`)?.data as number) || 1;
-          if (unreadCountA && unreadCountB) {
-            return unreadCountB - unreadCountA;
-          }
-          if (unreadCountB) {
-            return -1;
-          }
-          if (unreadCountA) {
-            return 1;
-          }
-
-          return 0;
-        });
-
-        updateConversations(chats);
-      }
-    }, [unreadCount, cache, updateConversations]);
     useEffect(() => {
       if (isPersonal) {
         setContactDetails(currentUserDetails);
