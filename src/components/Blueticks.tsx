@@ -1,4 +1,4 @@
-import { CheckIcon } from "@heroicons/react/20/solid";
+import { SolarCheckReadLinear } from "./Icons";
 
 const Blueticks = ({
   read,
@@ -8,14 +8,11 @@ const Blueticks = ({
   className?: string;
 }) => {
   return (
-    <div
-      className={`flex  ${read ? "text-dark-blue7" : ""} ${
-        className && className
-      }`}
-    >
-      <CheckIcon className="w-3 h-3 -mr-2 transition-colors" />
-      <CheckIcon className="w-3 h-3 transition-colors" />
-    </div>
+    <SolarCheckReadLinear
+      className={
+        `w-4 h-4 ${read ? "text-blue-700" : "text-gray-500 "} ` + className
+      }
+    />
   );
 };
 
