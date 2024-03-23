@@ -53,6 +53,8 @@ export default function MessagesProvider({
     if (!messages || !currentUserDetails) return;
     const newMessages = [message, ...messages];
 
+    let sMessage: Message;
+
     //optimistically add message
     updateRoomMessages(newMessages);
     updateLastMessage(message);
@@ -61,14 +63,14 @@ export default function MessagesProvider({
       //add message to server
       if (isGroup) {
         //add group message
-        await sendGroupMessage(selectedChat!.$id, {
+        sMessage = await sendGroupMessage(selectedChat!.$id, {
           body: message.body,
           senderID: message.senderID,
           attachments: message.attachments,
           replying: message.replying,
         });
       } else {
-        await sendChatMessage(selectedChat!.$id, {
+        sMessage = await sendChatMessage(selectedChat!.$id, {
           body: message.body,
           recepientID: (recepient as IUserDetails).$id,
           senderID: currentUserDetails.$id,
@@ -77,6 +79,13 @@ export default function MessagesProvider({
           read: isPersonal ? true : false,
         });
       }
+      updateRoomMessages(
+        newMessages.map((m) => {
+          if (m.$id === message.$id) {
+            return sMessage;
+          } else return m;
+        }),
+      );
     } catch (error) {
       //rollback
       updateRoomMessages(messages);
