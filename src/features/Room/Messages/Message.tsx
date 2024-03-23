@@ -45,9 +45,11 @@ const Message = forwardRef<any, MessageProps>(
     const { deleteMessage } = useMessages();
     const { roomState, dispatch } = useRoomContext();
     const { update: updateUnreadCount } = useSWROptimistic(
-      `unread-${selectedChat!.$id}`,
+      `messages/${selectedChat!.$id}/unread`,
     );
-    const { data: unreadCount } = useSWR(`unread-${selectedChat!.$id}`);
+    const { data: unreadCount } = useSWR(
+      `messages/${selectedChat!.$id}/unread`,
+    );
 
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
