@@ -5,9 +5,11 @@ import {
   IUserDetails,
 } from "@/interfaces";
 import { sortConversations } from "@/services/userDetailsServices";
+import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils";
 import { SERVER } from "@/utils/config";
 import useConversations from "@/utils/hooks/Chats/useConversations";
 import { createContext, useContext, useState } from "react";
+import { mutate } from "swr";
 
 type ChatsProviderProps = {
   children: React.JSX.Element[] | React.JSX.Element;
@@ -84,6 +86,14 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     updateConversations(sortConversations(newConversations), {
       revalidate: false,
     });
+
+    mutate(
+      `${conversation.$id}-messages`,
+      isGroup(conversation)
+        ? conversation.groupMessages.sort(sortDocumentsByCreationDateDesc)
+        : conversation.chatMessages.sort(sortDocumentsByCreationDateDesc),
+      { revalidate: false },
+    );
   };
 
   const contextData = {

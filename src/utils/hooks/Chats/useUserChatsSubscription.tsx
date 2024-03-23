@@ -9,7 +9,8 @@ import { useEffect } from "react";
 
 const useUserChatsSubscription = () => {
   const { currentUser, currentUserDetails } = useAuth();
-  const { addConversation, deleteConversation } = useChatsContext();
+  const { addConversation, deleteConversation, selectConversation } =
+    useChatsContext();
   if (!currentUser || !currentUserDetails) return null;
   useEffect(() => {
     const unsubscribe = api.subscribe<IUserDetails>(
@@ -27,6 +28,7 @@ const useUserChatsSubscription = () => {
           const newConversation = conversations.find(
             (convo) => convo.$id === id,
           );
+          if (!newConversation) return;
           if (newConversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
             let chatDoc = await getChatDoc(newConversation.$id);
             addConversation(chatDoc);

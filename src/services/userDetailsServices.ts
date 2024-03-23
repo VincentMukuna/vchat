@@ -129,7 +129,7 @@ export async function addContact(
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     addeeDetailsID,
-    { changeLog: `conversations/create/${doc.$id}` },
+    { changeLog: `conversations/create/${doc.$id}`, changerID: adderDetailsID },
   );
 
   return doc as DirectChatDetails;

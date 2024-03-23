@@ -73,7 +73,7 @@ const useChatsListSubscription = () => {
           revalidate: false,
         });
 
-        //update cnversations
+        //update conversation details in cache
         updateConversation(conversation);
 
         //notify user
