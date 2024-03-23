@@ -61,7 +61,7 @@ const useChatsListSubscription = () => {
             );
 
         //update unreadCount
-        const unreadCountKey = `messages/${conversation.$id}/unread`;
+        const unreadCountKey = `conversations/${conversation.$id}/unread`;
         const unreadCount = getUnreadCount(
           conversation,
           currentUserDetails?.$id!,

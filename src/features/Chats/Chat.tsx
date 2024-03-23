@@ -59,7 +59,7 @@ const Chat = memo(
     );
 
     const { data: unreadCount } = useSWR(
-      `messages/${conversation.$id}/unread`,
+      `conversations/${conversation.$id}/unread`,
       () => getUnreadCount(conversation, currentUserDetails.$id),
       {},
     );

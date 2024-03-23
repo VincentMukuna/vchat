@@ -27,7 +27,6 @@ import EditMessageForm from "./EditMessageForm";
 
 import { useMessages } from "@/context/MessagesContext";
 import { pluck } from "@/utils";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import SystemMessage from "./SystemMessage";
 
 interface MessageProps {
@@ -44,11 +43,8 @@ const Message = forwardRef<any, MessageProps>(
     const { selectedChat } = useChatsContext();
     const { deleteMessage } = useMessages();
     const { roomState, dispatch } = useRoomContext();
-    const { update: updateUnreadCount } = useSWROptimistic(
-      `messages/${selectedChat!.$id}/unread`,
-    );
-    const { data: unreadCount } = useSWR(
-      `messages/${selectedChat!.$id}/unread`,
+    const { data: unreadCount, mutate: updateUnreadCount } = useSWR(
+      `conversations/${selectedChat!.$id}/unread`,
     );
 
     const [attachments, setAttachments] = useState<URL[] | []>([]);
@@ -137,7 +133,7 @@ const Message = forwardRef<any, MessageProps>(
         return;
       }
       setRead(true);
-      updateUnreadCount(unreadCount - 1);
+      updateUnreadCount(unreadCount - 1, { revalidate: false });
       try {
         await api.updateDocument(
           message.$databaseId,
@@ -152,7 +148,7 @@ const Message = forwardRef<any, MessageProps>(
           { changeLog: "readtext" },
         );
       } catch (error) {
-        updateUnreadCount(unreadCount + 1);
+        updateUnreadCount(unreadCount + 1, { revalidate: false });
       }
     };
 
