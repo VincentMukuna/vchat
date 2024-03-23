@@ -70,6 +70,10 @@ export default function SelectedChatOptions() {
           aria-label="Delete"
           icon={<DeleteIcon className="w-4 h-4" />}
           onClick={() => {
+            dispatch({
+              type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,
+              payload: null,
+            });
             confirmAlert({
               message: "Delete these messages? This action is irreversible",
               title: "Delete message",
@@ -86,6 +90,10 @@ export default function SelectedChatOptions() {
           variant={"ghost"}
           icon={<ArrowUturnRightIcon className="w-4 h-4" />}
           onClick={() => {
+            dispatch({
+              type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,
+              payload: null,
+            });
             openModal(
               <ForwardMessagesModal
                 selectedMessages={roomState.selectedMessages}
