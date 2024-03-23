@@ -10,7 +10,10 @@ export default function useConversations() {
 
   const [cachedChats, setCachedChats] = useLocalStorage<
     (GroupChatDetails | DirectChatDetails)[]
-  >("conversations", currentUserDetails?.groups || []);
+  >(
+    `vchat/${currentUserDetails?.$id}/conversations`,
+    currentUserDetails?.groups || [],
+  );
 
   const swrRes = useSWR(
     () => (currentUserDetails ? "conversations" : null),
