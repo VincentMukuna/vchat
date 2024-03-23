@@ -126,7 +126,7 @@ const Chat = memo(
                 ? "You"
                 : contactDetails?.name}
             </span>
-            <span className="flex overflow-hidden font-sans text-[13px] italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+            <span className="flex items-center gap-1 overflow-hidden font-sans text-[13px] italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
               {lastMessage?.body
                 ? lastMessage.senderID === currentUserDetails.$id
                   ? "Me: " + lastMessage.body
@@ -134,7 +134,7 @@ const Chat = memo(
                 : "Click to start messaging "}
 
               {lastMessage?.senderID === currentUserDetails.$id && (
-                <div className="absolute right-4 bottom-4">
+                <div className="">
                   <Blueticks read={lastMessage?.read} />
                 </div>
               )}
