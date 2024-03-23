@@ -15,6 +15,7 @@ import { fromJson, toJson } from "@/utils/utils";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { gray } from "@radix-ui/colors";
 import { useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 interface MessageReactionsProps {
   message: ChatMessage;
@@ -38,6 +39,14 @@ const MessageReactions = ({
   const isLiked = reactions.likes.includes(currentUserDetails!.$id);
   const likesCount = reactions.likes.length;
   const isMine = message.senderID === currentUserDetails!.$id;
+  const handleLike = useDebouncedCallback(async () => {
+    if (isMine) return;
+    if (isLiked) {
+      unLike();
+    } else {
+      like();
+    }
+  }, 300);
 
   if (likesCount === 0 && !hoverCardShowing) return null;
 
@@ -120,14 +129,6 @@ const MessageReactions = ({
     }
   }
 
-  const handleLike = async () => {
-    if (isMine) return;
-    if (isLiked) {
-      unLike();
-    } else {
-      like();
-    }
-  };
   return (
     <Button
       onClick={() => {
