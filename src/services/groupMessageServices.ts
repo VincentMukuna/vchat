@@ -92,6 +92,7 @@ export async function sendGroupMessage(
         ...message,
         groupDoc: groupID,
         attachments: attachmentIDs,
+        read: false,
       },
     );
 

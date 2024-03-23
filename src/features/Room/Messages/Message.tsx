@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useMemo, useState } from "react";
 import { DeleteIcon, PencilIcon } from "../../../components/Icons";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
@@ -15,7 +15,6 @@ import { AspectRatio, Avatar, Checkbox, Image } from "@chakra-ui/react";
 import useSWR from "swr";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
-import useIntersectionObserver from "@/utils/hooks/useIntersectionObserver";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { openModal } from "../../../components/Modal";
 import {
@@ -25,8 +24,11 @@ import {
 import UserProfileModal from "../../Profile/UserProfileModal";
 import EditMessageForm from "./EditMessageForm";
 
+import Blueticks from "@/components/Blueticks";
 import { useMessages } from "@/context/MessagesContext";
 import { pluck } from "@/utils";
+import useReadMessage from "@/utils/hooks/Room/useReadMessage";
+import { ClockIcon } from "@heroicons/react/24/outline";
 import SystemMessage from "./SystemMessage";
 
 interface MessageProps {
@@ -38,22 +40,16 @@ interface MessageProps {
 }
 
 const Message = forwardRef<any, MessageProps>(
-  ({ message, messagesListRef, prev, next, initialRender }, ref) => {
+  ({ message, prev, next, initialRender, messagesListRef }, ref) => {
     const { currentUserDetails } = useAuth();
     const { selectedChat } = useChatsContext();
     const { deleteMessage } = useMessages();
     const { roomState, dispatch } = useRoomContext();
-    const { data: unreadCount, mutate: updateUnreadCount } = useSWR(
-      `conversations/${selectedChat!.$id}/unread`,
-    );
 
     const [attachments, setAttachments] = useState<URL[] | []>([]);
     const [showHoverCard, setShowHoverCard] = useState(false);
 
     const [newMessage, setNewMessage] = useState(message.body);
-    const [read, setRead] = useState(message.read);
-
-    const messageRef = useRef(null);
 
     const isEditing = roomState.editing === message.$id;
     const isOptimistic = !!message?.optimistic;
@@ -107,6 +103,8 @@ const Message = forwardRef<any, MessageProps>(
       }
     }, [data]);
 
+    const { messageRef } = useReadMessage(message, messagesListRef);
+
     function getMessageAttachments() {
       let attachments: URL[] = [];
       message.attachments.forEach(async (attachmentID: any) => {
@@ -127,30 +125,6 @@ const Message = forwardRef<any, MessageProps>(
 
       return attachments;
     }
-
-    const markMessageasRead = async () => {
-      if (message.optimistic || read) {
-        return;
-      }
-      setRead(true);
-      updateUnreadCount(unreadCount - 1, { revalidate: false });
-      try {
-        await api.updateDocument(
-          message.$databaseId,
-          message.$collectionId,
-          message.$id,
-          { read: true },
-        );
-        await api.updateDocument(
-          selectedChat.$databaseId,
-          selectedChat.$collectionId,
-          selectedChat.$id,
-          { changeLog: "readtext" },
-        );
-      } catch (error) {
-        updateUnreadCount(unreadCount + 1, { revalidate: false });
-      }
-    };
 
     const handleDelete = async () => {
       await deleteMessage(message.$id);
@@ -176,16 +150,6 @@ const Message = forwardRef<any, MessageProps>(
     }
 
     //call read message after message is in view for 2 seconds
-
-    useIntersectionObserver({
-      root: messagesListRef as React.RefObject<HTMLElement>,
-      target: messageRef,
-      onInView: () => {
-        markMessageasRead();
-      },
-      time: 2000,
-      observe: !isMine && !isOptimistic && !read && !isSystem,
-    });
 
     const [shouldRender, setShouldRender] = useState(initialRender);
     useEffect(() => {
@@ -226,18 +190,20 @@ const Message = forwardRef<any, MessageProps>(
           
             `}
         >
-          <Checkbox
-            isChecked={isSelected}
-            hidden={!roomState.isSelectingMessages}
-            className="self-center mx-2"
-            onChange={(e) => {
-              dispatch({
-                type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
-                payload: message,
-              });
-              e.stopPropagation();
-            }}
-          />
+          {roomState.isSelectingMessages && (
+            <Checkbox
+              isChecked={isSelected}
+              hidden={!roomState.isSelectingMessages}
+              className="self-center mx-2"
+              onChange={(e) => {
+                dispatch({
+                  type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
+                  payload: message,
+                });
+                e.stopPropagation();
+              }}
+            />
+          )}
 
           {!isMine && (
             <Avatar
@@ -363,12 +329,20 @@ const Message = forwardRef<any, MessageProps>(
                   setNewMessage={setNewMessage}
                 />
               ) : (
-                <div className="text-[0.9rem] leading-relaxed tracking-wide">
-                  {newMessage}
-                </div>
+                <>
+                  <div className="text-[0.9rem] leading-relaxed tracking-wide">
+                    {newMessage}
+                  </div>
+                </>
               )}
             </div>
           </div>
+          {isMine &&
+            (isOptimistic ? (
+              <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
+            ) : (
+              <Blueticks read={message.read} className="relative bottom-1" />
+            ))}
 
           {shouldShowHoverCard() && !isSelected && (
             <div
