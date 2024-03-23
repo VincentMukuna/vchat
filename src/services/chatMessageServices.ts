@@ -122,7 +122,8 @@ export async function clearChatMessages(
     SERVER.COLLECTION_ID_CHATS,
     chatID,
     {
-      changeLog: "cleared",
+      changeLog: "message/clearAll",
+      changerID: clearer?.$id,
     },
   );
 }
