@@ -62,7 +62,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
   const getUserOnLoad = async () => {
-    console.log(intendedRef.current);
     try {
       const user = await api.getAccount();
       const userDetails = await getUserDetails(user);
