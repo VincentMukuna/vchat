@@ -72,7 +72,7 @@ export async function getChatMessages(chatID: string) {
     chatID,
   )) as DirectChatDetails;
 
-  return chatDoc.chatMessages.sort(
+  return chatDoc.chatMessages.toSorted(
     sortDocumentsByCreationDateDesc,
   ) as DirectMessageDetails[];
 }

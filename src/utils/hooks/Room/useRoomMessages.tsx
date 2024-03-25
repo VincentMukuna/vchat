@@ -22,17 +22,17 @@ export default function useRoomMessages() {
       return messages;
     }
     const messages = await getChatMessages(selectedChat.$id);
-    return messages.sort(sortDocumentsByCreationDateDesc);
+    return messages.toSorted(sortDocumentsByCreationDateDesc);
   }
 
   function getFallbackMessages() {
     if (!selectedChat) return undefined;
     if (isGroup) {
-      return selectedChat.groupMessages.sort(
+      return selectedChat.groupMessages.toSorted(
         sortDocumentsByCreationDateDesc,
       ) as GroupMessageDetails[];
     } else {
-      return selectedChat.chatMessages.sort(
+      return selectedChat.chatMessages.toSorted(
         sortDocumentsByCreationDateDesc,
       ) as DirectMessageDetails[];
     }

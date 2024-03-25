@@ -57,10 +57,10 @@ const Chat = memo(
     function getLastMessage() {
       if (isGroup) {
         let messages = conversation.groupMessages as GroupMessageDetails[];
-        return messages.sort(sortDocumentsByCreationDateDesc).at(0);
+        return messages.toSorted(sortDocumentsByCreationDateDesc).at(0);
       }
       let messages = conversation.chatMessages as DirectMessageDetails[];
-      return messages.sort(sortDocumentsByCreationDateDesc).at(0);
+      return messages.toSorted(sortDocumentsByCreationDateDesc).at(0);
     }
 
     const { data: lastMessage } = useSWR(

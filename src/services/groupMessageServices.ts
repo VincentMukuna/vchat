@@ -59,7 +59,7 @@ export async function getGroupMessages(groupID: string) {
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
   )) as GroupChatDetails;
-  return groupDoc.groupMessages.sort(
+  return groupDoc.groupMessages.toSorted(
     sortDocumentsByCreationDateDesc,
   ) as GroupMessageDetails[];
 }

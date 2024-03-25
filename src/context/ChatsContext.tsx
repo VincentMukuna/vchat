@@ -90,8 +90,8 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     mutate(
       `${conversation.$id}-messages`,
       isGroup(conversation)
-        ? conversation.groupMessages.sort(sortDocumentsByCreationDateDesc)
-        : conversation.chatMessages.sort(sortDocumentsByCreationDateDesc),
+        ? conversation.groupMessages.toSorted(sortDocumentsByCreationDateDesc)
+        : conversation.chatMessages.toSorted(sortDocumentsByCreationDateDesc),
       { revalidate: false },
     );
   };

@@ -258,7 +258,7 @@ export const sortConversations = (
   //if conversation is grp sort by last created groupMessage
   //if conversation is direct sort by last created chatMessage
   //if conversation has no message sort by its createdAt
-  conversations.sort((a, b) => {
+  conversations = conversations.toSorted((a, b) => {
     let aLastMessage =
       a.$collectionId === SERVER.COLLECTION_ID_CHATS
         ? a.chatMessages.toSorted(sortDocumentsByCreationDateDesc)?.at(0)
