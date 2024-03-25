@@ -1,4 +1,641 @@
 {
     "projectId": "64cced226fa211528fbf",
-    "projectName": "VChat"
+    "projectName": "VChat",
+    "databases": [
+        {
+            "$id": "production",
+            "name": "production",
+            "$createdAt": "2023-09-22T07:02:41.918+00:00",
+            "$updatedAt": "2023-09-22T07:02:41.918+00:00",
+            "enabled": true
+        }
+    ],
+    "collections": [
+        {
+            "$id": "user-details",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "production",
+            "name": "user-details",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "userID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 256,
+                    "default": null
+                },
+                {
+                    "key": "name",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "location",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 50,
+                    "default": "earth"
+                },
+                {
+                    "key": "about",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 30,
+                    "default": "Hi, I'm on VChat!"
+                },
+                {
+                    "key": "avatarID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "avatarURL",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 300,
+                    "default": null
+                },
+                {
+                    "key": "chats",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "chats",
+                    "relationType": "manyToMany",
+                    "twoWay": true,
+                    "twoWayKey": "participants",
+                    "onDelete": "setNull",
+                    "side": "child"
+                },
+                {
+                    "key": "groups",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "groups",
+                    "relationType": "manyToMany",
+                    "twoWay": true,
+                    "twoWayKey": "members",
+                    "onDelete": "setNull",
+                    "side": "child"
+                },
+                {
+                    "key": "changeLog",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": null
+                },
+                {
+                    "key": "changerID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "idxUserID",
+                    "type": "fulltext",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "userID"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "user_name_idx",
+                    "type": "fulltext",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "name"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "created_at_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "$createdAt"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "groups",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "production",
+            "name": "groups",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 30,
+                    "default": null
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null
+                },
+                {
+                    "key": "avatarID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "admins",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": true,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "avatarURL",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 300,
+                    "default": null
+                },
+                {
+                    "key": "changerID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 200,
+                    "default": null
+                },
+                {
+                    "key": "members",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "user-details",
+                    "relationType": "manyToMany",
+                    "twoWay": true,
+                    "twoWayKey": "groups",
+                    "onDelete": "setNull",
+                    "side": "parent"
+                },
+                {
+                    "key": "groupMessages",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "group-messages",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "groupDoc",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "changeLog",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": "created"
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "group-messages",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "production",
+            "name": "group-messages",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "senderID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "attachments",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": true,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "body",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 1500,
+                    "default": null
+                },
+                {
+                    "key": "read",
+                    "type": "boolean",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "groupDoc",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "groups",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "groupMessages",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                },
+                {
+                    "key": "replying",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 10000,
+                    "default": null
+                },
+                {
+                    "key": "reactions",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": "{\n\"likes\":[]\n}"
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "read_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "read"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "senderID_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "senderID"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "createdAt_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "$createdAt"
+                    ],
+                    "orders": [
+                        "DESC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "chats",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "production",
+            "name": "chats",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "changerID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 200,
+                    "default": null
+                },
+                {
+                    "key": "participants",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "user-details",
+                    "relationType": "manyToMany",
+                    "twoWay": true,
+                    "twoWayKey": "chats",
+                    "onDelete": "setNull",
+                    "side": "parent"
+                },
+                {
+                    "key": "chatMessages",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "chat-messages",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "chatDoc",
+                    "onDelete": "cascade",
+                    "side": "child"
+                },
+                {
+                    "key": "changeLog",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": null
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "chatIDidx",
+                    "type": "fulltext",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "$id"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "createdAtIdx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "$createdAt"
+                    ],
+                    "orders": [
+                        "DESC"
+                    ]
+                }
+            ]
+        },
+        {
+            "$id": "chat-messages",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"users\")",
+                "update(\"users\")",
+                "delete(\"users\")"
+            ],
+            "databaseId": "production",
+            "name": "chat-messages",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "senderID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "recepientID",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "body",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "size": 1500,
+                    "default": null
+                },
+                {
+                    "key": "read",
+                    "type": "boolean",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "default": false
+                },
+                {
+                    "key": "attachments",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": true,
+                    "size": 100,
+                    "default": null
+                },
+                {
+                    "key": "chatDoc",
+                    "type": "relationship",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "relatedCollection": "chats",
+                    "relationType": "manyToOne",
+                    "twoWay": true,
+                    "twoWayKey": "chatMessages",
+                    "onDelete": "cascade",
+                    "side": "parent"
+                },
+                {
+                    "key": "replying",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 1000,
+                    "default": null
+                },
+                {
+                    "key": "reactions",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "size": 2000,
+                    "default": "{\n\"likes\" : []\n}"
+                }
+            ],
+            "indexes": [
+                {
+                    "key": "created_at_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "$createdAt"
+                    ],
+                    "orders": [
+                        "DESC"
+                    ]
+                },
+                {
+                    "key": "read_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "read"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "key": "senderID_idx",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "senderID"
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ]
+        }
+    ]
 }
