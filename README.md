@@ -56,21 +56,29 @@ https://github.com/VincentMukuna/vchat/assets/93912489/01db2529-a858-41ab-9d2f-7
    in your local IP address (or `localhost`).
 3. Replace projectId and projectName in `appwrite.json` with your project's
 
-4. Login to appwrite from the cli
+4. Create a database and copy its name and id and replace it in `appwrite.json`.
+
+5. Login to appwrite from the cli
 
    ```bash
       appwrite login
    ```
 
-5. Deploy
+6. Deploy
 
    ```bash
-      appwrite deploy
+      appwrite deploy collections
    ```
 
-6. Edit `config.js` to include the relevant project's API endpoints.
+7. Deploy
 
-7. Start the development server:
+   ```bash
+      appwrite deploy buckets
+   ```
+
+8. Edit `config.js` to include the relevant project's API endpoints.
+
+9. Start the development server:
    ```bash
       npm run dev
    ```
