@@ -1,4 +1,4 @@
-import { useMessages } from "@/context/MessagesContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
@@ -20,7 +20,7 @@ export default function useDeleteSelectedMessages() {
   const { selectedChat } = useChatsContext();
   const { isGroup, roomMessagesKey, roomState, dispatch } = useRoomContext();
   const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
-  const { messages } = useMessages();
+  const { messages } = useMessagesContext();
 
   if (!selectedChat || !currentUserDetails)
     throw new Error("No user details found");

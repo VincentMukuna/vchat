@@ -24,7 +24,7 @@ import {
 import UserProfileModal from "../../Profile/UserProfileModal";
 
 import Blueticks from "@/components/Blueticks";
-import { useMessages } from "@/context/MessagesContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import useReadMessage from "@/utils/hooks/Room/useReadMessage";
 import { pluck } from "@/utils/utils";
 import { ClockIcon } from "@heroicons/react/24/outline";
@@ -45,7 +45,7 @@ const Message = forwardRef<any, MessageProps>(
   ({ message, prev, next, initialRender, messagesListRef, i }, ref) => {
     const { currentUserDetails } = useAuth();
     const { selectedChat } = useChatsContext();
-    const { deleteMessage } = useMessages();
+    const { deleteMessage } = useMessagesContext();
     const { roomState, dispatch } = useRoomContext();
 
     const [attachments, setAttachments] = useState<URL[] | []>([]);

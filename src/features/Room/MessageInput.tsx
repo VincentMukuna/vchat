@@ -1,4 +1,4 @@
-import { useMessages } from "@/context/MessagesContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import { Badge, IconButton, Textarea, useColorMode } from "@chakra-ui/react";
 import { PaperClipIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
@@ -56,7 +56,7 @@ const MessageInput = ({}: InputProps) => {
   const { currentUserDetails } = useAuth();
 
   const { selectedChat, recepient } = useChatsContext();
-  const { createMessage } = useMessages();
+  const { createMessage } = useMessagesContext();
   if (!selectedChat || !currentUserDetails) return null;
   const [messageBody, setMessageBody] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);

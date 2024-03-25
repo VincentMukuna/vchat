@@ -137,7 +137,7 @@ export default function MessagesProvider({
   );
 }
 
-export function useMessages() {
+export function useMessagesContext() {
   const context = useContext(MessagesContext);
   if (context === undefined) {
     throw new Error("useMessages must be used within a MessagesProvider");

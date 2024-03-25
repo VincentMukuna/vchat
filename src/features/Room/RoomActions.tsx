@@ -1,4 +1,4 @@
-import { useMessages } from "@/context/MessagesContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { MenuDivider, MenuItem, MenuList } from "@chakra-ui/react";
@@ -30,7 +30,7 @@ const RoomActions = () => {
     `lastMessage ${selectedChat!.$id}`,
   );
 
-  const { messages } = useMessages();
+  const { messages } = useMessagesContext();
 
   const { currentUserDetails } = useAuth();
 

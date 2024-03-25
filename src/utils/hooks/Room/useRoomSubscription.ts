@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
-import { useMessages } from "@/context/MessagesContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
 import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
@@ -25,7 +25,7 @@ const useRoomSubscription = () => {
   const { update: updateRoomDetails } = useSWROptimistic(
     `details ${selectedChat?.$id}`,
   );
-  const { messages } = useMessages();
+  const { messages } = useMessagesContext();
 
   useEffect(() => {
     if (selectedChat && !isPersonal && currentUserDetails) {

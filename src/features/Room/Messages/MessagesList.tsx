@@ -1,4 +1,4 @@
-import { useMessages } from "@/context/MessagesContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import { createContext, memo, useRef } from "react";
 import Message from "./Message";
 
@@ -13,7 +13,7 @@ const MessagesContext = createContext<MessagesContextType>({
 });
 function MessagesList({}: MessagesProps) {
   const messageListRef = useRef<HTMLDivElement>(null);
-  const { messages } = useMessages();
+  const { messages } = useMessagesContext();
   return (
     <div
       ref={messageListRef}
