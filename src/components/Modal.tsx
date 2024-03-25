@@ -33,6 +33,7 @@ const VModal = () => {
         onClose();
         modalStore.set({ modalContent: null, props: {} });
       }}
+      size={"xs"}
       {...state.props}
     >
       <ModalOverlay />
