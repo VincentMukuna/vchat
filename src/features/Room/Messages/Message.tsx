@@ -346,18 +346,19 @@ const Message = forwardRef<any, MessageProps>(
               </div>
             </div>
           </div>
-          <div className="relative self-end w-4">
-            {isMine &&
-              // i === 0 &&
-              !showHoverCard &&
-              (isOptimistic ? (
-                <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
-              ) : (
-                <Blueticks
-                  read={message.read}
-                  className="relative bottom-1 dark:text-blue-400"
-                />
-              ))}
+          <div
+            className={`relative self-end w-4  ${
+              isMine && !showHoverCard ? "visible" : "invisible"
+            }`}
+          >
+            {isOptimistic ? (
+              <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
+            ) : (
+              <Blueticks
+                read={message.read}
+                className="relative bottom-1 dark:text-blue-400"
+              />
+            )}
           </div>
 
           <div
@@ -371,42 +372,40 @@ const Message = forwardRef<any, MessageProps>(
             />
           </div>
 
-          {shouldShowHoverCard() && !isSelected && (
-            <div
-              className={`flex self-end gap-1 ${
-                showHoverCard ? "" : "invisible"
-              }`}
-            >
-              <IconButton
-                title="Delete message"
-                variant={"ghost"}
-                size={"xs"}
-                aria-label="Delete message"
-                icon={<DeleteIcon className="w-3" />}
-                onClick={(e) => {
-                  confirmAlert({
-                    message: "Delete this message? This action is irreversible",
-                    title: "Delete message",
-                    confirmText: "Delete",
-                    onConfirm: () => handleDelete(),
-                  });
-                  e.stopPropagation();
-                }}
-              />
-              <IconButton
-                title="Edit message"
-                variant={"ghost"}
-                size={"xs"}
-                aria-label="Edit message"
-                icon={<PencilIcon className="w-3" />}
-                hidden={!isMine}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openModal(<EditMessageForm message={message} />);
-                }}
-              />
-            </div>
-          )}
+          <div
+            className={`flex self-end gap-1 ${
+              showHoverCard ? "visible" : "invisible"
+            }`}
+          >
+            <IconButton
+              title="Delete message"
+              variant={"ghost"}
+              size={"xs"}
+              aria-label="Delete message"
+              icon={<DeleteIcon className="w-3" />}
+              onClick={(e) => {
+                confirmAlert({
+                  message: "Delete this message? This action is irreversible",
+                  title: "Delete message",
+                  confirmText: "Delete",
+                  onConfirm: () => handleDelete(),
+                });
+                e.stopPropagation();
+              }}
+            />
+            <IconButton
+              title="Edit message"
+              variant={"ghost"}
+              size={"xs"}
+              aria-label="Edit message"
+              icon={<PencilIcon className="w-3" />}
+              hidden={!isMine}
+              onClick={(e) => {
+                e.stopPropagation();
+                openModal(<EditMessageForm message={message} />);
+              }}
+            />
+          </div>
         </div>
       </article>
     );

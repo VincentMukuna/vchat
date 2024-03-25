@@ -46,9 +46,6 @@ const MessageReactions = ({
       like();
     }
   }, 300);
-
-  if (likesCount === 0 && !hoverCardShowing) return null;
-
   function updateConversationChangeLog(like: boolean) {
     const changeLog = `message/${like ? "like" : "unlike"}/${message.$id}`;
     if (isGroup) {
@@ -130,6 +127,7 @@ const MessageReactions = ({
 
   return (
     <Button
+      visibility={likesCount === 0 && !hoverCardShowing ? "hidden" : "visible"}
       onClick={() => {
         handleLike();
       }}
