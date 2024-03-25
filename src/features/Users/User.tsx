@@ -1,4 +1,4 @@
-import { Avatar, Card } from "@chakra-ui/react";
+import { Avatar, Card, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ReactNode, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -71,7 +71,28 @@ export default User;
 
 export const UserAvatar = ({ size }: { size?: string }) => {
   const { user } = useContext(UserContext)!;
-  return <Avatar size={size} name={user.name} src={user.avatarURL} />;
+  return (
+    <Avatar
+      size={size}
+      name={user.name}
+      src={user.avatarURL}
+      onClick={(e) => {
+        if (user.avatarURL) {
+          e.stopPropagation();
+          openModal(
+            <Image
+              src={user.avatarURL}
+              objectFit="scale-down"
+              borderRadius={"md"}
+              sizes="150px"
+              maxH={"80vh"}
+            />,
+            { isCentered: true, size: "lg" },
+          );
+        }
+      }}
+    />
+  );
 };
 
 export const UserDescription = ({ children }: { children?: ReactNode }) => {

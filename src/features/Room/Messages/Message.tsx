@@ -272,11 +272,12 @@ const Message = forwardRef<any, MessageProps>(
                       openModal(
                         <Image
                           src={attachments[0] as any}
-                          objectFit="contain"
+                          objectFit="scale-down"
                           borderRadius={"md"}
                           sizes="150px"
+                          maxH={"80vh"}
                         />,
-                        { isCentered: true, size: "3xl" },
+                        { isCentered: true, size: "xl" },
                       );
                     }}
                     src={attachments[0] as any}
@@ -316,7 +317,7 @@ const Message = forwardRef<any, MessageProps>(
                 p-3 ps-3 py-2 z-10
                 ${
                   isMine
-                    ? `bg-indigo-200 dark:bg-indigo-800 dark:text-dark-gray12  self-end me-4`
+                    ? `bg-indigo-200 dark:bg-indigo-900 dark:text-white  self-end me-4`
                     : "bg-gray7 dark:bg-dark-gray6/90   text-gray-100s"
                 } 
 
@@ -339,7 +340,9 @@ const Message = forwardRef<any, MessageProps>(
                 `}
             >
               <div className="text-[0.9rem] leading-relaxed tracking-wide flex ">
-                {message.body}
+                <pre className="font-sans whitespace-pre-wrap">
+                  {message.body}
+                </pre>
               </div>
             </div>
           </div>
