@@ -62,11 +62,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
   const getUserOnLoad = async () => {
+    console.log(intendedRef.current);
     try {
       const user = await api.getAccount();
       const userDetails = await getUserDetails(user);
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
+
       if (
         intendedRef.current === "/login" ||
         intendedRef.current === "/register" ||
@@ -77,7 +79,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         navigate(intendedRef.current);
       }
     } catch (error) {
-      navigate("login");
+      navigate("/login");
     } finally {
       setIsLoading(false);
     }
