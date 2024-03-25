@@ -21,7 +21,7 @@ function MessagesList({}: MessagesProps) {
     >
       <div
         id="messages-container"
-        className="flex flex-col-reverse self-stretch h-full p-2 pb-4 overflow-y-scroll grow"
+        className="flex flex-col-reverse self-stretch h-full p-2 pb-4 overflow-x-hidden overflow-y-scroll grow"
       >
         {messages.length > 0 ? (
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
