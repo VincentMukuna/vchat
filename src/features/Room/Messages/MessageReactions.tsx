@@ -13,7 +13,6 @@ import {
 } from "@/services/groupMessageServices";
 import { fromJson, toJson } from "@/utils/utils";
 import { Button, useColorMode } from "@chakra-ui/react";
-import { gray } from "@radix-ui/colors";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -135,12 +134,11 @@ const MessageReactions = ({
         handleLike();
       }}
       variant={"ghost"}
-      aria-label="like message"
+      aria-label={isLiked ? "Unlike" : "Like"}
       size={"xs"}
+      title={isLiked ? "Unlike" : "Like"}
     >
-      <FluentEmojiFlatHeartSuit
-        fill={isLiked ? "" : colorMode === "dark" ? gray.gray3 : gray.gray9}
-      />
+      <FluentEmojiFlatHeartSuit />
       <span className="text-xs ms-1">{likesCount}</span>
     </Button>
   );
