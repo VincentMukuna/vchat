@@ -11,7 +11,13 @@ import {
 import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 
-import { AspectRatio, Avatar, Checkbox, Image } from "@chakra-ui/react";
+import {
+  AspectRatio,
+  Avatar,
+  Checkbox,
+  IconButton,
+  Image,
+} from "@chakra-ui/react";
 import useSWR from "swr";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
@@ -322,42 +328,46 @@ const Message = forwardRef<any, MessageProps>(
             >
               <div className="text-[0.9rem] leading-relaxed tracking-wide flex ">
                 {message.body}
-                <div className="relative self-end top-1">
-                  {isMine &&
-                    i === 0 &&
-                    !showHoverCard &&
-                    (isOptimistic ? (
-                      <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
-                    ) : (
-                      <Blueticks
-                        read={message.read}
-                        className="relative bottom-1 dark:text-blue-400"
-                      />
-                    ))}
-                </div>
               </div>
             </div>
           </div>
-          {true && (
-            <div
-              className={`relative flex gap-1 z-0 ${
-                isMine ? "start-2" : "-start-2 "
-              } `}
-            >
-              <MessageReactions
-                message={message}
-                hoverCardShowing={showHoverCard}
-              />
-            </div>
-          )}
+          <div className="relative self-end">
+            {isMine &&
+              // i === 0 &&
+              !showHoverCard &&
+              (isOptimistic ? (
+                <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
+              ) : (
+                <Blueticks
+                  read={message.read}
+                  className="relative bottom-1 dark:text-blue-400"
+                />
+              ))}
+          </div>
+
+          <div
+            className={`relative flex gap-1 z-0 ${
+              isMine ? "start-2" : "-start-2 "
+            } `}
+          >
+            <MessageReactions
+              message={message}
+              hoverCardShowing={showHoverCard}
+            />
+          </div>
 
           {shouldShowHoverCard() && !isSelected && (
             <div
-              className={`flex self-end gap-2 mb-2 ${
+              className={`flex self-end gap-2  ${
                 showHoverCard ? "" : "invisible"
               }`}
             >
-              <button
+              <IconButton
+                title="Delete message"
+                variant={"ghost"}
+                size={"xs"}
+                aria-label="Delete message"
+                icon={<DeleteIcon className="w-3" />}
                 onClick={(e) => {
                   confirmAlert({
                     message: "Delete this message? This action is irreversible",
@@ -367,18 +377,19 @@ const Message = forwardRef<any, MessageProps>(
                   });
                   e.stopPropagation();
                 }}
-              >
-                <DeleteIcon className="w-4 h-4" />
-              </button>
-              <button
+              />
+              <IconButton
+                title="Edit message"
+                variant={"ghost"}
+                size={"xs"}
+                aria-label="Edit message"
+                icon={<PencilIcon className="w-3" />}
                 hidden={!isMine}
                 onClick={(e) => {
                   e.stopPropagation();
                   openModal(<EditMessageForm message={message} />);
                 }}
-              >
-                <PencilIcon className="w-4 h-4" />
-              </button>
+              />
             </div>
           )}
         </div>
