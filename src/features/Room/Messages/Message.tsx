@@ -374,10 +374,11 @@ const Message = forwardRef<any, MessageProps>(
 
           <div
             className={`flex self-end gap-1 ${
-              showHoverCard ? "visible" : "invisible"
+              showHoverCard && shouldShowHoverCard() ? "visible" : "invisible"
             }`}
           >
             <IconButton
+              hidden={!shouldShowHoverCard()}
               title="Delete message"
               variant={"ghost"}
               size={"xs"}
