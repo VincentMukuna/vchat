@@ -27,7 +27,7 @@ const RoomActions = () => {
   const { roomMessagesKey } = useRoomContext();
   const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
   const { update: updateLastMessage } = useSWROptimistic(
-    `lastMessage ${selectedChat!.$id}`,
+    `conversations/${selectedChat?.$id}/last-message`,
   );
 
   const { messages } = useMessagesContext();

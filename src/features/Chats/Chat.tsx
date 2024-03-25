@@ -1,6 +1,13 @@
 import { memo, useEffect, useState } from "react";
 
-import { Avatar, AvatarBadge, Card, useColorMode } from "@chakra-ui/react";
+import { openModal } from "@/components/Modal";
+import {
+  Avatar,
+  AvatarBadge,
+  Card,
+  Image,
+  useColorMode,
+} from "@chakra-ui/react";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
@@ -57,7 +64,7 @@ const Chat = memo(
     }
 
     const { data: lastMessage } = useSWR(
-      `lastMessage ${conversation.$id}`,
+      `conversations/${conversation.$id}/last-message`,
       getLastMessage,
     );
 
@@ -80,6 +87,9 @@ const Chat = memo(
     });
 
     const isActive = selectedChat?.$id === conversation.$id;
+    const avatarURL = isGroup
+      ? conversation.avatarURL
+      : contactDetails?.avatarURL;
 
     return (
       <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
@@ -100,7 +110,7 @@ const Chat = memo(
           }`}
         >
           <Avatar
-            src={isGroup ? conversation.avatarURL : contactDetails?.avatarURL}
+            src={avatarURL}
             icon={
               isGroup ? (
                 <UsersIcon className="w-[26px] h-[26px]" />
@@ -109,6 +119,26 @@ const Chat = memo(
               )
             }
             bg={colorMode === "dark" ? "gray.600" : "gray.400"}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (avatarURL) {
+                openModal(
+                  <Image
+                    src={avatarURL}
+                    alt={
+                      isGroup
+                        ? conversation.name + " group image"
+                        : contactDetails?.name || "User" + " image"
+                    }
+                    objectFit="scale-down"
+                    borderRadius={"md"}
+                    sizes="150px"
+                    maxH={"80vh"}
+                  />,
+                  { isCentered: true, size: ["xs", "lg"] },
+                );
+              }
+            }}
           >
             <AvatarBadge
               hidden={unreadCount ? unreadCount < 1 : true}

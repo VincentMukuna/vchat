@@ -20,7 +20,7 @@ const useRoomSubscription = () => {
   const { isGroup, isPersonal, dispatch, roomMessagesKey } = useRoomContext();
   const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
   const { update: updateLastMessage } = useSWROptimistic(
-    `lastMessage ${selectedChat?.$id}`,
+    `conversations/${selectedChat?.$id}/last-message`,
   );
   const { update: updateRoomDetails } = useSWROptimistic(
     `details ${selectedChat?.$id}`,
