@@ -3,12 +3,12 @@ import { useState } from "react";
 import NoSelectedChat from "@/components/NoSelectedChat";
 import useRoomSubscription from "@/utils/hooks/Room/useRoomSubscription";
 import { Box } from "@chakra-ui/react";
-import { useAuth } from "../../context/AuthContext";
-import { useChatsContext } from "../../context/ChatsContext";
+import { useAuth } from "@/context/AuthContext";
+import { useChatsContext } from "@/context/ChatsContext";
 import {
   RoomActionTypes,
   useRoomContext,
-} from "../../context/Room/RoomContext";
+} from "@/context/Room/RoomContext";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
