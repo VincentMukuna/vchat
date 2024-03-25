@@ -1,3 +1,4 @@
+import { useMessagesContext } from "@/context/MessagesContext";
 import { Avatar, AvatarGroup, IconButton, VStack } from "@chakra-ui/react";
 import { PencilIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
@@ -15,6 +16,7 @@ import { EditGroupDetailsForm } from "./EditGroupDetailsForm";
 const RoomDetails = () => {
   const { selectedChat, recepient } = useChatsContext();
   const { currentUserDetails } = useAuth();
+  const { messages } = useMessagesContext();
 
   if (!currentUserDetails) return null;
   if (selectedChat === undefined) return null;
@@ -91,9 +93,7 @@ const RoomDetails = () => {
 
           <p className="inline-flex gap-2 mt-3">
             <span className="font-semibold ">Message Count :</span>
-            {isGroup
-              ? selectedChat.groupMessages.length
-              : selectedChat.chatMessages.length}
+            {messages.length}
           </p>
 
           <p className="mt-3">
