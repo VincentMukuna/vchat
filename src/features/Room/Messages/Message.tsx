@@ -267,6 +267,18 @@ const Message = forwardRef<any, MessageProps>(
                   mt={2}
                 >
                   <Image
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openModal(
+                        <Image
+                          src={attachments[0] as any}
+                          objectFit="contain"
+                          borderRadius={"md"}
+                          sizes="150px"
+                        />,
+                        { isCentered: true, size: "3xl" },
+                      );
+                    }}
                     src={attachments[0] as any}
                     objectFit="cover"
                     borderRadius={"md"}
@@ -358,7 +370,7 @@ const Message = forwardRef<any, MessageProps>(
 
           {shouldShowHoverCard() && !isSelected && (
             <div
-              className={`flex self-end gap-2  ${
+              className={`flex self-end gap-1 ${
                 showHoverCard ? "" : "invisible"
               }`}
             >

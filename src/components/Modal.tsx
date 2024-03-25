@@ -1,24 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Store } from "../utils/observableStore";
 import {
-  Button,
   Modal,
-  ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
+  ModalProps,
   useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
-import { blueDark, gray, slateDark } from "@radix-ui/colors";
-import { CheckIcon } from "@heroicons/react/20/solid";
+import React, { useEffect, useState } from "react";
+import { Store } from "../utils/observableStore";
 
 let modalStore = new Store<any>({ modalContent: null });
 
 const VModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [state, setState] = useState({ modalContent: null });
+  const [state, setState] = useState({ modalContent: null, props: {} });
 
   const { colorMode } = useColorMode();
 
@@ -32,15 +27,25 @@ const VModal = () => {
     return modalStore.subscribe(setState);
   }, []);
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        modalStore.set({ modalContent: null, props: {} });
+      }}
+      {...state.props}
+    >
       <ModalOverlay />
       <ModalContent className="border">{state.modalContent}</ModalContent>
     </Modal>
   );
 };
 
-export function openModal(modalContent: React.JSX.Element) {
-  modalStore.set({ modalContent: modalContent });
+export function openModal(
+  modalContent: React.JSX.Element,
+  props?: Partial<ModalProps>,
+) {
+  modalStore.set({ modalContent: modalContent, props: props });
 }
 
 export default VModal;
