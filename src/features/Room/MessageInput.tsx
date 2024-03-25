@@ -28,7 +28,7 @@ export type Message = DirectMessageDetails | GroupMessageDetails;
 
 function createOptimisticMessageProps() {
   return {
-    $id: new Date().toISOString(),
+    $id: crypto.randomUUID(),
     $permissions: [] as string[],
     $createdAt: new Date().toISOString(),
     $updatedAt: new Date().toISOString(),
