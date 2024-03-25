@@ -89,7 +89,7 @@ export default function MessagesProvider({
     } catch (error) {
       //rollback
       updateRoomMessages(messages);
-      updateLastMessage(messages[messages.length - 1]);
+      updateLastMessage(newMessages[1]);
     }
   };
 
