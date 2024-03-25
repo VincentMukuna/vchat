@@ -346,7 +346,7 @@ const Message = forwardRef<any, MessageProps>(
               </div>
             </div>
           </div>
-          <div className="relative self-end">
+          <div className="relative self-end w-4">
             {isMine &&
               // i === 0 &&
               !showHoverCard &&
@@ -361,7 +361,7 @@ const Message = forwardRef<any, MessageProps>(
           </div>
 
           <div
-            className={`relative flex gap-1 z-0 ${
+            className={`relative flex gap-1 z-0 -ms-2 ${
               isMine ? "start-2" : "-start-2 "
             } `}
           >
