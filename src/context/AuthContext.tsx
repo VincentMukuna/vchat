@@ -67,16 +67,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const userDetails = await getUserDetails(user);
       setCurrentUser(user);
       setCurrentUserDetails(userDetails);
-
       if (
         intendedRef.current === "/login" ||
-        intendedRef.current === "/register" ||
-        intendedRef.current === "/"
+        intendedRef.current === "/register"
       ) {
-        navigate("/chats");
-      } else {
-        navigate(intendedRef.current);
+        intendedRef.current = "/chats";
       }
+      navigate(intendedRef.current);
     } catch (error) {
       navigate("/login");
     } finally {
