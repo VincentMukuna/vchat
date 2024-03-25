@@ -28,7 +28,7 @@ export type Message = DirectMessageDetails | GroupMessageDetails;
 
 function createOptimisticMessageProps() {
   return {
-    $id: crypto.randomUUID(),
+    $id: crypto?.randomUUID?.() || Math.random().toString(36).substring(7),
     $permissions: [] as string[],
     $createdAt: new Date().toISOString(),
     $updatedAt: new Date().toISOString(),
@@ -122,7 +122,10 @@ const MessageInput = ({}: InputProps) => {
       };
       await createMessage(message);
     } else {
-      if (!recepient) return;
+      if (!recepient) {
+        return;
+      }
+
       let message: DirectMessageSendDto = {
         $collectionId: SERVER.COLLECTION_ID_CHAT_MESSAGES,
         $databaseId: SERVER.DATABASE_ID,
@@ -136,6 +139,7 @@ const MessageInput = ({}: InputProps) => {
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
+
       await createMessage(message);
     }
 
@@ -210,6 +214,7 @@ const MessageInput = ({}: InputProps) => {
               _placeholder={{
                 color: colorMode === "dark" ? "slate.300" : "gray.700",
               }}
+              p={2}
               value={messageBody}
               onChange={handleChange}
               onBlur={handleChange}
