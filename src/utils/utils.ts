@@ -1,6 +1,7 @@
 import {
   Conversation,
   DirectMessageDetails,
+  GroupChatDetails,
   GroupMessageDetails,
 } from "@/interfaces";
 import { Models } from "appwrite";
@@ -98,9 +99,11 @@ export const getUnreadCount = (conversation: Conversation, userId: string) => {
   }
 };
 
-export const isGroup = (conversation: Conversation) => {
+export function isGroup(
+  conversation: Conversation,
+): conversation is GroupChatDetails {
   return conversation.$collectionId === SERVER.COLLECTION_ID_GROUPS;
-};
+}
 
 //utilities to read to and from json
 export const fromJson = (json: string) => {
