@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
 import { useAuth } from "../../context/AuthContext";
-import { logUserOut } from "../../services/sessionServices";
 import { MyProfile } from "./MyProfile";
 
 const tabs = [
@@ -28,17 +27,10 @@ const tabs = [
 ];
 
 const Navbar = () => {
-  const {
-    currentUser,
-    currentUserDetails,
-    setCurrentUserDetails,
-    setCurrentUser,
-  } = useAuth();
-  if (!currentUser || !currentUserDetails) return null;
-
+  const { currentUser, currentUserDetails, logOut } = useAuth();
   const { colorMode, toggleColorMode } = useColorMode();
-
   const { pathname } = useLocation();
+  if (!currentUser || !currentUserDetails) return null;
 
   return (
     <nav className="grow-0 md:flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-blue2 md:h-full gap-3">
@@ -135,9 +127,7 @@ const Navbar = () => {
           <Link
             to={"/login"}
             onClick={() => {
-              setCurrentUserDetails(null);
-              setCurrentUser(null);
-              logUserOut();
+              logOut();
             }}
             className="flex items-center justify-center transition-all w-11"
           >

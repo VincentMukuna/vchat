@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { IUserDetails } from "../../../interfaces";
+import { IUserDetails } from "../../../interfaces/interfaces";
 import { getUsers, searchUsers } from "../../../services/userDetailsServices";
 
 import { UserIcon } from "@heroicons/react/20/solid";

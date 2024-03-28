@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Search from "../../components/Search";
 import VSkeleton from "../../components/VSkeleton";
 import { useAuth } from "../../context/AuthContext";
-import { IUserDetails } from "../../interfaces";
+import { IUserDetails } from "../../interfaces/interfaces";
 import { getUsers, searchUsers } from "../../services/userDetailsServices";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import { useInfinite } from "../../utils/hooks/useInfinite";

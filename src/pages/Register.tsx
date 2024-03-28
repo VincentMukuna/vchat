@@ -8,15 +8,15 @@ import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
 function Register() {
-  const { register, currentUser } = useAuth();
+  const { register, currentUser, currentUserDetails } = useAuth();
   const [registering, setRegistering] = useState(false);
   const navigate = useNavigate();
   const { colorMode } = useColorMode();
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && currentUserDetails) {
       navigate("/");
     }
-  }, [currentUser]);
+  }, [currentUser, currentUserDetails]);
 
   type Credentials = {
     email: string;

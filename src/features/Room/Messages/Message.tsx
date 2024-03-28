@@ -7,7 +7,7 @@ import {
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../../interfaces";
+} from "../../../interfaces/interfaces";
 import api from "../../../services/api";
 import { SERVER } from "../../../utils/config";
 

@@ -3,7 +3,7 @@ import {
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
-} from "@/interfaces";
+} from "@/interfaces/interfaces";
 import { sortConversations } from "@/services/userDetailsServices";
 import { SERVER } from "@/utils/config";
 import useConversations from "@/utils/hooks/Chats/useConversations";

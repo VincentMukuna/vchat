@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 import useSWR from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
 import {
   getGroupDetails,
   updateGroupDetails,

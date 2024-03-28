@@ -7,7 +7,7 @@ import {
   DirectChatDetails,
   DirectMessageDetails,
   GroupChatDetails,
-} from "@/interfaces";
+} from "@/interfaces/interfaces";
 import api from "@/services/api";
 import { SERVER } from "@/utils/config";
 import { fromJson, matchAndExecute, toJson } from "@/utils/utils";

@@ -23,7 +23,7 @@ import {
 } from "use-file-picker/validators";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { GroupChatDetails } from "../../../interfaces";
+import { GroupChatDetails } from "../../../interfaces/interfaces";
 import {
   updateGroupAvatar,
   updateGroupDetails,

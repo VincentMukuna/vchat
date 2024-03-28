@@ -3,7 +3,7 @@ import {
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
-} from "@/interfaces";
+} from "@/interfaces/interfaces";
 import { Models } from "appwrite";
 import { SERVER } from "./config";
 

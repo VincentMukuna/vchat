@@ -9,7 +9,8 @@ import api from "../services/api";
 import Loading from "./Loading";
 
 function Login() {
-  const { logIn, isLoading, currentUser, intended } = useAuth();
+  const { logIn, isLoading, currentUser, intended, currentUserDetails } =
+    useAuth();
   const navigate = useNavigate();
 
   const [verifying, setVerifying] = useState(false);
@@ -43,10 +44,10 @@ function Login() {
   const [item, setItem] = useState(true);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && currentUserDetails) {
       navigate(intended || "/");
     }
-  }, [currentUser]);
+  }, [currentUser, currentUserDetails]);
 
   if (isLoading) {
     return <Loading />;

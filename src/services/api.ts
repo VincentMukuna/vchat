@@ -1,16 +1,14 @@
 import {
+  Account,
   Client as Appwrite,
   Databases,
-  Account,
-  ID,
-  Storage,
-  RealtimeResponseEvent,
-  Models,
   Functions,
-  Query,
+  ID,
+  RealtimeResponseEvent,
+  Storage,
 } from "appwrite";
+import { UserPrefs } from "../interfaces/interfaces";
 import { SERVER } from "../utils/config";
-import { UserPrefs } from "../interfaces";
 let api = {
   sdk: null as null | {
     appwrite: Appwrite;

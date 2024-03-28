@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
-import { DirectChatDetails, GroupChatDetails } from "@/interfaces";
+import { DirectChatDetails, GroupChatDetails } from "@/interfaces/interfaces";
 import { getConversations } from "@/services/userDetailsServices";
 import { useEffect } from "react";
 import useSWR from "swr";

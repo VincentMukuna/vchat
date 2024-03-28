@@ -24,7 +24,7 @@ import { confirmAlert } from "../../../components/Alert/alertStore";
 import Search from "../../../components/Search";
 import VSkeleton from "../../../components/VSkeleton";
 import { useAuth } from "../../../context/AuthContext";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
 import {
   editMembers,
   getGroupDetails,

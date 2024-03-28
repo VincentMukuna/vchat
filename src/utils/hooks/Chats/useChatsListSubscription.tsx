@@ -5,7 +5,7 @@ import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
   Conversation,
   IUserDetails,
-} from "@/interfaces";
+} from "@/interfaces/interfaces";
 import api from "@/services/api";
 import { SERVER } from "@/utils/config";
 import { getUnreadCount, matchAndExecute } from "@/utils/utils";

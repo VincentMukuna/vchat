@@ -21,7 +21,7 @@ import {
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../interfaces";
+} from "../../interfaces/interfaces";
 import { getFormatedDate } from "../../services/dateServices";
 import { SERVER } from "../../utils/config";
 import {

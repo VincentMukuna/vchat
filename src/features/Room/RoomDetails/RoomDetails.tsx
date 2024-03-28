@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { openModal } from "../../../components/Modal";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces";
+import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
 import api from "../../../services/api";
 import { getFormatedDate } from "../../../services/dateServices";
 import { getGroupDetails } from "../../../services/groupMessageServices";

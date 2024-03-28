@@ -1,6 +1,9 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
-import { IUserDetails, USER_DETAILS_CHANGE_LOG_REGEXES } from "@/interfaces";
+import {
+  IUserDetails,
+  USER_DETAILS_CHANGE_LOG_REGEXES,
+} from "@/interfaces/interfaces";
 import api from "@/services/api";
 import { getChatDoc } from "@/services/chatMessageServices";
 import { SERVER } from "@/utils/config";

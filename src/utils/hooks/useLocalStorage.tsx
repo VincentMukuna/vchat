@@ -27,3 +27,12 @@ function useLocalStorage<T>(key: string, initialValue: T) {
 }
 
 export default useLocalStorage;
+
+export function readValueFromLocalStorage<T>(key: string, defaultValue: T) {
+  const item = window.localStorage.getItem(key);
+  if (!item) {
+    window.localStorage.setItem(key, JSON.stringify(defaultValue));
+  }
+
+  return item ? (JSON.parse(item) as T) : defaultValue;
+}

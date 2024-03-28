@@ -17,7 +17,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { DirectChatDetails, IUserDetails } from "../../interfaces";
+import { DirectChatDetails, IUserDetails } from "../../interfaces/interfaces";
 import {
   addContact,
   createPersonalChat,

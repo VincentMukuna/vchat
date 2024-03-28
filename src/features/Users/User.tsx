@@ -4,7 +4,7 @@ import { ReactNode, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { openModal } from "../../components/Modal";
 import { useAuth } from "../../context/AuthContext";
-import { IUserDetails } from "../../interfaces";
+import { IUserDetails } from "../../interfaces/interfaces";
 import UserProfileModal from "../Profile/UserProfileModal";
 
 interface UserContextValue {

@@ -3,7 +3,7 @@ import {
   DirectChatDetails,
   DirectMessageDetails,
   IUserDetails,
-} from "../interfaces";
+} from "../interfaces/interfaces";
 import { SERVER } from "../utils/config";
 import { sortDocumentsByCreationDateDesc } from "../utils/utils";
 import api from "./api";

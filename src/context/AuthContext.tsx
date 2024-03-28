@@ -11,8 +11,10 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Models } from "appwrite";
 
 import Loading from "@/pages/Loading";
+import { logUserOut } from "@/services/sessionServices";
+import useLocalStorage from "@/utils/hooks/useLocalStorage";
 import toast from "react-hot-toast";
-import { IUserDetails } from "../interfaces";
+import { IUserDetails } from "../interfaces/interfaces";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
 import { getCurrentUserDetails } from "../services/userDetailsServices";
@@ -39,6 +41,7 @@ export interface IAuthContext {
     name: string;
   }): Promise<void>;
   logIn(credentials: { email: string; password: string }): Promise<void>;
+  logOut(): void;
 }
 
 const AuthContext = createContext<IAuthContext | null>(null);
@@ -51,8 +54,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useState<IUserDetails | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [isRegistering, setRegistering] = useState(false);
   const intendedRef = useRef<string>("/");
   const navigate = useNavigate();
+
+  const [localUser, setLocalUser] = useLocalStorage<IUserDetails | null>(
+    "user",
+    null,
+  );
+
+  const getAccount = async () => {
+    return await api.getAccount();
+  };
 
   const getUserDetails = async (user: Models.User<Models.Preferences>) => {
     try {
@@ -61,24 +74,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return await createDetailsDoc(user);
     }
   };
-  const getUserOnLoad = async () => {
-    try {
-      const user = await api.getAccount();
-      const userDetails = await getUserDetails(user);
-      setCurrentUser(user);
-      setCurrentUserDetails(userDetails);
-      if (
-        intendedRef.current === "/login" ||
-        intendedRef.current === "/register"
-      ) {
-        intendedRef.current = "/chats";
-      }
-      navigate(intendedRef.current);
-    } catch (error) {
-      navigate("/login");
-    } finally {
-      setIsLoading(false);
-    }
+  const fetchUserDataOnLoad = async () => {
+    const user = await getAccount();
+    console.log(user);
+    setIsLoading(false);
+
+    // try {
+    //   const userDetails = await getUserDetails(user);
+    // } catch (error: any) {
+    //   toast.error(error.message);
+    // }
   };
 
   async function register(credentials: {
@@ -87,13 +92,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     name: string;
   }) {
     try {
-      await api.createAccount(
+      const user = await api.createAccount(
         credentials.email,
         credentials.password,
         credentials.name,
       );
       await api.createSession(credentials.email, credentials.password);
-      getUserOnLoad();
+      setCurrentUser(user);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -102,10 +107,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   async function logIn(credentials: { email: string; password: string }) {
     try {
       await api.createSession(credentials.email, credentials.password);
-      await getUserOnLoad();
+      await fetchUserDataOnLoad();
     } catch (error: any) {
       toast.error(error.message);
     }
+  }
+
+  async function logOut() {
+    await logUserOut();
+    setCurrentUser(null);
+    setCurrentUserDetails(null);
   }
 
   async function refreshUserDetails() {
@@ -113,10 +124,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     let userDeets = await getCurrentUserDetails(currentUser);
     setCurrentUserDetails(userDeets);
   }
+
   useEffect(() => {
     intendedRef.current = pathname;
     if (currentUser && currentUserDetails) return;
-    getUserOnLoad();
+    fetchUserDataOnLoad();
   }, []);
 
   let contextData = {
@@ -129,6 +141,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     refreshUserDetails,
     register,
     logIn,
+    logOut,
   };
   if (isLoading) {
     return <Loading />;

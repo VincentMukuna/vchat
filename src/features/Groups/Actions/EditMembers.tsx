@@ -23,7 +23,7 @@ import useSWR from "swr";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import VSkeleton from "../../../components/VSkeleton";
 import { useAuth } from "../../../context/AuthContext";
-import { GroupChatDetails } from "../../../interfaces";
+import { GroupChatDetails } from "../../../interfaces/interfaces";
 import {
   editMembers,
   getGroupDetails,

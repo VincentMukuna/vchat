@@ -18,7 +18,10 @@ import {
   RoomActionTypes,
   useRoomContext,
 } from "../../context/Room/RoomContext";
-import { DirectMessageDetails, GroupMessageDetails } from "../../interfaces";
+import {
+  DirectMessageDetails,
+  GroupMessageDetails,
+} from "../../interfaces/interfaces";
 import { SERVER } from "../../utils/config";
 import { FileTypeValidator } from "../../utils/fileValidators";
 

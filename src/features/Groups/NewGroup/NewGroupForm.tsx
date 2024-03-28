@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useChatsContext } from "@/context/ChatsContext";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
-import { IUserDetails } from "../../../interfaces";
+import { IUserDetails } from "../../../interfaces/interfaces";
 import { createGroup } from "../../../services/groupMessageServices";
 import FormStepper from "./FormStepper";
 import AddMembersForm from "./NewGroupAddMembersForm";

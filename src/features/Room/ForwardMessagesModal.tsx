@@ -13,7 +13,7 @@ import { UserIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
-import { ChatMessage, IUserDetails } from "../../interfaces";
+import { ChatMessage, IUserDetails } from "../../interfaces/interfaces";
 import { forwardDirectMessages } from "../../services/chatMessageServices";
 import { forwardGroupMessages } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";

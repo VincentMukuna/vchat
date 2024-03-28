@@ -67,6 +67,13 @@ const router = createBrowserRouter([
           return { Component: x.default };
         },
       },
+      {
+        path: "details",
+        async lazy() {
+          let details = await import("./pages/Details");
+          return { Component: details.default };
+        },
+      },
     ],
   },
 ]);

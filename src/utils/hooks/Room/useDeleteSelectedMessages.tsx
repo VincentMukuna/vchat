@@ -10,7 +10,7 @@ import {
   ChatMessage,
   DirectMessageDetails,
   GroupMessageDetails,
-} from "../../../interfaces";
+} from "../../../interfaces/interfaces";
 import { deleteSelectedDirectChatMessages } from "../../../services/chatMessageServices";
 import { deleteSelectedGroupMessages } from "../../../services/groupMessageServices";
 import useSWROptimistic from "../useSWROptimistic";

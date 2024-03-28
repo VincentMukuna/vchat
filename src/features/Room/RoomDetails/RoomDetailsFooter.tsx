@@ -6,7 +6,10 @@ import toast from "react-hot-toast";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { DirectChatDetails, GroupChatDetails } from "../../../interfaces";
+import {
+  DirectChatDetails,
+  GroupChatDetails,
+} from "../../../interfaces/interfaces";
 import {
   deleteGroup,
   leaveGroup,

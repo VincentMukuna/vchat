@@ -14,7 +14,7 @@ import { confirmAlert } from "../../components/Alert/alertStore";
 import { openModal } from "../../components/Modal";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { GroupChatDetails } from "../../interfaces";
+import { GroupChatDetails } from "../../interfaces/interfaces";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import { clearGroupMessages } from "../../services/groupMessageServices";
 import { SERVER } from "../../utils/config";

@@ -33,7 +33,7 @@ import {
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
-} from "../../interfaces";
+} from "../../interfaces/interfaces";
 import { getGroupDetails } from "../../services/groupMessageServices";
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";

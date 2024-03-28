@@ -1,5 +1,5 @@
 import { useChatsContext } from "@/context/ChatsContext";
-import { ChatMessage } from "@/interfaces";
+import { ChatMessage } from "@/interfaces/interfaces";
 import api from "@/services/api";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {

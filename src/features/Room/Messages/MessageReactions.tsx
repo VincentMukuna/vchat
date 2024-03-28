@@ -2,7 +2,7 @@ import { FluentEmojiFlatHeartSuit } from "@/components/Icons";
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
-import { ChatMessage } from "@/interfaces";
+import { ChatMessage } from "@/interfaces/interfaces";
 import {
   updateChatDetails,
   updateDirectMessage,

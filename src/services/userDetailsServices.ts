@@ -8,7 +8,7 @@ import {
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
-} from "../interfaces";
+} from "../interfaces/interfaces";
 import { SERVER } from "../utils/config";
 import api from "./api";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";

@@ -3,7 +3,7 @@ import {
   DirectMessageDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../interfaces";
+} from "../../interfaces/interfaces";
 import { SERVER } from "../../utils/config";
 import { useAuth } from "../AuthContext";
 import { useChatsContext } from "../ChatsContext";

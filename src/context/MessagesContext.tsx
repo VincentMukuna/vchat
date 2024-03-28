@@ -7,7 +7,7 @@ import {
   DirectMessageDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "@/interfaces";
+} from "@/interfaces/interfaces";
 import {
   deleteChatMessage,
   sendChatMessage,
