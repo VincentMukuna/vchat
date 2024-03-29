@@ -1,14 +1,14 @@
 import {
-  Conversation,
   DirectChatDetails,
   GroupChatDetails,
+  IConversation,
   IUserDetails,
 } from "@/interfaces/interfaces";
 import { sortConversations } from "@/services/userDetailsServices";
 import { SERVER } from "@/utils/config";
 import useConversations from "@/utils/hooks/Chats/useConversations";
 import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
-import { createContext, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 import { mutate } from "swr";
 
 type ChatsProviderProps = {
@@ -22,18 +22,18 @@ interface IChatsContextData {
   >;
   recepient: IUserDetails | undefined;
   conversationsData: {
-    conversations: Conversation[];
+    conversations: IConversation[];
     chatsError: any;
     chatsLoading: boolean;
   };
   setRecepient: React.Dispatch<React.SetStateAction<IUserDetails | undefined>>;
-  addConversation: (conversation: Conversation) => void;
+  addConversation: (conversation: IConversation) => void;
   deleteConversation: (conversationId: string) => void;
   selectConversation: (
     conversationId: string,
     recepient?: IUserDetails,
   ) => void;
-  updateConversation: (conversation: Conversation) => void;
+  updateConversation: (conversation: IConversation) => void;
 }
 const ChatsContext = createContext<IChatsContextData | null>(null);
 
@@ -49,52 +49,61 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     mutate: updateConversations,
   } = useConversations();
 
-  const selectConversation = (
-    conversationId: string,
-    recepient?: IUserDetails,
-  ) => {
-    const conversation = conversations.find((c) => c.$id === conversationId);
+  const selectConversation = useCallback(
+    (conversationId: string, recepient?: IUserDetails) => {
+      const conversation = conversations.find((c) => c.$id === conversationId);
 
-    setSelectedChat(conversation);
-    if (conversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
-      setRecepient(recepient);
-    }
-  };
-
-  const addConversation = (conversation: Conversation) => {
-    updateConversations([conversation, ...conversations], {
-      revalidate: false,
-    });
-  };
-
-  const deleteConversation = (conversationId: string) => {
-    updateConversations(
-      conversations.filter((convo) => convo.$id !== conversationId),
-      { revalidate: false },
-    );
-  };
-
-  const updateConversation = (conversation: Conversation) => {
-    const newConversations = conversations.map((c) => {
-      if (c.$id === conversation.$id) {
-        return conversation;
-      } else {
-        return c;
+      setSelectedChat(conversation);
+      if (conversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
+        setRecepient(recepient);
       }
-    });
+    },
+    [conversations],
+  );
 
-    updateConversations(sortConversations(newConversations), {
-      revalidate: false,
-    });
+  const addConversation = useCallback(
+    (conversation: IConversation) => {
+      updateConversations([conversation, ...conversations], {
+        revalidate: false,
+      });
+    },
+    [conversations, updateConversations],
+  );
 
-    mutate(
-      `${conversation.$id}-messages`,
-      isGroup(conversation)
-        ? conversation.groupMessages.toSorted(sortDocumentsByCreationDateDesc)
-        : conversation.chatMessages.toSorted(sortDocumentsByCreationDateDesc),
-      { revalidate: false },
-    );
-  };
+  const deleteConversation = useCallback(
+    (conversationId: string) => {
+      updateConversations(
+        conversations.filter((convo) => convo.$id !== conversationId),
+        { revalidate: false },
+      );
+    },
+    [conversations, updateConversations],
+  );
+
+  const updateConversation = useCallback(
+    (conversation: IConversation) => {
+      const newConversations = conversations.map((c) => {
+        if (c.$id === conversation.$id) {
+          return conversation;
+        } else {
+          return c;
+        }
+      });
+
+      updateConversations(sortConversations(newConversations), {
+        revalidate: false,
+      });
+
+      mutate(
+        `${conversation.$id}-messages`,
+        isGroup(conversation)
+          ? conversation.groupMessages.toSorted(sortDocumentsByCreationDateDesc)
+          : conversation.chatMessages.toSorted(sortDocumentsByCreationDateDesc),
+        { revalidate: false },
+      );
+    },
+    [conversations, updateConversations, mutate],
+  );
 
   const contextData = {
     selectedChat,

@@ -3,7 +3,7 @@ import MessagesProvider from "@/context/MessagesContext";
 import Room from "@/features/Room/Room";
 import { Box } from "@chakra-ui/react";
 import { RoomProvider } from "../context/Room/RoomContext";
-import ChatsList from "../features/Chats/ChatsList";
+import ConversationList from "../features/Conversations/ConversationList";
 import Sidebar, { SideBarHeader } from "../features/Sidebar/Sidebar";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 
@@ -13,7 +13,7 @@ function Chats() {
     <AuthenticatedLayout>
       <Sidebar>
         <SideBarHeader title={"Chats"} className="" />
-        <ChatsList className="" />
+        <ConversationList className="" />
       </Sidebar>
       <Box
         className={`absolute flex transition-opacity  h-full   inset-0 lg:relative grow ${

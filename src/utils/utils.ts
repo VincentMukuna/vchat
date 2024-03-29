@@ -1,8 +1,8 @@
 import {
-  Conversation,
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
+  IConversation,
 } from "@/interfaces/interfaces";
 import { Models } from "appwrite";
 import { SERVER } from "./config";
@@ -88,7 +88,7 @@ export function matchAndExecute(
   return null;
 }
 
-export const getUnreadCount = (conversation: Conversation, userId: string) => {
+export const getUnreadCount = (conversation: IConversation, userId: string) => {
   if (conversation.$collectionId === SERVER.COLLECTION_ID_GROUPS) {
     return conversation.groupMessages.filter(
       (m: GroupMessageDetails) => m.senderID !== userId && m.read === false,
@@ -101,7 +101,7 @@ export const getUnreadCount = (conversation: Conversation, userId: string) => {
 };
 
 export function isGroup(
-  conversation: Conversation,
+  conversation: IConversation,
 ): conversation is GroupChatDetails {
   return conversation.$collectionId === SERVER.COLLECTION_ID_GROUPS;
 }

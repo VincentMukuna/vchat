@@ -78,4 +78,4 @@ export interface IUserDetails extends Models.Document {
 }
 
 export type ChatMessage = DirectMessageDetails | GroupMessageDetails;
-export type Conversation = DirectChatDetails | GroupChatDetails;
+export type IConversation = DirectChatDetails | GroupChatDetails;

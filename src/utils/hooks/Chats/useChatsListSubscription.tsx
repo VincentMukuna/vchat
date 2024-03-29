@@ -3,7 +3,7 @@ import { useChatsContext } from "@/context/ChatsContext";
 import { Message } from "@/features/Room/MessageInput";
 import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
-  Conversation,
+  IConversation,
   IUserDetails,
 } from "@/interfaces/interfaces";
 import api from "@/services/api";
@@ -28,7 +28,7 @@ const useChatsListSubscription = () => {
 
   //subscribe to all conversations
   useEffect(() => {
-    return api.subscribe<Conversation>(conversationChannels, (response) => {
+    return api.subscribe<IConversation>(conversationChannels, (response) => {
       if (
         response.payload.changerID === currentUserDetails?.$id ||
         !response.payload.changeLog

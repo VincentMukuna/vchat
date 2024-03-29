@@ -33,7 +33,7 @@ interface IChatProps {
   conversation: DirectChatDetails | GroupChatDetails;
 }
 
-const Chat = memo(
+const Conversation = memo(
   ({ conversation }: IChatProps) => {
     const { currentUserDetails } = useAuth();
     if (!currentUserDetails) return null;
@@ -191,4 +191,4 @@ const Chat = memo(
     prevProps.conversation.$id === nextProps.conversation.$id,
 );
 
-export default Chat;
+export default Conversation;

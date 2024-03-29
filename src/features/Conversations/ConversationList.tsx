@@ -10,9 +10,9 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import Chat from "./Chat";
+import Conversation from "./Conversation";
 
-const ChatsList = ({ className }: { className: string }) => {
+const ConversationList = ({ className }: { className: string }) => {
   const { currentUser, currentUserDetails } = useAuth();
   const navigate = useNavigate();
 
@@ -95,7 +95,7 @@ const ChatsList = ({ className }: { className: string }) => {
             ? conversations
             : currentUserDetails.groups
           ).map((conversation) => (
-            <Chat key={conversation.$id} conversation={conversation} />
+            <Conversation key={conversation.$id} conversation={conversation} />
           ))}
         </div>
       </motion.div>
@@ -103,4 +103,4 @@ const ChatsList = ({ className }: { className: string }) => {
   }
 };
 
-export default ChatsList;
+export default ConversationList;
