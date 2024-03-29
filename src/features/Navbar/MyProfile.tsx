@@ -7,12 +7,7 @@ import { getCurrentUserDetails } from "../../services/userDetailsServices";
 
 export const MyProfile = () => {
   const { colorMode } = useColorMode();
-  const {
-    currentUser,
-    currentUserDetails,
-    setCurrentUserDetails,
-    setCurrentUser,
-  } = useAuth();
+  const { currentUser, currentUserDetails, setCurrentUserDetails } = useAuth();
   if (!currentUser || !currentUserDetails) return null;
 
   return (

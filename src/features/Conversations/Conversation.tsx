@@ -154,7 +154,7 @@ const Conversation = memo(
               {unreadCount}
             </AvatarBadge>
           </Avatar>
-          <div className="grid gap-[2px] ml-1 overflow-hidden shrink text-ellipsis">
+          <div className="grid gap-[2px] ml-1 overflow-hidden shrink text-ellipsis basis-2/3">
             <span className="max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
               {isGroup
                 ? conversation.name
@@ -176,7 +176,7 @@ const Conversation = memo(
               )}
             </span>
           </div>
-          <div className="flex flex-col gap-4 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
+          <div className="flex flex-col gap-1 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
             <span className="flex text-[10px] tracking-wide ">
               {getFormatedDate(
                 lastMessage?.$createdAt || conversation.$updatedAt,
