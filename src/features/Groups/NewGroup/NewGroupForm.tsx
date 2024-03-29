@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import { useChatsContext } from "@/context/ChatsContext";
+import { sendSystemMessage } from "@/services/systemMessageService";
+import { SERVER } from "@/utils/config";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { IUserDetails } from "../../../interfaces/interfaces";
@@ -40,6 +42,14 @@ const NewGroupForm = ({ onClose }: { onClose: () => void }) => {
     });
     promise.then((doc) => {
       addConversation(doc);
+      sendSystemMessage(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_GROUP_MESSAGES,
+        {
+          body: `${currentUserDetails.name} created the group`,
+          groupDoc: doc.$id,
+        },
+      );
     });
     promise.finally(() => onClose());
   };

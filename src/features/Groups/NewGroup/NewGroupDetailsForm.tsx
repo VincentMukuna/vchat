@@ -1,11 +1,11 @@
-import { blueDark, gray, indigoDark, slate } from "@radix-ui/colors";
-import React from "react";
-import { motion } from "framer-motion";
-import { useStepper } from "./FormStepper";
 import { Avatar, Button, IconButton, Input } from "@chakra-ui/react";
-import { useFilePicker } from "use-file-picker";
-import toast from "react-hot-toast";
 import { PencilIcon } from "@heroicons/react/20/solid";
+import { gray } from "@radix-ui/colors";
+import { motion } from "framer-motion";
+import React from "react";
+import toast from "react-hot-toast";
+import { useFilePicker } from "use-file-picker";
+import { useStepper } from "./FormStepper";
 interface GroupDetailsProps {
   description: string;
   name: string;
@@ -21,7 +21,7 @@ const NewGroupDetailsForm = ({
 }: GroupDetailsProps) => {
   const { next } = useStepper();
   const { openFilePicker, filesContent, plainFiles } = useFilePicker({
-    accept: [".jpg", ".png"],
+    accept: [".jpg", ".png", ".jpeg", ".webp"],
     multiple: true,
     readAs: "DataURL",
     onFilesSuccessfullySelected: (data) => {
