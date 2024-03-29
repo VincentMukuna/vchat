@@ -69,7 +69,7 @@ const useChatsListSubscription = () => {
         mutate(unreadCountKey, unreadCount, { revalidate: false });
 
         //update last message
-        mutate(`lastMessage ${conversation.$id}`, newMessage, {
+        mutate(`conversations/${conversation.$id}/last-message`, newMessage, {
           revalidate: false,
         });
 

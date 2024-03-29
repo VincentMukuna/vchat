@@ -66,6 +66,9 @@ const Chat = memo(
     const { data: lastMessage } = useSWR(
       `conversations/${conversation.$id}/last-message`,
       getLastMessage,
+      {
+        revalidateIfStale: false,
+      },
     );
 
     const { data: unreadCount } = useSWR(

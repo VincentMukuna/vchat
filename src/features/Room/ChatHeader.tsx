@@ -104,6 +104,13 @@ function ChatHeader() {
       ></IconButton>
       <Avatar
         src={selectedChatDetails?.avatarURL || recepient?.avatarURL}
+        name={
+          isGroup
+            ? selectedChatDetails.name
+            : isPersonal
+            ? "You"
+            : recepient?.name
+        }
         icon={
           isGroup ? (
             <UsersIcon className="w-[26px] h-[26px]" />
