@@ -2,7 +2,7 @@ import { Avatar, Card, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { ReactNode, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { openModal } from "../../components/Modal";
+import { modal } from "../../components/VModal";
 import { useAuth } from "../../context/AuthContext";
 import { IUserDetails } from "../../interfaces/interfaces";
 import UserProfileModal from "../Profile/UserProfileModal";
@@ -25,6 +25,7 @@ function User({
   children: ReactNode;
 }) {
   const { currentUserDetails } = useAuth();
+
   const navigate = useNavigate();
   if (!currentUserDetails) return null;
 
@@ -46,7 +47,7 @@ function User({
           onClick
             ? onClick
             : () => {
-                openModal(
+                modal(
                   <UserProfileModal
                     onClose={() => {
                       onCloseModal && onCloseModal();
@@ -79,7 +80,7 @@ export const UserAvatar = ({ size }: { size?: string }) => {
       onClick={(e) => {
         if (user.avatarURL) {
           e.stopPropagation();
-          openModal(
+          modal(
             <Image
               src={user.avatarURL}
               objectFit="scale-down"

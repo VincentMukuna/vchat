@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from "react";
 
-import { openModal } from "@/components/Modal";
+import { modal } from "@/components/VModal";
 import {
   Avatar,
   AvatarBadge,
@@ -122,7 +122,7 @@ const Chat = memo(
             onClick={(e) => {
               e.stopPropagation();
               if (avatarURL) {
-                openModal(
+                modal(
                   <Image
                     src={avatarURL}
                     alt={

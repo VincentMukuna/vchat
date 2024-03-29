@@ -3,7 +3,7 @@ import { ArrowUturnRightIcon } from "@heroicons/react/20/solid";
 import { Square2StackIcon } from "@heroicons/react/24/outline";
 import { confirmAlert } from "../../components/Alert/alertStore";
 import { DeleteIcon } from "../../components/Icons";
-import { openModal } from "../../components/Modal";
+import { modal } from "../../components/VModal";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import {
@@ -94,7 +94,7 @@ export default function SelectedChatOptions() {
               type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,
               payload: null,
             });
-            openModal(
+            modal(
               <ForwardMessagesModal
                 selectedMessages={roomState.selectedMessages}
               />,

@@ -22,7 +22,7 @@ import useSWR from "swr";
 import { getUserDetails } from "../../../services/userDetailsServices";
 
 import { confirmAlert } from "../../../components/Alert/alertStore";
-import { openModal } from "../../../components/Modal";
+import { modal } from "../../../components/VModal";
 import {
   RoomActionTypes,
   useRoomContext,
@@ -224,7 +224,7 @@ const Message = forwardRef<any, MessageProps>(
               }
               size="sm"
               onClick={() => {
-                openModal(
+                modal(
                   <UserProfileModal
                     onClose={() => {}}
                     user={senderDetails as IUserDetails}
@@ -269,7 +269,7 @@ const Message = forwardRef<any, MessageProps>(
                   <Image
                     onClick={(e) => {
                       e.stopPropagation();
-                      openModal(
+                      modal(
                         <Image
                           src={attachments[0] as any}
                           objectFit="scale-down"
@@ -403,7 +403,7 @@ const Message = forwardRef<any, MessageProps>(
               hidden={!isMine}
               onClick={(e) => {
                 e.stopPropagation();
-                openModal(<EditMessageForm message={message} />);
+                modal(<EditMessageForm message={message} />);
               }}
             />
           </div>

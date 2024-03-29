@@ -3,19 +3,16 @@ import {
   ModalContent,
   ModalOverlay,
   ModalProps,
-  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { Store } from "../utils/observableStore";
+import { ObservableStore } from "../utils/observableStore";
 
-let modalStore = new Store<any>({ modalContent: null });
+let modalStore = new ObservableStore<any>({ modalContent: null });
 
 const VModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [state, setState] = useState({ modalContent: null, props: {} });
-
-  const { colorMode } = useColorMode();
 
   useEffect(() => {
     if (state.modalContent) {
@@ -42,7 +39,7 @@ const VModal = () => {
   );
 };
 
-export function openModal(
+export function modal(
   modalContent: React.JSX.Element,
   props?: Partial<ModalProps>,
 ) {

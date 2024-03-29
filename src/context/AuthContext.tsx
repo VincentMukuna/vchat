@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     useState<IUserDetails | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isRegistering, setRegistering] = useState(false);
+  const [isSettingUp, setIsSettingUp] = useState(false);
   const intendedRef = useRef<string>("/");
   const navigate = useNavigate();
 
@@ -75,15 +75,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
   const fetchUserDataOnLoad = async () => {
-    const user = await getAccount();
-    console.log(user);
+    try {
+      const user = await getAccount();
+      const userDetails = await getUserDetails(user);
+      setCurrentUser(user);
+      setCurrentUserDetails(userDetails);
+      if (
+        intendedRef.current === "/login" ||
+        intendedRef.current === "/register"
+      ) {
+        navigate("/");
+      } else {
+        navigate(intendedRef.current);
+      }
+    } catch (error: any) {
+      navigate("/login");
+    }
     setIsLoading(false);
-
-    // try {
-    //   const userDetails = await getUserDetails(user);
-    // } catch (error: any) {
-    //   toast.error(error.message);
-    // }
   };
 
   async function register(credentials: {
@@ -153,10 +161,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 };
 
 export const useAuth = () => {
-  let navigate = useNavigate();
   let context = useContext(AuthContext);
   if (context === null) {
-    navigate("/login");
+    throw new Error("No AuthProvider found");
   }
   return context as IAuthContext;
 };

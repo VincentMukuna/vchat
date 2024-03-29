@@ -78,6 +78,7 @@ export function matchAndExecute(
   input: string,
   matchers: Map<RegExp, (matches: RegExpMatchArray) => any>,
 ) {
+  if (!input) return;
   for (let [matcher, callback] of matchers) {
     let matches = input.match(matcher);
     if (matches) {

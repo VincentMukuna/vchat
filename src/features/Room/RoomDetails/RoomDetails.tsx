@@ -3,7 +3,7 @@ import { Avatar, AvatarGroup, IconButton, VStack } from "@chakra-ui/react";
 import { PencilIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import useSWR from "swr";
-import { openModal } from "../../../components/Modal";
+import { modal } from "../../../components/VModal";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
@@ -57,7 +57,7 @@ const RoomDetails = () => {
               />
             </div>
             <div className="relative flex flex-col items-center gap-2 mb-6">
-              <div className="mt-3 text-lg font-bold">
+              <div className="mt-3 text-lg font-semibold">
                 {isGroup ? selectedChat.name : recepient?.name}
               </div>
               <div className=" text-dark-gray5 dark:text-gray6">
@@ -73,7 +73,7 @@ const RoomDetails = () => {
                   aria-label="edit details"
                   variant={"outline"}
                   onClick={() =>
-                    openModal(
+                    modal(
                       <EditGroupDetailsForm
                         group={selectedChat as GroupChatDetails}
                       />,

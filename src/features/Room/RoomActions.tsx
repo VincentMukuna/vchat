@@ -11,7 +11,7 @@ import {
 import { slateDark } from "@radix-ui/colors";
 import toast from "react-hot-toast";
 import { confirmAlert } from "../../components/Alert/alertStore";
-import { openModal } from "../../components/Modal";
+import { modal } from "../../components/VModal";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import { GroupChatDetails } from "../../interfaces/interfaces";
@@ -90,7 +90,7 @@ const RoomActions = () => {
           <MenuItem
             py={"1"}
             onClick={() =>
-              openModal(<AddMembers group={selectedChat as GroupChatDetails} />)
+              modal(<AddMembers group={selectedChat as GroupChatDetails} />)
             }
             bg={"transparent"}
             icon={<UserPlusIcon className="w-4 h-4" />}
@@ -101,9 +101,7 @@ const RoomActions = () => {
           <MenuItem
             py={"1"}
             onClick={() =>
-              openModal(
-                <EditMembers group={selectedChat as GroupChatDetails} />,
-              )
+              modal(<EditMembers group={selectedChat as GroupChatDetails} />)
             }
             bg={"transparent"}
             icon={<UserMinusIcon className="w-4 h-4" />}
@@ -116,7 +114,7 @@ const RoomActions = () => {
             py={"1"}
             bg={"transparent"}
             onClick={() =>
-              openModal(
+              modal(
                 <EditGroupAdmins
                   selectedGroup={selectedChat as GroupChatDetails}
                 />,

@@ -1,3 +1,5 @@
+import DataLoss from "@/components/DataLoss";
+import { modal } from "@/components/VModal";
 import { Models } from "appwrite";
 import { IUserDetails } from "../interfaces/interfaces";
 import { SERVER } from "../utils/config";
@@ -8,48 +10,42 @@ export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
   let userDeets: IUserDetails;
   //user already has a detail doc we return it
   if (user.prefs.detailsDocID) {
-    userDeets = (await api.getDocument(
+    try {
+      userDeets = (await api.getDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_USERS,
+        user.prefs.detailsDocID,
+      )) as IUserDetails;
+      return userDeets;
+    } catch (error) {
+      modal(<DataLoss />, {
+        size: "md",
+        isCentered: true,
+        scrollBehavior: "inside",
+      });
+    }
+  }
+  //New user
+  try {
+    userDeets = (await api.createDocument(
       SERVER.DATABASE_ID,
       SERVER.COLLECTION_ID_USERS,
-      user.prefs.detailsDocID,
+      {
+        userID: user.$id,
+        name: user.name,
+      },
     )) as IUserDetails;
+    api.updatePrefs({ detailsDocID: userDeets.$id });
+    addUserToGlobalChat(userDeets.$id);
     return userDeets;
+  } catch (error) {
+    throw new Error("Error setting up");
   }
-  //Search the db for such a document
-  // let { documents } = await api.listDocuments(
-  //   SERVER.DATABASE_ID,
-  //   SERVER.COLLECTION_ID_USERS,
-  //   [Query.search("userID", user.$id), Query.limit(1)],
-  // );
-  //If such a doc exists
-  // if (documents[0]) {
-  //   userDeets = documents[0] as IUserDetails;
-  //   api.updatePrefs({ detailsDocID: userDeets.$id });
-  //   return userDeets;
-  // }
-
-  //New user
-  // try {
-  //   userDeets = (await api.createDocument(
-  //     SERVER.DATABASE_ID,
-  //     SERVER.COLLECTION_ID_USERS,
-  //     {
-  //       userID: user.$id,
-  //       name: user.name,
-  //     },
-  //   )) as IUserDetails;
-
-  //   api.updatePrefs({ detailsDocID: userDeets.$id });
-  //   addUserToGlobalChat(userDeets.$id);
-  //   return userDeets;
-  // } catch (error) {
-  //   throw new Error("Error setting up");
-  // }
 }
 
 export async function addUserToGlobalChat(userDetailsID: string) {
   try {
-    return (await api
+    api
       .updateDocument(
         SERVER.DATABASE_ID,
         SERVER.COLLECTION_ID_USERS,
@@ -66,7 +62,7 @@ export async function addUserToGlobalChat(userDetailsID: string) {
           },
         );
         return val;
-      })) as IUserDetails;
+      });
   } catch (error) {
     throw new Error("Error adding user to global chat...");
   }

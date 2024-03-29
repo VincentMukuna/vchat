@@ -1,6 +1,5 @@
-import { Alert } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { Store } from "../../utils/observableStore";
+import { ObservableStore } from "../../utils/observableStore";
 
 export type Alert = {
   isShown: boolean;
@@ -22,7 +21,7 @@ let initialState = {
   cancelText: "",
 };
 
-let alertStore = new Store(initialState);
+let alertStore = new ObservableStore(initialState);
 
 export const useAlert: () => Alert = () => {
   const [state, setState] = useState(initialState);

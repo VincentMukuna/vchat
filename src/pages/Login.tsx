@@ -1,4 +1,4 @@
-import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
+import { Button, FocusLock, Input } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -14,7 +14,6 @@ function Login() {
   const navigate = useNavigate();
 
   const [verifying, setVerifying] = useState(false);
-  const { colorMode } = useColorMode();
 
   type Credentials = {
     email: string;
@@ -41,7 +40,6 @@ function Login() {
     setVerifying(true);
     logIn(credentials).finally(() => setVerifying(false));
   }
-  const [item, setItem] = useState(true);
 
   useEffect(() => {
     if (currentUser && currentUserDetails) {

@@ -1,4 +1,4 @@
-export class Store<S> {
+export class ObservableStore<S> {
   state: S;
   subscribers: Set<(state: S) => void>;
 

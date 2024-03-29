@@ -11,7 +11,7 @@ export const SERVER = {
   BUCKET_ID_CHAT_ATTACHMENTS: "chat-message-attachments",
   BUCKET_ID_GROUP_AVATARS: "group-avatars",
   BUCKET_ID_GROUP_ATTACHMENTS: "group-message-attachments",
-  DOCUMENT_ID_GLOBAL_CHAT: "6549f5725a18249f363d",
+  DOCUMENT_ID_GLOBAL_CHAT: "main-lobby",
   FUNCTION_ID_FUNCS: "funcs",
   OAUTH_SUCCESS: import.meta.env.VITE_OAUTH_SUCCESS,
   OAUTH_FAILURE: import.meta.env.VITE_OAUTH_FAILURE,
