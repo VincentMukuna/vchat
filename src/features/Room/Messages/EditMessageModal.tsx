@@ -103,6 +103,7 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
           onChange={(e) => setNewMessage(e.target.value)}
           placeholder="Edit message"
           autoFocus
+          rows={4}
         />
 
         <Button
