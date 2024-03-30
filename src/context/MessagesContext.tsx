@@ -2,7 +2,7 @@ import {
   DirectMessageSendDto,
   GroupMessageSendDto,
   Message,
-} from "@/features/Room/MessageInput";
+} from "@/features/Room/MessageInput/MessageInput";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
