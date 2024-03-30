@@ -207,7 +207,7 @@ const Conversation = memo(
             </span>
           </div>
           <div className="flex flex-col gap-1 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
-            <span className="flex text-[10px] tracking-wide ">
+            <span className="flex text-[10px] tracking-wide whitespace-nowrap">
               {getFormatedDate(
                 lastMessage?.$createdAt || conversation.$updatedAt,
               )}
