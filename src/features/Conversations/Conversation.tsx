@@ -11,11 +11,12 @@ import {
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
 import Blueticks from "../../components/Blueticks";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 import {
+  ChatMessage,
   DirectChatDetails,
   DirectMessageDetails,
   GroupChatDetails,
@@ -24,10 +25,7 @@ import {
 } from "../../interfaces/interfaces";
 import { getFormatedDate } from "../../services/dateServices";
 import { SERVER } from "../../utils/config";
-import {
-  getUnreadCount,
-  sortDocumentsByCreationDateDesc,
-} from "../../utils/utils";
+import { sortDocumentsByCreationDateDesc } from "../../utils/utils";
 
 interface IChatProps {
   conversation: DirectChatDetails | GroupChatDetails;
@@ -42,6 +40,8 @@ const Conversation = memo(
       IUserDetails | undefined
     >();
 
+    const { cache } = useSWRConfig();
+
     const { colorMode } = useColorMode();
 
     const isGroup = !!(
@@ -55,6 +55,12 @@ const Conversation = memo(
       );
 
     function getLastMessage() {
+      const cachedMessages = cache.get(
+        `conversations/${conversation.$id}/messages`,
+      )?.data as ChatMessage[];
+      if (cachedMessages) {
+        return cachedMessages.toSorted(sortDocumentsByCreationDateDesc).at(0);
+      }
       if (isGroup) {
         let messages = conversation.groupMessages as GroupMessageDetails[];
         return messages.toSorted(sortDocumentsByCreationDateDesc).at(0);
@@ -71,9 +77,33 @@ const Conversation = memo(
       },
     );
 
+    const getUnreadCount = () => {
+      const cachedMessages = cache.get(
+        `conversations/${conversation.$id}/messages`,
+      )?.data as ChatMessage[];
+      if (cachedMessages) {
+        return cachedMessages.filter(
+          (message) =>
+            message.senderID !== currentUserDetails.$id && !message.read,
+        ).length;
+      }
+
+      if (isGroup) {
+        return conversation.groupMessages.filter(
+          (m: GroupMessageDetails) =>
+            m.senderID !== currentUserDetails.$id && m.read === false,
+        ).length;
+      } else {
+        return conversation.chatMessages.filter(
+          (m: DirectMessageDetails) =>
+            m.senderID !== currentUserDetails.$id && m.read === false,
+        ).length;
+      }
+    };
+
     const { data: unreadCount } = useSWR(
       `conversations/${conversation.$id}/unread`,
-      () => getUnreadCount(conversation, currentUserDetails.$id),
+      () => getUnreadCount(),
       {},
     );
     useEffect(() => {
