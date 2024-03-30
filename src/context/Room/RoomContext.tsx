@@ -59,7 +59,7 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
     selectedChat?.$collectionId === SERVER.COLLECTION_ID_GROUPS
   );
 
-  const roomMessagesKey = `${selectedChat?.$id}-messages`;
+  const roomMessagesKey = `conversations/${selectedChat?.$id}/messages`;
 
   const isPersonal =
     selectedChat &&

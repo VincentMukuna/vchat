@@ -95,7 +95,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       });
 
       mutate(
-        `${conversation.$id}-messages`,
+        `conversations/${conversation.$id}/messages`,
         isGroup(conversation)
           ? conversation.groupMessages.toSorted(sortDocumentsByCreationDateDesc)
           : conversation.chatMessages.toSorted(sortDocumentsByCreationDateDesc),

@@ -27,7 +27,7 @@ export default function ForwardMessagesModal({
   const { onClose } = useModalContext();
   const [selectedChatId, setSelectedChatId] = useState<string>("");
   const { update: updateRoomMessages } = useSWROptimistic(
-    `${selectedChatId}-messages`,
+    `conversations/${selectedChatId}/messages`,
   );
   const {
     conversationsData: { conversations },
@@ -125,7 +125,7 @@ export default function ForwardMessagesModal({
                 key={conversation.$id}
                 className={`flex items-center gap-2 ${
                   selectedChatId === conversation.$id ? "bg-slate-800" : ""
-                } p-2 rounded-md`}
+                } p-2 rounded-md cursor-pointer hover:bg-slate-800 transition-colors`}
                 onClick={() => {
                   if (selectedChatId === conversation.$id) {
                     setSelectedChatId("");

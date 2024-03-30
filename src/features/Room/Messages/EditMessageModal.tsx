@@ -23,11 +23,13 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
   const { selectedChat } = useChatsContext();
   const { onClose } = useModalContext();
 
-  const roomMessagesKey = selectedChat ? `${selectedChat.$id}-messages` : null;
+  const roomMessagesKey = selectedChat
+    ? `conversations/${selectedChat.$id}/messages`
+    : null;
 
   const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey!);
   const { data: messages } = useSWR<ChatMessage>(() =>
-    selectedChat ? `${selectedChat.$id}-messages` : null,
+    selectedChat ? `conversations/${selectedChat.$id}/messages` : null,
   );
 
   const [newMessage, setNewMessage] = useState(message.body);
