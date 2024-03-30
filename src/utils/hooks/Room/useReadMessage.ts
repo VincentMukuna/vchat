@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
-import { Message } from "@/features/Room/MessageInput";
+import { Message } from "@/features/Room/MessageInput/MessageInput";
 import api from "@/services/api";
 import { useRef, useState } from "react";
 import useSWR from "swr";
@@ -57,6 +57,7 @@ function useReadMessage(
     },
     time: 2000,
     observe: !read && !isMine && !isOptimistic,
+    threshold: 0.5,
   });
 
   return {
