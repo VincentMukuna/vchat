@@ -58,28 +58,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const intendedRef = useRef<string>("/");
   const navigate = useNavigate();
 
-  const [localUser, setLocalUser] = useLocalStorage<IUserDetails | null>(
-    "user",
-    null,
-  );
+  const [localUser, setLocalUser] =
+    useLocalStorage<Models.User<Models.Preferences> | null>("user", null);
 
   const getAccount = async () => {
     return await api.getAccount();
   };
 
-  const getUserDetails = async (user: Models.User<Models.Preferences>) => {
+  const getUserDetails = async (
+    user: Models.User<Models.Preferences>,
+    optimistic: boolean = false,
+  ) => {
     try {
       return await getCurrentUserDetails(user);
     } catch (error) {
-      return await createDetailsDoc(user);
+      if (optimistic) {
+        throw new Error("No user details found");
+      } else {
+        return await createDetailsDoc(user);
+      }
     }
   };
   const fetchUserDataOnLoad = async () => {
     try {
-      const user = await getAccount();
-      const userDetails = await getUserDetails(user);
-      setCurrentUser(user);
-      setCurrentUserDetails(userDetails);
+      if (!localUser) {
+        const user = await getAccount();
+        setLocalUser(user);
+        const userDetails = await getUserDetails(user);
+        setCurrentUser(user);
+        setCurrentUserDetails(userDetails);
+      } else {
+        const userDetails = await getUserDetails(localUser, true);
+        setCurrentUser(localUser);
+        setCurrentUserDetails(userDetails);
+      }
       if (
         intendedRef.current === "/login" ||
         intendedRef.current === "/register"
@@ -123,6 +135,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   async function logOut() {
     await logUserOut();
+    localStorage.clear();
     setCurrentUser(null);
     setCurrentUserDetails(null);
   }
