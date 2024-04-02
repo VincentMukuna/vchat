@@ -48,7 +48,11 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
     updateRoomMessages(
       roomMessages.map((msg: ChatMessage) => {
         if (msg.$id === message.$id) {
-          return { ...msg, body: newMessage };
+          return {
+            ...msg,
+            body: newMessage,
+            editedAt: new Date().toISOString(),
+          };
         }
         return msg;
       }),
@@ -61,7 +65,7 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
         message.$databaseId,
         message.$collectionId,
         message.$id,
-        { body: newMessage },
+        { body: newMessage, editedAt: new Date().toISOString() },
       );
       api.updateDocument(
         selectedChat.$databaseId,
@@ -77,7 +81,7 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
       updateRoomMessages(
         roomMessages.map((msg: ChatMessage) => {
           if (msg.$id === message.$id) {
-            return { ...msg, body: message.body };
+            return { ...msg, body: message.body, editedAt: message.editedAt };
           }
           return msg;
         }),
