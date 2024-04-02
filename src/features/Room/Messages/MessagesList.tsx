@@ -1,5 +1,10 @@
 import { useMessagesContext } from "@/context/MessagesContext";
-import { createContext, memo, useRef } from "react";
+import { ChatMessage } from "@/interfaces/interfaces";
+import {
+  groupDocumentsByDate,
+  sortDocumentsByCreationDateAsc,
+} from "@/utils/utils";
+import { createContext, memo, useMemo, useRef } from "react";
 import Message from "./Message";
 
 interface MessagesProps {}
@@ -14,6 +19,15 @@ const MessagesContext = createContext<MessagesContextType>({
 function MessagesList({}: MessagesProps) {
   const messageListRef = useRef<HTMLDivElement>(null);
   const { messages } = useMessagesContext();
+  const groupedMessages = useMemo(() => {
+    return Object.entries(groupDocumentsByDate(messages)).reduce(
+      (acc, [date, messages]) => {
+        acc.push([date, messages.sort(sortDocumentsByCreationDateAsc)]);
+        return acc;
+      },
+      [] as [string, ChatMessage[]][],
+    );
+  }, [messages]);
   return (
     <div
       ref={messageListRef}
@@ -25,17 +39,35 @@ function MessagesList({}: MessagesProps) {
       >
         {messages.length > 0 ? (
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
-            {messages.map((message, i) => (
+            {groupedMessages.map(([date, messages], i) => (
+              <div key={i}>
+                <div className="py-2 mt-2 text-xs tracking-wide text-center text-gray-300 dark:text-gray-400/90">
+                  {date}
+                </div>
+                {messages.map((message, i) => (
+                  <Message
+                    i={i}
+                    initialRender={i < 12}
+                    messagesListRef={messageListRef}
+                    message={message}
+                    key={message.$id}
+                    prev={messages[i + 1]}
+                    next={messages[i - 1]}
+                  />
+                ))}
+              </div>
+            ))}
+            {/* {messages.map((message, i) => (
               <Message
                 i={i}
                 initialRender={i < 12}
                 messagesListRef={messageListRef}
                 message={message}
-                key={`message/${message.$id}/${message.$updatedAt}`}
+                key={message.$id}
                 prev={messages[i + 1]}
                 next={messages[i - 1]}
               />
-            ))}
+            ))} */}
           </MessagesContext.Provider>
         ) : (
           <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">

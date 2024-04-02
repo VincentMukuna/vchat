@@ -39,6 +39,22 @@ export function sortDocumentsByCreationDateDesc(
   }
 }
 
+export function sortDocumentsByCreationDateAsc(
+  a: Models.Document,
+  b: Models.Document,
+) {
+  const dateA = new Date(a.$createdAt);
+  const dateB = new Date(b.$createdAt);
+
+  if (dateA > dateB) {
+    return 1;
+  } else if (dateA < dateB) {
+    return -1;
+  } else {
+    return 0;
+  }
+}
+
 //function to pluck properties from an object given a comma-separated string
 export function pluck(obj: any, keys: string) {
   return keys.split(",").reduce((acc, key) => {
@@ -113,4 +129,20 @@ export const fromJson = (json: string) => {
 
 export const toJson = (obj: any) => {
   return JSON.stringify(obj);
+};
+
+export const groupDocumentsByDate = <T extends Models.Document>(
+  messages: T[],
+) => {
+  return messages.reduce(
+    (acc, message) => {
+      const date = new Date(message.$createdAt).toDateString();
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date]!.push(message);
+      return acc;
+    },
+    {} as { [key: string]: T[] },
+  );
 };
