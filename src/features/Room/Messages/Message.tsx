@@ -35,6 +35,7 @@ import SystemMessage from "./SystemMessage";
 export type MessagesContextType = {
   handleDelete: (messageID: string) => Promise<void>;
   message: DirectMessageDetails | GroupMessageDetails;
+  setShowHoverCard: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const MessagesContext = createContext<MessagesContextType | null>(null);
@@ -133,7 +134,9 @@ const Message = forwardRef<any, MessageProps>(
     }
 
     return (
-      <MessagesContext.Provider value={{ handleDelete, message }}>
+      <MessagesContext.Provider
+        value={{ handleDelete, message, setShowHoverCard }}
+      >
         <article
           id={message.$id}
           ref={ref}
@@ -254,7 +257,7 @@ const Message = forwardRef<any, MessageProps>(
               />
             </div>
 
-            {shouldShowHoverCard() && showHoverCard && <MessageOptions />}
+            {shouldShowHoverCard() && <MessageOptions />}
           </div>
         </article>
       </MessagesContext.Provider>

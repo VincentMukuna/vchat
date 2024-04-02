@@ -19,9 +19,13 @@ import EditMessageForm from "./EditMessageModal";
 import { useMessageContext } from "./Message";
 
 const MessageOptions = () => {
-  const { handleDelete, message } = useMessageContext();
+  const { handleDelete, message, setShowHoverCard } = useMessageContext();
   return (
-    <Menu isLazy>
+    <Menu
+      isLazy
+      onOpen={() => setShowHoverCard(true)}
+      onClose={() => setShowHoverCard(false)}
+    >
       <MenuButton
         as={IconButton}
         aria-label="message options"
