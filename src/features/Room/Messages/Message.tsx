@@ -36,6 +36,7 @@ export type MessagesContextType = {
   handleDelete: (messageID: string) => Promise<void>;
   message: DirectMessageDetails | GroupMessageDetails;
   setShowHoverCard: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const MessagesContext = createContext<MessagesContextType | null>(null);
@@ -56,6 +57,7 @@ const Message = forwardRef<any, MessageProps>(
     const { deleteMessage } = useMessagesContext();
     const { roomState, dispatch } = useRoomContext();
     const [showHoverCard, setShowHoverCard] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
     const isOptimistic = !!message?.optimistic;
     if (!currentUserDetails || !selectedChat) return;
 
@@ -135,13 +137,18 @@ const Message = forwardRef<any, MessageProps>(
 
     return (
       <MessagesContext.Provider
-        value={{ handleDelete, message, setShowHoverCard }}
+        value={{ handleDelete, message, setShowHoverCard, setShowMenu }}
       >
         <article
           id={message.$id}
           ref={ref}
           onMouseEnter={() => setShowHoverCard(true)}
-          onMouseLeave={() => setShowHoverCard(false)}
+          onMouseLeave={() => {
+            if (showMenu) {
+              return;
+            }
+            setShowHoverCard(false);
+          }}
           tabIndex={1}
           className="flex flex-col transition-all"
         >
@@ -257,7 +264,7 @@ const Message = forwardRef<any, MessageProps>(
               />
             </div>
 
-            {shouldShowHoverCard() && <MessageOptions />}
+            {shouldShowHoverCard() && showHoverCard && <MessageOptions />}
           </div>
         </article>
       </MessagesContext.Provider>

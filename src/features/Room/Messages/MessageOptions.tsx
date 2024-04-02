@@ -19,12 +19,19 @@ import EditMessageForm from "./EditMessageModal";
 import { useMessageContext } from "./Message";
 
 const MessageOptions = () => {
-  const { handleDelete, message, setShowHoverCard } = useMessageContext();
+  const { handleDelete, message, setShowHoverCard, setShowMenu } =
+    useMessageContext();
   return (
     <Menu
       isLazy
-      onOpen={() => setShowHoverCard(true)}
-      onClose={() => setShowHoverCard(false)}
+      onOpen={() => {
+        setShowMenu(true);
+        setShowHoverCard(true);
+      }}
+      onClose={() => {
+        setShowHoverCard(false);
+        setShowMenu(false);
+      }}
     >
       <MenuButton
         as={IconButton}
