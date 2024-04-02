@@ -2,16 +2,13 @@ import { StackDivider, VStack, useColorMode } from "@chakra-ui/react";
 import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
-import { logUserOut } from "../../services/sessionServices";
 
 import { VARIANTS_MANAGER } from "@/services/variants";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
-import { useNavigate } from "react-router-dom";
 
 const SettingsList = () => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { setCurrentUserDetails, setCurrentUser } = useAuth();
-  const navigate = useNavigate();
+  const { logOut } = useAuth();
   return (
     <motion.div
       key="settings"
@@ -43,10 +40,7 @@ const SettingsList = () => {
         </button>
         <button
           onClick={() => {
-            setCurrentUser(null);
-            setCurrentUserDetails(null);
-            logUserOut();
-            navigate("/login");
+            logOut();
           }}
           className="flex items-center w-full h-full max-w-sm p-3"
         >
