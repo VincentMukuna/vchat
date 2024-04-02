@@ -11,7 +11,10 @@ export default function useConversations() {
   const [cachedChats, setCachedChats] = useLocalStorage<
     (GroupChatDetails | DirectChatDetails)[]
   >(
-    `vchat/${currentUserDetails?.$id}/conversations`,
+    () => {
+      if (!currentUserDetails) return undefined;
+      return `vchat/${currentUserDetails?.$id}/conversations`;
+    },
     currentUserDetails?.groups || [],
   );
 
@@ -22,7 +25,7 @@ export default function useConversations() {
       fallbackData:
         cachedChats
           .filter((c) => !isGroup(c))
-          .concat(currentUserDetails!.groups) || [],
+          .concat(currentUserDetails?.groups || []) || [],
       onSuccess(data) {
         setCachedChats(data);
       },
