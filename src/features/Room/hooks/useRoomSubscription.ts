@@ -12,7 +12,7 @@ import api from "@/services/api";
 import { SERVER } from "@/utils/config";
 import { fromJson, matchAndExecute, toJson } from "@/utils/utils";
 import { useEffect } from "react";
-import useSWROptimistic from "../useSWROptimistic";
+import useSWROptimistic from "../../../utils/hooks/useSWROptimistic";
 
 const useRoomSubscription = () => {
   const { currentUserDetails } = useAuth();
@@ -82,29 +82,25 @@ const useRoomSubscription = () => {
                   return {
                     ...msg,
                     body: newMessage.body,
-                    $id: newMessage.$id + "-edited",
+                    $updatedAt: newMessage.$updatedAt,
                   };
                 }
                 return msg;
               }),
-            ).then((value: any) => {
-              //remove edited suffix
-              updateRoomMessages(
-                value.map((msg: any) => {
-                  if (msg.$id === newMessage.$id + "-edited") {
-                    return { ...msg, $id: newMessage.$id };
-                  }
-                  return msg;
-                }),
-              );
-            });
+            );
           };
 
           const handleReadText = (readTextId: string) => {
+            const readText = messages.find((msg) => msg.$id === readTextId);
+            if (!readText) return;
             updateRoomMessages(
               messages.map((msg) => {
                 if (msg.$id === readTextId) {
-                  return { ...msg, read: true, $id: msg.$id + "-read" };
+                  return {
+                    ...msg,
+                    read: true,
+                    $updatedAt: readText.$updatedAt,
+                  };
                 }
                 return msg;
               }),

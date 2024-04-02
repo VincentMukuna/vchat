@@ -1,4 +1,4 @@
-import useConversations from "@/utils/hooks/Chats/useConversations";
+import useConversations from "@/features/Conversations/hooks/useConversations";
 import {
   Avatar,
   Button,

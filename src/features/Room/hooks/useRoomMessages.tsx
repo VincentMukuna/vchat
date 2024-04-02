@@ -7,7 +7,7 @@ import {
 } from "../../../interfaces/interfaces";
 import { getChatMessages } from "../../../services/chatMessageServices";
 import { getGroupMessages } from "../../../services/groupMessageServices";
-import { sortDocumentsByCreationDateDesc } from "../../utils";
+import { sortDocumentsByCreationDateDesc } from "../../../utils/utils";
 
 export default function useRoomMessages() {
   const { selectedChat } = useChatsContext();

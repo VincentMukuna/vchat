@@ -3,7 +3,7 @@ import { DirectChatDetails, GroupChatDetails } from "@/interfaces/interfaces";
 import { getConversations } from "@/services/userDetailsServices";
 import { useEffect } from "react";
 import useSWR from "swr";
-import useLocalStorage from "../useLocalStorage";
+import useLocalStorage from "../../../utils/hooks/useLocalStorage";
 
 export default function useConversations() {
   const { currentUserDetails } = useAuth();

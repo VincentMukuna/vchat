@@ -31,7 +31,7 @@ function MessagesList({}: MessagesProps) {
                 initialRender={i < 12}
                 messagesListRef={messageListRef}
                 message={message}
-                key={message.$id}
+                key={`message/${message.$id}/${message.$updatedAt}`}
                 prev={messages[i + 1]}
                 next={messages[i - 1]}
               />

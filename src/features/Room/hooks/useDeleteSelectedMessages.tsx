@@ -13,7 +13,7 @@ import {
 } from "../../../interfaces/interfaces";
 import { deleteSelectedDirectChatMessages } from "../../../services/chatMessageServices";
 import { deleteSelectedGroupMessages } from "../../../services/groupMessageServices";
-import useSWROptimistic from "../useSWROptimistic";
+import useSWROptimistic from "../../../utils/hooks/useSWROptimistic";
 
 export default function useDeleteSelectedMessages() {
   const { currentUserDetails } = useAuth();

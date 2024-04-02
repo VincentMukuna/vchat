@@ -4,7 +4,7 @@ import { Message } from "@/features/Room/MessageInput/MessageInput";
 import api from "@/services/api";
 import { useRef, useState } from "react";
 import useSWR from "swr";
-import useIntersectionObserver from "../useIntersectionObserver";
+import useIntersectionObserver from "../../../utils/hooks/useIntersectionObserver";
 
 function useReadMessage(
   message: Message,

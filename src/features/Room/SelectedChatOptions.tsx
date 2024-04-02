@@ -10,8 +10,8 @@ import {
   RoomActionTypes,
   useRoomContext,
 } from "../../context/Room/RoomContext";
-import useDeleteSelectedMessages from "../../utils/hooks/Room/useDeleteSelectedMessages";
 import ForwardMessagesModal from "./ForwardMessagesModal";
+import useDeleteSelectedMessages from "./hooks/useDeleteSelectedMessages";
 
 export default function SelectedChatOptions() {
   const { currentUserDetails } = useAuth();

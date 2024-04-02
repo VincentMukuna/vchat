@@ -22,7 +22,7 @@ import UserProfileModal from "../../Profile/UserProfileModal";
 
 import Blueticks from "@/components/Blueticks";
 import { useMessagesContext } from "@/context/MessagesContext";
-import useReadMessage from "@/utils/hooks/Room/useReadMessage";
+import useReadMessage from "@/features/Room/hooks/useReadMessage";
 import { pluck } from "@/utils/utils";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import MessageAttachments from "./MessageAttachments";

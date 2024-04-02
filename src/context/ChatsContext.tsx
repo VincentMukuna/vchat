@@ -1,3 +1,4 @@
+import useConversations from "@/features/Conversations/hooks/useConversations";
 import {
   DirectChatDetails,
   GroupChatDetails,
@@ -6,7 +7,6 @@ import {
 } from "@/interfaces/interfaces";
 import { sortConversations } from "@/services/userDetailsServices";
 import { SERVER } from "@/utils/config";
-import useConversations from "@/utils/hooks/Chats/useConversations";
 import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
 import { createContext, useCallback, useContext, useState } from "react";
 import { mutate } from "swr";

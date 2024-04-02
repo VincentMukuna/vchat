@@ -3,6 +3,7 @@ import {
   GroupMessageSendDto,
   Message,
 } from "@/features/Room/MessageInput/MessageInput";
+import useRoomMessages from "@/features/Room/hooks/useRoomMessages";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
@@ -16,7 +17,6 @@ import {
   deleteGroupMessage,
   sendGroupMessage,
 } from "@/services/groupMessageServices";
-import useRoomMessages from "@/utils/hooks/Room/useRoomMessages";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { createContext, useContext } from "react";
 import { useAuth } from "./AuthContext";

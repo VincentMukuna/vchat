@@ -4,7 +4,7 @@ import NoSelectedChat from "@/components/NoSelectedChat";
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
 import { RoomActionTypes, useRoomContext } from "@/context/Room/RoomContext";
-import useRoomSubscription from "@/utils/hooks/Room/useRoomSubscription";
+import useRoomSubscription from "@/features/Room/hooks/useRoomSubscription";
 import { Box } from "@chakra-ui/react";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";

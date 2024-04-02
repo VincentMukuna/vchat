@@ -1,6 +1,6 @@
 import { useChatsContext } from "@/context/ChatsContext";
-import useChatsListSubscription from "@/utils/hooks/Chats/useChatsListSubscription";
-import useUserChatsSubscription from "@/utils/hooks/Chats/useUserChatsSubscription";
+import useChatsListSubscription from "@/features/Conversations/hooks/useChatsListSubscription";
+import useUserChatsSubscription from "@/features/Conversations/hooks/useUserChatsSubscription";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { UserPlusIcon } from "@heroicons/react/20/solid";
