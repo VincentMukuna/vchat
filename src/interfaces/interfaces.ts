@@ -36,6 +36,7 @@ export interface GroupMessageDetails extends Models.Document {
   read: boolean;
   replying: string | null;
   reactions: string | null;
+  editedAt: string | null;
 }
 export interface UserPrefs extends Models.Preferences {
   detailsDocID: string;
@@ -57,6 +58,7 @@ export interface DirectMessageDetails extends Models.Document {
   attachments: string[];
   replying: string | null;
   reactions: string | null;
+  editedAt: string | null;
 }
 
 export interface IUserDetails extends Models.Document {
