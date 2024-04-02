@@ -128,7 +128,7 @@ export const useChatsContext = () => {
   let chatContext = useContext(ChatsContext);
 
   if (chatContext === null) {
-    throw new Error("chats context not initia;ised");
+    throw new Error("chats context not initialised");
   }
   return chatContext as IChatsContextData;
 };
