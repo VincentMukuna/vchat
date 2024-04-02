@@ -41,7 +41,7 @@ function MessagesList({}: MessagesProps) {
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
             {groupedMessages.map(([date, messages], i) => (
               <div key={i}>
-                <div className="py-2 mt-2 text-xs tracking-wide text-center text-gray-300 dark:text-gray-400/90">
+                <div className="py-2 mt-2 text-xs font-semibold tracking-wide text-center text-gray-500 dark:text-gray-400/90">
                   {date}
                 </div>
                 {messages.map((message, i) => (
@@ -51,8 +51,8 @@ function MessagesList({}: MessagesProps) {
                     messagesListRef={messageListRef}
                     message={message}
                     key={message.$id}
-                    prev={messages[i + 1]}
-                    next={messages[i - 1]}
+                    prev={messages[i - 1]}
+                    next={messages[i + 1]}
                   />
                 ))}
               </div>
