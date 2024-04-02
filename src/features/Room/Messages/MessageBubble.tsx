@@ -45,7 +45,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
       >
         <div className="text-[0.9rem] leading-relaxed tracking-wide flex justify-between">
           <pre className="font-sans whitespace-pre-wrap">{message.body}</pre>
-          <small className="text-[0.6rem] tracking-wider text-gray-400 dark:text-slate-300 self-end ms-2 inline-flex gap-1 items-baseline">
+          <small className="text-[0.6rem] tracking-wider text-gray-500 dark:text-slate-300 self-end ms-2 inline-flex gap-1 items-baseline">
             {new Date(message.$createdAt)
               .toLocaleTimeString("en-US", {
                 hour: "numeric",
