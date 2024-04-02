@@ -1,9 +1,23 @@
 import { useEffect, useState } from "react";
 
-function useLocalStorage<T>(key: string, initialValue: T) {
+type KeyFunction = () => string | undefined | null;
+
+function useLocalStorage<T>(key: string | KeyFunction, initialValue: T) {
+  let cacheKey: string | undefined = undefined;
+  if (typeof key === "function") {
+    const keyFnResult = key();
+    if (keyFnResult) {
+      cacheKey = keyFnResult;
+    }
+  } else {
+    cacheKey = key;
+  }
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
-      const item = window.localStorage.getItem(key);
+      if (!cacheKey) {
+        return initialValue;
+      }
+      const item = window.localStorage.getItem(cacheKey);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
       console.error(error);
@@ -13,11 +27,13 @@ function useLocalStorage<T>(key: string, initialValue: T) {
 
   useEffect(() => {
     try {
-      window.localStorage.setItem(key, JSON.stringify(storedValue));
+      if (cacheKey) {
+        window.localStorage.setItem(cacheKey, JSON.stringify(storedValue));
+      }
     } catch (error) {
       console.error(error);
     }
-  }, [key, storedValue]);
+  }, [storedValue, cacheKey]);
 
   const setValue = (value: T) => {
     setStoredValue(value);
