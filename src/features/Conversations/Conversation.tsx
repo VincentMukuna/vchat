@@ -11,6 +11,7 @@ import {
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { flushSync } from "react-dom";
 import useSWR, { useSWRConfig } from "swr";
 import Blueticks from "../../components/Blueticks";
 import { useAuth } from "../../context/AuthContext";
@@ -135,8 +136,10 @@ const Conversation = memo(
           ps={3}
           rounded={"md"}
           onClick={(e) => {
-            setRecepient(contactDetails);
-            setSelectedChat(conversation);
+            flushSync(() => {
+              setRecepient(contactDetails);
+              setSelectedChat(conversation);
+            });
           }}
           className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-blue2/25 ${
             isActive ? "bg-dark-slate5 dark:bg-dark-blue2" : ""

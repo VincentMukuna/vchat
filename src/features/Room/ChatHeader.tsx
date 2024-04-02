@@ -25,6 +25,7 @@ import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
+import { flushSync } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import { useRoomContext } from "../../context/Room/RoomContext";
@@ -97,9 +98,10 @@ function ChatHeader() {
         icon={<ArrowLeftIcon className="w-5 h-5 " />}
         aria-label="Close Chat"
         onClick={(e) => {
-          navigate("/chats");
-          setSelectedChat(undefined);
-          setRecepient(undefined);
+          flushSync(() => {
+            setSelectedChat(undefined);
+            setRecepient(undefined);
+          });
         }}
       ></IconButton>
       <Avatar
