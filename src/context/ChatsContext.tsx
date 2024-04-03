@@ -8,7 +8,14 @@ import {
 import { sortConversations } from "@/services/userDetailsServices";
 import { SERVER } from "@/utils/config";
 import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import toast from "react-hot-toast";
 import { mutate } from "swr";
 
 type ChatsProviderProps = {
@@ -48,6 +55,15 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     isLoading: chatsLoading,
     mutate: updateConversations,
   } = useConversations();
+
+  let syncChatsToastId: string | undefined = undefined;
+  useEffect(() => {
+    if (chatsLoading) {
+      syncChatsToastId = toast.loading("Syncing chats");
+    } else if (!chatsLoading) {
+      toast.dismiss(syncChatsToastId);
+    }
+  }, [chatsLoading]);
 
   const selectConversation = useCallback(
     (conversationId: string, recepient?: IUserDetails) => {
