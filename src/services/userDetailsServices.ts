@@ -255,9 +255,7 @@ export const sortConversations = (
   usConversations: (GroupChatDetails | DirectChatDetails)[],
 ) => {
   let conversations = usConversations.toSorted(sortDocumentsByUpdateAtDesc);
-  //if conversation is grp sort by last created groupMessage
-  //if conversation is direct sort by last created chatMessage
-  //if conversation has no message sort by its createdAt
+
   conversations = conversations.toSorted((a, b) => {
     let aLastMessage =
       a.$collectionId === SERVER.COLLECTION_ID_CHATS
