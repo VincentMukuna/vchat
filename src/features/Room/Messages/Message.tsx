@@ -1,4 +1,10 @@
-import React, { createContext, forwardRef, useEffect, useState } from "react";
+import React, {
+  createContext,
+  forwardRef,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import {
@@ -73,8 +79,9 @@ const Message = forwardRef<any, MessageProps>(
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
 
-    const isSelected = roomState.selectedMessages.some(
-      (msg) => msg.$id === message.$id,
+    const isSelected = useMemo(
+      () => roomState.selectedMessages.some((msg) => msg.$id === message.$id),
+      [roomState, message],
     );
 
     const { data: senderDetails } = useSWR(
@@ -155,11 +162,17 @@ const Message = forwardRef<any, MessageProps>(
           <div
             className={`relative gap-1 flex   ${
               isMine ? "flex-row-reverse" : ""
-            } items-end focus:outline-0 focus:outline-slate-600 transition-all   
+            } items-end focus:outline-0 focus:outline-slate-600 transition-all  flex-wrap 
           
           ${prevSameSender ? "" : "mt-1.5"}
 
           ${nextSameSender ? "" : "mb-1.5"}
+
+          ${
+            isSelected
+              ? "bg-gray-200 dark:bg-dark-gray6/80 rounded-sm my-0.5"
+              : ""
+          }
           
           
             `}
@@ -239,7 +252,7 @@ const Message = forwardRef<any, MessageProps>(
               />
             </div>
             <div
-              className={`relative self-end w-4  ${
+              className={`relative  w-4  ${
                 isMine && !showHoverCard ? "visible" : "invisible"
               }`}
             >
