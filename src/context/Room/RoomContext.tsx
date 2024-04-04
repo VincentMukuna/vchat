@@ -78,7 +78,6 @@ export const RoomProvider = ({ children }: { children: React.ReactNode }) => {
   };
   useEffect(() => {
     dispatch({ type: RoomActionTypes.EXIT_REPLYING_TO, payload: null });
-    dispatch({ type: RoomActionTypes.CLEAR_SELECTED_MESSAGES, payload: null });
     dispatch({ type: RoomActionTypes.EXIT_SELECTING_MESSAGES, payload: null });
   }, [selectedChat]);
 
