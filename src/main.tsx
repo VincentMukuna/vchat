@@ -6,11 +6,13 @@ import {
   ThemeConfig,
   extendTheme,
 } from "@chakra-ui/react";
+import { Analytics } from "@vercel/analytics/react";
 import {
   Navigate,
   RouterProvider,
   createBrowserRouter,
 } from "react-router-dom";
+import { SWRConfig } from "swr";
 import App from "./App";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -94,7 +96,10 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <>
     <ColorModeScript initialColorMode="dark" />
     <ChakraProvider theme={theme}>
-      <RouterProvider router={router} />
+      <SWRConfig>
+        <RouterProvider router={router} />
+      </SWRConfig>
     </ChakraProvider>
+    <Analytics />
   </>,
 );

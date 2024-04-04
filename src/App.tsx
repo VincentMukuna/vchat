@@ -1,9 +1,7 @@
 import { useColorMode } from "@chakra-ui/react";
 import { slateDark } from "@radix-ui/colors";
-import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
-import { SWRConfig } from "swr/_internal";
 import Alerter from "./components/Alert/Alerter";
 import VModal from "./components/VModal";
 import { AuthProvider } from "./context/AuthContext";
@@ -24,20 +22,16 @@ function App() {
             },
           }}
         />
-
-        <SWRConfig>
-          <AuthProvider>
-            <ChatsProvider>
-              <Alerter />
-              <VModal />
-              <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 bg-gray1 dark:bg-dark-blue1">
-                <Outlet />
-              </div>
-            </ChatsProvider>
-          </AuthProvider>
-        </SWRConfig>
+        <AuthProvider>
+          <ChatsProvider>
+            <Alerter />
+            <VModal />
+            <div className="fixed inset-0 flex flex-col items-center justify-center gap-4 bg-gray1 dark:bg-dark-blue1">
+              <Outlet />
+            </div>
+          </ChatsProvider>
+        </AuthProvider>
       </ErrorBoundary>
-      <Analytics />
     </>
   );
 }
