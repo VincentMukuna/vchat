@@ -7,6 +7,7 @@ import {
   extendTheme,
 } from "@chakra-ui/react";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import {
   Navigate,
   RouterProvider,
@@ -101,5 +102,6 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       </SWRConfig>
     </ChakraProvider>
     <Analytics />
+    <SpeedInsights />
   </>,
 );
