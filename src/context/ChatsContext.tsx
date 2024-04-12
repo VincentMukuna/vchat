@@ -82,7 +82,7 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       if (!isGroup(conversation!)) {
         if (!recepientID) return;
         let recepient: IUserDetails = conversation!.participants.find(
-          (p) => p.$id !== recepientID,
+          (p) => p.$id === recepientID,
         ) as IUserDetails;
         setRecepient(recepient);
       } else {
