@@ -12,7 +12,6 @@ import {
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
-import { flushSync } from "react-dom";
 import useSWR, { useSWRConfig } from "swr";
 import Blueticks from "../../components/Blueticks";
 import { useAuth } from "../../context/AuthContext";
@@ -37,7 +36,7 @@ const Conversation = memo(
   ({ conversation }: IChatProps) => {
     const { currentUserDetails } = useAuth();
     if (!currentUserDetails) return null;
-    const { setSelectedChat, selectedChat, setRecepient } = useChatsContext();
+    const { selectedChat, selectConversation } = useChatsContext();
     const [contactDetails, setContactDetails] = useState<
       IUserDetails | undefined
     >();
@@ -141,12 +140,12 @@ const Conversation = memo(
         ps={3}
         rounded={"md"}
         onClick={(e) => {
-          flushSync(() => {
-            setRecepient(contactDetails);
-            setSelectedChat(conversation);
-          });
+          selectConversation(conversation.$id, contactDetails?.$id);
+          // flushSync(() => {
+          //   selectConversation(conversation.$id);
+          // });
         }}
-        className={`transition-all gap-2 flex items-start cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
+        className={`flex cursor-pointer items-start gap-2 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
           isActive ? "bg-dark-slate5 dark:bg-dark-blue2" : ""
         }`}
       >
@@ -154,9 +153,9 @@ const Conversation = memo(
           src={avatarURL}
           icon={
             isGroup ? (
-              <UsersIcon className="w-[26px] h-[26px]" />
+              <UsersIcon className="h-[26px] w-[26px]" />
             ) : (
-              <UserIcon className="w-[26px] h-[26px]" />
+              <UserIcon className="h-[26px] w-[26px]" />
             )
           }
           bg={colorMode === "dark" ? "gray.600" : "gray.400"}
@@ -192,15 +191,15 @@ const Conversation = memo(
             {unreadCount}
           </AvatarBadge>
         </Avatar>
-        <div className="flex flex-col gap-1 ml-1 overflow-hidden shrink text-ellipsis basis-2/3">
-          <span className="self-start max-w-full overflow-hidden text-base font-semibold tracking-wide whitespace-nowrap text-ellipsis dark:text-gray1">
+        <div className="ml-1 flex shrink basis-2/3 flex-col gap-1 overflow-hidden text-ellipsis">
+          <span className="max-w-full self-start overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wide dark:text-gray1">
             {isGroup
               ? conversation.name
               : isPersonal
               ? "You"
               : contactDetails?.name}
           </span>
-          <span className="flex items-center gap-1 overflow-hidden font-sans text-[13px] italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+          <span className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap font-sans text-[13px] italic tracking-wide dark:text-gray6">
             {lastMessage?.body
               ? lastMessage.senderID === currentUserDetails.$id
                 ? "Me: " + lastMessage.body
@@ -214,8 +213,8 @@ const Conversation = memo(
             )}
           </span>
         </div>
-        <div className="flex flex-col gap-1 mx-3 mt-1 ml-auto mr-3 text-gray10 ">
-          <span className="flex text-[10px] tracking-wide whitespace-nowrap">
+        <div className="mx-3 ml-auto mr-3 mt-1 flex flex-col gap-1 text-gray10 ">
+          <span className="flex whitespace-nowrap text-[10px] tracking-wide">
             {getFormatedDate(
               lastMessage?.$createdAt || conversation.$updatedAt,
             )}

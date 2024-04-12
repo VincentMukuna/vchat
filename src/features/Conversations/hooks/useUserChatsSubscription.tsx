@@ -12,8 +12,7 @@ import { useEffect } from "react";
 
 const useUserChatsSubscription = () => {
   const { currentUser, currentUserDetails } = useAuth();
-  const { addConversation, deleteConversation, selectConversation } =
-    useChatsContext();
+  const { addConversation, deleteConversation } = useChatsContext();
   if (!currentUser || !currentUserDetails) return null;
   useEffect(() => {
     const unsubscribe = api.subscribe<IUserDetails>(

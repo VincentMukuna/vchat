@@ -50,8 +50,7 @@ function ChatHeader() {
     lg: "lg",
   });
   const btnRef = useRef(null);
-  const { recepient, setSelectedChat, setRecepient, selectedChat } =
-    useChatsContext();
+  const { recepient, selectedChat, selectConversation } = useChatsContext();
   let { isGroup, isPersonal } = useRoomContext();
 
   const selectedChatDetails = selectedChat as
@@ -83,8 +82,7 @@ function ChatHeader() {
         aria-label="Close Chat"
         onClick={(e) => {
           flushSync(() => {
-            setSelectedChat(undefined);
-            setRecepient(undefined);
+            selectConversation();
           });
         }}
       ></IconButton>

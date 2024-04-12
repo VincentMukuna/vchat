@@ -6,7 +6,6 @@ import {
   IUserDetails,
 } from "@/interfaces/interfaces";
 import { sortConversations } from "@/services/userDetailsServices";
-import { SERVER } from "@/utils/config";
 import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
 import {
   createContext,
@@ -36,10 +35,7 @@ interface IChatsContextData {
   setRecepient: React.Dispatch<React.SetStateAction<IUserDetails | undefined>>;
   addConversation: (conversation: IConversation) => void;
   deleteConversation: (conversationId: string) => void;
-  selectConversation: (
-    conversationId: string,
-    recepient?: IUserDetails,
-  ) => void;
+  selectConversation: (conversationId?: string, recepientId?: string) => void;
   updateConversation: (conversation: IConversation) => void;
 }
 const ChatsContext = createContext<IChatsContextData | null>(null);
@@ -56,6 +52,14 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     mutate: updateConversations,
   } = useConversations();
 
+  useEffect(() => {
+    console.log("location", location);
+    const chatID = location.pathname.split("/")[2];
+    if (chatID) {
+      console.log("chatID", chatID);
+    }
+  }, []);
+
   let syncChatsToastId: string | undefined = undefined;
   useEffect(() => {
     if (chatsLoading) {
@@ -66,12 +70,23 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
   }, [chatsLoading]);
 
   const selectConversation = useCallback(
-    (conversationId: string, recepient?: IUserDetails) => {
+    (conversationId?: string, recepientID?: string) => {
+      if (!conversationId) {
+        setSelectedChat(undefined);
+        setRecepient(undefined);
+        return;
+      }
       const conversation = conversations.find((c) => c.$id === conversationId);
 
       setSelectedChat(conversation);
-      if (conversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
+      if (!isGroup(conversation!)) {
+        if (!recepientID) return;
+        let recepient: IUserDetails = conversation!.participants.find(
+          (p) => p.$id !== recepientID,
+        ) as IUserDetails;
         setRecepient(recepient);
+      } else {
+        setRecepient(undefined);
       }
     },
     [conversations],
