@@ -79,15 +79,15 @@ const useChatsListSubscription = () => {
         //notify user
         toast(
           (t) => (
-            <div className="flex flex-col gap-2 text-sm ps-2 ">
+            <div className="flex flex-col gap-2 ps-2 text-sm ">
               <CloseButton
-                className="absolute top-1 right-1"
+                className="absolute right-1 top-1"
                 rounded={"full"}
                 onClick={() => {
                   toast.dismiss(t.id);
                 }}
               />
-              <div className="flex flex-col gap-1 ps-2 pe-6 ">
+              <div className="flex flex-col gap-1 pe-6 ps-2 ">
                 {isGroup ? (
                   <>
                     <span>
@@ -125,7 +125,7 @@ const useChatsListSubscription = () => {
                   onClick={() => {
                     selectConversation(
                       conversation.$id,
-                      isGroup ? undefined : sender,
+                      isGroup ? undefined : sender.$id,
                     );
                     toast.dismiss(t.id);
                   }}
