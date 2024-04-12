@@ -26,11 +26,9 @@ import { blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { flushSync } from "react-dom";
-import { useNavigate } from "react-router-dom";
 import useSWR from "swr";
 import { useRoomContext } from "../../context/Room/RoomContext";
 import {
-  ChatMessage,
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
@@ -56,16 +54,11 @@ function ChatHeader() {
     useChatsContext();
   let { isGroup, isPersonal } = useRoomContext();
 
-  const navigate = useNavigate();
-
   const selectedChatDetails = selectedChat as
     | GroupChatDetails
     | DirectChatDetails;
 
   if (!currentUserDetails) return null;
-
-  const isAdmin =
-    isGroup && selectedChatDetails.admins.includes(currentUserDetails.$id);
 
   const { data: group } = useSWR(
     () => {
@@ -78,24 +71,15 @@ function ChatHeader() {
     (member) => (member as IUserDetails).$id === currentUserDetails.$id,
   );
 
-  function canDeleteBasedOnPermissions(messages: ChatMessage[]) {
-    if (isGroup) {
-      if (isAdmin) {
-        return true;
-      }
-    }
-    return messages.every((msg) => msg.senderID === currentUserDetails?.$id);
-  }
-
   return (
-    <section className="relative flex items-center w-full h-full gap-3 p-4 px-2 dark:text-gray1 dark:bg-dark-blue1 bg-gray2 text-dark-gray2">
+    <section className="relative flex h-full w-full items-center gap-3 bg-gray2 p-4 px-2 text-dark-gray2 dark:bg-dark-blue1 dark:text-gray1">
       <IconButton
         bg={"transparent"}
         as={motion.button}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
         title="Close chat"
-        icon={<ArrowLeftIcon className="w-5 h-5 " />}
+        icon={<ArrowLeftIcon className="h-5 w-5 " />}
         aria-label="Close Chat"
         onClick={(e) => {
           flushSync(() => {
@@ -115,9 +99,9 @@ function ChatHeader() {
         }
         icon={
           isGroup ? (
-            <UsersIcon className="w-[26px] h-[26px]" />
+            <UsersIcon className="h-[26px] w-[26px]" />
           ) : (
-            <UserIcon className="w-[26px] h-[26px]" />
+            <UserIcon className="h-[26px] w-[26px]" />
           )
         }
         size={"md"}
@@ -129,29 +113,29 @@ function ChatHeader() {
             onOpen();
           }
         }}
-        className="relative flex flex-col grow shrink"
+        className="relative flex shrink grow flex-col"
       >
-        <span className="max-w-[8rem] transition-all overflow-hidden text-base font-semibold tracking-wide sm:text-lg text-ellipsis whitespace-nowrap md:max-w-none">
+        <span className="max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wide transition-all sm:text-lg md:max-w-none">
           {isGroup
             ? selectedChatDetails.name
             : isPersonal
             ? "You"
             : recepient?.name}
         </span>
-        <span className="relative max-w-[9rem] overflow-hidden text-xs tracking-wide whitespace-nowrap text-dark-gray5 dark:text-gray6 text-ellipsis">
+        <span className="relative max-w-[9rem] overflow-hidden text-ellipsis whitespace-nowrap text-xs tracking-wide text-dark-gray5 dark:text-gray6">
           {isGroup
             ? selectedChatDetails.description
             : recepient?.about || "about"}
         </span>
       </button>
-      <div className="flex ml-auto ">
+      <div className="ml-auto flex ">
         <SelectedChatOptions />
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">
             <MenuButton
               bg={"transparent"}
               as={IconButton}
-              icon={<EllipsisVerticalIcon className="w-5 h-5" />}
+              icon={<EllipsisVerticalIcon className="h-5 w-5" />}
             ></MenuButton>
             <RoomActions />
           </Menu>
