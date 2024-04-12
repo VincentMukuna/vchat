@@ -42,7 +42,7 @@ export default function SelectedChatOptions() {
                 ></path>
               </svg>
             ) : (
-              <Square2StackIcon className="w-4 h-4" />
+              <Square2StackIcon className="h-4 w-4" />
             )
           }
           onClick={() => {
@@ -68,7 +68,7 @@ export default function SelectedChatOptions() {
           }
           variant={"ghost"}
           aria-label="Delete"
-          icon={<DeleteIcon className="w-4 h-4" />}
+          icon={<DeleteIcon className="h-4 w-4" />}
           onClick={() => {
             dispatch({
               type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,
@@ -88,7 +88,7 @@ export default function SelectedChatOptions() {
           aria-label="forward messages"
           hidden={roomState.selectedMessages.length === 0}
           variant={"ghost"}
-          icon={<ArrowUturnRightIcon className="w-4 h-4" />}
+          icon={<ArrowUturnRightIcon className="h-4 w-4" />}
           onClick={() => {
             dispatch({
               type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,

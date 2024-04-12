@@ -68,7 +68,7 @@ export const RoomDetailsFooter = () => {
         hidden={!isGroup}
         size={"sm"}
         variant={"outline"}
-        leftIcon={<ArrowRightOnRectangleIcon className="w-4 h-4" />}
+        leftIcon={<ArrowRightOnRectangleIcon className="h-4 w-4" />}
         onClick={() => {
           confirmAlert({
             message: `Are you sure you want to leave this conversation?`,
@@ -88,7 +88,7 @@ export const RoomDetailsFooter = () => {
         size={"sm"}
         variant={"outline"}
         colorScheme="red"
-        leftIcon={<TrashIcon className="w-4 h-4" />}
+        leftIcon={<TrashIcon className="h-4 w-4" />}
         onClick={() => {
           confirmAlert({
             message: `Are you sure you want to delete this ${

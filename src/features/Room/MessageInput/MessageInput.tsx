@@ -132,9 +132,9 @@ const MessageInput = ({}: InputProps) => {
   return (
     <div className="flex flex-col">
       {roomState.replyingTo && (
-        <div className="flex items-center gap-4 py-2 mx-4 ps-5 border-s-4">
-          <div className="flex flex-col max-w-xs overflow-hidden ps-6 line-clamp-1">
-            <span className="text-xs line-clamp-1">
+        <div className="mx-4 flex items-center gap-4 border-s-4 py-2 ps-5">
+          <div className="line-clamp-1 flex max-w-xs flex-col overflow-hidden ps-6">
+            <span className="line-clamp-1 text-xs">
               {roomState.replyingTo.sender.name}
             </span>
             <span className="line-clamp-2">{roomState.replyingTo.body}</span>
@@ -143,7 +143,7 @@ const MessageInput = ({}: InputProps) => {
             variant={"ghost"}
             aria-label="cancel reply"
             className="ml-auto"
-            icon={<XMarkIcon className="w-4 h-4" />}
+            icon={<XMarkIcon className="h-4 w-4" />}
             onClick={() =>
               dispatch({
                 type: RoomActionTypes.EXIT_REPLYING_TO,
@@ -154,9 +154,9 @@ const MessageInput = ({}: InputProps) => {
           />
         </div>
       )}
-      <footer className="relative flex flex-col justify-start px-2 py-1 mx-4 my-2 overflow-hidden rounded-3xl dark:text-dark-blue12 bg-gray5 dark:bg-dark-gray3 ">
-        <form onSubmit={handleSubmit} className="flex self-stretch w-full ">
-          <div className="flex items-center w-full h-full gap-2 ps-1">
+      <footer className="relative mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
+        <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
+          <div className="flex h-full w-full items-center gap-2 ps-1">
             <AttachmentInput ref={attachmentInputRef} />
 
             <Textarea
@@ -184,7 +184,7 @@ const MessageInput = ({}: InputProps) => {
             <IconButton
               variant={"ghost"}
               aria-label="send"
-              icon={<PaperAirplaneIcon className="w-4 h-4 text-indigo-600" />}
+              icon={<PaperAirplaneIcon className="h-4 w-4 text-indigo-600" />}
               type="submit"
               isDisabled={!messageBody.trim()}
               rounded={"full"}

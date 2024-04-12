@@ -35,7 +35,7 @@ export const MyProfile = () => {
         <Avatar
           size={"md"}
           src={currentUserDetails.avatarURL}
-          icon={<UserIcon className="w-7 h-7" />}
+          icon={<UserIcon className="h-7 w-7" />}
           name={currentUserDetails.name}
         />
       </Link>

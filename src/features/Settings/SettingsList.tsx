@@ -23,7 +23,7 @@ const SettingsList = () => {
       >
         <button
           onClick={toggleColorMode}
-          className="flex items-center w-full h-full max-w-sm p-3"
+          className="flex h-full w-full max-w-sm items-center p-3"
         >
           <div className="flex flex-col items-start">
             <span className="">Toggle dark mode</span>
@@ -33,16 +33,16 @@ const SettingsList = () => {
           </div>
 
           {colorMode === "dark" ? (
-            <SunIcon className="w-6 h-6 ms-auto me-12" />
+            <SunIcon className="me-12 ms-auto h-6 w-6" />
           ) : (
-            <MoonIcon className="w-6 h-6 ms-auto me-12" />
+            <MoonIcon className="me-12 ms-auto h-6 w-6" />
           )}
         </button>
         <button
           onClick={() => {
             logOut();
           }}
-          className="flex items-center w-full h-full max-w-sm p-3"
+          className="flex h-full w-full max-w-sm items-center p-3"
         >
           <div className="flex flex-col items-start">
             <span className="">Log out</span>
@@ -51,7 +51,7 @@ const SettingsList = () => {
             </span>
           </div>
 
-          <ArrowRightOnRectangleIcon className="w-6 h-6 ms-auto me-12 " />
+          <ArrowRightOnRectangleIcon className="me-12 ms-auto h-6 w-6 " />
         </button>
       </VStack>
     </motion.div>

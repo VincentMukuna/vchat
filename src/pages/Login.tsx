@@ -56,19 +56,19 @@ function Login() {
       animate={{ opacity: 1, x: "0%" }}
       transition={{ duration: 0.3 }}
     >
-      <div className=" flex  items-center  [&>div]:w-full transition-all  ">
+      <div className=" flex  items-center  transition-all [&>div]:w-full  ">
         <FocusLock>
-          <div className="grid gap-4 p-6 border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
+          <div className="grid gap-4 rounded-xl border p-6 text-gray12 shadow dark:text-dark-slate12">
             <div className="flex flex-col space-y-2 ">
               <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
                 Log in to VChat
               </h1>
-              <h2 className="text-sm font-normal tracking-wide below text-gray11 dark:text-indigo2/60">
+              <h2 className="below text-sm font-normal tracking-wide text-gray11 dark:text-indigo2/60">
                 Enter your email and password below
               </h2>
             </div>
 
-            <form onSubmit={handleEmailSignIn} className="grid gap-5 mt-2 ">
+            <form onSubmit={handleEmailSignIn} className="mt-2 grid gap-5 ">
               <div className="grid gap-3">
                 <div className="grid gap-2">
                   <label
@@ -126,7 +126,7 @@ function Login() {
                 No account?
                 <Link
                   to="/register"
-                  className="font-bold underline text-dark-blue4 dark:text-dark-blue10"
+                  className="font-bold text-dark-blue4 underline dark:text-dark-blue10"
                 >
                   Sign up
                 </Link>

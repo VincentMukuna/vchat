@@ -58,7 +58,7 @@ function User({
                 );
               }
         }
-        className={`transition-all gap-1 flex items-center cursor-pointer hover:bg-slate-100 dark:hover:bg-dark-blue3/25 w-full focus-visible:outline-none`}
+        className={`flex w-full cursor-pointer items-center gap-1 transition-all hover:bg-slate-100 focus-visible:outline-none dark:hover:bg-dark-blue3/25`}
       >
         <UserContext.Provider value={{ user: user }}>
           {children}
@@ -102,8 +102,8 @@ export const UserDescription = ({ children }: { children?: ReactNode }) => {
   if (!currentUserDetails) return null;
   const isPersonal = user.$id === currentUserDetails.$id;
   return (
-    <div className="flex flex-col justify-center ms-2">
-      <span className="max-w-full overflow-hidden text-base font-semibold tracking-wider whitespace-nowrap text-ellipsis dark:text-gray1">
+    <div className="ms-2 flex flex-col justify-center">
+      <span className="max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wider dark:text-gray1">
         {isPersonal ? "You" : user.name}
       </span>
       {children}
@@ -114,7 +114,7 @@ export const UserDescription = ({ children }: { children?: ReactNode }) => {
 export const UserAbout = () => {
   const { user } = useContext(UserContext)!;
   return (
-    <span className="overflow-hidden font-sans text-sm italic tracking-wide whitespace-nowrap text-ellipsis dark:text-gray6">
+    <span className="overflow-hidden text-ellipsis whitespace-nowrap font-sans text-sm italic tracking-wide dark:text-gray6">
       {user.about}
     </span>
   );

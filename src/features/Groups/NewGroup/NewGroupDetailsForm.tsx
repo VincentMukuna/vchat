@@ -42,7 +42,7 @@ const NewGroupDetailsForm = ({
         e.preventDefault();
         next();
       }}
-      className="relative flex flex-col h-full gap-5 mt-4 space-y-2 "
+      className="relative mt-4 flex h-full flex-col gap-5 space-y-2 "
     >
       <div className="relative self-center ">
         <IconButton
@@ -52,10 +52,10 @@ const NewGroupDetailsForm = ({
           title="Edit avatar"
           onClick={openFilePicker}
           aria-label="edit avatar"
-          icon={<PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />}
+          icon={<PencilIcon className="h-5 w-5 text-gray11 dark:text-gray7" />}
           pos={"absolute"}
           bg={"transparent"}
-          className="z-20 -right-10"
+          className="-right-10 z-20"
         />
         <Avatar size={"xl"} name={name} src={filesContent[0]?.content} />
       </div>
@@ -93,7 +93,7 @@ const NewGroupDetailsForm = ({
         />
       </div>
 
-      <div className="flex flex-row-reverse w-full mt-auto text-gray2 ">
+      <div className="mt-auto flex w-full flex-row-reverse text-gray2 ">
         <Button
           as={motion.button}
           whileHover={{ scale: 1.01 }}

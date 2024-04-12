@@ -131,7 +131,7 @@ export const EditGroupDetailsForm = ({
       <ModalBody>
         <FocusLock finalFocusRef={firstInputRef}>
           <form onSubmit={handleSubmit} className="flex flex-col">
-            <div className="relative self-center w-fit ">
+            <div className="relative w-fit self-center ">
               <IconButton
                 as={motion.button}
                 whileHover={{ scale: 1.01 }}
@@ -140,16 +140,16 @@ export const EditGroupDetailsForm = ({
                 onClick={openFilePicker}
                 aria-label="edit avatar"
                 icon={
-                  <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+                  <PencilIcon className="h-5 w-5 text-gray11 dark:text-gray7" />
                 }
                 pos={"absolute"}
                 bg={"transparent"}
-                className="z-20 -right-6"
+                className="-right-6 z-20"
               />
               <Avatar
                 size={"2xl"}
                 src={filesContent[0]?.content || group.avatarURL}
-                icon={<UsersIcon className="w-14 h-14" />}
+                icon={<UsersIcon className="h-14 w-14" />}
               />
             </div>
 

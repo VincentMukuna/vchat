@@ -160,9 +160,9 @@ const Message = forwardRef<any, MessageProps>(
           className="flex flex-col transition-all"
         >
           <div
-            className={`relative gap-1 flex   ${
+            className={`relative flex gap-1   ${
               isMine ? "flex-row-reverse" : ""
-            } items-end focus:outline-0 focus:outline-slate-600 transition-all  flex-wrap 
+            } flex-wrap items-end transition-all focus:outline-0  focus:outline-slate-600 
           
           ${prevSameSender ? "" : "mt-1.5"}
 
@@ -170,7 +170,7 @@ const Message = forwardRef<any, MessageProps>(
 
           ${
             isSelected
-              ? "bg-gray-200 dark:bg-dark-gray6/80 rounded-sm my-0.5"
+              ? "my-0.5 rounded-sm bg-gray-200 dark:bg-dark-gray6/80"
               : ""
           }
           
@@ -181,7 +181,7 @@ const Message = forwardRef<any, MessageProps>(
               <Checkbox
                 isChecked={isSelected}
                 hidden={!roomState.isSelectingMessages}
-                className="self-center mx-2"
+                className="mx-2 self-center"
                 onChange={(e) => {
                   dispatch({
                     type: RoomActionTypes.TOGGLE_MESSAGE_SELECT,
@@ -238,7 +238,7 @@ const Message = forwardRef<any, MessageProps>(
                   });
                 }
               }}
-              className="grid gap-1 cursor-pointer"
+              className="grid cursor-pointer gap-1"
             >
               <div>
                 <MessageAttachments message={message} />
@@ -257,7 +257,7 @@ const Message = forwardRef<any, MessageProps>(
               }`}
             >
               {isOptimistic ? (
-                <ClockIcon className="relative w-3 h-3 text-gray-500 bottom-1" />
+                <ClockIcon className="relative bottom-1 h-3 w-3 text-gray-500" />
               ) : (
                 <Blueticks
                   read={message.read}
@@ -267,7 +267,7 @@ const Message = forwardRef<any, MessageProps>(
             </div>
 
             <div
-              className={`relative flex gap-1 z-0 -ms-2 ${
+              className={`relative z-0 -ms-2 flex gap-1 ${
                 isMine ? "start-2" : "-start-2 "
               } `}
             >

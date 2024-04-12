@@ -65,7 +65,7 @@ const RoomActions = () => {
       {(!isGroup || isAdmin) && (
         <>
           <MenuItem
-            icon={<TrashIcon className="w-4 h-4" />}
+            icon={<TrashIcon className="h-4 w-4" />}
             py={"1"}
             bg={"transparent"}
             onClick={() => {
@@ -93,7 +93,7 @@ const RoomActions = () => {
               modal(<AddMembers group={selectedChat as GroupChatDetails} />)
             }
             bg={"transparent"}
-            icon={<UserPlusIcon className="w-4 h-4" />}
+            icon={<UserPlusIcon className="h-4 w-4" />}
           >
             Add Members
           </MenuItem>
@@ -104,7 +104,7 @@ const RoomActions = () => {
               modal(<EditMembers group={selectedChat as GroupChatDetails} />)
             }
             bg={"transparent"}
-            icon={<UserMinusIcon className="w-4 h-4" />}
+            icon={<UserMinusIcon className="h-4 w-4" />}
           >
             Remove Members
           </MenuItem>
@@ -120,7 +120,7 @@ const RoomActions = () => {
                 />,
               )
             }
-            icon={<PencilIcon className="w-4 h-4" />}
+            icon={<PencilIcon className="h-4 w-4" />}
           >
             Edit Admins
           </MenuItem>

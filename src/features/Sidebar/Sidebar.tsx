@@ -25,7 +25,7 @@ const Sidebar = ({ children }: SidebarProps) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   return (
-    <aside className="bg-gray2 px-1 relative max-h-full overflow-auto dark:bg-dark-blue1 border-r dark:border-dark-slate3 dark:text-gray2   shrink basis-[25rem] grow md:max-w-[25rem]">
+    <aside className="relative max-h-full shrink grow basis-[25rem] overflow-auto border-r bg-gray2 px-1   dark:border-dark-slate3 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[25rem]">
       {children}
     </aside>
   );
@@ -44,11 +44,11 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
   return (
     <div
       className={
-        "flex items-center w-full h-24 px-4 font-semibold tracking-widest sticky bg-gray2 dark:bg-dark-blue1 top-0 left-0 right-0 z-10" +
+        "sticky left-0 right-0 top-0 z-10 flex h-24 w-full items-center bg-gray2 px-4 font-semibold tracking-widest dark:bg-dark-blue1" +
         className
       }
     >
-      <span className="relative flex items-center justify-between w-full h-full ">
+      <span className="relative flex h-full w-full items-center justify-between ">
         <div className="visible mt-2 md:invisible">
           <MyProfile />
         </div>
@@ -74,9 +74,9 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
             aria-label="Create new group"
             title="New group"
             icon={
-              <div className="relative flex p-2 text-sm font-normal rounded dark:text-gray8 ">
-                <UserGroupIcon className="w-5 h-5" />
-                <PlusIcon className="relative w-4 h-4 dark:text-white right-1" />
+              <div className="relative flex rounded p-2 text-sm font-normal dark:text-gray8 ">
+                <UserGroupIcon className="h-5 w-5" />
+                <PlusIcon className="relative right-1 h-4 w-4 dark:text-white" />
               </div>
             }
           ></IconButton>
@@ -92,9 +92,9 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader className="flex flex-col w-full gap-1 text-xl font-bold dark:text-white text-dark-gray3">
+          <ModalHeader className="flex w-full flex-col gap-1 text-xl font-bold text-dark-gray3 dark:text-white">
             New Group
-            <div className="font-md text-[14px] tracking-wide dark:text-gray6 text-dark-gray6 ">
+            <div className="font-md text-[14px] tracking-wide text-dark-gray6 dark:text-gray6 ">
               Create a new group chat.
             </div>
           </ModalHeader>

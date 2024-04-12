@@ -74,7 +74,7 @@ const NewGroupAddMembersForm = ({
       className="flex flex-col gap-8 pt-4 "
     >
       <div>
-        <span className="font-bold dark:text-dark-slate11 text-dark-gray7">
+        <span className="font-bold text-dark-gray7 dark:text-dark-slate11">
           Add Members
         </span>
         <AvatarGroup max={4}>
@@ -82,7 +82,7 @@ const NewGroupAddMembersForm = ({
             return (
               <Avatar
                 src={member.avatarURL}
-                icon={<UserIcon className="w-[26px] h-[26px]" />}
+                icon={<UserIcon className="h-[26px] w-[26px]" />}
                 size="md"
                 key={member.$id}
               />
@@ -154,7 +154,7 @@ const NewGroupAddMembersForm = ({
               .map((user: IUserDetails, index) => {
                 return (
                   <div
-                    className="flex items-center w-full gap-2 group "
+                    className="group flex w-full items-center gap-2 "
                     key={user.$id}
                   >
                     <Checkbox
@@ -179,7 +179,7 @@ const NewGroupAddMembersForm = ({
                     />
                     <label
                       htmlFor={index.toString()}
-                      className="flex items-center w-full gap-1 p-1 text-sm font-semibold tracking-wide cursor-pointer grow"
+                      className="flex w-full grow cursor-pointer items-center gap-1 p-1 text-sm font-semibold tracking-wide"
                     >
                       <User user={user} onClick={() => {}}>
                         <UserAvatar size="sm" />

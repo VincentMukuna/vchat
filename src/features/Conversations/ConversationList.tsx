@@ -57,7 +57,7 @@ const ConversationList = ({ className }: { className: string }) => {
     );
   } else if (!chatsLoading && conversations && conversations.length < 1) {
     return (
-      <div className="flex flex-col items-center gap-6 mt-4">
+      <div className="mt-4 flex flex-col items-center gap-6">
         <div className="flex flex-col items-center justify-center ">
           <p>No Chats!</p>
           Add contacts to start messaging
@@ -69,7 +69,7 @@ const ConversationList = ({ className }: { className: string }) => {
           whileTap={{ scale: 0.98 }}
           px={12}
           py={"6"}
-          leftIcon={<UserPlusIcon className="w-5 h-5 " />}
+          leftIcon={<UserPlusIcon className="h-5 w-5 " />}
           onClick={() => {
             navigate("/users");
           }}

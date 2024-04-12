@@ -38,7 +38,7 @@ const MessageOptions = () => {
         aria-label="message options"
         variant={"ghost"}
         size={"xs"}
-        icon={<EllipsisHorizontalIcon className="w-4 h-4" />}
+        icon={<EllipsisHorizontalIcon className="h-4 w-4" />}
       />
       <Portal>
         <MenuList>
@@ -53,7 +53,7 @@ const MessageOptions = () => {
             Edit Message
           </MenuItem>
           <MenuItem
-            icon={<ArrowUturnRightIcon className="w-3 h-3" />}
+            icon={<ArrowUturnRightIcon className="h-3 w-3" />}
             command="⌘F"
             onClick={(e) => {
               e.stopPropagation();

@@ -39,8 +39,8 @@ const RoomDetails = () => {
   );
 
   return (
-    <div className="relative flex flex-col items-center w-full h-full gap-4 overflow-hidden overflow-y-auto ">
-      <div className="flex flex-col items-center w-full gap-8 mt-4 text-sm">
+    <div className="relative flex h-full w-full flex-col items-center gap-4 overflow-hidden overflow-y-auto ">
+      <div className="mt-4 flex w-full flex-col items-center gap-8 text-sm">
         <VStack gap={-1}>
           <div className="flex flex-col items-center gap-2">
             <div className="relative ">
@@ -49,14 +49,14 @@ const RoomDetails = () => {
                 src={!isGroup ? recepient?.avatarURL : selectedChat.avatarURL}
                 icon={
                   isGroup ? (
-                    <UsersIcon className="w-16 h-16" />
+                    <UsersIcon className="h-16 w-16" />
                   ) : (
-                    <UserIcon className="w-16 h-16" />
+                    <UserIcon className="h-16 w-16" />
                   )
                 }
               />
             </div>
-            <div className="relative flex flex-col items-center gap-2 mb-6">
+            <div className="relative mb-6 flex flex-col items-center gap-2">
               <div className="mt-3 text-lg font-semibold">
                 {isGroup ? selectedChat.name : recepient?.name}
               </div>
@@ -80,18 +80,18 @@ const RoomDetails = () => {
                     )
                   }
                   icon={
-                    <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+                    <PencilIcon className="h-5 w-5 text-gray11 dark:text-gray7" />
                   }
                   pos={"absolute"}
                   bg={"transparent"}
-                  className="z-20 -right-8"
+                  className="-right-8 z-20"
                   border={"none"}
                 />
               )}
             </div>
           </div>
 
-          <p className="inline-flex gap-2 mt-3">
+          <p className="mt-3 inline-flex gap-2">
             <span className="font-semibold ">Message Count :</span>
             {messages.length}
           </p>
@@ -101,7 +101,7 @@ const RoomDetails = () => {
             {" " + getFormatedDate(selectedChat.$createdAt)}
           </p>
         </VStack>
-        <div className="flex flex-col items-center w-full ">
+        <div className="flex w-full flex-col items-center ">
           <span className="inline-flex gap-2">
             Participants :
             <span className="">{` ${
@@ -110,7 +110,7 @@ const RoomDetails = () => {
                 : selectedChat?.participants.length || 0
             }`}</span>
           </span>
-          <div className="flex w-full max-w-[80%] overflow-x-hidden  items-center justify-center">
+          <div className="flex w-full max-w-[80%] items-center  justify-center overflow-x-hidden">
             <AvatarGroup size={"sm"} max={2}>
               {isGroup
                 ? roomDetails?.members?.map((member: any) => {

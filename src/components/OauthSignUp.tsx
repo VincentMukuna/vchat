@@ -8,14 +8,14 @@ interface OauthSignUpProps {
 
 const OauthSignUp = ({ loading, onClick }: OauthSignUpProps) => {
   return (
-    <div className="grid gap-2 mt-2">
+    <div className="mt-2 grid gap-2">
       <div className="relative flex items-center justify-center">
         <div className="absolute inset-0 items-center">
           <div className="w-full border-t "></div>
         </div>
 
-        <div className="relative text-xs font-medium text-gray9 -top-2">
-          <div className="px-4 uppercase rounded-full bg-gray1 dark:bg-dark-blue1">
+        <div className="relative -top-2 text-xs font-medium text-gray9">
+          <div className="rounded-full bg-gray1 px-4 uppercase dark:bg-dark-blue1">
             Or Continue With
           </div>
         </div>

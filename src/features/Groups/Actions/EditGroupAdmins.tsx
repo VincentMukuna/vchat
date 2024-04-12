@@ -89,7 +89,7 @@ const EditGroupAdmins = ({
               .map((user: IUserDetails, index) => {
                 return (
                   <div
-                    className="flex items-center w-full gap-2 group "
+                    className="group flex w-full items-center gap-2 "
                     key={user.$id}
                   >
                     <Checkbox
@@ -114,7 +114,7 @@ const EditGroupAdmins = ({
                     />
                     <label
                       htmlFor={index.toString()}
-                      className="flex items-center w-full gap-1 p-1 text-sm font-semibold tracking-wide cursor-pointer"
+                      className="flex w-full cursor-pointer items-center gap-1 p-1 text-sm font-semibold tracking-wide"
                     >
                       <User user={user} onClick={() => {}}>
                         <UserAvatar size="sm" />

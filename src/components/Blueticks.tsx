@@ -9,7 +9,7 @@ const Blueticks = ({
 }) => {
   return (
     <SolarCheckReadLinear
-      className={`w-4 h-4 ${read ? "text-blue-700" : "text-gray-500 "}`}
+      className={`h-4 w-4 ${read ? "text-blue-700" : "text-gray-500 "}`}
     />
   );
 };

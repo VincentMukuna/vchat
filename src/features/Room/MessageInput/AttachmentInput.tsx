@@ -61,7 +61,7 @@ const AttachmentInput = forwardRef<AttachmentHandle>((props, ref) => {
         bg={"inherit"}
         aria-label="add attachment"
         title="add attachment"
-        icon={<PaperClipIcon className="w-4 h-4" />}
+        icon={<PaperClipIcon className="h-4 w-4" />}
         onClick={() => {
           clear();
           openFilePicker();

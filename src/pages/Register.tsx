@@ -54,13 +54,13 @@ function Register() {
       transition={{ duration: 0.3 }}
     >
       <FocusLock>
-        <div className="flex items-center h-full transition-all ">
-          <div className="grid gap-6 p-6 overflow-hidden border shadow text-gray12 dark:text-dark-slate12 rounded-xl">
+        <div className="flex h-full items-center transition-all ">
+          <div className="grid gap-6 overflow-hidden rounded-xl border p-6 text-gray12 shadow dark:text-dark-slate12">
             <div className="flex flex-col space-y-2 ">
               <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
                 Create a VChat account
               </h1>
-              <h2 className="text-sm tracking-wide below text-gray11 dark:text-indigo2/60">
+              <h2 className="below text-sm tracking-wide text-gray11 dark:text-indigo2/60">
                 Enter your credentials below
               </h2>
             </div>
@@ -133,7 +133,7 @@ function Register() {
                 Have an account?
                 <Link
                   to="/login"
-                  className="font-bold underline text-dark-blue4 dark:text-dark-blue10"
+                  className="font-bold text-dark-blue4 underline dark:text-dark-blue10"
                 >
                   Log in
                 </Link>

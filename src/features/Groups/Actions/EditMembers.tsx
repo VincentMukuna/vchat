@@ -103,7 +103,7 @@ const EditMembers = ({ group }: { group: GroupChatDetails }) => {
                       <Avatar
                         src={member.avatarURL}
                         size={"sm"}
-                        icon={<UserIcon className="w-5 h-5" />}
+                        icon={<UserIcon className="h-5 w-5" />}
                       />
                       {member.name}
                     </div>

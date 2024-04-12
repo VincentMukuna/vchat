@@ -11,17 +11,17 @@ import { MyProfile } from "./MyProfile";
 const tabs = [
   {
     value: "/chats",
-    icon: <ChatIcon className="w-6 h-6" />,
+    icon: <ChatIcon className="h-6 w-6" />,
     title: "Chats",
   },
   {
     value: "/users",
-    icon: <UserIconOutline className="w-6 h-6" />,
+    icon: <UserIconOutline className="h-6 w-6" />,
     title: "Users",
   },
   {
     value: "/settings",
-    icon: <WheelIcon className="w-6 h-6" />,
+    icon: <WheelIcon className="h-6 w-6" />,
     title: "Settings",
   },
 ];
@@ -33,11 +33,11 @@ const Navbar = () => {
   if (!currentUser || !currentUserDetails) return null;
 
   return (
-    <nav className="grow-0 md:flex  md:flex-col md:gap-8 h-16   items-center  md:min-w-[4rem] pt-2 bg-gray3  dark:bg-dark-blue2 md:h-full gap-3">
+    <nav className="h-16 grow-0  items-center gap-3 bg-gray3   pt-2  dark:bg-dark-blue2 md:flex md:h-full  md:min-w-[4rem] md:flex-col md:gap-8">
       <div className="hidden md:flex">
         <MyProfile />
       </div>
-      <div className="flex items-center justify-around w-full md:flex-col md:gap-2 ">
+      <div className="flex w-full items-center justify-around md:flex-col md:gap-2 ">
         {tabs.map((tab, i) => {
           return (
             <Tooltip
@@ -55,7 +55,7 @@ const Navbar = () => {
             >
               <Link to={tab.value} className="relative mb-3">
                 <div
-                  className={` md:w-1 md:h-full w-full h-1 bg-dark-indigo10 rounded-full absolute  -bottom-2 md:bottom-0 left-[2px]  md:-left-1 transition-opacity ${
+                  className={` absolute -bottom-2 left-[2px] h-1 w-full rounded-full bg-dark-indigo10  transition-opacity md:-left-1 md:bottom-0  md:h-full md:w-1 ${
                     pathname.split("/").includes(tab.value.substring(1))
                       ? "visible"
                       : "invisible"
@@ -82,7 +82,7 @@ const Navbar = () => {
         })}
       </div>
 
-      <div className="flex-col hidden gap-2 mt-auto mb-8 md:flex">
+      <div className="mb-8 mt-auto hidden flex-col gap-2 md:flex">
         <Tooltip
           label={colorMode === "dark" ? "Light mode" : "Dark mode"}
           hasArrow
@@ -106,9 +106,9 @@ const Navbar = () => {
             aria-label="toggle color mode"
             icon={
               colorMode === "dark" ? (
-                <SunIcon className="w-6 h-6" />
+                <SunIcon className="h-6 w-6" />
               ) : (
-                <MoonIcon className="w-6 h-6" />
+                <MoonIcon className="h-6 w-6" />
               )
             }
           />
@@ -129,7 +129,7 @@ const Navbar = () => {
             onClick={() => {
               logOut();
             }}
-            className="flex items-center justify-center transition-all w-11"
+            className="flex w-11 items-center justify-center transition-all"
           >
             <IconButton
               as={motion.button}
@@ -140,7 +140,7 @@ const Navbar = () => {
                 bg: colorMode === "dark" ? slateDark.slate6 : slateDark.slate11,
               }}
               aria-label="log out"
-              icon={<LogOutIcon className="w-6 h-6 " />}
+              icon={<LogOutIcon className="h-6 w-6 " />}
             />
           </Link>
         </Tooltip>

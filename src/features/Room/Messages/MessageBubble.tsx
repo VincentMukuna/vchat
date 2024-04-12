@@ -17,12 +17,12 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
     return (
       <div
         ref={messageRef}
-        className={`flex flex-col relative min-w-[3rem] gap-1 rounded-3xl  sm:max-w-[22rem] max-w-[80vw] 
-                p-3 ps-3 py-2 z-10
+        className={`relative z-10 flex min-w-[3rem] max-w-[80vw] flex-col  gap-1 rounded-3xl 
+                p-3 py-2 ps-3 sm:max-w-[22rem]
                 ${
                   isMine
-                    ? `bg-indigo-200 dark:bg-indigo-900 dark:text-white  self-end me-4`
-                    : "bg-gray7 dark:bg-dark-gray6/90   text-gray-100s"
+                    ? `me-4 self-end bg-indigo-200  dark:bg-indigo-900 dark:text-white`
+                    : "text-gray-100s bg-gray7   dark:bg-dark-gray6/90"
                 } 
 
                 ${
@@ -43,9 +43,9 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 
                 `}
       >
-        <div className="text-[0.9rem] leading-relaxed tracking-wide flex justify-between">
-          <pre className="font-sans whitespace-pre-wrap">{message.body}</pre>
-          <small className="text-[0.6rem] tracking-wider text-gray-500 dark:text-slate-300 self-end ms-2 inline-flex gap-1 items-baseline">
+        <div className="flex justify-between text-[0.9rem] leading-relaxed tracking-wide">
+          <pre className="whitespace-pre-wrap font-sans">{message.body}</pre>
+          <small className="ms-2 inline-flex items-baseline gap-1 self-end text-[0.6rem] tracking-wider text-gray-500 dark:text-slate-300">
             {new Date(message.$createdAt)
               .toLocaleTimeString("en-US", {
                 hour: "numeric",

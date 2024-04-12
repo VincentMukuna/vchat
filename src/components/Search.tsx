@@ -39,7 +39,7 @@ function Search({
       <PopoverAnchor>
         <form
           action=""
-          className="w-full mb-4"
+          className="mb-4 w-full"
           onSubmit={async (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -58,7 +58,7 @@ function Search({
         >
           <InputGroup>
             <InputLeftElement>
-              <MagnifyingGlassIcon className="w-4 h-4 ml-1 " />
+              <MagnifyingGlassIcon className="ml-1 h-4 w-4 " />
             </InputLeftElement>
             <Input
               variant={"filled"}

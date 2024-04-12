@@ -67,7 +67,7 @@ const Profile = () => {
           animate="slide-in"
           exit="slide-from-right"
         >
-          <div className="relative flex flex-col items-center justify-between w-full gap-2 py-4">
+          <div className="relative flex w-full flex-col items-center justify-between gap-2 py-4">
             <div className="flex flex-col items-center gap-2">
               <div className="relative ">
                 <IconButton
@@ -78,11 +78,11 @@ const Profile = () => {
                   onClick={openFilePicker}
                   aria-label="edit avatar"
                   icon={
-                    <PencilIcon className="w-5 h-5 text-gray11 dark:text-gray7" />
+                    <PencilIcon className="h-5 w-5 text-gray11 dark:text-gray7" />
                   }
                   pos={"absolute"}
                   bg={"transparent"}
-                  className="z-20 -right-10"
+                  className="-right-10 z-20"
                 />
                 <Avatar
                   size={"2xl"}
@@ -100,11 +100,11 @@ const Profile = () => {
               </div>
 
               <span className="inline-flex items-center gap-1 text-slate-900 dark:text-gray-400">
-                <Icon as={MapPinIcon} className="w-3 h-3" />
+                <Icon as={MapPinIcon} className="h-3 w-3" />
                 {currentUserDetails?.location}
               </span>
             </div>
-            <div className="flex flex-col items-center w-full gap-4 mt-5 transition">
+            <div className="mt-5 flex w-full flex-col items-center gap-4 transition">
               {
                 <Modal isOpen={isOpen} onClose={onClose} size={"xs"}>
                   <ModalOverlay />

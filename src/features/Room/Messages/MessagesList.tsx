@@ -31,17 +31,17 @@ function MessagesList({}: MessagesProps) {
   return (
     <div
       ref={messageListRef}
-      className="relative self-stretch overflow-x-hidden overflow-y-auto grow"
+      className="relative grow self-stretch overflow-y-auto overflow-x-hidden"
     >
       <div
         id="messages-container"
-        className="flex flex-col-reverse self-stretch h-full p-2 pb-4 overflow-x-hidden overflow-y-scroll grow"
+        className="flex h-full grow flex-col-reverse self-stretch overflow-x-hidden overflow-y-scroll p-2 pb-4"
       >
         {messages.length > 0 ? (
           <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
             {groupedMessages.map(([date, messages], i) => (
               <div key={i}>
-                <div className="py-2 mt-2 text-xs font-semibold tracking-wide text-center text-gray-500 dark:text-gray-400/90">
+                <div className="mt-2 py-2 text-center text-xs font-semibold tracking-wide text-gray-500 dark:text-gray-400/90">
                   {date}
                 </div>
                 {messages.map((message, i) => (
@@ -70,7 +70,7 @@ function MessagesList({}: MessagesProps) {
             ))} */}
           </MessagesContext.Provider>
         ) : (
-          <div className="flex flex-col items-center justify-center w-full h-full gap-2 dark:text-gray2">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 dark:text-gray2">
             <div className="text-lg font-bold tracking-wider">No Messages</div>
             <div className="">
               Start the conversation by typing a message below

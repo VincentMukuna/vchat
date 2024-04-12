@@ -2,7 +2,7 @@ import { ChatMessage } from "@/interfaces/interfaces";
 
 export default function SystemMessage({ message }: { message: ChatMessage }) {
   return (
-    <div className="max-w-[min(90vw,24rem)]  py-2 text-center w-fit px-4 mx-auto my-1 text-xs italic rounded-full dark:text-gray-300 bg-dark-grass11/80 dark:bg-dark-grass8/70">
+    <div className="mx-auto  my-1 w-fit max-w-[min(90vw,24rem)] rounded-full bg-dark-grass11/80 px-4 py-2 text-center text-xs italic dark:bg-dark-grass8/70 dark:text-gray-300">
       {message.body}
     </div>
   );

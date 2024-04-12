@@ -99,7 +99,7 @@ export default function ForwardMessagesModal({
       <ModalCloseButton />
       <ModalBody>
         <h2>Select chat to forward to: </h2>
-        <ul className="flex flex-col gap-1 mt-2 max-h-[14rem] overflow-y-auto">
+        <ul className="mt-2 flex max-h-[14rem] flex-col gap-1 overflow-y-auto">
           {conversations.map((conversation) => {
             const isGroup =
               conversation.$collectionId === SERVER.COLLECTION_ID_GROUPS;
@@ -125,7 +125,7 @@ export default function ForwardMessagesModal({
                 key={conversation.$id}
                 className={`flex items-center gap-2 ${
                   selectedChatId === conversation.$id ? "bg-slate-800" : ""
-                } p-2 rounded-md cursor-pointer hover:bg-slate-800 transition-colors`}
+                } cursor-pointer rounded-md p-2 transition-colors hover:bg-slate-800`}
                 onClick={() => {
                   if (selectedChatId === conversation.$id) {
                     setSelectedChatId("");
@@ -136,7 +136,7 @@ export default function ForwardMessagesModal({
               >
                 <Avatar
                   size={"md"}
-                  icon={<UserIcon className="w-5 h-5" />}
+                  icon={<UserIcon className="h-5 w-5" />}
                   src={
                     isGroup
                       ? conversation.avatarURL
@@ -151,7 +151,7 @@ export default function ForwardMessagesModal({
                       ? "You"
                       : otherParticipant!.name}
                   </span>
-                  <span className="text-xs italic line-clamp-1">
+                  <span className="line-clamp-1 text-xs italic">
                     {isGroup
                       ? conversation.description
                       : otherParticipant!.about || "about"}

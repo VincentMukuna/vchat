@@ -55,19 +55,19 @@ export const EditUserDetails = () => {
       <ModalBody>
         <motion.form
           onSubmit={handleSubmit}
-          className="flex flex-col dark:text-gray-100 text-dark-blue1"
+          className="flex flex-col text-dark-blue1 dark:text-gray-100"
         >
           <div className="flex flex-col gap-2 ">
             <div className="flex flex-col gap-1 py-2 ">
               <label
                 htmlFor="username"
-                className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
+                className="text-sm tracking-wider text-dark-gray7  transition-[height] dark:text-gray8 dark:peer-focus:text-gray5 "
               >
                 Username
               </label>
               <InputGroup>
                 <InputLeftElement>
-                  <PencilIcon className="w-5 h-5 dark:text-dark-gray8/50" />
+                  <PencilIcon className="h-5 w-5 dark:text-dark-gray8/50" />
                 </InputLeftElement>
                 <Input
                   autoFocus
@@ -83,14 +83,14 @@ export const EditUserDetails = () => {
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="about"
-                className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
+                className="text-sm tracking-wider text-dark-gray7  transition-[height] dark:text-gray8 dark:peer-focus:text-gray5 "
               >
                 About
               </label>
               <InputGroup>
                 <InputLeftElement>
                   <InformationCircleIcon
-                    className="w-5 h-5 dark:text-dark-gray8/50"
+                    className="h-5 w-5 dark:text-dark-gray8/50"
                     pointerEvents="none"
                   />
                 </InputLeftElement>
@@ -107,14 +107,14 @@ export const EditUserDetails = () => {
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="location"
-                className="text-sm tracking-wider transition-[height]  text-dark-gray7 dark:peer-focus:text-gray5 dark:text-gray8 "
+                className="text-sm tracking-wider text-dark-gray7  transition-[height] dark:text-gray8 dark:peer-focus:text-gray5 "
               >
                 Location
               </label>
               <InputGroup>
                 <InputLeftElement>
                   <MapPinIcon
-                    className="w-5 h-5 dark:text-dark-gray8/50"
+                    className="h-5 w-5 dark:text-dark-gray8/50"
                     pointerEvents="none"
                   />
                 </InputLeftElement>
@@ -142,7 +142,7 @@ export const EditUserDetails = () => {
           isLoading={submitting}
           loadingText="Submitting"
           px={12}
-          leftIcon={<CheckIcon className="w-5 h-5 " />}
+          leftIcon={<CheckIcon className="h-5 w-5 " />}
           onClick={() => handleSubmit()}
         >
           Save

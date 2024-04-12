@@ -7,7 +7,7 @@ export default function Users() {
     <AuthenticatedLayout>
       <Sidebar>
         <SideBarHeader title={"Users"} className="" />
-        <UsersList className="px-3 overflow-y-auto mt-18" />
+        <UsersList className="mt-18 overflow-y-auto px-3" />
       </Sidebar>
     </AuthenticatedLayout>
   );

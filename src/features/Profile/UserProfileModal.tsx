@@ -98,7 +98,7 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
         <Avatar
           size={"2xl"}
           name={user.name}
-          icon={<UserIcon className="w-16 h-16" />}
+          icon={<UserIcon className="h-16 w-16" />}
           src={user.avatarURL}
         />
 
@@ -107,7 +107,7 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
           {user?.about || "Hi there! I'm using VChat"}
         </span>
         <span className="inline-flex items-center gap-1 text-slate-900 dark:text-gray-400">
-          <Icon as={MapPinIcon} className="w-3 h-3" />
+          <Icon as={MapPinIcon} className="h-3 w-3" />
           {user?.location}
         </span>
       </ModalBody>

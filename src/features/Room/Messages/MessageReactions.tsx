@@ -137,7 +137,7 @@ const MessageReactions = ({
       title={isLiked ? "Unlike" : "Like"}
     >
       <FluentEmojiFlatHeartSuit />
-      <span className="text-xs ms-1">{likesCount}</span>
+      <span className="ms-1 text-xs">{likesCount}</span>
     </Button>
   );
 };
