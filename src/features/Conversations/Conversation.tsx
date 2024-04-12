@@ -116,7 +116,7 @@ const Conversation = memo(
         setContactDetails(
           conversation.participants?.filter(
             (participant: IUserDetails) =>
-              participant.$id != currentUserDetails.$id,
+              participant.$id !== currentUserDetails.$id,
           )[0],
         );
       }
