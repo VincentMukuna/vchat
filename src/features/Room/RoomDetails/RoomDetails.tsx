@@ -47,6 +47,7 @@ const RoomDetails = () => {
               <Avatar
                 size={"2xl"}
                 src={!isGroup ? recepient?.avatarURL : selectedChat.avatarURL}
+                name={!isGroup ? recepient?.name : selectedChat.name}
                 icon={
                   isGroup ? (
                     <UsersIcon className="h-16 w-16" />

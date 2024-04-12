@@ -151,6 +151,7 @@ const Conversation = memo(
       >
         <Avatar
           src={avatarURL}
+          name={isGroup ? conversation.name : contactDetails?.name || "User"}
           icon={
             isGroup ? (
               <UsersIcon className="h-[26px] w-[26px]" />
@@ -158,7 +159,6 @@ const Conversation = memo(
               <UserIcon className="h-[26px] w-[26px]" />
             )
           }
-          bg={colorMode === "dark" ? "gray.600" : "gray.400"}
           onClick={(e) => {
             e.stopPropagation();
             if (avatarURL) {
