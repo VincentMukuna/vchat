@@ -256,7 +256,11 @@ export async function deleteGroup(groupID: string) {
 export async function leaveGroup(userDetailsID: string, groupID: string) {
   let groups = await getUserGroups(userDetailsID);
   let newGroups = groups.filter((group) => group.$id !== groupID);
-  await updateUserDetails(userDetailsID, { groups: newGroups });
+  const user = await updateUserDetails(userDetailsID, { groups: newGroups });
+  sendSystemMessage(SERVER.DATABASE_ID, SERVER.COLLECTION_ID_GROUP_MESSAGES, {
+    body: `${user.name} left the group`,
+    groupDoc: groupID,
+  });
 }
 
 export async function getGroupUnreadMessagesCount(
