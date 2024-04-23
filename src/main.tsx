@@ -95,7 +95,7 @@ const theme = extendTheme({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <>
-    <ColorModeScript initialColorMode="dark" />
+    <ColorModeScript initialColorMode="system" />
     <ChakraProvider theme={theme}>
       <SWRConfig>
         <RouterProvider router={router} />
