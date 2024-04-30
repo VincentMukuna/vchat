@@ -27,7 +27,6 @@ const router = createBrowserRouter([
   {
     element: <App />,
     children: [
-      //protected routes should be children of PrivateRoutes
       {
         path: "/",
         element: <PrivateRoutes />,
