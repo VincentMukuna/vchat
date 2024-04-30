@@ -165,17 +165,12 @@ const Message = forwardRef<any, MessageProps>(
             } flex-wrap items-end transition-all focus:outline-0  focus:outline-slate-600 
           
           ${prevSameSender ? "" : "mt-1.5"}
-
           ${nextSameSender ? "" : "mb-1.5"}
-
           ${
             isSelected
               ? "my-0.5 rounded-sm bg-gray-200 dark:bg-dark-gray6/80"
               : ""
-          }
-          
-          
-            `}
+          }`}
           >
             {roomState.isSelectingMessages && (
               <Checkbox
