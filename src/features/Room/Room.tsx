@@ -8,7 +8,7 @@ import useRoomSubscription from "@/features/Room/hooks/useRoomSubscription";
 import { Box } from "@chakra-ui/react";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
-import MessageInput from "./MessageInput/MessageInput";
+import MessageInput from "./Messages/MessageInput/MessageInput";
 import Messages from "./Messages/MessagesList";
 import RoomDetails from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";

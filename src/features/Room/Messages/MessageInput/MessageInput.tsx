@@ -6,17 +6,17 @@ import { slate } from "@radix-ui/colors";
 import { Models } from "appwrite";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { useAuth } from "../../../context/AuthContext";
-import { useChatsContext } from "../../../context/ChatsContext";
+import { useAuth } from "../../../../context/AuthContext";
+import { useChatsContext } from "../../../../context/ChatsContext";
 import {
   RoomActionTypes,
   useRoomContext,
-} from "../../../context/Room/RoomContext";
+} from "../../../../context/Room/RoomContext";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
-} from "../../../interfaces/interfaces";
-import { SERVER } from "../../../utils/config";
+} from "../../../../interfaces/interfaces";
+import { SERVER } from "../../../../utils/config";
 import AttachmentInput, { AttachmentHandle } from "./AttachmentInput";
 
 type InputProps = {};
@@ -97,7 +97,7 @@ const MessageInput = ({}: InputProps) => {
         optimisticAttachments: filesContent,
         ...createOptimisticMessageProps(),
       };
-      await createMessage(message);
+      createMessage(message);
     } else {
       if (!recepient) {
         return;
@@ -117,11 +117,9 @@ const MessageInput = ({}: InputProps) => {
         ...createOptimisticMessageProps(),
       };
 
-      await createMessage(message);
+      createMessage(message);
     }
-
     setAttachments([]);
-
     clear();
   };
 

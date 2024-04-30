@@ -1,6 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
-import { Message } from "@/features/Room/MessageInput/MessageInput";
+import { Message } from "@/features/Room/Messages/MessageInput/MessageInput";
 import api from "@/services/api";
 import { useRef, useState } from "react";
 import useSWR from "swr";
