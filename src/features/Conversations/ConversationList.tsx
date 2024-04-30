@@ -128,7 +128,8 @@ const ConversationList = ({ className }: { className: string }) => {
           </InputLeftElement>
           <Input
             value={search}
-            rounded={"md"}
+            rounded={"full"}
+            variant={"filled"}
             placeholder="Search for chats"
             type="search"
             onChange={(e) => {
