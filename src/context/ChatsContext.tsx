@@ -52,14 +52,6 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     mutate: updateConversations,
   } = useConversations();
 
-  useEffect(() => {
-    console.log("location", location);
-    const chatID = location.pathname.split("/")[2];
-    if (chatID) {
-      console.log("chatID", chatID);
-    }
-  }, []);
-
   let syncChatsToastId: string | undefined = undefined;
   useEffect(() => {
     if (chatsLoading) {
