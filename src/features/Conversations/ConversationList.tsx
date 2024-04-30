@@ -1,13 +1,23 @@
 import { useChatsContext } from "@/context/ChatsContext";
 import useChatsListSubscription from "@/features/Conversations/hooks/useChatsListSubscription";
 import useUserChatsSubscription from "@/features/Conversations/hooks/useUserChatsSubscription";
+import { IConversation } from "@/interfaces/interfaces";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
-import { Button, useColorMode } from "@chakra-ui/react";
-import { UserPlusIcon } from "@heroicons/react/20/solid";
+import { isGroup } from "@/utils/utils";
+import {
+  Button,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  useColorMode,
+} from "@chakra-ui/react";
+import { MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useDebouncedCallback } from "use-debounce";
 import { useAuth } from "../../context/AuthContext";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import Conversation from "./Conversation";
@@ -20,6 +30,15 @@ const ConversationList = ({ className }: { className: string }) => {
   const {
     conversationsData: { conversations, chatsError, chatsLoading },
   } = useChatsContext();
+  const [search, setSearch] = useState("");
+
+  const [searchResults, setSearchResults] =
+    useState<IConversation[]>(conversations);
+  //synch chats with the server
+  useEffect(() => {
+    setSearchResults(conversations);
+    handleChatsSearch(search);
+  }, [conversations, chatsError, chatsLoading]);
   if (!currentUser || !currentUserDetails) return null;
   const { update: updateConversations } = useSWROptimistic("conversations");
 
@@ -27,6 +46,22 @@ const ConversationList = ({ className }: { className: string }) => {
   useUserChatsSubscription();
 
   useChatsListSubscription();
+
+  const handleChatsSearch = useDebouncedCallback((search: string) => {
+    setSearchResults(
+      conversations?.filter((conversation) => {
+        if (isGroup(conversation)) {
+          return conversation.name.toLowerCase().includes(search.toLowerCase());
+        } else {
+          const contact = conversation.participants.find(
+            (p) => p.$id !== currentUserDetails.$id,
+          );
+          if (!contact) return false;
+          return contact.name.toLowerCase().includes(search.toLowerCase());
+        }
+      }),
+    );
+  }, 100);
 
   if (chatsError) {
     return (
@@ -87,16 +122,47 @@ const ConversationList = ({ className }: { className: string }) => {
         animate="slide-in"
         exit="slide-from-right"
       >
+        <InputGroup className="my-2 px-2 ">
+          <InputLeftElement pointerEvents={"none"} left={2}>
+            <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+          </InputLeftElement>
+          <Input
+            value={search}
+            rounded={"md"}
+            placeholder="Search for chats"
+            type="search"
+            onChange={(e) => {
+              setSearch(e.target.value);
+              handleChatsSearch(e.target.value);
+            }}
+          />
+        </InputGroup>
         <div
           id="chats-container"
           className={"flex flex-col space-y-1 overflow-y-clip " + className}
         >
-          {(conversations.length > 0
-            ? conversations
-            : currentUserDetails.groups
-          ).map((conversation) => (
-            <Conversation key={conversation.$id} conversation={conversation} />
-          ))}
+          {searchResults.length > 0 ? (
+            searchResults.map((conversation) => (
+              <Conversation
+                key={conversation.$id}
+                conversation={conversation}
+              />
+            ))
+          ) : (
+            <div className="mx-auto mt-4 flex max-w-xs flex-col items-center gap-2 text-center">
+              <MagnifyingGlassIcon className="h-12 w-12 " />
+              <p className="font-bold">No results found!</p>
+              <p>No chats match the provided name. Try another name</p>
+              <Button
+                onClick={() => {
+                  setSearch("");
+                  handleChatsSearch("");
+                }}
+              >
+                Clear Search
+              </Button>
+            </div>
+          )}
         </div>
       </motion.div>
     );
