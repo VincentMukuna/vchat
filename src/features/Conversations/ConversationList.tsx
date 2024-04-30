@@ -140,7 +140,7 @@ const ConversationList = ({ className }: { className: string }) => {
         </InputGroup>
         <div
           id="chats-container"
-          className={"flex flex-col space-y-1 overflow-y-clip " + className}
+          className={"flex flex-col space-y-1 overflow-y-clip px-1" + className}
         >
           {searchResults.length > 0 ? (
             searchResults.map((conversation) => (
@@ -150,7 +150,7 @@ const ConversationList = ({ className }: { className: string }) => {
               />
             ))
           ) : (
-            <div className="mx-auto mt-4 flex max-w-xs flex-col items-center gap-2 text-center">
+            <div className="mx-auto mt-4 flex max-w-xs flex-col items-center gap-2  text-center">
               <MagnifyingGlassIcon className="h-12 w-12 " />
               <p className="font-bold">No results found!</p>
               <p>No chats match the provided name. Try another name</p>
