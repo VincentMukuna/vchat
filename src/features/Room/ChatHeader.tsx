@@ -37,7 +37,7 @@ import { getGroupDetails } from "../../services/groupMessageServices";
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
-import SelectedChatOptions from "./SelectedChatOptions";
+import SelectedChatOptions from "./SelectedChatMessagesOptions";
 
 function ChatHeader() {
   const { currentUserDetails } = useAuth();
