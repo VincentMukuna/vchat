@@ -2,10 +2,7 @@ import { useMessagesContext } from "@/context/MessagesContext";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import {
-  RoomActionTypes,
-  useRoomContext,
-} from "../../../context/Room/RoomContext";
+import { useRoomContext } from "../../../context/Room/RoomContext";
 import {
   ChatMessage,
   DirectMessageDetails,
@@ -65,10 +62,6 @@ export default function useDeleteSelectedMessages() {
       promise
         .then(() => {
           toast.success("Messages deleted");
-          dispatch({
-            type: RoomActionTypes.TOGGLE_IS_SELECTING_MESSAGES,
-            payload: null,
-          });
         })
         .catch((e) => {
           toast.error("Something went wrong");
