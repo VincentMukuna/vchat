@@ -165,7 +165,7 @@ const MessageInput = ({}: InputProps) => {
       <footer className="mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
           <div className="flex h-full w-full items-center gap-1 ps-1 ">
-            <Popover>
+            <Popover onClose={() => inputRef.current?.focus?.()}>
               <PopoverTrigger>
                 <IconButton
                   variant={"ghost"}
