@@ -52,7 +52,7 @@ const AttachmentInput = forwardRef<AttachmentHandle>((props, ref) => {
     setAttachments,
   }));
   return (
-    <div className="relative flex h-full">
+    <div className="relative ">
       <IconButton
         as={motion.button}
         variant={"ghost"}
@@ -62,6 +62,7 @@ const AttachmentInput = forwardRef<AttachmentHandle>((props, ref) => {
         aria-label="add attachment"
         title="add attachment"
         icon={<PaperClipIcon className="h-4 w-4" />}
+        size={"sm"}
         onClick={() => {
           clear();
           openFilePicker();
