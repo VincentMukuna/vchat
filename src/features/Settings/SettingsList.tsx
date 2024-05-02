@@ -26,7 +26,7 @@ const SettingsList = () => {
           className="flex h-full w-full max-w-sm items-center p-3"
         >
           <div className="flex flex-col items-start">
-            <span className="">Toggle dark mode</span>
+            <span className="">Toggle color mode</span>
             <span className="text-sm italic dark:text-slate-300">
               Switch the apps theme
             </span>
