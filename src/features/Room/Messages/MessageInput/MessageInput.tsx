@@ -1,6 +1,16 @@
 import { useMessagesContext } from "@/context/MessagesContext";
-import { IconButton, Textarea, useColorMode } from "@chakra-ui/react";
+import {
+  IconButton,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Textarea,
+  useColorMode,
+} from "@chakra-ui/react";
+import data from "@emoji-mart/data";
+import Picker from "@emoji-mart/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
+import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { slate } from "@radix-ui/colors";
 import { Models } from "appwrite";
@@ -18,7 +28,6 @@ import {
 } from "../../../../interfaces/interfaces";
 import { SERVER } from "../../../../utils/config";
 import AttachmentInput, { AttachmentHandle } from "./AttachmentInput";
-
 type InputProps = {};
 
 export type Message = DirectMessageDetails | GroupMessageDetails;
@@ -152,9 +161,29 @@ const MessageInput = ({}: InputProps) => {
           />
         </div>
       )}
-      <footer className="relative mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
+      <footer className="mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
-          <div className="flex h-full w-full items-center gap-2 ps-1">
+          <div className="flex h-full w-full items-center gap-1 ps-1 ">
+            <Popover isLazy onClose={() => inputRef.current?.focus?.()}>
+              <PopoverTrigger>
+                <IconButton
+                  variant={"ghost"}
+                  aria-label="emoji"
+                  icon={<FaceSmileIcon className="h-4 w-4" />}
+                  size={"sm"}
+                  rounded={"full"}
+                />
+              </PopoverTrigger>
+              <PopoverContent border={"none"} bg={"transparent"}>
+                <Picker
+                  data={data}
+                  onEmojiSelect={(v: any) => {
+                    if (messageBody.length > 1498) return;
+                    setMessageBody((prev) => prev + v.native);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
             <AttachmentInput ref={attachmentInputRef} />
 
             <Textarea
