@@ -20,6 +20,7 @@ import {
 export default {
   darkMode: ["class", ".chakra-ui-dark"],
 
+  important: true,
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
