@@ -14,6 +14,7 @@ import {
   ArrowUturnRightIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/20/solid";
+import { ClipboardIcon } from "@heroicons/react/24/outline";
 import ForwardMessagesModal from "../ForwardMessagesModal";
 import EditMessageForm from "./EditMessageModal";
 import { useMessageContext } from "./Message";
@@ -43,7 +44,18 @@ const MessageOptions = () => {
       <Portal>
         <MenuList>
           <MenuItem
-            icon={<PencilIcon className="w-3" />}
+            icon={<ClipboardIcon className="h-4 w-4" />}
+            command="⌘C"
+            onClick={(e) => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(message.body);
+            }}
+          >
+            Copy Message
+          </MenuItem>
+
+          <MenuItem
+            icon={<PencilIcon className="h-4 w-4" />}
             command="⌘E"
             onClick={(e) => {
               e.stopPropagation();
@@ -53,7 +65,7 @@ const MessageOptions = () => {
             Edit Message
           </MenuItem>
           <MenuItem
-            icon={<ArrowUturnRightIcon className="h-3 w-3" />}
+            icon={<ArrowUturnRightIcon className="h-4 w-4" />}
             command="⌘F"
             onClick={(e) => {
               e.stopPropagation();
@@ -64,7 +76,7 @@ const MessageOptions = () => {
           </MenuItem>
           <MenuDivider />
           <MenuItem
-            icon={<DeleteIcon className="w-3" />}
+            icon={<DeleteIcon className="h-4 w-4" />}
             command="⌘D"
             onClick={(e) => {
               confirmAlert({
