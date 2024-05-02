@@ -172,6 +172,7 @@ const MessageInput = ({}: InputProps) => {
                   icon={<FaceSmileIcon className="h-4 w-4" />}
                   size={"sm"}
                   rounded={"full"}
+                  className="hidden sm:inline-flex"
                 />
               </PopoverTrigger>
               <PopoverContent border={"none"} bg={"transparent"}>
