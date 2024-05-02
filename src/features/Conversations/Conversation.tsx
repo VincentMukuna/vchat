@@ -146,7 +146,7 @@ const Conversation = memo(
           // });
         }}
         className={`flex cursor-pointer items-start gap-2 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
-          isActive ? "bg-dark-slate5 dark:bg-dark-blue2" : ""
+          isActive ? "bg-slate-200 dark:bg-dark-blue2" : ""
         }`}
       >
         <Avatar
@@ -213,7 +213,7 @@ const Conversation = memo(
             )}
           </span>
         </div>
-        <div className="mx-3 ml-auto mr-3 mt-1 flex flex-col gap-1 text-gray-300/90 ">
+        <div className="mx-3 ml-auto mr-3 mt-1 flex flex-col gap-1 dark:text-gray-300/90 ">
           <span className="flex whitespace-nowrap text-[.6rem] tracking-wide">
             {getFormatedDate(
               lastMessage?.$createdAt || conversation.$updatedAt,
