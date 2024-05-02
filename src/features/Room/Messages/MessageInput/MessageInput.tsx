@@ -4,6 +4,7 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Portal,
   Textarea,
   useColorMode,
 } from "@chakra-ui/react";
@@ -164,7 +165,7 @@ const MessageInput = ({}: InputProps) => {
       <footer className="mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
           <div className="flex h-full w-full items-center gap-1 ps-1 ">
-            <Popover isLazy onClose={() => inputRef.current?.focus?.()}>
+            <Popover>
               <PopoverTrigger>
                 <IconButton
                   variant={"ghost"}
@@ -175,15 +176,17 @@ const MessageInput = ({}: InputProps) => {
                   className="hidden sm:inline-flex"
                 />
               </PopoverTrigger>
-              <PopoverContent border={"none"} bg={"transparent"}>
-                <Picker
-                  data={data}
-                  onEmojiSelect={(v: any) => {
-                    if (messageBody.length > 1498) return;
-                    setMessageBody((prev) => prev + v.native);
-                  }}
-                />
-              </PopoverContent>
+              <Portal>
+                <PopoverContent border={"none"} bg={"transparent"}>
+                  <Picker
+                    data={data}
+                    onEmojiSelect={(v: any) => {
+                      if (messageBody.length > 1498) return;
+                      setMessageBody((prev) => prev + v.native);
+                    }}
+                  />
+                </PopoverContent>
+              </Portal>
             </Popover>
             <AttachmentInput ref={attachmentInputRef} />
 
