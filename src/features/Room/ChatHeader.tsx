@@ -1,6 +1,7 @@
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 //@ts-ignore
+import Alternator from "@/components/Alternator";
 import {
   Avatar,
   Drawer,
@@ -101,18 +102,28 @@ function ChatHeader() {
         className="shrink"
       />
       <div className="relative flex shrink grow flex-col">
-        <span className="max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wide transition-all  sm:text-lg md:max-w-none">
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wide transition-all  sm:text-lg md:max-w-none">
           {isGroup
             ? selectedChatDetails.name
             : isPersonal
             ? "You"
             : recepient?.name}
         </span>
-        <span className="relative max-w-[9rem] overflow-hidden text-ellipsis whitespace-nowrap text-xs tracking-wide text-dark-gray5 dark:text-gray6 md:max-w-none">
-          {isGroup
-            ? selectedChatDetails.description
-            : recepient?.about || "about"}
+
+        <span className="relative h-4 max-w-[9rem] overflow-hidden text-ellipsis whitespace-nowrap text-xs tracking-wide text-dark-gray5 dark:text-gray6 md:max-w-none">
+          {isGroup ? (
+            selectedChatDetails.description
+          ) : (
+            <>
+              <Alternator interval={5000} className="xl:hidden">
+                <span>Last seen 3 seconds ago</span>
+                <span>Select to see details</span>
+              </Alternator>
+              <span className="hidden xl:block">Last seen 3 seconds ago</span>
+            </>
+          )}
         </span>
+
         <button
           onClick={() => {
             onOpen();
@@ -143,8 +154,13 @@ function ChatHeader() {
         finalFocusRef={btnRef}
         size={["md"]}
       >
-        <DrawerOverlay />
-        <DrawerContent bg={blueDark.blue1}>
+        <DrawerOverlay
+          bg={"none"}
+          backdropFilter={"auto"}
+          backdropInvert={"10%"}
+          backdropBlur={"1px"}
+        />
+        <DrawerContent bg={blueDark.blue2} shadow={"none"}>
           <DrawerCloseButton />
           <DrawerHeader>
             <RoomDetailsHeader />
