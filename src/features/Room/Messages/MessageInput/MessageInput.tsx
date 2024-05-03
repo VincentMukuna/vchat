@@ -5,17 +5,16 @@ import {
   PopoverContent,
   PopoverTrigger,
   Portal,
+  Spinner,
   Textarea,
   useColorMode,
 } from "@chakra-ui/react";
-import data from "@emoji-mart/data";
-import Picker from "@emoji-mart/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import { slate } from "@radix-ui/colors";
 import { Models } from "appwrite";
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../../../context/AuthContext";
 import { useChatsContext } from "../../../../context/ChatsContext";
@@ -72,6 +71,10 @@ const MessageInput = ({}: InputProps) => {
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
 
   const attachmentInputRef = useRef<AttachmentHandle>(null);
+
+  const Picker = lazy(() => {
+    return import("@emoji-mart/react");
+  });
 
   useEffect(() => {
     if (inputRef.current) {
@@ -165,7 +168,7 @@ const MessageInput = ({}: InputProps) => {
       <footer className="mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
           <div className="flex h-full w-full items-center gap-1 ps-1 ">
-            <Popover onClose={() => inputRef.current?.focus?.()}>
+            <Popover onClose={() => inputRef.current?.focus?.()} isLazy>
               <PopoverTrigger>
                 <IconButton
                   variant={"ghost"}
@@ -178,13 +181,14 @@ const MessageInput = ({}: InputProps) => {
               </PopoverTrigger>
               <Portal>
                 <PopoverContent border={"none"} bg={"transparent"}>
-                  <Picker
-                    data={data}
-                    onEmojiSelect={(v: any) => {
-                      if (messageBody.length > 1498) return;
-                      setMessageBody((prev) => prev + v.native);
-                    }}
-                  />
+                  <Suspense fallback={<Spinner />}>
+                    <Picker
+                      onEmojiSelect={(v: any) => {
+                        if (messageBody.length > 1498) return;
+                        setMessageBody((prev) => prev + v.native);
+                      }}
+                    />
+                  </Suspense>
                 </PopoverContent>
               </Portal>
             </Popover>
