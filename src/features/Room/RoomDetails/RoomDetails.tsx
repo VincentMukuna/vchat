@@ -84,7 +84,7 @@ const RoomDetails = () => {
                     )
                   }
                 >
-                  <PencilIcon className="mr-2 h-3 w-3 text-gray11 dark:text-gray7" />
+                  <PencilIcon className="mr-1.5 h-3 w-3 text-gray11 dark:text-gray7" />
                   Edit Details
                 </Button>
               )}
