@@ -26,11 +26,9 @@ import {
 } from "../../../context/Room/RoomContext";
 import UserProfileModal from "../../Profile/UserProfileModal";
 
-import Blueticks from "@/components/Blueticks";
 import { useMessagesContext } from "@/context/MessagesContext";
 import useReadMessage from "@/features/Room/hooks/useReadMessage";
 import { pluck } from "@/utils/utils";
-import { ClockIcon } from "@heroicons/react/24/outline";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";
 import MessageOptions, { AllowedMessageActions } from "./MessageOptions";
@@ -258,33 +256,20 @@ const Message = forwardRef<any, MessageProps>(
                 ref={messageRef}
               />
             </div>
-            <div
-              className={`relative  w-4  ${
-                isMine && !showHoverCard ? "visible" : "invisible"
-              }`}
-            >
-              {isOptimistic ? (
-                <ClockIcon className="relative bottom-1 h-3 w-3 text-gray-500" />
-              ) : (
-                <Blueticks
-                  read={message.read}
-                  className="relative bottom-1 dark:text-blue-400"
+            <div className="flex">
+              <div
+                className={`relative z-0 -ms-2 flex gap-1 ${
+                  isMine ? "start-2" : "-start-2 "
+                } `}
+              >
+                <MessageReactions
+                  message={message}
+                  hoverCardShowing={showHoverCard}
                 />
-              )}
-            </div>
-
-            <div
-              className={`relative z-0 -ms-2 flex gap-1 ${
-                isMine ? "start-2" : "-start-2 "
-              } `}
-            >
-              <MessageReactions
-                message={message}
-                hoverCardShowing={showHoverCard}
-              />
-            </div>
-            <div className={`${showHoverCard ? "visible" : "invisible"}`}>
-              <MessageOptions allowedActions={allowedActions} />
+              </div>
+              <div className={`${showHoverCard ? "visible" : "invisible"}`}>
+                <MessageOptions allowedActions={allowedActions} />
+              </div>
             </div>
           </div>
         </article>

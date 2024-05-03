@@ -24,6 +24,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      screens: {
+        xs: "475px",
+        "2xs": "375px",
+      },
       colors: {
         dark: {
           ...blueDark,

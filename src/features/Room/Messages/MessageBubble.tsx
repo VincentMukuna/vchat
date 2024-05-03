@@ -1,5 +1,7 @@
+import Blueticks from "@/components/Blueticks";
 import { useAuth } from "@/context/AuthContext";
 import { ChatMessage } from "@/interfaces/interfaces";
+import { ClockIcon } from "@heroicons/react/24/outline";
 import { forwardRef } from "react";
 
 type MessageBubbleProps = {
@@ -14,11 +16,12 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
     const isSystem = message.senderID === "system";
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
+    const isOptimistic = !!message?.optimistic;
     return (
       <div
         ref={messageRef}
         className={`pointer-events-none relative z-10 flex min-w-[3rem]  max-w-[80vw] select-none 
-                flex-col gap-1 rounded-3xl p-3 py-2 ps-3 sm:max-w-[22rem]
+                flex-col gap-1 rounded-3xl p-3 py-2 ps-3 sm:max-w-[20rem]
                 ${
                   isMine
                     ? `me-4 self-end bg-indigo-200  dark:bg-indigo-900 dark:text-white`
@@ -43,9 +46,9 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 
                 `}
       >
-        <div className="flex justify-between text-[0.9rem] leading-relaxed tracking-wide">
+        <div className="flex flex-col justify-between gap-0.5 text-[0.9rem] leading-relaxed tracking-wide 2xs:flex-row">
           <pre className=" whitespace-pre-wrap font-sans">{message.body}</pre>
-          <small className="ms-2 inline-flex items-baseline gap-1 self-end text-[0.6rem] tracking-wider text-gray-500 dark:text-slate-300">
+          <small className="ml-auto ms-2 inline-flex items-center gap-1 self-end text-[0.5rem] leading-none tracking-wider text-gray-500 dark:text-slate-300">
             {new Date(message.$createdAt)
               .toLocaleTimeString("en-US", {
                 hour: "numeric",
@@ -60,6 +63,17 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 <span>edited</span>
               </>
             )}
+
+            {isMine ? (
+              isOptimistic ? (
+                <ClockIcon className="relative h-3 w-3 text-gray-500" />
+              ) : (
+                <Blueticks
+                  read={message.read}
+                  className="relative  dark:text-blue-400"
+                />
+              )
+            ) : null}
           </small>
         </div>
       </div>
