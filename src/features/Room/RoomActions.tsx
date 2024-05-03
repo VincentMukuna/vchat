@@ -1,7 +1,7 @@
 import { useMessagesContext } from "@/context/MessagesContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
-import { MenuDivider, MenuItem, MenuList } from "@chakra-ui/react";
+import { MenuItem, MenuList, Portal } from "@chakra-ui/react";
 import {
   PencilIcon,
   TrashIcon,
@@ -61,72 +61,66 @@ const RoomActions = () => {
   }
 
   return (
-    <MenuList _dark={{ bg: slateDark.slate1 }}>
-      {(!isGroup || isAdmin) && (
-        <>
-          <MenuItem
-            icon={<TrashIcon className="h-4 w-4" />}
-            py={"1"}
-            bg={"transparent"}
-            onClick={() => {
-              confirmAlert({
-                title: "Delete chat messages",
-                message: `Are you sure you want to delete all messages in this conversation? This action is irreversible`,
-                confirmText: "Yes, delete all messages",
-                cancelText: "Keep messages",
-                onConfirm: () => {
-                  handleClearRoomMessages();
-                },
-              });
-            }}
-          >
-            Clear Messages
-          </MenuItem>
-          <MenuDivider />
-        </>
-      )}
-      {isGroup && isAdmin && (
-        <>
-          <MenuItem
-            py={"1"}
-            onClick={() =>
-              modal(<AddMembers group={selectedChat as GroupChatDetails} />)
-            }
-            bg={"transparent"}
-            icon={<UserPlusIcon className="h-4 w-4" />}
-          >
-            Add Members
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem
-            py={"1"}
-            onClick={() =>
-              modal(<EditMembers group={selectedChat as GroupChatDetails} />)
-            }
-            bg={"transparent"}
-            icon={<UserMinusIcon className="h-4 w-4" />}
-          >
-            Remove Members
-          </MenuItem>
-
-          <MenuDivider />
-          <MenuItem
-            py={"1"}
-            bg={"transparent"}
-            onClick={() =>
-              modal(
-                <EditGroupAdmins
-                  selectedGroup={selectedChat as GroupChatDetails}
-                />,
-              )
-            }
-            icon={<PencilIcon className="h-4 w-4" />}
-          >
-            Edit Admins
-          </MenuItem>
-        </>
-      )}
-    </MenuList>
+    <Portal>
+      <MenuList _dark={{ bg: slateDark.slate1 }}>
+        {(!isGroup || isAdmin) && (
+          <>
+            <MenuItem
+              icon={<TrashIcon className="h-4 w-4" />}
+              bg={"transparent"}
+              onClick={() => {
+                confirmAlert({
+                  title: "Delete chat messages",
+                  message: `Are you sure you want to delete all messages in this conversation? This action is irreversible`,
+                  confirmText: "Yes, delete all messages",
+                  cancelText: "Keep messages",
+                  onConfirm: () => {
+                    handleClearRoomMessages();
+                  },
+                });
+              }}
+            >
+              Clear Messages
+            </MenuItem>
+          </>
+        )}
+        {isGroup && isAdmin && (
+          <>
+            <MenuItem
+              onClick={() =>
+                modal(<AddMembers group={selectedChat as GroupChatDetails} />)
+              }
+              bg={"transparent"}
+              icon={<UserPlusIcon className="h-4 w-4" />}
+            >
+              Add Members
+            </MenuItem>
+            <MenuItem
+              onClick={() =>
+                modal(<EditMembers group={selectedChat as GroupChatDetails} />)
+              }
+              bg={"transparent"}
+              icon={<UserMinusIcon className="h-4 w-4" />}
+            >
+              Remove Members
+            </MenuItem>
+            <MenuItem
+              bg={"transparent"}
+              onClick={() =>
+                modal(
+                  <EditGroupAdmins
+                    selectedGroup={selectedChat as GroupChatDetails}
+                  />,
+                )
+              }
+              icon={<PencilIcon className="h-4 w-4" />}
+            >
+              Edit Admins
+            </MenuItem>
+          </>
+        )}
+      </MenuList>
+    </Portal>
   );
 };
 

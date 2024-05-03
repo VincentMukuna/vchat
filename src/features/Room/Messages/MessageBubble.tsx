@@ -24,7 +24,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
       <div className="relative">
         <div
           ref={messageRef}
-          className={`pointer-events-none relative z-10 flex min-w-[3rem]  max-w-[80vw] select-none 
+          className={`pointer-events-none relative  flex min-w-[3rem]  max-w-[80vw] select-none 
                 flex-col gap-1 rounded-3xl p-3 py-2 ps-3 sm:max-w-[20rem]
                 ${
                   isMine
