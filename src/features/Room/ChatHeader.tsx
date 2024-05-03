@@ -105,14 +105,7 @@ function ChatHeader() {
         size={"md"}
         hidden={breakpoint === "base"}
       />
-      <button
-        onClick={() => {
-          if (breakpoint !== "lg") {
-            onOpen();
-          }
-        }}
-        className="relative flex shrink grow flex-col"
-      >
+      <div className="relative flex shrink grow flex-col">
         <span className="max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wide transition-all  sm:text-lg md:max-w-none">
           {isGroup
             ? selectedChatDetails.name
@@ -125,7 +118,14 @@ function ChatHeader() {
             ? selectedChatDetails.description
             : recepient?.about || "about"}
         </span>
-      </button>
+        <button
+          onClick={() => {
+            onOpen();
+          }}
+          className="absolute -inset-2 xl:hidden"
+        ></button>
+      </div>
+
       <div className="ml-auto flex ">
         <SelectedChatOptions />
         {(!isGroup || isGroupMember) && (
