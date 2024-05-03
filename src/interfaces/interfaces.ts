@@ -69,7 +69,7 @@ export interface IUserDetails extends Models.Document {
   location: string;
   avatarURL: any;
   status: "Online" | "Offline" | "Typing";
-  lastSeen: string;
+  lastOnlineAt: string;
   statusUpdates: string;
   prefs: UserPrefs;
   email: string;

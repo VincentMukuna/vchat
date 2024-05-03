@@ -104,11 +104,11 @@ let api = {
       .database.listDocuments(databaseId, collectionId, queries);
   },
 
-  updateDocument: (
+  updateDocument: <T extends Record<string, any>>(
     databaseId: string,
     collectionId: string,
     documentId: string,
-    data?: Record<string, unknown>,
+    data?: Partial<T>,
     permissions?: string[],
   ) => {
     return api

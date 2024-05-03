@@ -133,7 +133,11 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     setSelectedChat,
     recepient,
     setRecepient,
-    conversationsData: { conversations, chatsError, chatsLoading },
+    conversationsData: {
+      conversations: conversations,
+      chatsError,
+      chatsLoading,
+    },
     addConversation,
     deleteConversation,
     selectConversation,

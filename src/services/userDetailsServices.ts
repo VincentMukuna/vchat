@@ -271,3 +271,12 @@ export const sortConversations = (
   });
   return conversations;
 };
+
+export const updateLastSeen = async (userDetailsID: string) => {
+  await api.updateDocument<IUserDetails>(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
+    userDetailsID,
+    { lastOnlineAt: new Date().toISOString() },
+  );
+};

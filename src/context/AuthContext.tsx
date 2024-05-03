@@ -13,6 +13,7 @@ import { Models } from "appwrite";
 import Loading from "@/pages/Loading";
 import { logUserOut } from "@/services/sessionServices";
 import useLocalStorage from "@/utils/hooks/useLocalStorage";
+import useUpdateOnlineAt from "@/utils/hooks/useUpdateOnlineAt";
 import toast from "react-hot-toast";
 import { IUserDetails } from "../interfaces/interfaces";
 import api from "../services/api";
@@ -61,6 +62,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [localUser, setLocalUser] =
     useLocalStorage<Models.User<Models.Preferences> | null>("user", null);
 
+  useUpdateOnlineAt(currentUserDetails?.$id);
   const getAccount = async () => {
     return await api.getAccount();
   };
