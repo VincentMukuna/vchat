@@ -1,4 +1,5 @@
 import { useMessagesContext } from "@/context/MessagesContext";
+import { insertCharacter } from "@/utils/utils";
 import {
   IconButton,
   Popover,
@@ -185,7 +186,12 @@ const MessageInput = ({}: InputProps) => {
                     <Picker
                       onEmojiSelect={(v: any) => {
                         if (messageBody.length > 1498) return;
-                        setMessageBody((prev) => prev + v.native);
+                        const cursorPosition =
+                          inputRef.current?.selectionStart || 0;
+
+                        setMessageBody((prev) =>
+                          insertCharacter(prev, v.native, cursorPosition),
+                        );
                       }}
                     />
                   </Suspense>

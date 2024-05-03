@@ -150,3 +150,7 @@ export const groupDocumentsByDate = <T extends Models.Document>(
 export function removeDuplicates<T>(arr: Array<T>): Array<T> {
   return arr.filter((item, index) => arr.indexOf(item) === index);
 }
+
+export function insertCharacter(str: string, char: string, position: number) {
+  return str.slice(0, position) + char + str.slice(position);
+}
