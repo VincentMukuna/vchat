@@ -33,7 +33,7 @@ import { pluck } from "@/utils/utils";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";
-import MessageOptions from "./MessageOptions";
+import MessageOptions, { AllowedMessageActions } from "./MessageOptions";
 import MessageReactions from "./MessageReactions";
 import MessageReply from "./MessageReply";
 import SystemMessage from "./SystemMessage";
@@ -103,25 +103,6 @@ const Message = forwardRef<any, MessageProps>(
       await deleteMessage(message.$id);
     };
 
-    function shouldShowHoverCard() {
-      if (isOptimistic) {
-        return false;
-      }
-      if (isMine) {
-        return true;
-      } else if (!isGroupMessage) {
-        return isMine;
-      } else if (!isMine && !isAdmin) {
-        return false;
-      } else if (
-        isAdmin &&
-        !(selectedChat as GroupChatDetails).admins.includes(message.senderID)
-      ) {
-        return true;
-      }
-      return false;
-    }
-
     //call read message after message is in view for 2 seconds
 
     const [shouldRender, setShouldRender] = useState(initialRender);
@@ -142,6 +123,35 @@ const Message = forwardRef<any, MessageProps>(
       return <SystemMessage message={message} />;
     }
 
+    function canDeleteMessage() {
+      if (isOptimistic) {
+        return false;
+      }
+      if (isMine) {
+        return true;
+      } else if (!isGroupMessage) {
+        return isMine;
+      } else if (!isMine && !isAdmin) {
+        return false;
+      } else if (
+        isAdmin &&
+        !(selectedChat as GroupChatDetails).admins.includes(message.senderID)
+      ) {
+        return true;
+      }
+      return false;
+    }
+
+    const canDelete = canDeleteMessage();
+    const canEdit = isMine;
+
+    const allowedActions: AllowedMessageActions[] = [
+      "message.copy",
+      "message.forward",
+    ];
+    if (canDelete) allowedActions.push("message.delete");
+    if (canEdit) allowedActions.push("message.edit");
+
     return (
       <MessagesContext.Provider
         value={{ handleDelete, message, setShowHoverCard, setShowMenu }}
@@ -160,9 +170,9 @@ const Message = forwardRef<any, MessageProps>(
           className="flex flex-col transition-all"
         >
           <div
-            className={`relative flex gap-1   ${
+            className={`relative flex gap-1.5  ${
               isMine ? "flex-row-reverse" : ""
-            } flex-wrap items-end transition-all focus:outline-0  focus:outline-slate-600 
+            } items-end transition-all focus:outline-0  focus:outline-slate-600 
           
           ${prevSameSender ? "" : "mt-1.5"}
           ${nextSameSender ? "" : "mb-1.5"}
@@ -273,8 +283,9 @@ const Message = forwardRef<any, MessageProps>(
                 hoverCardShowing={showHoverCard}
               />
             </div>
-
-            {shouldShowHoverCard() && showHoverCard && <MessageOptions />}
+            <div className={`${showHoverCard ? "visible" : "invisible"}`}>
+              <MessageOptions allowedActions={allowedActions} />
+            </div>
           </div>
         </article>
       </MessagesContext.Provider>

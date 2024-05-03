@@ -1,11 +1,11 @@
 import { confirmAlert } from "@/components/Alert/alertStore";
 import { DeleteIcon, PencilIcon } from "@/components/Icons";
 import { modal } from "@/components/VModal";
+import { removeDuplicates } from "@/utils/utils";
 import {
   IconButton,
   Menu,
   MenuButton,
-  MenuDivider,
   MenuItem,
   MenuList,
   Portal,
@@ -15,13 +15,67 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/20/solid";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
+import { blueDark } from "@radix-ui/colors";
 import ForwardMessagesModal from "../ForwardMessagesModal";
 import EditMessageForm from "./EditMessageModal";
 import { useMessageContext } from "./Message";
 
-const MessageOptions = () => {
+export type AllowedMessageActions =
+  | "message.copy"
+  | "message.edit"
+  | "message.forward"
+  | "message.delete";
+
+interface MessageOptionsProps {
+  allowedActions: AllowedMessageActions[];
+}
+
+const MessageOptions = ({
+  allowedActions = ["message.copy", "message.edit", "message.forward"],
+}: MessageOptionsProps) => {
   const { handleDelete, message, setShowHoverCard, setShowMenu } =
     useMessageContext();
+  const messageOptionsItem: {
+    key: AllowedMessageActions;
+    icon: JSX.Element;
+    label: string;
+    action: () => void;
+    props?: Record<string, unknown>;
+  }[] = [
+    {
+      key: "message.copy",
+      icon: <ClipboardIcon className="h-4 w-4" />,
+      label: "Copy Message",
+      action: () => navigator.clipboard.writeText(message.body),
+    },
+    {
+      key: "message.edit",
+      icon: <PencilIcon className="h-4 w-4" />,
+      label: "Edit Message",
+      action: () => modal(<EditMessageForm message={message} />),
+    },
+    {
+      key: "message.forward",
+      icon: <ArrowUturnRightIcon className="h-4 w-4" />,
+      label: "Forward Message",
+      action: () =>
+        modal(<ForwardMessagesModal selectedMessages={[message]} />),
+    },
+    {
+      key: "message.delete",
+      icon: <DeleteIcon className="h-4 w-4" />,
+      label: "Delete",
+      props: { color: "red.500" },
+      action: () => {
+        confirmAlert({
+          message: "Delete this message? This action is irreversible",
+          title: "Delete message",
+          confirmText: "Delete",
+          onConfirm: () => handleDelete(message.$id),
+        });
+      },
+    },
+  ];
   return (
     <Menu
       isLazy
@@ -42,55 +96,21 @@ const MessageOptions = () => {
         icon={<EllipsisHorizontalIcon className="h-4 w-4" />}
       />
       <Portal>
-        <MenuList>
-          <MenuItem
-            icon={<ClipboardIcon className="h-4 w-4" />}
-            command="⌘C"
-            onClick={(e) => {
-              e.stopPropagation();
-              navigator.clipboard.writeText(message.body);
-            }}
-          >
-            Copy Message
-          </MenuItem>
-
-          <MenuItem
-            icon={<PencilIcon className="h-4 w-4" />}
-            command="⌘E"
-            onClick={(e) => {
-              e.stopPropagation();
-              modal(<EditMessageForm message={message} />);
-            }}
-          >
-            Edit Message
-          </MenuItem>
-          <MenuItem
-            icon={<ArrowUturnRightIcon className="h-4 w-4" />}
-            command="⌘F"
-            onClick={(e) => {
-              e.stopPropagation();
-              modal(<ForwardMessagesModal selectedMessages={[message]} />);
-            }}
-          >
-            Forward Message
-          </MenuItem>
-          <MenuDivider />
-          <MenuItem
-            icon={<DeleteIcon className="h-4 w-4" />}
-            command="⌘D"
-            onClick={(e) => {
-              confirmAlert({
-                message: "Delete this message? This action is irreversible",
-                title: "Delete message",
-                confirmText: "Delete",
-                onConfirm: () => handleDelete(message.$id),
-              });
-              e.stopPropagation();
-            }}
-            color={"red.500"}
-          >
-            Delete
-          </MenuItem>
+        <MenuList bg={blueDark.blue3}>
+          {removeDuplicates(messageOptionsItem)
+            .filter((item) => allowedActions.includes(item.key))
+            .map((item) => (
+              <MenuItem
+                bg={blueDark.blue3}
+                _hover={{ bg: blueDark.blue4 }}
+                key={item.key}
+                icon={item.icon}
+                onClick={item.action}
+                {...(item?.props || {})}
+              >
+                {item.label}
+              </MenuItem>
+            ))}
         </MenuList>
       </Portal>
     </Menu>
