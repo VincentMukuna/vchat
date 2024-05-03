@@ -233,7 +233,9 @@ const Message = forwardRef<any, MessageProps>(
                   });
                 }
               }}
-              className="grid cursor-pointer gap-1"
+              className={`flex flex-col ${
+                isMine ? "items-end" : "items-start"
+              } gap-1`}
             >
               <div>
                 <MessageAttachments message={message} />
