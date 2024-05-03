@@ -1,5 +1,5 @@
 import { useMessagesContext } from "@/context/MessagesContext";
-import { Avatar, AvatarGroup, IconButton, VStack } from "@chakra-ui/react";
+import { Avatar, AvatarGroup, Button, VStack } from "@chakra-ui/react";
 import { PencilIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import useSWR from "swr";
@@ -67,12 +67,14 @@ const RoomDetails = () => {
                   : recepient?.about || "about"}
               </div>
               {isGroup && isGroupMember && isAdmin && (
-                <IconButton
+                <Button
                   as={motion.button}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   aria-label="edit details"
-                  variant={"outline"}
+                  variant={"ghost"}
+                  size={"xs"}
+                  rounded={"md"}
                   title="Edit Group Details"
                   onClick={() =>
                     modal(
@@ -81,14 +83,10 @@ const RoomDetails = () => {
                       />,
                     )
                   }
-                  icon={
-                    <PencilIcon className="h-5 w-5 text-gray11 dark:text-gray7" />
-                  }
-                  pos={"absolute"}
-                  bg={"transparent"}
-                  className="-right-2 -top-2"
-                  border={"none"}
-                />
+                >
+                  <PencilIcon className="mr-2 h-3 w-3 text-gray11 dark:text-gray7" />
+                  Edit Details
+                </Button>
               )}
             </div>
           </div>
