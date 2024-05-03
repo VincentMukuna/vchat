@@ -19,13 +19,16 @@ const useUserChatsSubscription = () => {
     const unsubscribe = api.subscribe<IUserDetails>(
       `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {
+        if (
+          response.payload.changerID === currentUserDetails?.$id ||
+          !response.payload.changeLog
+        )
+          return;
         const changeLog = response.payload.changeLog;
         const conversations = [
           ...response.payload.groups,
           ...response.payload.chats,
         ];
-
-        //check if change is a stale one
 
         const matchers = new Map();
 
@@ -39,7 +42,6 @@ const useUserChatsSubscription = () => {
             const updatedAt = new Date(chatDoc.$createdAt);
             const hrsDifference = differenceInHours(new Date(), updatedAt);
             if (hrsDifference > 1) {
-              console.log("stale chat");
               return;
             }
             addConversation(chatDoc);
