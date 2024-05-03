@@ -8,6 +8,7 @@ import api from "@/services/api";
 import { getChatDoc } from "@/services/chatMessageServices";
 import { SERVER } from "@/utils/config";
 import { matchAndExecute } from "@/utils/utils";
+import { differenceInHours } from "date-fns";
 import { useEffect } from "react";
 
 const useUserChatsSubscription = () => {
@@ -24,6 +25,8 @@ const useUserChatsSubscription = () => {
           ...response.payload.chats,
         ];
 
+        //check if change is a stale one
+
         const matchers = new Map();
 
         const handleNewConversation = async (id: string) => {
@@ -33,6 +36,12 @@ const useUserChatsSubscription = () => {
           if (!newConversation) return;
           if (newConversation?.$collectionId === SERVER.COLLECTION_ID_CHATS) {
             let chatDoc = await getChatDoc(newConversation.$id);
+            const updatedAt = new Date(chatDoc.$createdAt);
+            const hrsDifference = differenceInHours(new Date(), updatedAt);
+            if (hrsDifference > 1) {
+              console.log("stale chat");
+              return;
+            }
             addConversation(chatDoc);
           } else {
             newConversation && addConversation(newConversation);
