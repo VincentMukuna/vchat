@@ -73,6 +73,7 @@ const RoomDetails = () => {
                   whileTap={{ scale: 0.98 }}
                   aria-label="edit details"
                   variant={"outline"}
+                  title="Edit Group Details"
                   onClick={() =>
                     modal(
                       <EditGroupDetailsForm
@@ -85,7 +86,7 @@ const RoomDetails = () => {
                   }
                   pos={"absolute"}
                   bg={"transparent"}
-                  className="-right-8 z-20"
+                  className="-right-2 -top-2"
                   border={"none"}
                 />
               )}
