@@ -3,7 +3,6 @@ import {
   Avatar,
   Button,
   FocusLock,
-  IconButton,
   Input,
   ModalBody,
   ModalCloseButton,
@@ -131,26 +130,30 @@ export const EditGroupDetailsForm = ({
       <ModalBody>
         <FocusLock finalFocusRef={firstInputRef}>
           <form onSubmit={handleSubmit} className="flex flex-col">
-            <div className="relative w-fit self-center ">
-              <IconButton
-                as={motion.button}
-                whileHover={{ scale: 1.01 }}
-                whileTap={{ scale: 0.98 }}
-                title="Edit avatar"
-                onClick={openFilePicker}
-                aria-label="edit avatar"
-                icon={
-                  <PencilIcon className="h-5 w-5 text-gray11 dark:text-gray7" />
-                }
-                pos={"absolute"}
-                bg={"transparent"}
-                className="-right-6 z-20"
-              />
+            <div className="group relative w-fit self-center  ">
               <Avatar
                 size={"2xl"}
                 src={filesContent[0]?.content || group.avatarURL}
                 icon={<UsersIcon className="h-14 w-14" />}
-              />
+                position={"relative"}
+                overflow={"hidden"}
+              >
+                <div className=" absolute inset-0 flex hidden items-center justify-center bg-slate-800/40  transition-all group-hover:flex ">
+                  <Button
+                    as={motion.button}
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    title="Edit avatar"
+                    onClick={openFilePicker}
+                    aria-label="edit avatar"
+                    size={"sm"}
+                    variant={"ghost"}
+                  >
+                    <PencilIcon className="mr-2 h-4 w-4 text-gray11 dark:text-gray7" />
+                    Edit
+                  </Button>
+                </div>
+              </Avatar>
             </div>
 
             <div className="grid gap-3">
