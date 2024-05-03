@@ -141,6 +141,8 @@ const MessageReactions = ({
       variant={"ghost"}
       aria-label={isLiked ? "Unlike" : "Like"}
       size={"xs"}
+      p={1}
+      dir={isMine ? "rtl" : "ltr"}
       title={isLiked ? "Unlike" : "Like"}
     >
       <FluentEmojiFlatHeartSuit />
