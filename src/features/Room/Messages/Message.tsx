@@ -32,7 +32,6 @@ import { pluck } from "@/utils/utils";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";
 import MessageOptions, { AllowedMessageActions } from "./MessageOptions";
-import MessageReactions from "./MessageReactions";
 import MessageReply from "./MessageReply";
 import SystemMessage from "./SystemMessage";
 
@@ -41,6 +40,7 @@ export type MessagesContextType = {
   message: DirectMessageDetails | GroupMessageDetails;
   setShowHoverCard: React.Dispatch<React.SetStateAction<boolean>>;
   setShowMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  showHoverCard: boolean;
 };
 
 const MessagesContext = createContext<MessagesContextType | null>(null);
@@ -152,7 +152,13 @@ const Message = forwardRef<any, MessageProps>(
 
     return (
       <MessagesContext.Provider
-        value={{ handleDelete, message, setShowHoverCard, setShowMenu }}
+        value={{
+          handleDelete,
+          message,
+          setShowHoverCard,
+          setShowMenu,
+          showHoverCard,
+        }}
       >
         <article
           id={message.$id}
@@ -256,17 +262,7 @@ const Message = forwardRef<any, MessageProps>(
                 ref={messageRef}
               />
             </div>
-            <div className="flex gap-1">
-              <div
-                className={`relative z-0 -ms-2 flex gap-1 ${
-                  isMine ? "start-2" : "-start-2 "
-                } `}
-              >
-                <MessageReactions
-                  message={message}
-                  hoverCardShowing={showHoverCard}
-                />
-              </div>
+            <div className="relative bottom-2 flex gap-1">
               <div className={`${showHoverCard ? "visible" : "invisible"}`}>
                 <MessageOptions allowedActions={allowedActions} />
               </div>

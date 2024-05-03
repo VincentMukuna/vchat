@@ -13,7 +13,6 @@ import {
   IconButton,
   Menu,
   MenuButton,
-  useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import {
@@ -43,12 +42,6 @@ function ChatHeader() {
   const { currentUserDetails } = useAuth();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const breakpoint = useBreakpointValue({
-    base: "base",
-    sm: "sm",
-    md: "md",
-    lg: "lg",
-  });
   const btnRef = useRef(null);
   const { recepient, selectedChat, selectConversation } = useChatsContext();
   let { isGroup, isPersonal } = useRoomContext();
@@ -71,14 +64,16 @@ function ChatHeader() {
   );
 
   return (
-    <section className="relative flex h-full w-full items-center gap-3 bg-gray2 p-4 px-2 text-dark-gray2 dark:bg-dark-blue1 dark:text-gray1">
+    <section className="relative flex h-full items-center gap-3 bg-gray2 p-4 px-2 text-dark-gray2 dark:bg-dark-blue1 dark:text-gray1">
       <IconButton
-        bg={"transparent"}
+        variant={"ghost"}
+        rounded={"full"}
+        size={"sm"}
         as={motion.button}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
         title="Close chat"
-        icon={<ArrowLeftIcon className="h-5 w-5 " />}
+        icon={<ArrowLeftIcon className="h-4 w-4 " />}
         aria-label="Close Chat"
         onClick={(e) => {
           flushSync(() => {
@@ -103,7 +98,7 @@ function ChatHeader() {
           )
         }
         size={"md"}
-        hidden={breakpoint === "base"}
+        className="shrink"
       />
       <div className="relative flex shrink grow flex-col">
         <span className="max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap text-base font-semibold tracking-wide transition-all  sm:text-lg md:max-w-none">
@@ -126,14 +121,15 @@ function ChatHeader() {
         ></button>
       </div>
 
-      <div className="ml-auto flex ">
+      <div className="ml-auto flex items-center">
         <SelectedChatOptions />
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">
             <MenuButton
-              bg={"transparent"}
+              variant={"ghost"}
+              size={"sm"}
               as={IconButton}
-              icon={<EllipsisVerticalIcon className="h-5 w-5" />}
+              icon={<EllipsisVerticalIcon className="h-4 w-4" />}
             ></MenuButton>
             <RoomActions />
           </Menu>

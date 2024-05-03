@@ -28,6 +28,7 @@ export default function SelectedChatOptions() {
         <IconButton
           aria-label="forward messages"
           variant={"ghost"}
+          size={"sm"}
           icon={
             roomState.isSelectingMessages ? (
               <svg

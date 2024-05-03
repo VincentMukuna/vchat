@@ -96,13 +96,15 @@ const MessageOptions = ({
         icon={<EllipsisHorizontalIcon className="h-4 w-4" />}
       />
       <Portal>
-        <MenuList bg={blueDark.blue3}>
+        <MenuList bg={blueDark.blue2} p={1}>
           {removeDuplicates(messageOptionsItem)
             .filter((item) => allowedActions.includes(item.key))
             .map((item) => (
               <MenuItem
-                bg={blueDark.blue3}
-                _hover={{ bg: blueDark.blue4 }}
+                bg={blueDark.blue2}
+                _hover={{
+                  bg: blueDark.blue3,
+                }}
                 key={item.key}
                 icon={item.icon}
                 onClick={item.action}

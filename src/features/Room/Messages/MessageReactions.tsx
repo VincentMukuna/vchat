@@ -125,10 +125,17 @@ const MessageReactions = ({
     }
   }
 
+  function shouldShowReactions() {
+    if (likesCount > 0) return true;
+    if (hoverCardShowing) return true;
+    return false;
+  }
+
   return (
     <Button
-      visibility={likesCount === 0 && !hoverCardShowing ? "hidden" : "visible"}
-      onClick={() => {
+      visibility={shouldShowReactions() ? "visible" : "hidden"}
+      onClick={(e) => {
+        e.stopPropagation();
         handleLike();
       }}
       variant={"ghost"}
