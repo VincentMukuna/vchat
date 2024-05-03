@@ -277,6 +277,10 @@ export const updateLastSeen = async (userDetailsID: string) => {
     SERVER.DATABASE_ID,
     SERVER.COLLECTION_ID_USERS,
     userDetailsID,
-    { lastOnlineAt: new Date().toISOString(), changerID: userDetailsID },
+    {
+      lastOnlineAt: new Date().toISOString(),
+      changerID: userDetailsID,
+      changeLog: "users/last-seen/update",
+    },
   );
 };

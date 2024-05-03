@@ -14,6 +14,7 @@ export const USER_DETAILS_CHANGE_LOG_REGEXES = {
   deleteConversation: /conversations\/delete\/([a-zA-Z0-9_-]+)/,
   createConversation: /conversations\/create\/([a-zA-Z0-9_-]+)/,
   editConversation: /conversations\/edit\/([a-zA-Z0-9_-]+)/,
+  updateLastSeen: /users\/last-seen\/update/,
 } as const;
 
 export const CHAT_DETAILS_CHANGE_LOG_REGEXES = {} as const;

@@ -7,6 +7,8 @@ import {
   DirectChatDetails,
   DirectMessageDetails,
   GroupChatDetails,
+  IUserDetails,
+  USER_DETAILS_CHANGE_LOG_REGEXES,
 } from "@/interfaces/interfaces";
 import api from "@/services/api";
 import { SERVER } from "@/utils/config";
@@ -16,7 +18,8 @@ import useSWROptimistic from "../../../utils/hooks/useSWROptimistic";
 
 const useRoomSubscription = () => {
   const { currentUserDetails } = useAuth();
-  const { selectedChat, setSelectedChat } = useChatsContext();
+  const { selectedChat, setSelectedChat, setRecepient, recepient } =
+    useChatsContext();
   const { isGroup, isPersonal, dispatch, roomMessagesKey } = useRoomContext();
   const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
   const { update: updateLastMessage } = useSWROptimistic(
@@ -26,6 +29,49 @@ const useRoomSubscription = () => {
     `details ${selectedChat?.$id}`,
   );
   const { messages } = useMessagesContext();
+
+  if (!currentUserDetails) return null;
+
+  useEffect(() => {
+    if (isGroup) {
+      return;
+    } else {
+      if (!recepient) return;
+      if (recepient.$id === currentUserDetails?.$id) return;
+
+      const recepientDetailsChannel = `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${recepient?.$id}`;
+
+      //subscribe to recepient details changes
+      const unsubscribe = api.subscribe<IUserDetails>(
+        recepientDetailsChannel,
+        (response) => {
+          if (
+            response.payload.changerID === currentUserDetails.$id ||
+            !response.payload.changeLog
+          )
+            return;
+
+          const changeLog = response.payload.changeLog;
+
+          const handleUpdateLastSeen = () => {
+            setRecepient(response.payload);
+          };
+
+          const matchers = new Map();
+
+          matchers.set(USER_DETAILS_CHANGE_LOG_REGEXES.updateLastSeen, () => {
+            handleUpdateLastSeen();
+          });
+
+          matchAndExecute(changeLog, matchers);
+        },
+      );
+
+      return () => {
+        unsubscribe();
+      };
+    }
+  }, [recepient]);
 
   useEffect(() => {
     if (selectedChat && !isPersonal && currentUserDetails) {

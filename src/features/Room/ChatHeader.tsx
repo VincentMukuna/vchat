@@ -1,7 +1,6 @@
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
 //@ts-ignore
-import Alternator from "@/components/Alternator";
 import {
   Avatar,
   Drawer,
@@ -23,6 +22,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { ArrowLeftIcon } from "@heroicons/react/24/solid";
 import { blueDark } from "@radix-ui/colors";
+import { differenceInMinutes, formatDistanceToNow } from "date-fns";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { flushSync } from "react-dom";
@@ -38,6 +38,11 @@ import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 import SelectedChatOptions from "./SelectedChatMessagesOptions";
+
+function formatLastSeen(lastSeenTimestamp: string) {
+  const lastSeenDate = new Date(lastSeenTimestamp);
+  return formatDistanceToNow(lastSeenDate, { addSuffix: true });
+}
 
 function ChatHeader() {
   const { currentUserDetails } = useAuth();
@@ -63,6 +68,13 @@ function ChatHeader() {
   const isGroupMember = group?.members.some(
     (member) => (member as IUserDetails).$id === currentUserDetails.$id,
   );
+
+  const minutesSinceLastOnline = recepient
+    ? differenceInMinutes(
+        new Date(),
+        new Date(recepient?.lastOnlineAt || recepient?.$updatedAt),
+      )
+    : undefined;
 
   return (
     <section className="relative flex h-full items-center gap-3 bg-gray2 p-4 px-2 text-dark-gray2 dark:bg-dark-blue1 dark:text-gray1">
@@ -115,11 +127,16 @@ function ChatHeader() {
             selectedChatDetails.description
           ) : (
             <>
-              <Alternator interval={5000} className="xl:hidden">
-                <span>Last seen 3 seconds ago</span>
-                <span>Select to see details</span>
-              </Alternator>
-              <span className="hidden xl:block">Last seen 3 seconds ago</span>
+              {minutesSinceLastOnline! < 2 ? (
+                <span className="text-green-500">Online</span>
+              ) : (
+                <span>
+                  Last seen{" "}
+                  {formatLastSeen(
+                    recepient!.lastOnlineAt || recepient!.$updatedAt,
+                  )}
+                </span>
+              )}
             </>
           )}
         </span>
