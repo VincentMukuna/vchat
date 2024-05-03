@@ -256,7 +256,7 @@ const Message = forwardRef<any, MessageProps>(
                 ref={messageRef}
               />
             </div>
-            <div className="flex">
+            <div className="flex gap-1">
               <div
                 className={`relative z-0 -ms-2 flex gap-1 ${
                   isMine ? "start-2" : "-start-2 "
