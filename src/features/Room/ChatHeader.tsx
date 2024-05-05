@@ -132,9 +132,13 @@ function ChatHeader() {
               ) : (
                 <span>
                   Last seen{" "}
-                  {formatLastSeen(
-                    recepient!.lastOnlineAt || recepient!.$updatedAt,
-                  )}
+                  {recepient
+                    ? formatLastSeen(
+                        recepient.lastOnlineAt ||
+                          recepient.$updatedAt ||
+                          recepient.$createdAt,
+                      )
+                    : ""}
                 </span>
               )}
             </>
