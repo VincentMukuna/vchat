@@ -129,17 +129,10 @@ function ChatHeader() {
             <>
               {minutesSinceLastOnline! < 2 ? (
                 <span className="text-green-500">Online</span>
+              ) : recepient && recepient.lastOnlineAt ? (
+                <span>Last seen {formatLastSeen(recepient.lastOnlineAt)}</span>
               ) : (
-                <span>
-                  Last seen{" "}
-                  {recepient
-                    ? formatLastSeen(
-                        recepient.lastOnlineAt ||
-                          recepient.$updatedAt ||
-                          recepient.$createdAt,
-                      )
-                    : ""}
-                </span>
+                recepient?.about
               )}
             </>
           )}
