@@ -6,7 +6,6 @@ import {
   AvatarBadge,
   Button,
   Image,
-  useColorMode,
   useStyleConfig,
 } from "@chakra-ui/react";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
@@ -44,8 +43,6 @@ const Conversation = memo(
     const cardStyles = useStyleConfig("Card", { variant: "default" });
 
     const { cache } = useSWRConfig();
-
-    const { colorMode } = useColorMode();
 
     const isGroup = !!(
       conversation?.$collectionId === SERVER.COLLECTION_ID_GROUPS
@@ -141,9 +138,6 @@ const Conversation = memo(
         rounded={"md"}
         onClick={(e) => {
           selectConversation(conversation.$id, contactDetails?.$id);
-          // flushSync(() => {
-          //   selectConversation(conversation.$id);
-          // });
         }}
         className={`flex cursor-pointer items-start gap-2 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
           isActive ? "bg-slate-200 dark:bg-dark-blue2" : ""
