@@ -29,7 +29,7 @@ import {
   editMembers,
   getGroupDetails,
 } from "../../../services/groupMessageServices";
-import { getUsers, searchUsers } from "../../../services/userDetailsServices";
+import { getUsers, searchUsers } from "../../../services/userDetailsService";
 import { useInfinite } from "../../../utils/hooks/useInfinite";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
 

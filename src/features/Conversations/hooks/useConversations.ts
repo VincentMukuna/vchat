@@ -3,7 +3,7 @@ import { DirectChatDetails, GroupChatDetails } from "@/interfaces/interfaces";
 import {
   getConversations,
   sortConversations,
-} from "@/services/userDetailsServices";
+} from "@/services/userDetailsService";
 import { isGroup } from "@/utils/utils";
 import useSWR from "swr";
 import useLocalStorage from "../../../utils/hooks/useLocalStorage";

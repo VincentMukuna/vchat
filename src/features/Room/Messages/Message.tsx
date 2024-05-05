@@ -17,7 +17,7 @@ import { SERVER } from "../../../utils/config";
 
 import { Avatar, Checkbox } from "@chakra-ui/react";
 import useSWR from "swr";
-import { getUserDetails } from "../../../services/userDetailsServices";
+import { getUserDetails } from "../../../services/userDetailsService";
 
 import { modal } from "../../../components/VModal";
 import {

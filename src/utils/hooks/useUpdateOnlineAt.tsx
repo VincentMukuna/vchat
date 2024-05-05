@@ -1,4 +1,4 @@
-import { updateLastSeen } from "@/services/userDetailsServices";
+import { updateLastSeen } from "@/services/userDetailsService";
 import useSWR from "swr";
 
 export default function useUpdateOnlineAt(

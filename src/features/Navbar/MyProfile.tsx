@@ -3,7 +3,7 @@ import { UserIcon } from "@heroicons/react/20/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { Link, redirect } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getCurrentUserDetails } from "../../services/userDetailsServices";
+import { getCurrentUserDetails } from "../../services/userDetailsService";
 
 export const MyProfile = () => {
   const { colorMode } = useColorMode();

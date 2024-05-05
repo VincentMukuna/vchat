@@ -14,7 +14,7 @@ import {
 import { MapPinIcon, PencilIcon } from "@heroicons/react/20/solid";
 import { gray } from "@radix-ui/colors";
 import { useAuth } from "../context/AuthContext";
-import { updateUserAvatar } from "../services/userDetailsServices";
+import { updateUserAvatar } from "../services/userDetailsService";
 
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";

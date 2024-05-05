@@ -8,7 +8,7 @@ import { SERVER } from "../utils/config";
 import { sortDocumentsByCreationDateDesc } from "../utils/utils";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
-import { updateUserDetails } from "./userDetailsServices";
+import { updateUserDetails } from "./userDetailsService";
 
 type IInitGroup = {
   name: string;

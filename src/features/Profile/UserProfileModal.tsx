@@ -21,7 +21,7 @@ import { DirectChatDetails, IUserDetails } from "../../interfaces/interfaces";
 import {
   addContact,
   createPersonalChat,
-} from "../../services/userDetailsServices";
+} from "../../services/userDetailsService";
 
 interface UserProfileProps {
   onClose: () => void;

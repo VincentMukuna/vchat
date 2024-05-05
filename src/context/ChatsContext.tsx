@@ -5,7 +5,7 @@ import {
   IConversation,
   IUserDetails,
 } from "@/interfaces/interfaces";
-import { sortConversations } from "@/services/userDetailsServices";
+import { sortConversations } from "@/services/userDetailsService";
 import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
 import {
   createContext,

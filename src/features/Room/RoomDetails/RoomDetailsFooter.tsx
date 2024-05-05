@@ -14,7 +14,7 @@ import {
   deleteGroup,
   leaveGroup,
 } from "../../../services/groupMessageServices";
-import { deleteContact } from "../../../services/userDetailsServices";
+import { deleteContact } from "../../../services/userDetailsService";
 import { SERVER } from "../../../utils/config";
 
 export const RoomDetailsFooter = () => {

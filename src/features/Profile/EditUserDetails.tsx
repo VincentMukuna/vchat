@@ -1,24 +1,24 @@
-import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
 import {
-  ModalFooter,
-  useColorMode,
   Button,
   Input,
   InputGroup,
   InputLeftElement,
   ModalBody,
+  ModalFooter,
+  useColorMode,
   useModalContext,
 } from "@chakra-ui/react";
-import { updateUserDetails } from "../../services/userDetailsServices";
-import { blueDark, gray } from "@radix-ui/colors";
 import {
   CheckIcon,
   InformationCircleIcon,
   MapPinIcon,
   PencilIcon,
 } from "@heroicons/react/20/solid";
+import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { updateUserDetails } from "../../services/userDetailsService";
 
 export const EditUserDetails = () => {
   const { onClose } = useModalContext();

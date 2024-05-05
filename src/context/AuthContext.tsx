@@ -18,7 +18,7 @@ import toast from "react-hot-toast";
 import { IUserDetails } from "../interfaces/interfaces";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
-import { getCurrentUserDetails } from "../services/userDetailsServices";
+import { getCurrentUserDetails } from "../services/userDetailsService";
 
 type AuthProviderProps = {
   children: ReactNode;

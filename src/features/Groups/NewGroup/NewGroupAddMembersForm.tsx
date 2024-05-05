@@ -9,7 +9,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { IUserDetails } from "../../../interfaces/interfaces";
-import { getUsers, searchUsers } from "../../../services/userDetailsServices";
+import { getUsers, searchUsers } from "../../../services/userDetailsService";
 
 import { UserIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
