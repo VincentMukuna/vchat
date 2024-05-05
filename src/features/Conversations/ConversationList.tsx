@@ -34,11 +34,13 @@ const ConversationList = ({ className }: { className: string }) => {
 
   const [searchResults, setSearchResults] =
     useState<IConversation[]>(conversations);
+
   //synch chats with the server
   useEffect(() => {
     setSearchResults(conversations);
     handleChatsSearch(search);
   }, [conversations, chatsError, chatsLoading]);
+
   if (!currentUser || !currentUserDetails) return null;
   const { update: updateConversations } = useSWROptimistic("conversations");
 
@@ -53,6 +55,12 @@ const ConversationList = ({ className }: { className: string }) => {
         if (isGroup(conversation)) {
           return conversation.name.toLowerCase().includes(search.toLowerCase());
         } else {
+          //handle personal chat
+          if (conversation.participants.length === 1) {
+            const contact = conversation.participants[0];
+            contact.name = `${contact.name} you me`;
+            return contact.name.toLowerCase().includes(search.toLowerCase());
+          }
           const contact = conversation.participants.find(
             (p) => p.$id !== currentUserDetails.$id,
           );
