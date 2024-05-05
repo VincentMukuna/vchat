@@ -32,7 +32,8 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
   const { onClose: onModalClose } = useModalContext();
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
-  const { setSelectedChat, setRecepient, addConversation } = useChatsContext();
+  const { setRecepient, setSelectedChat, addConversation, selectConversation } =
+    useChatsContext();
   const { colorMode } = useColorMode();
   const [loading, setLoading] = useState(false);
   const isPersonal = user.$id === currentUserDetails.$id;
@@ -65,8 +66,7 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
       setLoading(false);
       onClose();
       onModalClose();
-      setSelectedChat(chatWithUser);
-      setRecepient(user);
+      selectConversation(chatWithUser.$id, user.$id);
     } else {
       const addContactStatus = isPersonal
         ? createPersonalChat(currentUserDetails.$id)
@@ -74,9 +74,9 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
 
       addContactStatus
         .then((result) => {
+          addConversation(result);
           setSelectedChat(result);
           setRecepient(user);
-          addConversation(result);
         })
         .finally(() => {
           setLoading(false);
