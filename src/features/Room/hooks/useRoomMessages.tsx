@@ -7,7 +7,7 @@ import {
 } from "../../../interfaces/interfaces";
 import { getChatMessages } from "../../../services/chatMessageServices";
 import { getGroupMessages } from "../../../services/groupMessageServices";
-import { sortDocumentsByCreationDateDesc } from "../../../utils/utils";
+import { sortByCreatedAtDesc } from "../../../utils/utils";
 
 export default function useRoomMessages() {
   const { selectedChat } = useChatsContext();
@@ -25,18 +25,18 @@ export default function useRoomMessages() {
       return messages;
     }
     const messages = await getChatMessages(selectedChat.$id);
-    return messages.toSorted(sortDocumentsByCreationDateDesc);
+    return messages.toSorted(sortByCreatedAtDesc);
   }
 
   function getFallbackMessages() {
     if (!selectedChat) return undefined;
     if (isGroup) {
       return selectedChat.groupMessages.toSorted(
-        sortDocumentsByCreationDateDesc,
+        sortByCreatedAtDesc,
       ) as GroupMessageDetails[];
     } else {
       return selectedChat.chatMessages.toSorted(
-        sortDocumentsByCreationDateDesc,
+        sortByCreatedAtDesc,
       ) as DirectMessageDetails[];
     }
   }

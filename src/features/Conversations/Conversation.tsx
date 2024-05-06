@@ -8,8 +8,7 @@ import {
   Image,
   useStyleConfig,
 } from "@chakra-ui/react";
-import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { PhotoIcon } from "@heroicons/react/24/outline";
+import { PhotoIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import useSWR, { useSWRConfig } from "swr";
@@ -26,7 +25,7 @@ import {
 } from "../../interfaces/interfaces";
 import { getFormatedDate } from "../../services/dateServices";
 import { SERVER } from "../../utils/config";
-import { sortDocumentsByCreationDateDesc } from "../../utils/utils";
+import { sortByCreatedAtDesc } from "../../utils/utils";
 
 interface IChatProps {
   conversation: DirectChatDetails | GroupChatDetails;
@@ -60,14 +59,14 @@ const Conversation = memo(
         `conversations/${conversation.$id}/messages`,
       )?.data as ChatMessage[];
       if (cachedMessages) {
-        return cachedMessages.toSorted(sortDocumentsByCreationDateDesc).at(0);
+        return cachedMessages.toSorted(sortByCreatedAtDesc).at(0);
       }
       if (isGroup) {
         let messages = conversation.groupMessages as GroupMessageDetails[];
-        return messages.toSorted(sortDocumentsByCreationDateDesc).at(0);
+        return messages.toSorted(sortByCreatedAtDesc).at(0);
       }
       let messages = conversation.chatMessages as DirectMessageDetails[];
-      return messages.toSorted(sortDocumentsByCreationDateDesc).at(0);
+      return messages.toSorted(sortByCreatedAtDesc).at(0);
     }
 
     const { data: lastMessage } = useSWR(

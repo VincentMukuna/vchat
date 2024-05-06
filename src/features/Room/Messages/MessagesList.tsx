@@ -1,9 +1,6 @@
 import { useMessagesContext } from "@/context/MessagesContext";
 import { ChatMessage } from "@/interfaces/interfaces";
-import {
-  groupDocumentsByDate,
-  sortDocumentsByCreationDateAsc,
-} from "@/utils/utils";
+import { groupDocumentsByDate, sortByCreatedAtAsc } from "@/utils/utils";
 import { createContext, memo, useMemo, useRef } from "react";
 import Message from "./Message";
 
@@ -22,7 +19,7 @@ function MessagesList({}: MessagesProps) {
   const groupedMessages = useMemo(() => {
     return Object.entries(groupDocumentsByDate(messages)).reduce(
       (acc, [date, messages]) => {
-        acc.push([date, messages.sort(sortDocumentsByCreationDateAsc)]);
+        acc.push([date, messages.sort(sortByCreatedAtAsc)]);
         return acc;
       },
       [] as [string, ChatMessage[]][],

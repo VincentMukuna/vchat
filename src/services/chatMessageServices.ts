@@ -5,7 +5,7 @@ import {
   IUserDetails,
 } from "../interfaces/interfaces";
 import { SERVER } from "../utils/config";
-import { sortDocumentsByCreationDateDesc } from "../utils/utils";
+import { sortByCreatedAtDesc } from "../utils/utils";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 export type SendMessageDTO = {
@@ -73,7 +73,7 @@ export async function getChatMessages(chatID: string) {
   )) as DirectChatDetails;
 
   return chatDoc.chatMessages.toSorted(
-    sortDocumentsByCreationDateDesc,
+    sortByCreatedAtDesc,
   ) as DirectMessageDetails[];
 }
 

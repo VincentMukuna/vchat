@@ -5,7 +5,7 @@ import {
   IUserDetails,
 } from "../interfaces/interfaces";
 import { SERVER } from "../utils/config";
-import { sortDocumentsByCreationDateDesc } from "../utils/utils";
+import { sortByCreatedAtDesc } from "../utils/utils";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 import { updateUserDetails } from "./userDetailsService";
@@ -60,7 +60,7 @@ export async function getGroupMessages(groupID: string) {
     groupID,
   )) as GroupChatDetails;
   return groupDoc.groupMessages.toSorted(
-    sortDocumentsByCreationDateDesc,
+    sortByCreatedAtDesc,
   ) as GroupMessageDetails[];
 }
 

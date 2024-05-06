@@ -6,7 +6,7 @@ import {
   IUserDetails,
 } from "@/interfaces/interfaces";
 import { sortConversations } from "@/services/userDetailsService";
-import { isGroup, sortDocumentsByCreationDateDesc } from "@/utils/utils";
+import { isGroup, sortByCreatedAtDesc } from "@/utils/utils";
 import {
   createContext,
   useCallback,
@@ -120,8 +120,8 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       mutate(
         `conversations/${conversation.$id}/messages`,
         isGroup(conversation)
-          ? conversation.groupMessages.toSorted(sortDocumentsByCreationDateDesc)
-          : conversation.chatMessages.toSorted(sortDocumentsByCreationDateDesc),
+          ? conversation.groupMessages.toSorted(sortByCreatedAtDesc)
+          : conversation.chatMessages.toSorted(sortByCreatedAtDesc),
         { revalidate: false },
       );
     },

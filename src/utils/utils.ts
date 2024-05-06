@@ -7,10 +7,7 @@ import {
 import { Models } from "appwrite";
 import { SERVER } from "./config";
 
-export function sortDocumentsByUpdateAtDesc(
-  a: Models.Document,
-  b: Models.Document,
-) {
+export function sortByUpdateAtDesc(a: Models.Document, b: Models.Document) {
   const dateA = new Date(a.$updatedAt);
   const dateB = new Date(b.$updatedAt);
 
@@ -23,10 +20,7 @@ export function sortDocumentsByUpdateAtDesc(
   }
 }
 
-export function sortDocumentsByCreationDateDesc(
-  a: Models.Document,
-  b: Models.Document,
-) {
+export function sortByCreatedAtDesc(a: Models.Document, b: Models.Document) {
   const dateA = new Date(a.$createdAt);
   const dateB = new Date(b.$createdAt);
 
@@ -39,10 +33,7 @@ export function sortDocumentsByCreationDateDesc(
   }
 }
 
-export function sortDocumentsByCreationDateAsc(
-  a: Models.Document,
-  b: Models.Document,
-) {
+export function sortByCreatedAtAsc(a: Models.Document, b: Models.Document) {
   const dateA = new Date(a.$createdAt);
   const dateB = new Date(b.$createdAt);
 
