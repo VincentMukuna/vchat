@@ -15,6 +15,7 @@ import {
 } from "react-router-dom";
 import { SWRConfig } from "swr";
 import App from "./App";
+import Error from "./components/Error";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
@@ -40,12 +41,14 @@ const router = createBrowserRouter([
             lazy: () => {
               return import("./pages/Chats");
             },
+            errorElement: <Error message="Error getting chats." />,
           },
           {
             path: "users",
             lazy: () => {
               return import("./pages/Users");
             },
+            errorElement: <Error message="Error getting users." />,
           },
           {
             path: "settings",
@@ -67,13 +70,7 @@ const router = createBrowserRouter([
           let x = await import("./pages/Register");
           return { Component: x.default };
         },
-      },
-      {
-        path: "details",
-        async lazy() {
-          let details = await import("./pages/Details");
-          return { Component: details.default };
-        },
+        errorElement: <Error message="Error getting register page." />,
       },
     ],
   },
