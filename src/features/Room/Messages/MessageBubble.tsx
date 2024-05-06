@@ -52,7 +52,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
         >
           <div className="flex flex-col justify-between gap-0.5 text-[0.9rem] leading-relaxed tracking-wide 2xs:flex-row">
             <pre className=" whitespace-pre-wrap font-sans">{message.body}</pre>
-            <small className="ml-auto ms-2 inline-flex items-center gap-1 self-end text-[0.5rem] leading-none tracking-wider text-gray-500 dark:text-slate-300">
+            <small className="ml-auto ms-2 inline-flex items-center gap-0.5 self-end text-[0.5rem] leading-none tracking-wider text-gray-500 dark:text-slate-300">
               {new Date(message.$createdAt)
                 .toLocaleTimeString("en-US", {
                   hour: "numeric",
@@ -61,9 +61,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 .replace(" ", "")}
               {message.editedAt && (
                 <>
-                  <span className="text-lg font-semibold leading-3 tracking-tight">
-                    .
-                  </span>
+                  <span>●</span>
                   <span>edited</span>
                 </>
               )}
