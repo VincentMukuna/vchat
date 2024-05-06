@@ -57,20 +57,9 @@ function MessagesList({}: MessagesProps) {
                 ))}
               </div>
             ))}
-            {/* {messages.map((message, i) => (
-              <Message
-                i={i}
-                initialRender={i < 12}
-                messagesListRef={messageListRef}
-                message={message}
-                key={message.$id}
-                prev={messages[i + 1]}
-                next={messages[i - 1]}
-              />
-            ))} */}
           </MessagesContext.Provider>
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 dark:text-gray2">
+          <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center dark:text-gray2">
             <div className="text-lg font-bold tracking-wider">No Messages</div>
             <div className="">
               Start the conversation by typing a message below
