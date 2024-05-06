@@ -72,6 +72,12 @@ const UserProfileModal = ({ onClose, user }: UserProfileProps) => {
         ? createPersonalChat(currentUserDetails.$id)
         : addContact(currentUserDetails.$id, user.$id);
 
+      toast.promise(addContactStatus, {
+        loading: "Creating chat...",
+        success: "Chat created",
+        error: "Failed to create chat",
+      });
+
       addContactStatus
         .then((result) => {
           addConversation(result);
