@@ -58,8 +58,8 @@ const ConversationList = ({ className }: { className: string }) => {
           //handle personal chat
           if (conversation.participants.length === 1) {
             const contact = conversation.participants[0];
-            contact.name = `${contact.name} you me`;
-            return contact.name.toLowerCase().includes(search.toLowerCase());
+            const name = `${contact.name} you me`;
+            return name.toLowerCase().includes(search.toLowerCase());
           }
           const contact = conversation.participants.find(
             (p) => p.$id !== currentUserDetails.$id,
