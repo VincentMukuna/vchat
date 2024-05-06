@@ -9,6 +9,7 @@ import {
   useStyleConfig,
 } from "@chakra-ui/react";
 import { UserIcon, UsersIcon } from "@heroicons/react/20/solid";
+import { PhotoIcon } from "@heroicons/react/24/outline";
 import { greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import useSWR, { useSWRConfig } from "swr";
@@ -194,11 +195,19 @@ const Conversation = memo(
               : contactDetails?.name}
           </span>
           <span className="flex items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap font-sans text-[13px] italic tracking-wide dark:text-gray6">
-            {lastMessage?.body
-              ? lastMessage.senderID === currentUserDetails.$id
-                ? "Me: " + lastMessage.body
-                : lastMessage.body
-              : "Click to start messaging "}
+            {lastMessage?.body ? (
+              <span className="flex items-center gap-1">
+                {lastMessage.attachments?.length > 0 ? (
+                  <PhotoIcon className="h-4 w-4" />
+                ) : (
+                  ""
+                )}
+                {lastMessage.senderID === currentUserDetails.$id ? "You: " : ""}
+                {lastMessage.body}
+              </span>
+            ) : (
+              "Click to start messaging "
+            )}
 
             {lastMessage?.senderID === currentUserDetails.$id && (
               <div className="">
