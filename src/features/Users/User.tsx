@@ -55,6 +55,9 @@ function User({
                     }}
                     user={user}
                   />,
+                  {
+                    isCentered: true,
+                  },
                 );
               }
         }
