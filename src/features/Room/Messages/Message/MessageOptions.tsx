@@ -16,7 +16,7 @@ import {
 } from "@heroicons/react/20/solid";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
 import { blueDark } from "@radix-ui/colors";
-import ForwardMessagesModal from "../ForwardMessagesModal";
+import ForwardMessagesModal from "../../ForwardMessagesModal";
 import EditMessageForm from "./EditMessageModal";
 import { useMessageContext } from "./Message";
 

@@ -1,8 +1,8 @@
 import { useMessagesContext } from "@/context/MessagesContext";
 import { ChatMessage } from "@/interfaces/interfaces";
 import { groupDocumentsByDate, sortByCreatedAtAsc } from "@/utils/utils";
-import { createContext, memo, useMemo, useRef } from "react";
-import Message from "./Message";
+import { createContext, memo, useContext, useMemo, useRef } from "react";
+import Message from "./Message/Message";
 
 interface MessagesProps {}
 
@@ -10,10 +10,10 @@ type MessagesContextType = {
   messagesListRef: React.RefObject<HTMLDivElement> | null;
 };
 
-const MessagesContext = createContext<MessagesContextType>({
+const MessageListContext = createContext<MessagesContextType>({
   messagesListRef: null,
 });
-function MessagesList({}: MessagesProps) {
+function MessageList({}: MessagesProps) {
   const messageListRef = useRef<HTMLDivElement>(null);
   const { messages } = useMessagesContext();
   const groupedMessages = useMemo(() => {
@@ -35,7 +35,9 @@ function MessagesList({}: MessagesProps) {
         className="flex h-full grow flex-col-reverse self-stretch overflow-x-hidden overflow-y-scroll p-2 pb-4"
       >
         {messages.length > 0 ? (
-          <MessagesContext.Provider value={{ messagesListRef: messageListRef }}>
+          <MessageListContext.Provider
+            value={{ messagesListRef: messageListRef }}
+          >
             {groupedMessages.map(([date, messages], i) => (
               <div key={i}>
                 <div className="mt-2 py-2 text-center text-xs font-semibold tracking-wide text-gray-500 dark:text-gray-400/90">
@@ -45,7 +47,6 @@ function MessagesList({}: MessagesProps) {
                   <Message
                     i={i}
                     initialRender={i < 12}
-                    messagesListRef={messageListRef}
                     message={message}
                     key={message.$id}
                     prev={messages[i - 1]}
@@ -54,7 +55,7 @@ function MessagesList({}: MessagesProps) {
                 ))}
               </div>
             ))}
-          </MessagesContext.Provider>
+          </MessageListContext.Provider>
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center dark:text-gray2">
             <div className="text-lg font-bold tracking-wider">No Messages</div>
@@ -68,4 +69,13 @@ function MessagesList({}: MessagesProps) {
   );
 }
 
-export default memo(MessagesList);
+export const useMessageListContext = () => {
+  const context = useContext(MessageListContext);
+  if (!context) {
+    throw new Error(
+      "useMessagesContext must be used within a MessagesProvider",
+    );
+  }
+  return context;
+};
+export default memo(MessageList);

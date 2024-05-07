@@ -148,6 +148,7 @@ function ChatHeader() {
 
       <div className="ml-auto flex items-center">
         <SelectedChatOptions />
+
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">
             <MenuButton

@@ -5,30 +5,31 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { useAuth } from "../../../context/AuthContext";
-import { useChatsContext } from "../../../context/ChatsContext";
+import { useAuth } from "../../../../context/AuthContext";
+import { useChatsContext } from "../../../../context/ChatsContext";
 import {
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../../interfaces/interfaces";
-import { SERVER } from "../../../utils/config";
+} from "../../../../interfaces/interfaces";
+import { SERVER } from "../../../../utils/config";
 
 import { Avatar, Checkbox } from "@chakra-ui/react";
 import useSWR from "swr";
-import { getUserDetails } from "../../../services/userDetailsService";
+import { getUserDetails } from "../../../../services/userDetailsService";
 
-import { modal } from "../../../components/VModal";
+import { modal } from "../../../../components/VModal";
 import {
   RoomActionTypes,
   useRoomContext,
-} from "../../../context/Room/RoomContext";
-import UserProfileModal from "../../Profile/UserProfileModal";
+} from "../../../../context/Room/RoomContext";
+import UserProfileModal from "../../../Profile/UserProfileModal";
 
 import { useMessagesContext } from "@/context/MessagesContext";
 import useReadMessage from "@/features/Room/hooks/useReadMessage";
 import { pluck } from "@/utils/utils";
+import { useMessageListContext } from "../MessagesList";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";
 import MessageOptions, { AllowedMessageActions } from "./MessageOptions";
@@ -48,17 +49,17 @@ const MessagesContext = createContext<MessagesContextType | null>(null);
 interface MessageProps {
   i: number;
   message: DirectMessageDetails | GroupMessageDetails;
-  messagesListRef: React.RefObject<HTMLElement>;
   prev?: DirectMessageDetails | GroupMessageDetails;
   next?: DirectMessageDetails | GroupMessageDetails;
   initialRender?: boolean;
 }
 
 const Message = forwardRef<any, MessageProps>(
-  ({ message, prev, next, initialRender, messagesListRef, i }, ref) => {
+  ({ message, prev, next, initialRender, i }, ref) => {
     const { currentUserDetails } = useAuth();
     const { selectedChat } = useChatsContext();
     const { deleteMessage } = useMessagesContext();
+    const { messagesListRef } = useMessageListContext();
     const { roomState, dispatch } = useRoomContext();
     const [showHoverCard, setShowHoverCard] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
@@ -95,7 +96,7 @@ const Message = forwardRef<any, MessageProps>(
       },
     );
 
-    const { messageRef } = useReadMessage(message, messagesListRef);
+    const { messageRef } = useReadMessage(message, messagesListRef!);
 
     const handleDelete = async () => {
       await deleteMessage(message.$id);
