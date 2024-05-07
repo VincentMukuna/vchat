@@ -4,6 +4,7 @@ import { useRoomContext } from "../../../context/Room/RoomContext";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
+  IConversation,
 } from "../../../interfaces/interfaces";
 import { getChatMessages } from "../../../services/chatMessageServices";
 import { getGroupMessages } from "../../../services/groupMessageServices";
@@ -12,7 +13,7 @@ import { sortByCreatedAtDesc } from "../../../utils/utils";
 export default function useRoomMessages() {
   const { selectedChat } = useChatsContext();
   const { isGroup, roomMessagesKey } = useRoomContext();
-  const { cache } = useSWRConfig();
+  const { cache, mutate } = useSWRConfig();
   const isFirstRender = cache.get(roomMessagesKey!) === undefined;
 
   async function getRoomMessages() {
@@ -43,6 +44,22 @@ export default function useRoomMessages() {
   return useSWR(
     () => (selectedChat ? `conversations/${selectedChat.$id}/messages` : null),
     getRoomMessages,
-    { fallbackData: getFallbackMessages() },
+    {
+      fallbackData: getFallbackMessages(),
+      onSuccess(data, key, config) {
+        const conversation = cache.get("conversations")
+          ?.data as IConversation[];
+        const newConversations = conversation.map((c) => {
+          if (c.$id === selectedChat?.$id) {
+            if (isGroup) {
+              return { ...c, groupMessages: data };
+            }
+            return { ...c, chatMessages: data };
+          }
+          return c;
+        });
+        mutate("conversations", newConversations, { revalidate: false });
+      },
+    },
   );
 }
