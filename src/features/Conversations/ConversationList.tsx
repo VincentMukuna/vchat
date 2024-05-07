@@ -1,7 +1,6 @@
 import { useChatsContext } from "@/context/ChatsContext";
 import useChatsListSubscription from "@/features/Conversations/hooks/useChatsListSubscription";
 import useUserChatsSubscription from "@/features/Conversations/hooks/useUserChatsSubscription";
-import { IConversation } from "@/interfaces/interfaces";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import { isGroup } from "@/utils/utils";
 import {
@@ -14,10 +13,9 @@ import {
 import { MagnifyingGlassIcon, UserPlusIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray } from "@radix-ui/colors";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { useDebouncedCallback } from "use-debounce";
 import { useAuth } from "../../context/AuthContext";
 import { VARIANTS_MANAGER } from "../../services/variants";
 import Conversation from "./Conversation";
@@ -32,25 +30,8 @@ const ConversationList = ({ className }: { className: string }) => {
   } = useChatsContext();
   const [search, setSearch] = useState("");
 
-  const [searchResults, setSearchResults] =
-    useState<IConversation[]>(conversations);
-
-  //synch chats with the server
-  useEffect(() => {
-    setSearchResults(conversations);
-    handleChatsSearch(search);
-  }, [conversations, chatsError, chatsLoading]);
-
-  if (!currentUser || !currentUserDetails) return null;
-  const { update: updateConversations } = useSWROptimistic("conversations");
-
-  //subscribe to realtime user chats changes
-  useUserChatsSubscription();
-
-  useChatsListSubscription();
-
-  const handleChatsSearch = useDebouncedCallback((search: string) => {
-    setSearchResults(
+  const searchResults = useMemo(
+    () =>
       conversations?.filter((conversation) => {
         if (isGroup(conversation)) {
           return conversation.name.toLowerCase().includes(search.toLowerCase());
@@ -62,14 +43,21 @@ const ConversationList = ({ className }: { className: string }) => {
             return name.toLowerCase().includes(search.toLowerCase());
           }
           const contact = conversation.participants.find(
-            (p) => p.$id !== currentUserDetails.$id,
+            (p) => p.$id !== currentUserDetails?.$id,
           );
           if (!contact) return false;
           return contact.name.toLowerCase().includes(search.toLowerCase());
         }
       }),
-    );
-  }, 100);
+    [conversations, search, currentUserDetails?.$id],
+  );
+  if (!currentUser || !currentUserDetails) return null;
+  const { update: updateConversations } = useSWROptimistic("conversations");
+
+  //subscribe to realtime user chats changes
+  useUserChatsSubscription();
+
+  useChatsListSubscription();
 
   if (chatsError) {
     return (
@@ -142,7 +130,6 @@ const ConversationList = ({ className }: { className: string }) => {
             type="search"
             onChange={(e) => {
               setSearch(e.target.value);
-              handleChatsSearch(e.target.value);
             }}
           />
         </InputGroup>
@@ -165,7 +152,6 @@ const ConversationList = ({ className }: { className: string }) => {
               <Button
                 onClick={() => {
                   setSearch("");
-                  handleChatsSearch("");
                 }}
               >
                 Clear Search
