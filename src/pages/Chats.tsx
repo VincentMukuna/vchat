@@ -16,8 +16,8 @@ function Chats() {
         <ConversationList className="" />
       </Sidebar>
       <Box
-        className={`absolute inset-0 flex  h-full   grow transition-opacity lg:relative ${
-          selectedChat ? "z-10" : "invisible lg:visible"
+        className={`absolute inset-0 flex  h-full   grow transition-opacity md:relative ${
+          selectedChat ? "z-10" : "invisible md:visible"
         }`}
       >
         <RoomProvider>
