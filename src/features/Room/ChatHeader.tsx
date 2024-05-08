@@ -78,7 +78,7 @@ function ChatHeader() {
     : undefined;
 
   return (
-    <section className="relative flex h-full items-center gap-3 bg-gray2 p-4 px-2 text-dark-gray2 dark:bg-dark-blue1 dark:text-gray1">
+    <section className="relative flex h-full items-center gap-2 bg-gray2 p-4 px-2 text-dark-gray2 dark:bg-dark-blue1 dark:text-gray1">
       <IconButton
         variant={"ghost"}
         rounded={"full"}

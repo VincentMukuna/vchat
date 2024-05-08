@@ -131,12 +131,12 @@ const Conversation = memo(
         bg={"inherit"}
         shadow={"none"}
         py={3}
-        ps={3}
+        px={2}
         rounded={"md"}
         onClick={(e) => {
           selectConversation(conversation.$id, contactDetails?.$id);
         }}
-        className={`flex cursor-pointer items-start gap-2 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
+        className={`flex cursor-pointer items-start gap-1 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
           isActive ? "bg-slate-200 dark:bg-dark-blue2" : ""
         }`}
       >
@@ -212,7 +212,7 @@ const Conversation = memo(
             )}
           </span>
         </div>
-        <div className="mx-3 ml-auto mr-3 mt-1 flex flex-col gap-1 dark:text-gray-300/90 ">
+        <div className="ml-auto mt-1 flex flex-col gap-1 dark:text-gray-300/90 ">
           <span className="flex whitespace-nowrap text-[.6rem] tracking-wide">
             {getFormatedDate(
               lastMessage?.$createdAt || conversation.$updatedAt,
