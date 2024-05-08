@@ -85,11 +85,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
             </small>
           </div>
         </div>
-        <div
-          className={`absolute -bottom-3 z-10 ${
-            isMine ? "-start-4" : "-end-4"
-          }`}
-        >
+        <div className={`absolute -bottom-3 ${isMine ? "-start-4" : "-end-4"}`}>
           <MessageReactions
             message={message}
             hoverCardShowing={showHoverCard}
