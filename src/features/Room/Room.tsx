@@ -9,7 +9,7 @@ import { Box } from "@chakra-ui/react";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./Messages/MessageInput/MessageInput";
-import Messages from "./Messages/MessagesList";
+import MessagesList from "./Messages/MessagesList";
 import RoomDetails from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 
@@ -36,7 +36,7 @@ function Room() {
         className={`grid h-full grow grid-rows-[1fr_6fr_0.2fr] bg-gray2 dark:bg-dark-blue1`}
       >
         <ChatHeader key={`header-${selectedChat.$id}`} />
-        <Messages key={`messagesList-${selectedChat.$id}`}></Messages>
+        <MessagesList key={`messagesList-${selectedChat.$id}`}></MessagesList>
         <MessageInput key={`input-${selectedChat.$id}`} />
       </Box>
       <aside
