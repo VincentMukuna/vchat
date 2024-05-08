@@ -16,10 +16,13 @@ import {
 import { blueDark, gray } from "@radix-ui/colors";
 import { useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function MessageSearchBox() {
   const { colorMode } = useColorMode();
-  const { handleSearch, messages, search } = useMessagesContext();
+  const { handleSearch, messages, search: msgCtxSearch } = useMessagesContext();
+
+  const [search, setSearch] = useState("");
 
   const initialFocusRef = useRef<HTMLInputElement>(null);
   const [activeMsgIdx, setActiveMsgIdx] = useState<number | null>(null);
@@ -33,12 +36,15 @@ export default function MessageSearchBox() {
       .toReversed();
   }, [messages, search]);
 
-  const handleMessageSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    flushSync(() => {
-      handleSearch(e.target.value);
-    });
-    setActiveMsgIdx(null);
-  };
+  const handleMessageSearch = useDebouncedCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      flushSync(() => {
+        handleSearch(e.target.value);
+      });
+      setActiveMsgIdx(null);
+    },
+    300,
+  );
   const scrollToMessage = (idx: number) => {
     const id = results[idx]?.$id;
     if (!id) return;
@@ -85,7 +91,11 @@ export default function MessageSearchBox() {
               size={"sm"}
               placeholder="Search for messages"
               type="search"
-              onChange={handleMessageSearch}
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                handleMessageSearch(e);
+              }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleNextClick();
