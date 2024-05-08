@@ -102,11 +102,11 @@ export default function MessageSearchBox() {
                 }
               }}
             />
-            {results.length > 0 && activeMsgIdx !== null ? (
-              <span className="flex-none text-xs dark:text-gray-500">
-                {activeMsgIdx + 1} of {results.length}
-              </span>
-            ) : null}
+            <span className="flex-none text-xs dark:text-gray-500">
+              {activeMsgIdx !== null
+                ? `${activeMsgIdx + 1} of ${results.length}`
+                : `${results.length} results`}
+            </span>
           </span>
           <span className="flex gap-1">
             <IconButton
