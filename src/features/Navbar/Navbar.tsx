@@ -33,7 +33,7 @@ const Navbar = () => {
   if (!currentUser || !currentUserDetails) return null;
 
   return (
-    <nav className="h-14 grow-0  items-center gap-3 bg-gray3   pt-2  dark:bg-dark-blue2 md:flex md:h-full  md:min-w-[4rem] md:flex-col md:gap-10">
+    <nav className="h-14 grow-0  items-center gap-3 bg-gray3   pt-2  dark:bg-dark-blue2 md:flex md:h-full  md:min-w-[3.2rem] md:flex-col md:gap-10">
       <div className="hidden md:flex">
         <MyProfile />
       </div>
