@@ -1,6 +1,8 @@
 import Blueticks from "@/components/Blueticks";
 import { useAuth } from "@/context/AuthContext";
+import { useMessagesContext } from "@/context/MessagesContext";
 import { ChatMessage } from "@/interfaces/interfaces";
+import { Highlight } from "@chakra-ui/react";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { forwardRef } from "react";
 import { useMessageContext } from "./Message";
@@ -14,8 +16,8 @@ type MessageBubbleProps = {
 const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
   ({ message, prev, next }, messageRef) => {
     const { currentUserDetails } = useAuth();
+    const { search } = useMessagesContext();
     const isMine = message.senderID === currentUserDetails?.$id;
-    const isSystem = message.senderID === "system";
     const prevSameSender = prev?.senderID === message.senderID;
     const nextSameSender = next?.senderID === message.senderID;
     const isOptimistic = !!message?.optimistic;
@@ -51,7 +53,11 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 `}
         >
           <div className="flex flex-col justify-between gap-0.5 text-[0.9rem] leading-relaxed tracking-wide 2xs:flex-row">
-            <pre className=" whitespace-pre-wrap font-sans">{message.body}</pre>
+            <pre className=" whitespace-pre-wrap font-sans">
+              <Highlight query={search} styles={{ py: "1", bg: "orange.100" }}>
+                {message.body}
+              </Highlight>
+            </pre>
             <small className="ml-auto ms-2 inline-flex items-center gap-0.5 self-end text-[0.5rem] leading-none tracking-wider text-gray-500 dark:text-slate-300">
               {new Date(message.$createdAt)
                 .toLocaleTimeString("en-US", {

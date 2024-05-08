@@ -25,6 +25,7 @@ function MessageList({}: MessagesProps) {
       [] as [string, ChatMessage[]][],
     );
   }, [messages]);
+
   return (
     <div
       ref={messageListRef}

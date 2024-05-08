@@ -18,7 +18,7 @@ import {
   sendGroupMessage,
 } from "@/services/groupMessageServices";
 import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { useChatsContext } from "./ChatsContext";
 import { useRoomContext } from "./Room/RoomContext";
@@ -27,8 +27,10 @@ const MessagesContext = createContext<MessageContext | undefined>(undefined);
 
 type MessageContext = {
   messages: Message[];
+  search: string;
   createMessage: (message: any) => Promise<any>;
   deleteMessage: (id: string) => Promise<any>;
+  handleSearch: (search: string) => void;
 };
 
 export default function MessagesProvider({
@@ -124,12 +126,25 @@ export default function MessagesProvider({
     }
   };
 
+  const [search, setSearch] = useState("");
+  const handleSearch = (search: string) => {
+    setSearch(search);
+  };
+
+  useEffect(() => {
+    return () => {
+      setSearch("");
+    };
+  }, [selectedChat]);
+
   return (
     <MessagesContext.Provider
       value={{
+        search,
         messages: messages || [],
         createMessage,
         deleteMessage,
+        handleSearch,
       }}
     >
       {children}

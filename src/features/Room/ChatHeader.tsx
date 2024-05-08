@@ -34,6 +34,7 @@ import {
   IUserDetails,
 } from "../../interfaces/interfaces";
 import { getGroupDetails } from "../../services/groupMessageServices";
+import MessageSearchBox from "./Messages/MessageSearchBox";
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
@@ -148,7 +149,7 @@ function ChatHeader() {
 
       <div className="ml-auto flex items-center">
         <SelectedChatOptions />
-
+        <MessageSearchBox />
         {(!isGroup || isGroupMember) && (
           <Menu placement="left-start">
             <MenuButton
