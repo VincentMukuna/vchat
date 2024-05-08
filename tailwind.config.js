@@ -1,6 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-import defaultTheme from "tailwindcss/defaultTheme";
-
 import {
   blueDark,
   grassDark,
@@ -14,6 +12,8 @@ import {
   tomato,
   tomatoDark,
 } from "@radix-ui/colors";
+import containerQueries from "@tailwindcss/container-queries";
+import defaultTheme from "tailwindcss/defaultTheme";
 /**
  * @type Config
  */
@@ -48,5 +48,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [containerQueries],
 };

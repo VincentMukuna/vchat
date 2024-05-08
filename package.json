@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.11.0",
     "@heroicons/react": "^2.0.18",
     "@radix-ui/colors": "^3.0.0-rc.4",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@types/react-window": "^1.8.8",
     "@vercel/analytics": "^1.0.2",
     "@vercel/speed-insights": "^1.0.10",

@@ -179,7 +179,7 @@ const Message = forwardRef<any, MessageProps>(
               isMine ? "flex-row-reverse" : ""
             } items-end transition-all focus:outline-0  focus:outline-slate-600 
           
-          ${prevSameSender ? "" : "mt-1.5"}
+          ${prevSameSender ? "-mt-0.5" : "mt-1.5"}
           ${nextSameSender ? "" : "mb-1.5"}
           ${
             isSelected
