@@ -9,7 +9,7 @@ import { Box } from "@chakra-ui/react";
 import useCommand from "../../utils/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./Messages/MessageInput/MessageInput";
-import MessagesList from "./Messages/MessagesList";
+import MessagesList from "./Messages/MessageList";
 import RoomDetails from "./RoomDetails/RoomDetails";
 import { RoomDetailsFooter } from "./RoomDetails/RoomDetailsFooter";
 

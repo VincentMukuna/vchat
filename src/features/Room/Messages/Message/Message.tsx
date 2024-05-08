@@ -29,7 +29,7 @@ import UserProfileModal from "../../../Profile/UserProfileModal";
 import { useMessagesContext } from "@/context/MessagesContext";
 import useReadMessage from "@/features/Room/hooks/useReadMessage";
 import { pluck } from "@/utils/utils";
-import { useMessageListContext } from "../MessagesList";
+import { useMessageListContext } from "../MessageList";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";
 import MessageOptions, { AllowedMessageActions } from "./MessageOptions";
