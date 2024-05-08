@@ -33,10 +33,11 @@ export const MyProfile = () => {
         }}
       >
         <Avatar
-          size={"md"}
+          size={"sm"}
+          borderRadius={"md"}
           src={currentUserDetails.avatarURL}
-          icon={<UserIcon className="h-7 w-7" />}
-          name={currentUserDetails.name}
+          icon={<UserIcon className="h-5 w-5" />}
+          bg={colorMode === "light" ? "gray.400" : "gray.700"}
         />
       </Link>
     </Tooltip>
