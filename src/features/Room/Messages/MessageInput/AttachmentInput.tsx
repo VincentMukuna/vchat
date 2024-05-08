@@ -67,7 +67,6 @@ const AttachmentInput = forwardRef<AttachmentHandle>((props, ref) => {
           clear();
           openFilePicker();
         }}
-        rounded={"full"}
       ></IconButton>
       {attachments.length > 0 && (
         <Badge

@@ -33,7 +33,7 @@ function Room() {
   return (
     <>
       <Box
-        className={`grid h-full grow grid-rows-[1fr_6fr_0.2fr] bg-gray2 dark:bg-dark-blue1`}
+        className={`grid h-full grow grid-rows-[1fr_6fr_0.5fr] bg-gray2 dark:bg-dark-blue1`}
       >
         <ChatHeader key={`header-${selectedChat.$id}`} />
         <MessagesList key={`messagesList-${selectedChat.$id}`}></MessagesList>
@@ -42,7 +42,7 @@ function Room() {
       <aside
         className={`hidden ${
           showDetails && "absolute inset-0"
-        } flex  grow basis-40 flex-col items-center border-l pb-4 pt-6  transition-all dark:border-dark-slate4 md:static md:max-w-[20rem] xl:flex`}
+        } flex  grow basis-40 flex-col items-center border-l pb-4 pt-6 transition-all dark:border-dark-slate4 md:static xl:flex`}
       >
         <RoomDetails />
         <RoomDetailsFooter />

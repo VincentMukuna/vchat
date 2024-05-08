@@ -166,7 +166,7 @@ const MessageInput = ({}: InputProps) => {
           />
         </div>
       )}
-      <footer className="mx-4 my-2 flex flex-col justify-start overflow-hidden rounded-3xl bg-gray5 px-2 py-1 dark:bg-dark-gray3 dark:text-dark-blue12 ">
+      <footer className="mx-4 my-2 flex flex-col items-center justify-start overflow-hidden rounded-3xl bg-gray5 px-2 dark:bg-dark-gray3 dark:text-dark-blue12 ">
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
           <div className="flex h-full w-full items-center gap-1 ps-1 ">
             <Popover onClose={() => inputRef.current?.focus?.()} isLazy>
@@ -176,7 +176,6 @@ const MessageInput = ({}: InputProps) => {
                   aria-label="emoji"
                   icon={<FaceSmileIcon className="h-4 w-4" />}
                   size={"sm"}
-                  rounded={"full"}
                   className="hidden sm:inline-flex"
                 />
               </PopoverTrigger>
@@ -202,11 +201,11 @@ const MessageInput = ({}: InputProps) => {
 
             <Textarea
               ref={inputRef}
+              size={"sm"}
               placeholder="Type a message"
               _placeholder={{
                 color: colorMode === "dark" ? "slate.300" : "gray.700",
               }}
-              p={2}
               value={messageBody}
               onChange={handleChange}
               onBlur={handleChange}
@@ -228,7 +227,8 @@ const MessageInput = ({}: InputProps) => {
               icon={<PaperAirplaneIcon className="h-4 w-4 text-indigo-600" />}
               type="submit"
               isDisabled={!messageBody.trim()}
-              rounded={"full"}
+              size={"xs"}
+              my={2}
             />
           </div>
         </form>

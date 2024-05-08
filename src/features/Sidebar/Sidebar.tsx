@@ -25,7 +25,7 @@ const Sidebar = ({ children }: SidebarProps) => {
   const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return;
   return (
-    <aside className="relative max-h-full shrink grow basis-[25rem] overflow-auto border-r bg-gray2  dark:border-dark-slate3 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[25rem]">
+    <aside className="relative max-h-full shrink grow basis-[24rem] overflow-auto border-r bg-gray2  dark:border-dark-slate3 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[25rem]">
       {children}
     </aside>
   );
