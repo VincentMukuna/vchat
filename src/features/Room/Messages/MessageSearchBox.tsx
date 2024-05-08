@@ -60,7 +60,13 @@ export default function MessageSearchBox() {
     scrollToMessage(activeMsgIdx !== null ? activeMsgIdx + 1 : 0);
   };
   return (
-    <Popover initialFocusRef={initialFocusRef}>
+    <Popover
+      initialFocusRef={initialFocusRef}
+      onClose={() => {
+        setActiveMsgIdx(null);
+        handleSearch("");
+      }}
+    >
       <PopoverTrigger>
         <IconButton
           variant={"ghost"}
@@ -82,8 +88,7 @@ export default function MessageSearchBox() {
               onChange={handleMessageSearch}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  scrollToMessage(activeMsgIdx === null ? 0 : activeMsgIdx);
-                  setActiveMsgIdx((prev) => (prev === null ? 0 : prev));
+                  handleNextClick();
                 }
                 //handle arrow up
                 if (e.key === "ArrowUp") {
