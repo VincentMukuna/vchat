@@ -1,7 +1,7 @@
 import { IconButton, Tooltip, useColorMode } from "@chakra-ui/react";
 import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
-import { indigo, indigoDark, slateDark } from "@radix-ui/colors";
+import { indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
@@ -11,17 +11,17 @@ import { MyProfile } from "./MyProfile";
 const tabs = [
   {
     value: "/chats",
-    icon: <ChatIcon className="h-6 w-6" />,
+    icon: <ChatIcon className="h-5 w-5" />,
     title: "Chats",
   },
   {
     value: "/users",
-    icon: <UserIconOutline className="h-6 w-6" />,
+    icon: <UserIconOutline className="h-5 w-5" />,
     title: "Users",
   },
   {
     value: "/settings",
-    icon: <WheelIcon className="h-6 w-6" />,
+    icon: <WheelIcon className="h-5 w-5" />,
     title: "Settings",
   },
 ];
@@ -33,7 +33,7 @@ const Navbar = () => {
   if (!currentUser || !currentUserDetails) return null;
 
   return (
-    <nav className="h-16 grow-0  items-center gap-3 bg-gray3   pt-2  dark:bg-dark-blue2 md:flex md:h-full  md:min-w-[4rem] md:flex-col md:gap-8">
+    <nav className="h-14 grow-0  items-center gap-3 bg-gray3   pt-2  dark:bg-dark-blue2 md:flex md:h-full  md:min-w-[4rem] md:flex-col md:gap-10">
       <div className="hidden md:flex">
         <MyProfile />
       </div>
@@ -53,27 +53,22 @@ const Navbar = () => {
               bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
               textColor={colorMode === "light" ? indigo.indigo3 : "black"}
             >
-              <Link to={tab.value} className="relative mb-3">
+              <Link to={tab.value} className="relative mb-2">
                 <div
-                  className={` absolute -bottom-2 left-[2px] h-1 w-full rounded-full bg-dark-indigo10  transition-opacity md:-left-1 md:bottom-0  md:h-full md:w-1 ${
+                  className={` absolute -bottom-1 left-[2px] h-1 w-full rounded-full bg-dark-indigo10  transition-opacity md:-left-1 md:bottom-0  md:h-full md:w-1 ${
                     pathname.split("/").includes(tab.value.substring(1))
                       ? "visible"
                       : "invisible"
                   }`}
                 />
                 <IconButton
+                  variant={"ghost"}
                   as={motion.button}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   aria-label={tab.title}
                   icon={tab.icon}
-                  bgColor={"transparent"}
-                  _hover={{
-                    bg:
-                      colorMode === "dark"
-                        ? slateDark.slate6
-                        : slateDark.slate11,
-                  }}
+                  size={"sm"}
                   ml={1}
                 />
               </Link>
@@ -99,16 +94,14 @@ const Navbar = () => {
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.98 }}
             onClick={toggleColorMode}
-            bgColor={"transparent"}
-            _hover={{
-              bg: colorMode === "dark" ? slateDark.slate6 : slateDark.slate11,
-            }}
+            variant={"ghost"}
             aria-label="toggle color mode"
+            size={"sm"}
             icon={
               colorMode === "dark" ? (
-                <SunIcon className="h-6 w-6" />
+                <SunIcon className="h-5 w-5" />
               ) : (
-                <MoonIcon className="h-6 w-6" />
+                <MoonIcon className="h-5 w-5" />
               )
             }
           />
@@ -135,12 +128,10 @@ const Navbar = () => {
               as={motion.button}
               whileHover={{ scale: 1.01 }}
               whileTap={{ scale: 0.98 }}
-              bgColor={"transparent"}
-              _hover={{
-                bg: colorMode === "dark" ? slateDark.slate6 : slateDark.slate11,
-              }}
+              variant={"ghost"}
+              size={"sm"}
               aria-label="log out"
-              icon={<LogOutIcon className="h-6 w-6 " />}
+              icon={<LogOutIcon className="h-5 w-5 " />}
             />
           </Link>
         </Tooltip>
