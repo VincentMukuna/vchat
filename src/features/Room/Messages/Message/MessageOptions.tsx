@@ -9,13 +9,14 @@ import {
   MenuItem,
   MenuList,
   Portal,
+  useColorMode,
 } from "@chakra-ui/react";
 import {
   ArrowUturnRightIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/20/solid";
 import { ClipboardIcon } from "@heroicons/react/24/outline";
-import { blueDark } from "@radix-ui/colors";
+import { blueDark, gray } from "@radix-ui/colors";
 import ForwardMessagesModal from "../../ForwardMessagesModal";
 import EditMessageForm from "./EditMessageModal";
 import { useMessageContext } from "./Message";
@@ -35,6 +36,7 @@ const MessageOptions = ({
 }: MessageOptionsProps) => {
   const { handleDelete, message, setShowHoverCard, setShowMenu } =
     useMessageContext();
+  const { colorMode } = useColorMode();
   const messageOptionsItem: {
     key: AllowedMessageActions;
     icon: JSX.Element;
@@ -96,14 +98,17 @@ const MessageOptions = ({
         icon={<EllipsisHorizontalIcon className="h-4 w-4" />}
       />
       <Portal>
-        <MenuList bg={blueDark.blue2} p={1}>
+        <MenuList
+          bg={colorMode === "light" ? gray.gray2 : blueDark.blue2}
+          p={1}
+        >
           {removeDuplicates(messageOptionsItem)
             .filter((item) => allowedActions.includes(item.key))
             .map((item) => (
               <MenuItem
-                bg={blueDark.blue2}
+                bg={colorMode === "light" ? gray.gray2 : blueDark.blue2}
                 _hover={{
-                  bg: blueDark.blue3,
+                  bg: colorMode === "light" ? gray.gray3 : blueDark.blue3,
                 }}
                 key={item.key}
                 icon={item.icon}
