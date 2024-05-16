@@ -70,13 +70,14 @@ https://github.com/VincentMukuna/vchat/assets/93912489/01db2529-a858-41ab-9d2f-7
       appwrite deploy collections
    ```
 
-7. Deploy
+7. Deploy buckets.
+   Edit- Due to appwrite pricing changes you may have to deploy only one bucket then set all bucket config in `src\utils\config.ts` to your bucketId.
 
    ```bash
       appwrite deploy buckets
    ```
 
-8. Edit `config.js` to include the relevant project's API endpoints.
+8. Edit `src\utils\config.ts` to include the relevant project's API endpoints.
 
 9. Start the development server:
    ```bash
