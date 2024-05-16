@@ -117,7 +117,7 @@ function MobileNav() {
             className="items-center justify-center"
           >
             <span className="text-xs text-gray-600 dark:text-gray-400">
-              Vincent Mukuna ©{new Date().getFullYear()}
+              VChat ©{new Date().getFullYear()}
             </span>
           </DrawerFooter>
         </DrawerContent>
