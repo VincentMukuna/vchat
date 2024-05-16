@@ -67,8 +67,10 @@ function MobileNav() {
                 />
               </Link>
               <div className="relative flex flex-col ">
-                <div className="font-semibold">{currentUserDetails.name}</div>
-                <div className=" italic text-dark-gray5 dark:text-gray6">
+                <div className="text-lg font-semibold">
+                  {currentUserDetails.name}
+                </div>
+                <div className=" text-sm italic text-dark-gray5 dark:text-gray6">
                   {currentUserDetails.about}
                 </div>
               </div>
@@ -80,10 +82,10 @@ function MobileNav() {
                   to={link.value}
                   key={link.value}
                   className={`
-                  flex items-center gap-2 rounded-lg transition-colors hover:text-indigo-600 dark:hover:text-indigo-500 
+                  flex items-center gap-3 rounded-lg transition-colors hover:text-indigo-600 dark:hover:text-indigo-500 
                   ${
                     pathname.split("/").includes(link.value.substring(1))
-                      ? ""
+                      ? "text-indigo-500"
                       : ""
                   }`}
                 >
@@ -110,7 +112,10 @@ function MobileNav() {
               </Button>
             </Link>
           </DrawerBody>
-          <DrawerFooter bg={colorMode === "dark" ? blueDark.blue2 : gray.gray2}>
+          <DrawerFooter
+            bg={colorMode === "dark" ? blueDark.blue2 : gray.gray2}
+            className="items-center justify-center"
+          >
             <span className="text-xs text-gray-600 dark:text-gray-400">
               Vincent Mukuna ©{new Date().getFullYear()}
             </span>
