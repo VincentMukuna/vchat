@@ -11,11 +11,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
+import ColorModeToggle from "@/components/ColorModeToggle";
+import MobileNav from "@/components/Navbar/MobileNav";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { PlusIcon } from "../../components/Icons";
-import { MyProfile } from "../../components/Navbar/MyProfile";
 import { useAuth } from "../../context/AuthContext";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
 interface SidebarProps {
@@ -50,37 +51,41 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
     >
       <span className="relative flex h-full w-full items-center justify-between ">
         <div className="visible mt-2 md:invisible">
-          <MyProfile />
+          <MobileNav />
         </div>
 
         <span>{title}</span>
-        <Tooltip
-          label={"New Group"}
-          hasArrow
-          placement="bottom"
-          py={2}
-          rounded={"md"}
-          fontSize={"sm"}
-          fontWeight={"normal"}
-          bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
-          textColor={colorMode === "light" ? indigo.indigo3 : "black"}
-        >
-          <IconButton
-            bg={"transparent"}
-            as={motion.button}
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={onOpen}
-            aria-label="Create new group"
-            title="New group"
-            icon={
-              <div className="relative flex rounded p-2 text-sm font-normal dark:text-gray8 ">
-                <UserGroupIcon className="h-5 w-5" />
-                <PlusIcon className="relative right-1 h-4 w-4 dark:text-white" />
-              </div>
-            }
-          ></IconButton>
-        </Tooltip>
+        <div className="flex items-center gap-3">
+          <ColorModeToggle />
+          <Tooltip
+            label={"New Group"}
+            hasArrow
+            placement="bottom"
+            py={2}
+            rounded={"md"}
+            fontSize={"sm"}
+            fontWeight={"normal"}
+            bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
+            textColor={colorMode === "light" ? indigo.indigo3 : "black"}
+          >
+            <IconButton
+              bg={"transparent"}
+              as={motion.button}
+              variant={"ghost"}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={onOpen}
+              aria-label="Create new group"
+              title="New group"
+              icon={
+                <div className="relative flex rounded p-2 text-sm font-normal dark:text-gray8 ">
+                  <UserGroupIcon className="h-5 w-5" />
+                  <PlusIcon className="relative right-1 h-4 w-4 dark:text-white" />
+                </div>
+              }
+            ></IconButton>
+          </Tooltip>
+        </div>
       </span>
 
       <Modal

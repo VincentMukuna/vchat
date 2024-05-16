@@ -1,44 +1,24 @@
 import { IconButton, Tooltip, useColorMode } from "@chakra-ui/react";
-import { UserIcon as UserIconOutline } from "@heroicons/react/24/outline";
-import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import { ArrowLeftStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { ChatIcon, LogOutIcon, WheelIcon } from "../Icons";
+import ColorModeToggle from "../ColorModeToggle";
 import { MyProfile } from "./MyProfile";
-
-const tabs = [
-  {
-    value: "/chats",
-    icon: <ChatIcon className="h-5 w-5" />,
-    title: "Chats",
-  },
-  {
-    value: "/users",
-    icon: <UserIconOutline className="h-5 w-5" />,
-    title: "Users",
-  },
-  {
-    value: "/settings",
-    icon: <WheelIcon className="h-5 w-5" />,
-    title: "Settings",
-  },
-];
+import { navLinks } from "./links";
 
 const Navbar = () => {
   const { currentUser, currentUserDetails, logOut } = useAuth();
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { colorMode } = useColorMode();
   const { pathname } = useLocation();
   if (!currentUser || !currentUserDetails) return null;
 
   return (
-    <nav className="h-14 grow-0  items-center gap-3 bg-gray3   pt-2  dark:bg-dark-blue2 md:flex md:h-full  md:min-w-[3.2rem] md:flex-col md:gap-10">
-      <div className="hidden md:flex">
-        <MyProfile />
-      </div>
-      <div className="flex w-full items-center justify-around md:flex-col md:gap-2 ">
-        {tabs.map((tab, i) => {
+    <nav className="hidden h-full  min-w-[3.2rem]  grow-0 flex-col  items-center gap-10 bg-gray3  pt-2 dark:bg-dark-blue2 md:flex">
+      <MyProfile />
+      <div className="flex w-full flex-col items-center justify-around gap-2 ">
+        {navLinks.map((tab, i) => {
           return (
             <Tooltip
               key={i}
@@ -55,7 +35,7 @@ const Navbar = () => {
             >
               <Link to={tab.value} className="relative mb-2">
                 <div
-                  className={` absolute -bottom-1 left-[2px] h-1 w-full rounded-full bg-dark-indigo10  transition-opacity md:-left-1 md:bottom-0  md:h-full md:w-1 ${
+                  className={` absolute -left-1 bottom-0  h-full w-1 rounded-full  bg-dark-indigo10 transition-opacity ${
                     pathname.split("/").includes(tab.value.substring(1))
                       ? "visible"
                       : "invisible"
@@ -78,34 +58,7 @@ const Navbar = () => {
       </div>
 
       <div className="mb-8 mt-auto hidden flex-col gap-2 md:flex">
-        <Tooltip
-          label={colorMode === "dark" ? "Light mode" : "Dark mode"}
-          hasArrow
-          placement="right"
-          py={2}
-          fontSize={"sm"}
-          rounded={"md"}
-          fontWeight={"normal"}
-          bg={colorMode === "light" ? indigoDark.indigo1 : indigo.indigo8}
-          textColor={colorMode === "light" ? indigo.indigo3 : "black"}
-        >
-          <IconButton
-            as={motion.button}
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={toggleColorMode}
-            variant={"ghost"}
-            aria-label="toggle color mode"
-            size={"sm"}
-            icon={
-              colorMode === "dark" ? (
-                <SunIcon className="h-5 w-5" />
-              ) : (
-                <MoonIcon className="h-5 w-5" />
-              )
-            }
-          />
-        </Tooltip>
+        <ColorModeToggle />
         <Tooltip
           label="Log out"
           hasArrow
@@ -131,7 +84,7 @@ const Navbar = () => {
               variant={"ghost"}
               size={"sm"}
               aria-label="log out"
-              icon={<LogOutIcon className="h-5 w-5 " />}
+              icon={<ArrowLeftStartOnRectangleIcon className="h-5 w-5 " />}
             />
           </Link>
         </Tooltip>

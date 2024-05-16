@@ -87,12 +87,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const fetchUserDataOnLoad = async () => {
     try {
       if (!localUser) {
-        const user = await getAccount();
+        let user = await getAccount();
         setLocalUser(user);
-        const userDetails = await getUserDetails(user);
+        let userDetails = await getUserDetails(user);
         if (user.name === null) {
-          api.provider().account.updateName(user.email.split("@")[0]!);
-          updateUserDetails(userDetails.$id, {
+          user = await api
+            .provider()
+            .account.updateName(user.email.split("@")[0]!);
+          userDetails = await updateUserDetails(userDetails.$id, {
             name: user.email.split("@")[0]!,
           });
         }

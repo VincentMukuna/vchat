@@ -1,9 +1,9 @@
 import { StackDivider, VStack, useColorMode } from "@chakra-ui/react";
-import { ArrowRightOnRectangleIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
 
 import { VARIANTS_MANAGER } from "@/services/variants";
+import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 
 const SettingsList = () => {
@@ -23,35 +23,35 @@ const SettingsList = () => {
       >
         <button
           onClick={toggleColorMode}
-          className="flex h-full w-full max-w-sm items-center p-3"
+          className="flex h-full w-full  items-center justify-between p-3"
         >
           <div className="flex flex-col items-start">
-            <span className="">Toggle color mode</span>
+            <span className="font-semibold">Toggle color mode</span>
             <span className="text-sm italic dark:text-slate-300">
               Switch the apps theme
             </span>
           </div>
 
           {colorMode === "dark" ? (
-            <SunIcon className="me-12 ms-auto h-6 w-6" />
+            <SunIcon className="size-6" />
           ) : (
-            <MoonIcon className="me-12 ms-auto h-6 w-6" />
+            <MoonIcon className="size-6" />
           )}
         </button>
         <button
           onClick={() => {
             logOut();
           }}
-          className="flex h-full w-full max-w-sm items-center p-3"
+          className="flex h-full w-full justify-between p-3"
         >
           <div className="flex flex-col items-start">
-            <span className="">Log out</span>
+            <span className="font-semibold">Log out</span>
             <span className="text-sm italic dark:text-slate-300">
               Delete this session
             </span>
           </div>
 
-          <ArrowRightOnRectangleIcon className="me-12 ms-auto h-6 w-6 " />
+          <ArrowRightStartOnRectangleIcon className="size-6 " />
         </button>
       </VStack>
     </motion.div>
