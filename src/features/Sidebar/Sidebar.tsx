@@ -11,7 +11,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import ColorModeToggle from "@/components/ColorModeToggle";
 import MobileNav from "@/components/Navbar/MobileNav";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
@@ -56,7 +55,6 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
 
         <span>{title}</span>
         <div className="flex items-center gap-3">
-          <ColorModeToggle />
           <Tooltip
             label={"New Group"}
             hasArrow
