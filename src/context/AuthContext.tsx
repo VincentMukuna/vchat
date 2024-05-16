@@ -18,7 +18,10 @@ import toast from "react-hot-toast";
 import { IUserDetails } from "../interfaces/interfaces";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
-import { getCurrentUserDetails } from "../services/userDetailsService";
+import {
+  getCurrentUserDetails,
+  updateUserDetails,
+} from "../services/userDetailsService";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -87,6 +90,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const user = await getAccount();
         setLocalUser(user);
         const userDetails = await getUserDetails(user);
+        if (user.name === null) {
+          api.provider().account.updateName(user.email.split("@")[0]!);
+          updateUserDetails(userDetails.$id, {
+            name: user.email.split("@")[0]!,
+          });
+        }
         setCurrentUser(user);
         setCurrentUserDetails(userDetails);
       } else {

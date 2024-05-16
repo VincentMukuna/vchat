@@ -32,7 +32,7 @@ export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
       SERVER.COLLECTION_ID_USERS,
       {
         userID: user.$id,
-        name: user.name,
+        name: user.name || user.email.split("@")[0],
       },
     )) as IUserDetails;
     api.updatePrefs({ detailsDocID: userDeets.$id });
