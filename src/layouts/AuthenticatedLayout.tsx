@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../features/Navbar/Navbar";
+import Navbar from "../components/Navbar/Navbar";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;

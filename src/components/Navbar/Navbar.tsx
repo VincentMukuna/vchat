@@ -4,8 +4,8 @@ import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { ChatIcon, LogOutIcon, WheelIcon } from "../../components/Icons";
 import { useAuth } from "../../context/AuthContext";
+import { ChatIcon, LogOutIcon, WheelIcon } from "../Icons";
 import { MyProfile } from "./MyProfile";
 
 const tabs = [

@@ -15,9 +15,9 @@ import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { PlusIcon } from "../../components/Icons";
+import { MyProfile } from "../../components/Navbar/MyProfile";
 import { useAuth } from "../../context/AuthContext";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
-import { MyProfile } from "../Navbar/MyProfile";
 interface SidebarProps {
   children: React.ReactNode;
 }
