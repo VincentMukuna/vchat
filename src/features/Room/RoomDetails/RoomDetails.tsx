@@ -6,11 +6,11 @@ import useSWR from "swr";
 import { modal } from "../../../components/VModal";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
+import { SERVER } from "../../../lib/config";
 import api from "../../../services/api";
 import { getFormatedDate } from "../../../services/dateServices";
 import { getGroupDetails } from "../../../services/groupMessageServices";
-import { SERVER } from "../../../utils/config";
+import { GroupChatDetails, IUserDetails } from "../../../types/interfaces";
 import { EditGroupDetailsForm } from "./EditGroupDetailsForm";
 
 const RoomDetails = () => {

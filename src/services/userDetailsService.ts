@@ -1,12 +1,12 @@
-import { sortByCreatedAtDesc, sortByUpdateAtDesc } from "@/utils/utils";
+import { sortByCreatedAtDesc, sortByUpdateAtDesc } from "@/lib/utils";
 import { Models, Query } from "appwrite";
 import toast from "react-hot-toast";
+import { SERVER } from "../lib/config";
 import {
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
-} from "../interfaces/interfaces";
-import { SERVER } from "../utils/config";
+} from "../types/interfaces";
 import api from "./api";
 import { clearChatMessages, getUserChats } from "./chatMessageServices";
 import { getUserGroups } from "./groupMessageServices";

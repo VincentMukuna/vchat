@@ -1,11 +1,11 @@
 import { Query } from "appwrite";
+import { SERVER } from "../lib/config";
+import { sortByCreatedAtDesc } from "../lib/utils";
 import {
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../interfaces/interfaces";
-import { SERVER } from "../utils/config";
-import { sortByCreatedAtDesc } from "../utils/utils";
+} from "../types/interfaces";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 import { updateUserDetails } from "./userDetailsService";
@@ -313,7 +313,7 @@ export async function forwardGroupMessages(
     SERVER.COLLECTION_ID_GROUPS,
     groupID,
     {
-      changeLog: "newtext",
+      changeLog: "forward-messages",
       changerID: senderID,
       groupMessages: [...prevMessages, ...messages],
     },

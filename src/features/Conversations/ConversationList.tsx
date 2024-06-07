@@ -1,8 +1,8 @@
 import { useChatsContext } from "@/context/ChatsContext";
 import useChatsListSubscription from "@/features/Conversations/hooks/useChatsListSubscription";
 import useUserChatsSubscription from "@/features/Conversations/hooks/useUserChatsSubscription";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
-import { isGroup } from "@/utils/utils";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
+import { isGroup } from "@/lib/utils";
 import {
   Button,
   Input,

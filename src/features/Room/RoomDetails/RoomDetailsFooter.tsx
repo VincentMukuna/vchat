@@ -6,16 +6,13 @@ import toast from "react-hot-toast";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import {
-  DirectChatDetails,
-  GroupChatDetails,
-} from "../../../interfaces/interfaces";
+import { SERVER } from "../../../lib/config";
 import {
   deleteGroup,
   leaveGroup,
 } from "../../../services/groupMessageServices";
 import { deleteContact } from "../../../services/userDetailsService";
-import { SERVER } from "../../../utils/config";
+import { DirectChatDetails, GroupChatDetails } from "../../../types/interfaces";
 
 export const RoomDetailsFooter = () => {
   const { recepient, setSelectedChat, selectedChat, deleteConversation } =

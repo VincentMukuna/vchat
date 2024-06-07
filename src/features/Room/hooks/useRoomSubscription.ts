@@ -2,6 +2,9 @@ import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
 import { useMessagesContext } from "@/context/MessagesContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
+import { SERVER } from "@/lib/config";
+import { fromJson, matchAndExecute, toJson } from "@/lib/utils";
+import api from "@/services/api";
 import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
   DirectChatDetails,
@@ -9,12 +12,9 @@ import {
   GroupChatDetails,
   IUserDetails,
   USER_DETAILS_CHANGE_LOG_REGEXES,
-} from "@/interfaces/interfaces";
-import api from "@/services/api";
-import { SERVER } from "@/utils/config";
-import { fromJson, matchAndExecute, toJson } from "@/utils/utils";
+} from "@/types/interfaces";
 import { useEffect } from "react";
-import useSWROptimistic from "../../../utils/hooks/useSWROptimistic";
+import useSWROptimistic from "../../../lib/hooks/useSWROptimistic";
 
 const useRoomSubscription = () => {
   const { currentUserDetails } = useAuth();

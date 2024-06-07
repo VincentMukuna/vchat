@@ -3,14 +3,14 @@ import toast from "react-hot-toast";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { useRoomContext } from "../../../context/Room/RoomContext";
+import useSWROptimistic from "../../../lib/hooks/useSWROptimistic";
+import { deleteSelectedDirectChatMessages } from "../../../services/chatMessageServices";
+import { deleteSelectedGroupMessages } from "../../../services/groupMessageServices";
 import {
   ChatMessage,
   DirectMessageDetails,
   GroupMessageDetails,
-} from "../../../interfaces/interfaces";
-import { deleteSelectedDirectChatMessages } from "../../../services/chatMessageServices";
-import { deleteSelectedGroupMessages } from "../../../services/groupMessageServices";
-import useSWROptimistic from "../../../utils/hooks/useSWROptimistic";
+} from "../../../types/interfaces";
 
 export default function useDeleteSelectedMessages() {
   const { currentUserDetails } = useAuth();

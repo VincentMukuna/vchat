@@ -1,6 +1,6 @@
+import { SERVER } from "@/lib/config";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import { sendSystemMessage } from "@/services/systemMessageService";
-import { SERVER } from "@/utils/config";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Button,
   Checkbox,
@@ -19,11 +19,11 @@ import toast from "react-hot-toast";
 import useSWR from "swr";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
 import {
   getGroupDetails,
   updateGroupDetails,
 } from "../../../services/groupMessageServices";
+import { GroupChatDetails, IUserDetails } from "../../../types/interfaces";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
 
 const EditGroupAdmins = ({

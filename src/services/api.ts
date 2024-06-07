@@ -4,11 +4,12 @@ import {
   Databases,
   Functions,
   ID,
+  Models,
   RealtimeResponseEvent,
   Storage,
 } from "appwrite";
-import { UserPrefs } from "../interfaces/interfaces";
-import { SERVER } from "../utils/config";
+import { SERVER } from "../lib/config";
+import { UserPrefs } from "../types/interfaces";
 let api = {
   sdk: null as null | {
     appwrite: Appwrite;
@@ -37,7 +38,11 @@ let api = {
   //Account
   //Create a new account
   createAccount: (email: string, password: string, name?: string) => {
-    return api.provider().account.create(ID.unique(), email, password, name);
+    return api
+      .provider()
+      .account.create(ID.unique(), email, password, name) as Promise<
+      Models.User<UserPrefs>
+    >;
   },
 
   handleOauth(provider: string = "google") {

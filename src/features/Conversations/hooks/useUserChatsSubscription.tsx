@@ -1,13 +1,13 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
+import { SERVER } from "@/lib/config";
+import { matchAndExecute } from "@/lib/utils";
+import api from "@/services/api";
+import { getChatDoc } from "@/services/chatMessageServices";
 import {
   IUserDetails,
   USER_DETAILS_CHANGE_LOG_REGEXES,
-} from "@/interfaces/interfaces";
-import api from "@/services/api";
-import { getChatDoc } from "@/services/chatMessageServices";
-import { SERVER } from "@/utils/config";
-import { matchAndExecute } from "@/utils/utils";
+} from "@/types/interfaces";
 import { differenceInHours } from "date-fns";
 import { useEffect } from "react";
 

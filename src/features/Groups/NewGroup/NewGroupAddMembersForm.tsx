@@ -8,8 +8,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
-import { IUserDetails } from "../../../interfaces/interfaces";
 import { getUsers, searchUsers } from "../../../services/userDetailsService";
+import { IUserDetails } from "../../../types/interfaces";
 
 import { UserIcon } from "@heroicons/react/20/solid";
 import { blueDark, gray, slate, slateDark } from "@radix-ui/colors";
@@ -17,7 +17,7 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 import Search from "../../../components/Search";
 import VSkeleton from "../../../components/VSkeleton";
-import { useInfinite } from "../../../utils/hooks/useInfinite";
+import { useInfinite } from "../../../lib/hooks/useInfinite";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
 import { useStepper } from "./FormStepper";
 

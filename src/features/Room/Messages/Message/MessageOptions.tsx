@@ -1,7 +1,7 @@
 import { confirmAlert } from "@/components/Alert/alertStore";
 import { DeleteIcon, PencilIcon } from "@/components/Icons";
 import { modal } from "@/components/VModal";
-import { copyTextToClipboard, removeDuplicates } from "@/utils/utils";
+import { copyTextToClipboard, removeDuplicates } from "@/lib/utils";
 import {
   IconButton,
   Menu,

@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
-import { ChatMessage } from "@/interfaces/interfaces";
+import { ChatMessage } from "@/types/interfaces";
 import { useMemo } from "react";
 
 const MessageReply = ({ message }: { message: ChatMessage }) => {

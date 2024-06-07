@@ -1,5 +1,5 @@
 import { useMessagesContext } from "@/context/MessagesContext";
-import { insertCharacter } from "@/utils/utils";
+import { insertCharacter } from "@/lib/utils";
 import {
   IconButton,
   Popover,
@@ -23,11 +23,11 @@ import {
   RoomActionTypes,
   useRoomContext,
 } from "../../../../context/Room/RoomContext";
+import { SERVER } from "../../../../lib/config";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
-} from "../../../../interfaces/interfaces";
-import { SERVER } from "../../../../utils/config";
+} from "../../../../types/interfaces";
 import AttachmentInput, { AttachmentHandle } from "./AttachmentInput";
 type InputProps = {};
 

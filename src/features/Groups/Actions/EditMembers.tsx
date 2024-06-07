@@ -1,6 +1,6 @@
+import { SERVER } from "@/lib/config";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import { sendSystemMessage } from "@/services/systemMessageService";
-import { SERVER } from "@/utils/config";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Avatar,
   Button,
@@ -23,11 +23,11 @@ import useSWR from "swr";
 import { confirmAlert } from "../../../components/Alert/alertStore";
 import VSkeleton from "../../../components/VSkeleton";
 import { useAuth } from "../../../context/AuthContext";
-import { GroupChatDetails } from "../../../interfaces/interfaces";
 import {
   editMembers,
   getGroupDetails,
 } from "../../../services/groupMessageServices";
+import { GroupChatDetails } from "../../../types/interfaces";
 
 const EditMembers = ({ group }: { group: GroupChatDetails }) => {
   const { data: roomDetails, isLoading } = useSWR(`details ${group.$id}`, () =>

@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useEffect, useReducer } from "react";
+import { SERVER } from "../../lib/config";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../interfaces/interfaces";
-import { SERVER } from "../../utils/config";
+} from "../../types/interfaces";
 import { useAuth } from "../AuthContext";
 import { useChatsContext } from "../ChatsContext";
 import { roomReducer } from "./roomReducer";

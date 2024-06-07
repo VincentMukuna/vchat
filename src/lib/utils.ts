@@ -3,9 +3,15 @@ import {
   GroupChatDetails,
   GroupMessageDetails,
   IConversation,
-} from "@/interfaces/interfaces";
+} from "@/types/interfaces";
 import { Models } from "appwrite";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { SERVER } from "./config";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export function sortByUpdateAtDesc(a: Models.Document, b: Models.Document) {
   const dateA = new Date(a.$updatedAt);

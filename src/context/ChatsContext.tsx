@@ -1,12 +1,12 @@
 import useConversations from "@/features/Conversations/hooks/useConversations";
+import { isGroup, sortByCreatedAtDesc } from "@/lib/utils";
+import { sortConversations } from "@/services/userDetailsService";
 import {
   DirectChatDetails,
   GroupChatDetails,
   IConversation,
   IUserDetails,
-} from "@/interfaces/interfaces";
-import { sortConversations } from "@/services/userDetailsService";
-import { isGroup, sortByCreatedAtDesc } from "@/utils/utils";
+} from "@/types/interfaces";
 import {
   createContext,
   useCallback,

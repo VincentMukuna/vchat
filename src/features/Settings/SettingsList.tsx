@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 import { VARIANTS_MANAGER } from "@/services/variants";
 import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import { MoonIcon, SunIcon } from "@heroicons/react/24/solid";
+import AlertSetting from "./AlertSetting";
+import Setting from "./Setting";
 
 const SettingsList = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -21,38 +23,41 @@ const SettingsList = () => {
         divider={<StackDivider />}
         className="flex flex-col p-4 transition-opacity"
       >
-        <button
+        <Setting
           onClick={toggleColorMode}
-          className="flex h-full w-full  items-center justify-between p-3"
+          className="cursor-pointer items-center"
         >
-          <div className="flex flex-col items-start">
-            <span className="font-semibold">Toggle color mode</span>
-            <span className="text-sm italic dark:text-slate-300">
-              Switch the apps theme
-            </span>
-          </div>
+          <Setting.Details>
+            <Setting.Title>Toggle color mode</Setting.Title>
+            <Setting.Description>Switch the apps theme</Setting.Description>
+          </Setting.Details>
 
           {colorMode === "dark" ? (
             <SunIcon className="size-6" />
           ) : (
             <MoonIcon className="size-6" />
           )}
-        </button>
-        <button
+        </Setting>
+        <Setting
           onClick={() => {
             logOut();
           }}
-          className="flex h-full w-full justify-between p-3"
+          className="cursor-pointer"
         >
-          <div className="flex flex-col items-start">
-            <span className="font-semibold">Log out</span>
-            <span className="text-sm italic dark:text-slate-300">
-              Delete this session
-            </span>
-          </div>
-
+          <Setting.Details>
+            <Setting.Title>Log out</Setting.Title>
+            <Setting.Description>Delete this session</Setting.Description>
+          </Setting.Details>
           <ArrowRightStartOnRectangleIcon className="size-6 " />
-        </button>
+        </Setting>
+        <AlertSetting />
+
+        <Setting>
+          <Setting.Details>
+            <Setting.Title>Version</Setting.Title>
+            <Setting.Description>1.0.0</Setting.Description>
+          </Setting.Details>
+        </Setting>
       </VStack>
     </motion.div>
   );

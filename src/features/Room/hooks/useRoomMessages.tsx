@@ -1,14 +1,14 @@
 import useSWR, { useSWRConfig } from "swr";
 import { useChatsContext } from "../../../context/ChatsContext";
 import { useRoomContext } from "../../../context/Room/RoomContext";
+import { sortByCreatedAtDesc } from "../../../lib/utils";
+import { getChatMessages } from "../../../services/chatMessageServices";
+import { getGroupMessages } from "../../../services/groupMessageServices";
 import {
   DirectMessageDetails,
   GroupMessageDetails,
   IConversation,
-} from "../../../interfaces/interfaces";
-import { getChatMessages } from "../../../services/chatMessageServices";
-import { getGroupMessages } from "../../../services/groupMessageServices";
-import { sortByCreatedAtDesc } from "../../../utils/utils";
+} from "../../../types/interfaces";
 
 export default function useRoomMessages() {
   const { selectedChat } = useChatsContext();

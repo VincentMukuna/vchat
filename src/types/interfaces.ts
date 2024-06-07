@@ -41,6 +41,7 @@ export interface GroupMessageDetails extends Models.Document {
 }
 export interface UserPrefs extends Models.Preferences {
   detailsDocID: string;
+  shouldAlert: boolean | undefined;
 }
 
 export interface DirectChatDetails extends Models.Document {
@@ -72,7 +73,6 @@ export interface IUserDetails extends Models.Document {
   status: "Online" | "Offline" | "Typing";
   lastOnlineAt: string;
   statusUpdates: string;
-  prefs: UserPrefs;
   email: string;
   groups: GroupChatDetails[];
   chats: DirectChatDetails[];

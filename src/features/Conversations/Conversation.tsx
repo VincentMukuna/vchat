@@ -15,6 +15,9 @@ import useSWR, { useSWRConfig } from "swr";
 import Blueticks from "../../components/Blueticks";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
+import { SERVER } from "../../lib/config";
+import { sortByCreatedAtDesc } from "../../lib/utils";
+import { getFormatedDate } from "../../services/dateServices";
 import {
   ChatMessage,
   DirectChatDetails,
@@ -22,10 +25,7 @@ import {
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../interfaces/interfaces";
-import { getFormatedDate } from "../../services/dateServices";
-import { SERVER } from "../../utils/config";
-import { sortByCreatedAtDesc } from "../../utils/utils";
+} from "../../types/interfaces";
 
 interface IChatProps {
   conversation: DirectChatDetails | GroupChatDetails;

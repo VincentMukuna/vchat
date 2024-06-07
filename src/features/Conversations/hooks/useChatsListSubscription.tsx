@@ -1,14 +1,15 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
 import { Message } from "@/features/Room/Messages/MessageInput/MessageInput";
+import { SERVER } from "@/lib/config";
+import useUserPrefs from "@/lib/hooks/useUserPrefs";
+import { getUnreadCount, matchAndExecute } from "@/lib/utils";
+import api from "@/services/api";
 import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
   IConversation,
   IUserDetails,
-} from "@/interfaces/interfaces";
-import api from "@/services/api";
-import { SERVER } from "@/utils/config";
-import { getUnreadCount, matchAndExecute } from "@/utils/utils";
+} from "@/types/interfaces";
 import { Button, CloseButton } from "@chakra-ui/react";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
@@ -21,6 +22,7 @@ const useChatsListSubscription = () => {
   const { selectedChat, selectConversation, updateConversation } =
     useChatsContext();
   const { mutate, cache } = useSWRConfig();
+  const { shouldAlert } = useUserPrefs();
   const conversationChannels = conversations.map(
     (c) =>
       `databases.${c.$databaseId}.collections.${c.$collectionId}.documents.${c.$id}`,
@@ -48,6 +50,10 @@ const useChatsListSubscription = () => {
       const conversation = response.payload;
 
       const handleNewMessage = (newMessageId: string) => {
+        if (shouldAlert) {
+          const notif = new Audio("/sounds/iphone_sms_alert.mp3");
+          notif.play();
+        }
         const newMessage = messages.find(
           (msg: any) => msg.$id === newMessageId,
         ) as Message;

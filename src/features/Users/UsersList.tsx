@@ -4,10 +4,10 @@ import { motion } from "framer-motion";
 import Search from "../../components/Search";
 import VSkeleton from "../../components/VSkeleton";
 import { useAuth } from "../../context/AuthContext";
-import { IUserDetails } from "../../interfaces/interfaces";
+import { useInfinite } from "../../lib/hooks/useInfinite";
 import { getUsers, searchUsers } from "../../services/userDetailsService";
 import { VARIANTS_MANAGER } from "../../services/variants";
-import { useInfinite } from "../../utils/hooks/useInfinite";
+import { IUserDetails } from "../../types/interfaces";
 import User, { UserAbout, UserAvatar, UserDescription } from "./User";
 
 function UsersList({

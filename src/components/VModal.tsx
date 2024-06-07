@@ -6,7 +6,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { ObservableStore } from "../utils/observableStore";
+import { ObservableStore } from "../lib/observableStore";
 
 let modalStore = new ObservableStore<any>({ modalContent: null });
 

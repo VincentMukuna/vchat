@@ -1,7 +1,7 @@
 import { useChatsContext } from "@/context/ChatsContext";
-import { ChatMessage } from "@/interfaces/interfaces";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import api from "@/services/api";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
+import { ChatMessage } from "@/types/interfaces";
 import {
   Button,
   FormLabel,

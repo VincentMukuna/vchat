@@ -1,8 +1,8 @@
 import { modal } from "@/components/VModal";
 import { useAuth } from "@/context/AuthContext";
-import { ChatMessage } from "@/interfaces/interfaces";
+import { SERVER } from "@/lib/config";
 import api from "@/services/api";
-import { SERVER } from "@/utils/config";
+import { ChatMessage } from "@/types/interfaces";
 import { AspectRatio, Image } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import useSWR from "swr";

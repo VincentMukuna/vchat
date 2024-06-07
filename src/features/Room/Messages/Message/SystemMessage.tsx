@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/interfaces/interfaces";
+import { ChatMessage } from "@/types/interfaces";
 
 export default function SystemMessage({ message }: { message: ChatMessage }) {
   return (

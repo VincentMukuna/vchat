@@ -1,6 +1,6 @@
 import { useMessagesContext } from "@/context/MessagesContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import { MenuItem, MenuList, Portal } from "@chakra-ui/react";
 import {
   PencilIcon,
@@ -14,10 +14,10 @@ import { confirmAlert } from "../../components/Alert/alertStore";
 import { modal } from "../../components/VModal";
 import { useAuth } from "../../context/AuthContext";
 import { useChatsContext } from "../../context/ChatsContext";
-import { GroupChatDetails } from "../../interfaces/interfaces";
+import { SERVER } from "../../lib/config";
 import { clearChatMessages } from "../../services/chatMessageServices";
 import { clearGroupMessages } from "../../services/groupMessageServices";
-import { SERVER } from "../../utils/config";
+import { GroupChatDetails } from "../../types/interfaces";
 import AddMembers from "../Groups/Actions/AddMembers";
 import EditGroupAdmins from "../Groups/Actions/EditGroupAdmins";
 import EditMembers from "../Groups/Actions/EditMembers";

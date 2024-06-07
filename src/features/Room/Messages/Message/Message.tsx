@@ -7,13 +7,13 @@ import React, {
 } from "react";
 import { useAuth } from "../../../../context/AuthContext";
 import { useChatsContext } from "../../../../context/ChatsContext";
+import { SERVER } from "../../../../lib/config";
 import {
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
-} from "../../../../interfaces/interfaces";
-import { SERVER } from "../../../../utils/config";
+} from "../../../../types/interfaces";
 
 import { Avatar, Checkbox } from "@chakra-ui/react";
 import useSWR from "swr";
@@ -28,7 +28,7 @@ import UserProfileModal from "../../../Profile/UserProfileModal";
 
 import { useMessagesContext } from "@/context/MessagesContext";
 import useReadMessage from "@/features/Room/hooks/useReadMessage";
-import { pluck } from "@/utils/utils";
+import { pluck } from "@/lib/utils";
 import { useMessageListContext } from "../MessageList";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";

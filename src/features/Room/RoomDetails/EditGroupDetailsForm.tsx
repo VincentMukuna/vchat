@@ -1,4 +1,4 @@
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import {
   Avatar,
   Button,
@@ -22,11 +22,11 @@ import {
 } from "use-file-picker/validators";
 import { useAuth } from "../../../context/AuthContext";
 import { useChatsContext } from "../../../context/ChatsContext";
-import { GroupChatDetails } from "../../../interfaces/interfaces";
 import {
   updateGroupAvatar,
   updateGroupDetails,
 } from "../../../services/groupMessageServices";
+import { GroupChatDetails } from "../../../types/interfaces";
 
 export const EditGroupDetailsForm = ({
   group,

@@ -1,5 +1,5 @@
 import { Models } from "appwrite";
-import { IUserDetails } from "../interfaces/interfaces";
+import { IUserDetails } from "../types/interfaces";
 import api from "./api";
 import { createDetailsDoc } from "./registerUserService";
 

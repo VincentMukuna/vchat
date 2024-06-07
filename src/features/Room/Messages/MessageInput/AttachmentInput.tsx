@@ -1,4 +1,4 @@
-import { FileTypeValidator } from "@/utils/fileValidators";
+import { FileTypeValidator } from "@/lib/fileValidators";
 import { Badge, IconButton } from "@chakra-ui/react";
 import { PaperClipIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";

@@ -28,12 +28,12 @@ import { useRef } from "react";
 import { flushSync } from "react-dom";
 import useSWR from "swr";
 import { useRoomContext } from "../../context/Room/RoomContext";
+import { getGroupDetails } from "../../services/groupMessageServices";
 import {
   DirectChatDetails,
   GroupChatDetails,
   IUserDetails,
-} from "../../interfaces/interfaces";
-import { getGroupDetails } from "../../services/groupMessageServices";
+} from "../../types/interfaces";
 import MessageSearchBox from "./Messages/MessageSearchBox";
 import RoomActions from "./RoomActions";
 import RoomDetails, { RoomDetailsHeader } from "./RoomDetails/RoomDetails";

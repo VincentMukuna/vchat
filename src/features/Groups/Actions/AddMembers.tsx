@@ -1,6 +1,6 @@
+import { SERVER } from "@/lib/config";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import { sendSystemMessage } from "@/services/systemMessageService";
-import { SERVER } from "@/utils/config";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
 import {
   Avatar,
   AvatarGroup,
@@ -24,13 +24,13 @@ import { confirmAlert } from "../../../components/Alert/alertStore";
 import Search from "../../../components/Search";
 import VSkeleton from "../../../components/VSkeleton";
 import { useAuth } from "../../../context/AuthContext";
-import { GroupChatDetails, IUserDetails } from "../../../interfaces/interfaces";
+import { useInfinite } from "../../../lib/hooks/useInfinite";
 import {
   editMembers,
   getGroupDetails,
 } from "../../../services/groupMessageServices";
 import { getUsers, searchUsers } from "../../../services/userDetailsService";
-import { useInfinite } from "../../../utils/hooks/useInfinite";
+import { GroupChatDetails, IUserDetails } from "../../../types/interfaces";
 import User, { UserAvatar, UserDescription } from "../../Users/User";
 
 const AddMembers = ({ group }: { group: GroupChatDetails }) => {

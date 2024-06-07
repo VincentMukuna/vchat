@@ -1,12 +1,12 @@
 import { useAuth } from "@/context/AuthContext";
-import { DirectChatDetails, GroupChatDetails } from "@/interfaces/interfaces";
+import { isGroup } from "@/lib/utils";
 import {
   getConversations,
   sortConversations,
 } from "@/services/userDetailsService";
-import { isGroup } from "@/utils/utils";
+import { DirectChatDetails, GroupChatDetails } from "@/types/interfaces";
 import useSWR from "swr";
-import useLocalStorage from "../../../utils/hooks/useLocalStorage";
+import useLocalStorage from "../../../lib/hooks/useLocalStorage";
 
 export default function useConversations() {
   const { currentUserDetails } = useAuth();

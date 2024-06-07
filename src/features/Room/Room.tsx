@@ -6,7 +6,7 @@ import { useChatsContext } from "@/context/ChatsContext";
 import { RoomActionTypes, useRoomContext } from "@/context/Room/RoomContext";
 import useRoomSubscription from "@/features/Room/hooks/useRoomSubscription";
 import { Box } from "@chakra-ui/react";
-import useCommand from "../../utils/hooks/useCommand";
+import useCommand from "../../lib/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./Messages/MessageInput/MessageInput";
 import MessagesList from "./Messages/MessageList";

@@ -4,11 +4,7 @@ import {
   Message,
 } from "@/features/Room/Messages/MessageInput/MessageInput";
 import useRoomMessages from "@/features/Room/hooks/useRoomMessages";
-import {
-  DirectMessageDetails,
-  GroupMessageDetails,
-  IUserDetails,
-} from "@/interfaces/interfaces";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import {
   deleteChatMessage,
   sendChatMessage,
@@ -17,7 +13,11 @@ import {
   deleteGroupMessage,
   sendGroupMessage,
 } from "@/services/groupMessageServices";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
+import {
+  DirectMessageDetails,
+  GroupMessageDetails,
+  IUserDetails,
+} from "@/types/interfaces";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useAuth } from "./AuthContext";
 import { useChatsContext } from "./ChatsContext";

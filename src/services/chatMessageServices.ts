@@ -1,11 +1,11 @@
 import { Query } from "appwrite";
+import { SERVER } from "../lib/config";
+import { sortByCreatedAtDesc } from "../lib/utils";
 import {
   DirectChatDetails,
   DirectMessageDetails,
   IUserDetails,
-} from "../interfaces/interfaces";
-import { SERVER } from "../utils/config";
-import { sortByCreatedAtDesc } from "../utils/utils";
+} from "../types/interfaces";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 export type SendMessageDTO = {

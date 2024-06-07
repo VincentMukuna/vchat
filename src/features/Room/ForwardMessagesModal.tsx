@@ -1,5 +1,5 @@
 import { useChatsContext } from "@/context/ChatsContext";
-import useSWROptimistic from "@/utils/hooks/useSWROptimistic";
+import useSWROptimistic from "@/lib/hooks/useSWROptimistic";
 import {
   Avatar,
   Button,
@@ -12,10 +12,10 @@ import {
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
-import { ChatMessage, IUserDetails } from "../../interfaces/interfaces";
+import { SERVER } from "../../lib/config";
 import { forwardDirectMessages } from "../../services/chatMessageServices";
 import { forwardGroupMessages } from "../../services/groupMessageServices";
-import { SERVER } from "../../utils/config";
+import { ChatMessage, IUserDetails } from "../../types/interfaces";
 
 export default function ForwardMessagesModal({
   selectedMessages,

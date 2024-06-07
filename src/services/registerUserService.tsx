@@ -1,8 +1,8 @@
 import DataLoss from "@/components/DataLoss";
 import { modal } from "@/components/VModal";
 import { Models } from "appwrite";
-import { IUserDetails } from "../interfaces/interfaces";
-import { SERVER } from "../utils/config";
+import { SERVER } from "../lib/config";
+import { IUserDetails } from "../types/interfaces";
 import api from "./api";
 import { sendSystemMessage } from "./systemMessageService";
 

@@ -2,7 +2,7 @@ import { FluentEmojiFlatHeartSuit } from "@/components/Icons";
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
 import { useRoomContext } from "@/context/Room/RoomContext";
-import { ChatMessage } from "@/interfaces/interfaces";
+import { fromJson, toJson } from "@/lib/utils";
 import {
   updateChatDetails,
   updateDirectMessage,
@@ -11,7 +11,7 @@ import {
   updateGroupDetails,
   updateGroupMessage,
 } from "@/services/groupMessageServices";
-import { fromJson, toJson } from "@/utils/utils";
+import { ChatMessage } from "@/types/interfaces";
 import { Button, useColorMode } from "@chakra-ui/react";
 import { useState } from "react";
 import { useDebouncedCallback } from "use-debounce";

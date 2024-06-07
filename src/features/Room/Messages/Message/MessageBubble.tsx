@@ -1,7 +1,7 @@
 import Blueticks from "@/components/Blueticks";
 import { useAuth } from "@/context/AuthContext";
 import { useMessagesContext } from "@/context/MessagesContext";
-import { ChatMessage } from "@/interfaces/interfaces";
+import { ChatMessage } from "@/types/interfaces";
 import { Highlight } from "@chakra-ui/react";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { forwardRef } from "react";

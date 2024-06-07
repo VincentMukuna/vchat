@@ -1,6 +1,6 @@
 import { useMessagesContext } from "@/context/MessagesContext";
-import { ChatMessage } from "@/interfaces/interfaces";
-import { groupDocumentsByDate, sortByCreatedAtAsc } from "@/utils/utils";
+import { groupDocumentsByDate, sortByCreatedAtAsc } from "@/lib/utils";
+import { ChatMessage } from "@/types/interfaces";
 import { createContext, memo, useContext, useMemo, useRef } from "react";
 import Message from "./Message/Message";
 

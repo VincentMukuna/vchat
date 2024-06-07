@@ -10,18 +10,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
 
+import useLocalStorage from "@/lib/hooks/useLocalStorage";
+import useUpdateOnlineAt from "@/lib/hooks/useUpdateOnlineAt";
 import Loading from "@/pages/Loading";
 import { logUserOut } from "@/services/sessionServices";
-import useLocalStorage from "@/utils/hooks/useLocalStorage";
-import useUpdateOnlineAt from "@/utils/hooks/useUpdateOnlineAt";
 import toast from "react-hot-toast";
-import { IUserDetails } from "../interfaces/interfaces";
 import api from "../services/api";
 import { createDetailsDoc } from "../services/registerUserService";
 import {
   getCurrentUserDetails,
   updateUserDetails,
 } from "../services/userDetailsService";
+import { IUserDetails, UserPrefs } from "../types/interfaces";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -30,13 +30,13 @@ type AuthProviderProps = {
 export interface IAuthContext {
   intended: string;
   isLoading: boolean;
-  currentUser: Models.User<Models.Preferences> | null;
+  currentUser: Models.User<UserPrefs> | null;
   currentUserDetails: IUserDetails | null;
   setCurrentUserDetails: React.Dispatch<
     React.SetStateAction<IUserDetails | null>
   >;
   setCurrentUser: React.Dispatch<
-    React.SetStateAction<Models.User<Models.Preferences> | null>
+    React.SetStateAction<Models.User<UserPrefs> | null>
   >;
   refreshUserDetails: () => void;
   register(credentials: {
@@ -52,23 +52,29 @@ const AuthContext = createContext<IAuthContext | null>(null);
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const { pathname } = useLocation();
-  const [currentUser, setCurrentUser] =
-    useState<Models.User<Models.Preferences> | null>(null);
+  const [currentUser, setCurrentUser] = useState<Models.User<UserPrefs> | null>(
+    null,
+  );
   const [currentUserDetails, setCurrentUserDetails] =
     useState<IUserDetails | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [isSettingUp, setIsSettingUp] = useState(false);
   const intendedRef = useRef<string>("/");
   const navigate = useNavigate();
 
   const [localUser, setLocalUser] =
-    useLocalStorage<Models.User<Models.Preferences> | null>("user", null);
+    useLocalStorage<Models.User<UserPrefs> | null>("user", null);
 
   useUpdateOnlineAt(currentUserDetails?.$id);
   const getAccount = async () => {
-    return await api.getAccount();
+    return (await api.getAccount()) as Models.User<UserPrefs>;
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      setLocalUser(currentUser);
+    }
+  }, [currentUser, setLocalUser]);
 
   const getUserDetails = async (
     user: Models.User<Models.Preferences>,

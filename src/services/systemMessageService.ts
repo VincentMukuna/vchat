@@ -1,4 +1,4 @@
-import { ChatMessage } from "@/interfaces/interfaces";
+import { ChatMessage } from "@/types/interfaces";
 import api from "./api";
 /**
  * function to send system message

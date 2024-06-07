@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ObservableStore } from "../../utils/observableStore";
+import { ObservableStore } from "../../lib/observableStore";
 
 export type Alert = {
   isShown: boolean;
