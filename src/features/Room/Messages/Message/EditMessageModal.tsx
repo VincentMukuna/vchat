@@ -108,6 +108,8 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
           placeholder="Edit message"
           autoFocus
           rows={4}
+          minBlockSize={"min-content"}
+          maxBlockSize={"sm"}
         />
 
         <Button
@@ -116,7 +118,7 @@ const EditMessageForm = ({ message }: EditMessageProps) => {
           colorScheme="blue"
           mt={4}
           rounded={"md"}
-          className="self-end rounded-none"
+          className="self-end"
         >
           Edit
         </Button>
