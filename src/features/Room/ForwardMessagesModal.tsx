@@ -9,7 +9,6 @@ import {
   ModalHeader,
   useModalContext,
 } from "@chakra-ui/react";
-import { UserIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
@@ -113,7 +112,7 @@ export default function ForwardMessagesModal({
       <ModalCloseButton />
       <ModalBody>
         <h2>Select chat to forward to:</h2>
-        <ul className="mt-2 flex max-h-[14rem] flex-col gap-1 overflow-y-auto p-1">
+        <ul className="mt-2 flex max-h-[50dvh] flex-col gap-1 overflow-y-auto p-1">
           {conversations
             .filter((c) => c.$id !== selectedChat?.$id)
             .map((conversation) => {
@@ -154,7 +153,7 @@ export default function ForwardMessagesModal({
                 >
                   <Avatar
                     size={"md"}
-                    icon={<UserIcon className="h-5 w-5" />}
+                    name={isGroup ? conversation.name : otherParticipant!.name}
                     src={
                       isGroup
                         ? conversation.avatarURL
