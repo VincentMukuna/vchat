@@ -30,7 +30,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 gap-1 rounded-3xl px-3 pb-1  pt-2 @container-normal  sm:max-w-[20rem]
                 ${
                   isMine
-                    ? `me-4 self-end bg-indigo-200  dark:bg-indigo-900 dark:text-white`
+                    ? `me-4 self-end bg-indigo-200  dark:bg-indigo-900/90 dark:text-white`
                     : "text-gray-100s bg-gray7   dark:bg-dark-gray6/90"
                 } 
 
