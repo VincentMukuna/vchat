@@ -1,7 +1,7 @@
 import { confirmAlert } from "@/components/Alert/alertStore";
 import { DeleteIcon, PencilIcon } from "@/components/Icons";
 import { modal } from "@/components/VModal";
-import { removeDuplicates } from "@/utils/utils";
+import { copyTextToClipboard, removeDuplicates } from "@/utils/utils";
 import {
   IconButton,
   Menu,
@@ -48,7 +48,7 @@ const MessageOptions = ({
       key: "message.copy",
       icon: <ClipboardIcon className="h-4 w-4" />,
       label: "Copy Message",
-      action: () => navigator.clipboard.writeText(message.body),
+      action: () => copyTextToClipboard(message.body),
     },
     {
       key: "message.edit",
@@ -112,7 +112,7 @@ const MessageOptions = ({
                 }}
                 key={item.key}
                 icon={item.icon}
-                onClick={item.action}
+                onClick={() => item.action()}
                 {...(item?.props || {})}
               >
                 {item.label}
