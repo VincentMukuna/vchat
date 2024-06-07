@@ -54,8 +54,7 @@ const MessageOptions = ({
       key: "message.edit",
       icon: <PencilIcon className="h-4 w-4" />,
       label: "Edit Message",
-      action: () =>
-        modal(<EditMessageForm message={message} />, { size: "lg" }),
+      action: () => modal(<EditMessageForm message={message} />),
     },
     {
       key: "message.forward",
