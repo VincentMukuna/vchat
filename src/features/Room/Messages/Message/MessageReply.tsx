@@ -27,7 +27,7 @@ const MessageReply = ({ message }: { message: ChatMessage }) => {
 
           replyMessageElement?.focus();
         }}
-        className={`mt-2 max-w-[80vw] overflow-hidden border-s-2 border-indigo-600 py-1 ps-2 text-gray-500 dark:text-gray-400 sm:max-w-[22rem] ${
+        className={`mt-2 max-w-[80vw] self-start overflow-hidden border-s-2 border-indigo-600 py-1 ps-2 text-gray-500 dark:text-gray-400 sm:max-w-[22rem] ${
           isMine ? "me-4" : "ms-4"
         }`}
       >
