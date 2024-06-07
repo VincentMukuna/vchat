@@ -31,12 +31,13 @@ const SettingsList = () => {
             <Setting.Title>Toggle color mode</Setting.Title>
             <Setting.Description>Switch the apps theme</Setting.Description>
           </Setting.Details>
-
-          {colorMode === "dark" ? (
-            <SunIcon className="size-6" />
-          ) : (
-            <MoonIcon className="size-6" />
-          )}
+          <Setting.Action>
+            {colorMode === "dark" ? (
+              <SunIcon className="size-6" />
+            ) : (
+              <MoonIcon className="size-6" />
+            )}
+          </Setting.Action>
         </Setting>
         <Setting
           onClick={() => {
@@ -48,10 +49,11 @@ const SettingsList = () => {
             <Setting.Title>Log out</Setting.Title>
             <Setting.Description>Delete this session</Setting.Description>
           </Setting.Details>
-          <ArrowRightStartOnRectangleIcon className="size-6 " />
+          <Setting.Action>
+            <ArrowRightStartOnRectangleIcon className="size-6 " />
+          </Setting.Action>
         </Setting>
         <AlertSetting />
-
         <Setting>
           <Setting.Details>
             <Setting.Title>Version</Setting.Title>

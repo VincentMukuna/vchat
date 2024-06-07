@@ -53,10 +53,22 @@ function SettingDetails({
   );
 }
 
+function SettingAction({
+  className,
+  ...props
+}: React.ComponentPropsWithRef<"div">) {
+  return (
+    <div className={cn("", className)} {...props}>
+      {props.children}
+    </div>
+  );
+}
+
 const Setting = Object.assign(DefaultSetting, {
   Title: SettingTitle,
   Description: SettingDescription,
   Details: SettingDetails,
+  Action: SettingAction,
 });
 
 export default Setting;

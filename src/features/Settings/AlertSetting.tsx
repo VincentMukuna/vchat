@@ -21,12 +21,14 @@ export default function AlertSetting() {
           Enable or disable notification sounds
         </Setting.Description>
       </Setting.Details>
-      <Switch
-        colorScheme="telegram"
-        isChecked={shouldAlert === undefined ? false : shouldAlert}
-        isDisabled={updating}
-        onChange={handleToggleAlert}
-      />
+      <Setting.Action>
+        <Switch
+          colorScheme="telegram"
+          isChecked={shouldAlert === undefined ? false : shouldAlert}
+          isDisabled={updating}
+          onChange={handleToggleAlert}
+        />
+      </Setting.Action>
     </Setting>
   );
 }
