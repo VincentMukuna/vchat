@@ -1,4 +1,21 @@
-import { Button, FocusLock, Input, useColorMode } from "@chakra-ui/react";
+import {
+  Button,
+  FocusLock,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
+  useColorMode,
+} from "@chakra-ui/react";
+import { InformationCircleIcon } from "@heroicons/react/20/solid";
 import { motion } from "framer-motion";
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -74,14 +91,41 @@ function Register() {
                   >
                     Email
                   </label>
-                  <Input
-                    required
-                    value={credentials.email}
-                    onChange={(e) => handleChange("email", e.target.value)}
-                    id="email"
-                    type="email"
-                    placeholder="xyz@example.com"
-                  />
+                  <InputGroup>
+                    <Input
+                      required
+                      value={credentials.email}
+                      onChange={(e) => handleChange("email", e.target.value)}
+                      id="email"
+                      type="email"
+                      placeholder="xyz@example.com"
+                    />
+                    <InputRightElement>
+                      <Popover placement="top">
+                        <PopoverTrigger>
+                          <IconButton
+                            aria-label="info"
+                            variant={"ghost"}
+                            size={"sm"}
+                            icon={<InformationCircleIcon className="size-4" />}
+                          />
+                        </PopoverTrigger>
+                        <Portal>
+                          <PopoverContent zIndex={100}>
+                            <PopoverArrow />
+                            <PopoverCloseButton />
+                            <PopoverHeader>Privacy Notice</PopoverHeader>
+                            <PopoverBody>
+                              We use your email solely for authentication, do
+                              not send any emails, and do not share your email
+                              with any third parties. Your privacy is our
+                              priority.
+                            </PopoverBody>
+                          </PopoverContent>
+                        </Portal>
+                      </Popover>
+                    </InputRightElement>
+                  </InputGroup>
                 </div>
                 <div className="grid gap-2">
                   <label
