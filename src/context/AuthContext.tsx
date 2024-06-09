@@ -153,6 +153,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   async function logOut() {
+    navigate("/login");
     await logUserOut();
     localStorage.clear();
     setCurrentUser(null);
