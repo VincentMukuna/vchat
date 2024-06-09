@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 function DefaultSetting({
   className,
   ...props
-}: React.ComponentPropsWithRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div
       className={cn(
@@ -20,7 +20,7 @@ function DefaultSetting({
 function SettingTitle({
   className,
   ...props
-}: React.ComponentPropsWithRef<"span">) {
+}: React.ComponentPropsWithoutRef<"span">) {
   return (
     <span className={cn("font-semibold", className)} {...props}>
       {props.children}
@@ -31,7 +31,7 @@ function SettingTitle({
 function SettingDescription({
   className,
   ...props
-}: React.ComponentPropsWithRef<"span">) {
+}: React.ComponentPropsWithoutRef<"span">) {
   return (
     <span
       className={cn("text-sm italic dark:text-slate-300", className)}
@@ -45,7 +45,7 @@ function SettingDescription({
 function SettingDetails({
   className,
   ...props
-}: React.ComponentPropsWithRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div className={cn("flex flex-col items-start", className)} {...props}>
       {props.children}
@@ -56,7 +56,7 @@ function SettingDetails({
 function SettingAction({
   className,
   ...props
-}: React.ComponentPropsWithRef<"div">) {
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div className={cn("", className)} {...props}>
       {props.children}
