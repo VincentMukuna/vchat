@@ -117,8 +117,8 @@ function Register() {
                             <PopoverHeader>Privacy Notice</PopoverHeader>
                             <PopoverBody>
                               We use your email solely for authentication, do
-                              not send any emails, and do not share your email
-                              with any third parties. Your privacy is our
+                              not send you any emails, and do not share your
+                              email with any third parties. Your privacy is our
                               priority.
                             </PopoverBody>
                           </PopoverContent>
