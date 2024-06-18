@@ -106,10 +106,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
         setCurrentUser(user);
         setCurrentUserDetails(userDetails);
+        navigate("/chats");
       } else {
         const userDetails = await getUserDetails(localUser, true);
         setCurrentUser(localUser);
         setCurrentUserDetails(userDetails);
+        navigate("/chats");
       }
       if (
         intendedRef.current === "/login" ||

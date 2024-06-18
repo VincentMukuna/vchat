@@ -1,3 +1,7 @@
+import { useMessagesContext } from "@/context/MessagesContext";
+import useReadMessage from "@/features/Room/hooks/useReadMessage";
+import { pluck } from "@/lib/utils";
+import { Avatar, Checkbox } from "@chakra-ui/react";
 import React, {
   createContext,
   forwardRef,
@@ -5,30 +9,23 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import useSWR from "swr";
+import { modal } from "../../../../components/VModal";
 import { useAuth } from "../../../../context/AuthContext";
 import { useChatsContext } from "../../../../context/ChatsContext";
+import {
+  RoomActionTypes,
+  useRoomContext,
+} from "../../../../context/Room/RoomContext";
 import { SERVER } from "../../../../lib/config";
+import { getUserDetails } from "../../../../services/userDetailsService";
 import {
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
   IUserDetails,
 } from "../../../../types/interfaces";
-
-import { Avatar, Checkbox } from "@chakra-ui/react";
-import useSWR from "swr";
-import { getUserDetails } from "../../../../services/userDetailsService";
-
-import { modal } from "../../../../components/VModal";
-import {
-  RoomActionTypes,
-  useRoomContext,
-} from "../../../../context/Room/RoomContext";
 import UserProfileModal from "../../../Profile/UserProfileModal";
-
-import { useMessagesContext } from "@/context/MessagesContext";
-import useReadMessage from "@/features/Room/hooks/useReadMessage";
-import { pluck } from "@/lib/utils";
 import { useMessageListContext } from "../MessageList";
 import MessageAttachments from "./MessageAttachments";
 import MessageBubble from "./MessageBubble";
@@ -95,15 +92,11 @@ const Message = forwardRef<any, MessageProps>(
         revalidateOnReconnect: false,
       },
     );
-
     const { messageRef } = useReadMessage(message, messagesListRef!);
-
     const handleDelete = async () => {
       await deleteMessage(message.$id);
     };
-
     //call read message after message is in view for 2 seconds
-
     const [shouldRender, setShouldRender] = useState(initialRender);
     useEffect(() => {
       !shouldRender &&
@@ -113,15 +106,12 @@ const Message = forwardRef<any, MessageProps>(
           });
         });
     }, []);
-
     if (!shouldRender) {
       return null;
     }
-
     if (isSystem) {
       return <SystemMessage message={message} />;
     }
-
     function canDeleteMessage() {
       if (isOptimistic) {
         return false;
@@ -140,17 +130,14 @@ const Message = forwardRef<any, MessageProps>(
       }
       return false;
     }
-
     const canDelete = canDeleteMessage();
     const canEdit = isMine;
-
     const allowedActions: AllowedMessageActions[] = [
       "message.copy",
       "message.forward",
     ];
     if (canDelete) allowedActions.push("message.delete");
     if (canEdit) allowedActions.push("message.edit");
-
     return (
       <MessagesContext.Provider
         value={{
