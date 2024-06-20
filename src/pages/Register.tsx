@@ -83,7 +83,22 @@ function Register() {
             </div>
 
             <form onSubmit={handleEmailSignUp} className="grid gap-6">
-              <div className="grid gap-3">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <label
+                    htmlFor="name"
+                    className="text-sm leading-none text-gray10"
+                  >
+                    Username
+                  </label>
+                  <Input
+                    required
+                    value={credentials.name}
+                    onChange={(e) => handleChange("name", e.target.value)}
+                    id="name"
+                    placeholder="John Doe"
+                  />
+                </div>
                 <div className="grid gap-2">
                   <label
                     htmlFor="email"
@@ -127,21 +142,7 @@ function Register() {
                     </InputRightElement>
                   </InputGroup>
                 </div>
-                <div className="grid gap-2">
-                  <label
-                    htmlFor="name"
-                    className="text-sm leading-none text-gray10"
-                  >
-                    Username
-                  </label>
-                  <Input
-                    required
-                    value={credentials.name}
-                    onChange={(e) => handleChange("name", e.target.value)}
-                    id="name"
-                    placeholder="John Doe"
-                  />
-                </div>
+
                 <div className="grid gap-2">
                   <label
                     htmlFor="password"

@@ -3,8 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const PrivateRoutes = () => {
   let { currentUserDetails, currentUser } = useAuth();
-
-  return currentUserDetails && currentUser ? (
+  return currentUserDetails !== null && currentUser !== null ? (
     <Outlet />
   ) : (
     <Navigate to={"login"} />

@@ -91,7 +91,7 @@ const theme = extendTheme({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <>
-    <ColorModeScript initialColorMode="system" />
+    <ColorModeScript initialColorMode="light" storageKey="vchat-theme" />
     <ChakraProvider theme={theme}>
       <SWRConfig>
         <RouterProvider router={router} />

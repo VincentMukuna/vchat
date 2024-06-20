@@ -10,18 +10,25 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { Models } from "appwrite";
 
+import { SERVER } from "@/lib/config";
 import useLocalStorage from "@/lib/hooks/useLocalStorage";
 import useUpdateOnlineAt from "@/lib/hooks/useUpdateOnlineAt";
 import Loading from "@/pages/Loading";
 import { logUserOut } from "@/services/sessionServices";
+import { flushSync } from "react-dom";
 import toast from "react-hot-toast";
 import api from "../services/api";
-import { createDetailsDoc } from "../services/registerUserService";
+import {
+  addUserToGlobalChat,
+  createDetailsDoc,
+} from "../services/registerUserService";
 import {
   getCurrentUserDetails,
   updateUserDetails,
 } from "../services/userDetailsService";
 import { IUserDetails, UserPrefs } from "../types/interfaces";
+
+const AUTH_ROUTES = ["/login", "/register"];
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -92,7 +99,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
   const fetchUserDataOnLoad = async () => {
     try {
-      if (!localUser) {
+      if (!localUser || !localUser?.prefs?.detailsDocID) {
         let user = await getAccount();
         setLocalUser(user);
         let userDetails = await getUserDetails(user);
@@ -113,10 +120,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setCurrentUserDetails(userDetails);
         navigate("/chats");
       }
-      if (
-        intendedRef.current === "/login" ||
-        intendedRef.current === "/register"
-      ) {
+      if (AUTH_ROUTES.includes(intendedRef.current)) {
         navigate("/");
       } else {
         navigate(intendedRef.current);
@@ -139,7 +143,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         credentials.name,
       );
       await api.createSession(credentials.email, credentials.password);
-      setCurrentUser(user);
+      let userDeets = (await api.createDocument(
+        SERVER.DATABASE_ID,
+        SERVER.COLLECTION_ID_USERS,
+        {
+          userID: user.$id,
+          name: user.name || user.email.split("@")[0],
+        },
+      )) as IUserDetails;
+      await api.updatePrefs({ detailsDocID: userDeets.$id });
+      toast("Setting you up...");
+      await addUserToGlobalChat(userDeets.$id);
+      flushSync(() => {
+        setCurrentUserDetails(userDeets);
+        setCurrentUser(user);
+        navigate("/");
+      });
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -155,11 +174,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   async function logOut() {
+    flushSync(() => {
+      setCurrentUser(null);
+      setCurrentUserDetails(null);
+    });
     navigate("/login");
     await logUserOut();
     localStorage.clear();
-    setCurrentUser(null);
-    setCurrentUserDetails(null);
   }
 
   async function refreshUserDetails() {

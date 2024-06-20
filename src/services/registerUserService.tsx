@@ -36,7 +36,8 @@ export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
       },
     )) as IUserDetails;
     api.updatePrefs({ detailsDocID: userDeets.$id });
-    addUserToGlobalChat(userDeets.$id);
+
+    await addUserToGlobalChat(userDeets.$id);
     return userDeets;
   } catch (error) {
     throw new Error("Error setting up");
@@ -45,7 +46,7 @@ export async function createDetailsDoc(user: Models.User<Models.Preferences>) {
 
 export async function addUserToGlobalChat(userDetailsID: string) {
   try {
-    api
+    await api
       .updateDocument(
         SERVER.DATABASE_ID,
         SERVER.COLLECTION_ID_USERS,

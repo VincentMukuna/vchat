@@ -14,7 +14,7 @@ const PasswordInput = ({ value, onChange }: PasswordInputProps) => {
         ref={inputRef}
         autoComplete="true"
         required
-        min={"8"}
+        minLength={6}
         id="password"
         value={value}
         onChange={onChange}
