@@ -10,8 +10,10 @@ export default function useUpdateOnlineAt(
       await updateLastSeen(currentUserDetailsId!);
     },
     {
-      // refresh every minute
+      revalidateOnMount: false,
       refreshInterval: 1000 * 60,
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
     },
   );
 }
