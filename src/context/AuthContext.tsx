@@ -127,8 +127,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
     } catch (error: any) {
       navigate("/login");
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   async function register(credentials: {

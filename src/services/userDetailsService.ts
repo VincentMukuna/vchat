@@ -228,11 +228,13 @@ export async function searchUsers(name: string) {
 export async function getConversations(userDetailsID: string) {
   if (!userDetailsID) return [];
   let conversations: (GroupChatDetails | DirectChatDetails)[] = [];
-
+  const loadingToast = toast.loading("Syncing chats...");
   const res = await Promise.allSettled([
     getUserChats(userDetailsID),
     getUserGroups(userDetailsID),
   ]);
+
+  toast.dismiss(loadingToast);
 
   conversations = ([] as (DirectChatDetails | GroupChatDetails)[]).concat(
     ...(res
