@@ -7,7 +7,14 @@ import {
   IConversation,
   IUserDetails,
 } from "@/types/interfaces";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import toast from "react-hot-toast";
 import { mutate } from "swr";
 
 type ChatsProviderProps = {
@@ -44,6 +51,15 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
     isLoading: chatsLoading,
     mutate: updateConversations,
   } = useConversations();
+
+  let syncChatsToastId: string | undefined = undefined;
+  useEffect(() => {
+    if (chatsLoading) {
+      syncChatsToastId = toast.loading("Syncing chats", { duration: 2000 });
+    } else if (!chatsLoading) {
+      toast.dismiss(syncChatsToastId);
+    }
+  }, [chatsLoading]);
 
   const selectConversation = useCallback(
     (conversationId?: string, recepientID?: string) => {
