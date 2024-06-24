@@ -13,6 +13,7 @@ import {
   IconButton,
   Menu,
   MenuButton,
+  useColorMode,
   useDisclosure,
 } from "@chakra-ui/react";
 import {
@@ -47,6 +48,7 @@ function formatLastSeen(lastSeenTimestamp: string) {
 
 function ChatHeader() {
   const { currentUserDetails } = useAuth();
+  const { colorMode } = useColorMode();
 
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = useRef(null);
@@ -175,7 +177,10 @@ function ChatHeader() {
           backdropInvert={"10%"}
           backdropBlur={"1px"}
         />
-        <DrawerContent bg={blueDark.blue2} shadow={"none"}>
+        <DrawerContent
+          bg={colorMode === "dark" ? blueDark.blue2 : "white"}
+          shadow={"none"}
+        >
           <DrawerCloseButton />
           <DrawerHeader>
             <RoomDetailsHeader />
