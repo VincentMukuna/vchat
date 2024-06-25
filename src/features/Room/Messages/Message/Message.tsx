@@ -23,7 +23,6 @@ import {
   DirectMessageDetails,
   GroupChatDetails,
   GroupMessageDetails,
-  IUserDetails,
 } from "../../../../types/interfaces";
 import UserProfileModal from "../../../Profile/UserProfileModal";
 import { useMessageListContext } from "../MessageList";
@@ -204,10 +203,11 @@ const Message = forwardRef<any, MessageProps>(
                 }
                 size="sm"
                 onClick={() => {
+                  if (!senderDetails) return null;
                   modal(
                     <UserProfileModal
                       onClose={() => {}}
-                      user={senderDetails as IUserDetails}
+                      user={senderDetails}
                     />,
                   );
                 }}
