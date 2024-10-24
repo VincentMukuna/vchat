@@ -40,6 +40,15 @@ export async function createGroup({
   return doc as GroupChatDetails;
 }
 
+export async function getGroupMessage(messageID: string) {
+  const message = await api.getDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_GROUP_MESSAGES,
+    messageID,
+  );
+  return message as GroupMessageDetails;
+}
+
 export async function getUserGroups(userDetailsDocID: string) {
   try {
     let deets = (await api.getDocument(

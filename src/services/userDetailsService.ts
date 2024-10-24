@@ -253,17 +253,20 @@ export const sortConversations = (
   let conversations = usConversations.toSorted(sortByUpdateAtDesc);
 
   conversations = conversations.toSorted((a, b) => {
-    let aLastMessage =
-      a.$collectionId === SERVER.COLLECTION_ID_CHATS
-        ? a.chatMessages.toSorted(sortByCreatedAtDesc)?.at(0)
-        : a.groupMessages.toSorted(sortByCreatedAtDesc)?.at(0);
-    let bLastMessage =
-      b.$collectionId === SERVER.COLLECTION_ID_CHATS
-        ? b.chatMessages.toSorted(sortByCreatedAtDesc)?.at(0)
-        : b.groupMessages.toSorted(sortByCreatedAtDesc)?.at(0);
-    let aTime = aLastMessage?.$createdAt || a.$updatedAtAt;
-    let bTime = bLastMessage?.$createdAt || b.$updatedAt;
-    return bTime - aTime;
+    if (a.chatMessages && b.chatMessages) {
+      let aLastMessage =
+        a.$collectionId === SERVER.COLLECTION_ID_CHATS
+          ? a.chatMessages.toSorted(sortByCreatedAtDesc)?.at(0)
+          : a.groupMessages.toSorted(sortByCreatedAtDesc)?.at(0);
+      let bLastMessage =
+        b.$collectionId === SERVER.COLLECTION_ID_CHATS
+          ? b.chatMessages.toSorted(sortByCreatedAtDesc)?.at(0)
+          : b.groupMessages.toSorted(sortByCreatedAtDesc)?.at(0);
+      let aTime = aLastMessage?.$createdAt || a.$updatedAtAt;
+      let bTime = bLastMessage?.$createdAt || b.$updatedAt;
+      return bTime - aTime;
+    }
+    return 0;
   });
   return conversations;
 };

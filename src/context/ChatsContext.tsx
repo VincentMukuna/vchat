@@ -120,8 +120,8 @@ export const ChatsProvider = ({ children }: ChatsProviderProps) => {
       mutate(
         `conversations/${conversation.$id}/messages`,
         isGroup(conversation)
-          ? conversation.groupMessages.toSorted(sortByCreatedAtDesc)
-          : conversation.chatMessages.toSorted(sortByCreatedAtDesc),
+          ? conversation.groupMessages?.toSorted?.(sortByCreatedAtDesc)
+          : conversation.chatMessages?.toSorted?.(sortByCreatedAtDesc),
         { revalidate: false },
       );
     },

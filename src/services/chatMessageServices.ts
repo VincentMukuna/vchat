@@ -17,6 +17,15 @@ export type SendMessageDTO = {
   read: boolean;
 };
 
+export async function getChatMessage(messageID: string) {
+  const message = await api.getDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_CHAT_MESSAGES,
+    messageID,
+  );
+  return message as DirectMessageDetails;
+}
+
 export async function sendChatMessage(
   chatID: string,
   sentMessage: SendMessageDTO,

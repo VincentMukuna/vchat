@@ -103,11 +103,11 @@ export function matchAndExecute(
 
 export const getUnreadCount = (conversation: IConversation, userId: string) => {
   if (conversation.$collectionId === SERVER.COLLECTION_ID_GROUPS) {
-    return conversation.groupMessages.filter(
+    return conversation.groupMessages?.filter(
       (m: GroupMessageDetails) => m.senderID !== userId && m.read === false,
     ).length;
   } else {
-    return conversation.chatMessages.filter(
+    return conversation.chatMessages?.filter(
       (m: DirectMessageDetails) => m.senderID !== userId && m.read === false,
     ).length;
   }

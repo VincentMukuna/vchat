@@ -55,7 +55,7 @@ function useReadMessage(
     onInView() {
       markMessageasRead();
     },
-    time: 2000,
+    time: 500,
     observe: !read && !isMine && !isOptimistic,
     threshold: 0.5,
   });

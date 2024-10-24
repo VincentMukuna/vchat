@@ -1,10 +1,12 @@
 import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
-import { Message } from "@/features/Room/Messages/MessageInput/MessageInput";
 import { SERVER } from "@/lib/config";
 import useUserPrefs from "@/lib/hooks/useUserPrefs";
 import { getUnreadCount, matchAndExecute } from "@/lib/utils";
 import api from "@/services/api";
+import { getChatMessage } from "@/services/chatMessageServices";
+import { getGroupMessage } from "@/services/groupMessageServices";
+import { getUserDetails } from "@/services/userDetailsService";
 import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
   IConversation,
@@ -42,29 +44,22 @@ const useChatsListSubscription = () => {
 
       const isGroup =
         response.payload.$collectionId === SERVER.COLLECTION_ID_GROUPS;
-      const messages = isGroup
-        ? response.payload.groupMessages
-        : response.payload.chatMessages;
-
       const changeLog = response.payload.changeLog;
       const conversation = response.payload;
 
-      const handleNewMessage = (newMessageId: string) => {
+      const handleNewMessage = async (newMessageId: string) => {
+        if (selectedChat?.$id === conversation.$id) return;
+        const newMessage = isGroup
+          ? await getGroupMessage(newMessageId)
+          : await getChatMessage(newMessageId);
+
+        if (!newMessage) return;
         if (shouldAlert) {
           const notif = new Audio("/sounds/iphone_sms_alert.mp3");
           notif.play();
         }
-        const newMessage = messages.find(
-          (msg: any) => msg.$id === newMessageId,
-        ) as Message;
 
-        const sender: IUserDetails = isGroup
-          ? conversation.members.find(
-              (m: IUserDetails) => m.$id === newMessage.senderID,
-            )
-          : conversation.participants.find(
-              (m: IUserDetails) => m.$id === newMessage.senderID,
-            );
+        const sender: IUserDetails = await getUserDetails(newMessage.senderID);
 
         //update unreadCount
         const unreadCountKey = `conversations/${conversation.$id}/unread`;

@@ -5,6 +5,8 @@ import { useRoomContext } from "@/context/Room/RoomContext";
 import { SERVER } from "@/lib/config";
 import { fromJson, matchAndExecute, toJson } from "@/lib/utils";
 import api from "@/services/api";
+import { getChatMessage } from "@/services/chatMessageServices";
+import { getGroupMessage } from "@/services/groupMessageServices";
 import {
   CHAT_MESSAGES_CHANGE_LOG_REGEXES,
   DirectChatDetails,
@@ -87,21 +89,17 @@ const useRoomSubscription = () => {
 
           const changeLog = response.payload.changeLog;
 
-          const handleNewMessage = (newTextId: string) => {
+          console.log("response", response);
+
+          const handleNewMessage = async (newTextId: string) => {
+            const newMessage = isGroup
+              ? await getGroupMessage(newTextId)
+              : await getChatMessage(newTextId);
+            console.log("newMessage", newMessage);
             updateRoomMessages(
               isGroup
-                ? [
-                    response.payload.groupMessages.find(
-                      (msg: any) => msg.$id === newTextId,
-                    ),
-                    ...(messages || []),
-                  ]
-                : [
-                    response.payload.chatMessages.find(
-                      (msg: any) => msg.$id === newTextId,
-                    ),
-                    ...(messages || []),
-                  ],
+                ? [newMessage, ...(messages || [])]
+                : [newMessage, ...(messages || [])],
               { revalidate: false },
             ).then((value: any) => {
               updateLastMessage((value as DirectMessageDetails[]).at(0));
