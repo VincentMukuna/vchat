@@ -56,7 +56,11 @@ const useChatsListSubscription = () => {
         if (!newMessage) return;
         if (shouldAlert) {
           const notif = new Audio("/sounds/iphone_sms_alert.mp3");
-          notif.play();
+          try {
+            await notif.play();
+          } catch (error) {
+            console.error("Error playing notification sound", error);
+          }
         }
 
         const sender: IUserDetails = await getUserDetails(newMessage.senderID);
