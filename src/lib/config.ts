@@ -1,5 +1,5 @@
 export const SERVER = {
-  ENDPOINT: "https://cloud.appwrite.io/v1",
+  ENDPOINT: import.meta.env.VITE_ENDPOINT,
   PROJECT_ID: import.meta.env.VITE_PROJECT_ID,
   DATABASE_ID: import.meta.env.VITE_DATABASE_ID,
   COLLECTION_ID_CHAT_MESSAGES: "chat-messages",
