@@ -63,10 +63,10 @@ This is a simple and feature-rich chat application built with React, Appwrite, C
 
 1. Open the [Appwrite Console](https://cloud.appwrite.io/) and make a new project.
 
-2. Add a new web app platform, typing
-   in your local IP address (or `localhost`).
+2. Add a new web app platform you can name it anything e.g `Web`, enter
+   your local IP address (or `localhost`) in the hostname field.
 
-3. Copy the API endpoint and project ID from the Appwrite console and replace them in the `.env` file.
+3. Copy the API endpoint and project ID from the Appwrite project settings and replace them in the `.env` file.
 
 4. Replace projectId and projectName in `appwrite.json` with your project's
 
