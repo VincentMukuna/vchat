@@ -79,21 +79,24 @@ This is a simple and feature-rich chat application built with React, Appwrite, C
    ```
 
 7. Deploy
+   [UPDATE] You need to push the collections one by one in the following order:
+   channels, group-messages, chat-messages, user-details, groups
 
    ```bash
-      appwrite deploy collections
+      appwrite push collections
    ```
 
 8. Deploy buckets.
    Edit- Due to appwrite pricing changes you may have to deploy only one bucket then set all bucket config in `src\lib\config.ts` to your bucketId.
 
+   If you are using the free plan you can delete the other buckets and deploy only one.
+   Copy the bucketId and replace it in `src\lib\config.ts` for all buckets.
+
    ```bash
-      appwrite deploy buckets
+      appwrite push buckets
    ```
 
-9. Edit `.env` to include the relevant project's API endpoints.
-
-10. Start the development server:
+9. Start the development server:
 
 ```bash
    npm run dev
