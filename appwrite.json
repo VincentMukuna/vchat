@@ -5,8 +5,6 @@
         {
             "$id": "production",
             "name": "production",
-            "$createdAt": "2024-03-27T07:20:16.887+00:00",
-            "$updatedAt": "2024-03-27T07:20:16.887+00:00",
             "enabled": true
         }
     ],
@@ -27,8 +25,6 @@
                 {
                     "key": "avatarURL",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 300,
@@ -37,8 +33,6 @@
                 {
                     "key": "location",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 50,
@@ -47,8 +41,6 @@
                 {
                     "key": "changerID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 100,
@@ -57,8 +49,6 @@
                 {
                     "key": "changeLog",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 1000,
@@ -67,8 +57,6 @@
                 {
                     "key": "userID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 256,
@@ -77,8 +65,6 @@
                 {
                     "key": "name",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 50,
@@ -87,8 +73,6 @@
                 {
                     "key": "avatarID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 100,
@@ -97,8 +81,6 @@
                 {
                     "key": "about",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 30,
@@ -107,8 +89,6 @@
                 {
                     "key": "groups",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "groups",
@@ -121,8 +101,6 @@
                 {
                     "key": "chats",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "chats",
@@ -135,8 +113,6 @@
                 {
                     "key": "lastOnlineAt",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 256,
@@ -148,7 +124,6 @@
                     "key": "created_at_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "$createdAt"
                     ],
@@ -160,7 +135,6 @@
                     "key": "idxUserID",
                     "type": "fulltext",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "userID"
                     ],
@@ -172,7 +146,6 @@
                     "key": "user_name_idx",
                     "type": "fulltext",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "name"
                     ],
@@ -184,7 +157,6 @@
                     "key": "idx_user_id",
                     "type": "unique",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "userID"
                     ],
@@ -210,8 +182,6 @@
                 {
                     "key": "changeLog",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 1000,
@@ -220,8 +190,6 @@
                 {
                     "key": "avatarID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 100,
@@ -230,8 +198,6 @@
                 {
                     "key": "changerID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 200,
@@ -240,8 +206,6 @@
                 {
                     "key": "admins",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": true,
                     "size": 100,
@@ -250,8 +214,6 @@
                 {
                     "key": "avatarURL",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 300,
@@ -260,8 +222,6 @@
                 {
                     "key": "name",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 30,
@@ -270,8 +230,6 @@
                 {
                     "key": "description",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 50,
@@ -280,8 +238,6 @@
                 {
                     "key": "members",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "user-details",
@@ -294,8 +250,6 @@
                 {
                     "key": "groupMessages",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "group-messages",
@@ -324,8 +278,6 @@
                 {
                     "key": "replying",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 10000,
@@ -334,8 +286,6 @@
                 {
                     "key": "reactions",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 1000,
@@ -344,8 +294,6 @@
                 {
                     "key": "read",
                     "type": "boolean",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "default": false
@@ -353,8 +301,6 @@
                 {
                     "key": "attachments",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": true,
                     "size": 100,
@@ -363,8 +309,6 @@
                 {
                     "key": "body",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 1500,
@@ -373,8 +317,6 @@
                 {
                     "key": "senderID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 100,
@@ -383,8 +325,6 @@
                 {
                     "key": "groupDoc",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "groups",
@@ -397,8 +337,6 @@
                 {
                     "key": "editedAt",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 50,
@@ -410,7 +348,6 @@
                     "key": "senderID_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "senderID"
                     ],
@@ -422,7 +359,6 @@
                     "key": "read_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "read"
                     ],
@@ -434,7 +370,6 @@
                     "key": "createdAt_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "$createdAt"
                     ],
@@ -460,8 +395,6 @@
                 {
                     "key": "changerID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 200,
@@ -470,8 +403,6 @@
                 {
                     "key": "changeLog",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 1000,
@@ -480,8 +411,6 @@
                 {
                     "key": "participants",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "user-details",
@@ -494,8 +423,6 @@
                 {
                     "key": "chatMessages",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "chat-messages",
@@ -511,7 +438,6 @@
                     "key": "createdAtIdx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "$createdAt"
                     ],
@@ -523,7 +449,6 @@
                     "key": "chatIDidx",
                     "type": "fulltext",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "$id"
                     ],
@@ -549,8 +474,6 @@
                 {
                     "key": "reactions",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 2000,
@@ -559,8 +482,6 @@
                 {
                     "key": "attachments",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": true,
                     "size": 100,
@@ -569,8 +490,6 @@
                 {
                     "key": "recepientID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 100,
@@ -579,8 +498,6 @@
                 {
                     "key": "replying",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 1000,
@@ -589,8 +506,6 @@
                 {
                     "key": "senderID",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 100,
@@ -599,8 +514,6 @@
                 {
                     "key": "read",
                     "type": "boolean",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "default": false
@@ -608,8 +521,6 @@
                 {
                     "key": "body",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 1500,
@@ -618,8 +529,6 @@
                 {
                     "key": "chatDoc",
                     "type": "relationship",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "relatedCollection": "chats",
@@ -632,8 +541,6 @@
                 {
                     "key": "editedAt",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 50,
@@ -645,7 +552,6 @@
                     "key": "senderID_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "senderID"
                     ],
@@ -657,7 +563,6 @@
                     "key": "read_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "read"
                     ],
@@ -669,7 +574,6 @@
                     "key": "created_at_idx",
                     "type": "key",
                     "status": "available",
-                    "error": "",
                     "attributes": [
                         "$createdAt"
                     ],
@@ -690,8 +594,6 @@
                 {
                     "key": "name",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 256,
@@ -700,8 +602,6 @@
                 {
                     "key": "about",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": true,
                     "array": false,
                     "size": 256,
@@ -710,8 +610,6 @@
                 {
                     "key": "changeLog",
                     "type": "string",
-                    "status": "available",
-                    "error": "",
                     "required": false,
                     "array": false,
                     "size": 100,
@@ -724,8 +622,6 @@
     "buckets": [
         {
             "$id": "user-avatars",
-            "$createdAt": "2023-09-22T08:11:10.846+00:00",
-            "$updatedAt": "2024-05-16T18:16:13.046+00:00",
             "$permissions": [
                 "create(\"users\")",
                 "read(\"users\")",
@@ -735,7 +631,7 @@
             "fileSecurity": true,
             "name": "user-avatars-status",
             "enabled": true,
-            "maximumFileSize": 52428800,
+            "maximumFileSize": 5000000,
             "allowedFileExtensions": [
                 "jpg",
                 "png",
@@ -751,8 +647,6 @@
         },
         {
             "$id": "group-avatars",
-            "$createdAt": "2023-09-22T08:13:09.391+00:00",
-            "$updatedAt": "2024-05-16T18:16:13.085+00:00",
             "$permissions": [
                 "create(\"users\")",
                 "read(\"users\")",
@@ -762,7 +656,7 @@
             "fileSecurity": false,
             "name": "group-avatars",
             "enabled": true,
-            "maximumFileSize": 52428800,
+            "maximumFileSize": 5000000,
             "allowedFileExtensions": [
                 "jpg",
                 "png",
@@ -777,8 +671,6 @@
         },
         {
             "$id": "chat-message-attachments",
-            "$createdAt": "2023-09-22T08:16:23.746+00:00",
-            "$updatedAt": "2024-05-16T18:16:13.113+00:00",
             "$permissions": [
                 "create(\"users\")",
                 "read(\"users\")",
@@ -788,7 +680,7 @@
             "fileSecurity": false,
             "name": "chat-message-attachments",
             "enabled": true,
-            "maximumFileSize": 52428800,
+            "maximumFileSize": 5000000,
             "allowedFileExtensions": [
                 "jpg",
                 "png",
@@ -802,8 +694,6 @@
         },
         {
             "$id": "group-message-attachments",
-            "$createdAt": "2023-09-22T08:17:28.671+00:00",
-            "$updatedAt": "2024-05-16T18:16:13.141+00:00",
             "$permissions": [
                 "create(\"any\")",
                 "read(\"any\")",
@@ -813,7 +703,7 @@
             "fileSecurity": false,
             "name": "group-message-attachments",
             "enabled": true,
-            "maximumFileSize": 52428800,
+            "maximumFileSize": 5000000,
             "allowedFileExtensions": [
                 "jpg",
                 "png",
