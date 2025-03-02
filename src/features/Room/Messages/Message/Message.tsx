@@ -157,6 +157,9 @@ const Message = forwardRef<any, MessageProps>(
             }
             setShowHoverCard(false);
           }}
+          style={{
+            contentVisibility: "auto",
+          }}
           tabIndex={1}
           className="flex flex-col transition-all"
         >
