@@ -55,12 +55,13 @@ function Login() {
       initial={{ opacity: 0, x: "-25%" }}
       animate={{ opacity: 1, x: "0%" }}
       transition={{ duration: 0.3 }}
+      className="w-full max-w-md px-4 sm:px-6"
     >
-      <div className=" flex  items-center  transition-all [&>div]:w-full  ">
+      <div className="flex items-center transition-all [&>div]:w-full">
         <FocusLock>
-          <div className="grid gap-4 rounded-xl border p-6 text-gray12 shadow dark:text-dark-slate12">
-            <div className="flex flex-col space-y-2 ">
-              <h1 className="text-2xl font-semibold leading-8 tracking-tight ">
+          <div className="grid gap-4 p-4  text-gray12 dark:text-dark-slate12 sm:p-6 md:rounded-xl md:border md:p-6 md:shadow">
+            <div className="flex flex-col space-y-2 text-center">
+              <h1 className="text-2xl font-semibold leading-8 tracking-tight">
                 Log in to VChat
               </h1>
               <h2 className="below text-sm font-normal tracking-wide text-gray11 dark:text-indigo2/60">
@@ -68,7 +69,7 @@ function Login() {
               </h2>
             </div>
 
-            <form onSubmit={handleEmailSignIn} className="mt-2 grid gap-5 ">
+            <form onSubmit={handleEmailSignIn} className="mt-2 grid gap-5">
               <div className="grid gap-3">
                 <div className="grid gap-2">
                   <label
@@ -89,10 +90,10 @@ function Login() {
                     placeholder="xyz@example.com"
                   />
                 </div>
-                <div className="grid gap-2 ">
+                <div className="grid gap-2">
                   <label
                     htmlFor="password"
-                    className="text-sm leading-none text-gray10 "
+                    className="text-sm leading-none text-gray10"
                   >
                     Password
                   </label>
@@ -104,7 +105,7 @@ function Login() {
                   />
                 </div>
               </div>
-              <div className="">
+              <div>
                 <Button
                   as={motion.button}
                   whileHover={{ scale: 1.01 }}
@@ -112,7 +113,7 @@ function Login() {
                   type="submit"
                   isLoading={verifying}
                   loadingText="Verifying"
-                  className="w-full "
+                  className="w-full"
                 >
                   Login
                 </Button>
@@ -122,7 +123,7 @@ function Login() {
             <OauthSignUp loading={verifying} onClick={handleOauthSignIn} />
 
             <div className="flex justify-center gap-1 text-xs tracking-wide text-dark-gray4 dark:text-indigo2/50">
-              <div className="flex justify-center gap-1 ">
+              <div className="flex justify-center gap-1">
                 No account?
                 <Link
                   to="/register"
@@ -133,7 +134,7 @@ function Login() {
                 instead
               </div>
             </div>
-          </div>{" "}
+          </div>
         </FocusLock>
       </div>
     </motion.div>
