@@ -16,7 +16,7 @@ function Chats() {
         <ConversationList className="" />
       </Sidebar>
       <Box
-        className={`absolute inset-0 flex h-full min-w-0 flex-1 transition-opacity md:relative ${
+        className={`absolute inset-0 isolate flex h-full min-w-0 flex-1 overflow-hidden bg-gray2 transition-opacity dark:bg-dark-blue1 md:relative ${
           selectedChat ? "z-10" : "invisible md:visible"
         }`}
       >
