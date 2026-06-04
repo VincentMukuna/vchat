@@ -29,7 +29,7 @@ const Sidebar = ({ children }: SidebarProps) => {
   return (
     <aside
       style={{ backgroundColor: sidebarBackground }}
-      className="relative max-h-full shrink grow basis-[25rem] overflow-auto bg-gray2 px-2 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[27rem]"
+      className="relative max-h-full shrink grow basis-[25rem] overflow-auto bg-gray2 px-2 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[27rem] md:border-r md:border-gray5 md:dark:border-dark-slate3"
     >
       {children}
     </aside>
