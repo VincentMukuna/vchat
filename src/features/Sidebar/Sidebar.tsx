@@ -1,4 +1,5 @@
 import {
+  Avatar,
   IconButton,
   Modal,
   ModalBody,
@@ -8,12 +9,14 @@ import {
   ModalOverlay,
   Tooltip,
   useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 
 import { UserGroupIcon } from "@heroicons/react/24/solid";
-import { indigo, indigoDark } from "@radix-ui/colors";
+import { blueDark, gray, indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { PlusIcon } from "../../components/Icons";
 import { useAuth } from "../../context/AuthContext";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
@@ -22,9 +25,14 @@ interface SidebarProps {
 }
 const Sidebar = ({ children }: SidebarProps) => {
   const { currentUserDetails } = useAuth();
+  const sidebarBackground = useColorModeValue(gray.gray2, blueDark.blue1);
+
   if (!currentUserDetails) return;
   return (
-    <aside className="relative max-h-full shrink grow basis-[25rem] overflow-auto border-r bg-gray2 px-2 dark:border-dark-slate3 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[27rem]">
+    <aside
+      style={{ backgroundColor: sidebarBackground }}
+      className="relative max-h-full shrink grow basis-[25rem] overflow-auto bg-gray2 px-2 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[27rem] md:border-r md:border-gray5 md:dark:border-dark-slate3"
+    >
       {children}
     </aside>
   );
@@ -40,15 +48,25 @@ interface SideBarHeaderProps {
 export function SideBarHeader({ title, className }: SideBarHeaderProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const { currentUserDetails } = useAuth();
+  const sidebarBackground = useColorModeValue(gray.gray2, blueDark.blue1);
+
   return (
     <div
+      style={{ backgroundColor: sidebarBackground }}
       className={
         "sticky left-0 right-0 top-0 z-10 flex h-16  items-center bg-gray2 px-4 font-semibold tracking-widest dark:bg-dark-blue1" +
         className
       }
     >
       <span className="relative flex h-full w-full items-center justify-between ">
-        <div className="h-10 w-10 md:hidden" aria-hidden="true" />
+        <Link to="/profile" className="md:hidden" aria-label="Open profile">
+          <Avatar
+            size="sm"
+            src={currentUserDetails?.avatarURL}
+            name={currentUserDetails?.name}
+          />
+        </Link>
 
         <span>{title}</span>
         <div className="flex items-center gap-3">

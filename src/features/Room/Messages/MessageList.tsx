@@ -1,6 +1,8 @@
 import { useMessagesContext } from "@/context/MessagesContext";
 import { groupDocumentsByDate, sortByCreatedAtAsc } from "@/lib/utils";
 import { ChatMessage } from "@/types/interfaces";
+import { useColorModeValue } from "@chakra-ui/react";
+import { blueDark, gray } from "@radix-ui/colors";
 import { createContext, memo, useContext, useMemo, useRef } from "react";
 import Message from "./Message/Message";
 
@@ -16,6 +18,7 @@ const MessageListContext = createContext<MessagesContextType>({
 function MessageList({}: MessagesProps) {
   const messageListRef = useRef<HTMLDivElement>(null);
   const { messages } = useMessagesContext();
+  const roomBackground = useColorModeValue(gray.gray2, blueDark.blue1);
   const groupedMessages = useMemo(() => {
     return Object.entries(groupDocumentsByDate(messages)).reduce(
       (acc, [date, messages]) => {
@@ -29,11 +32,13 @@ function MessageList({}: MessagesProps) {
   return (
     <div
       ref={messageListRef}
-      className="relative min-w-0 grow self-stretch overflow-y-auto overflow-x-hidden"
+      style={{ backgroundColor: roomBackground }}
+      className="relative min-w-0 grow self-stretch overflow-y-auto overflow-x-hidden bg-gray2 dark:bg-dark-blue1"
     >
       <div
         id="messages-container"
-        className="flex h-full min-w-0 grow flex-col-reverse self-stretch overflow-x-hidden overflow-y-scroll p-2 pb-4"
+        style={{ backgroundColor: roomBackground }}
+        className="flex h-full min-w-0 grow flex-col-reverse self-stretch overflow-x-hidden overflow-y-scroll bg-gray2 p-2 pb-4 dark:bg-dark-blue1"
       >
         {messages.length > 0 ? (
           <MessageListContext.Provider

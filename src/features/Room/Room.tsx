@@ -5,7 +5,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useChatsContext } from "@/context/ChatsContext";
 import { RoomActionTypes, useRoomContext } from "@/context/Room/RoomContext";
 import useRoomSubscription from "@/features/Room/hooks/useRoomSubscription";
-import { Box } from "@chakra-ui/react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
+import { blueDark, gray } from "@radix-ui/colors";
 import useCommand from "../../lib/hooks/useCommand";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./Messages/MessageInput/MessageInput";
@@ -18,6 +19,8 @@ function Room() {
   const { selectedChat } = useChatsContext();
   const { dispatch } = useRoomContext();
   const [showDetails] = useState(false);
+  const roomBackground = useColorModeValue(gray.gray2, blueDark.blue1);
+
   useCommand("Escape", () => {
     dispatch({
       type: RoomActionTypes.EXIT_SELECTING_MESSAGES,
@@ -33,6 +36,8 @@ function Room() {
   return (
     <>
       <Box
+        bg={roomBackground}
+        style={{ backgroundColor: roomBackground }}
         className={`grid h-full min-w-0 flex-1 grid-rows-[1fr_6fr_0.5fr] bg-gray2 dark:bg-dark-blue1`}
       >
         <ChatHeader key={`header-${selectedChat.$id}`} />

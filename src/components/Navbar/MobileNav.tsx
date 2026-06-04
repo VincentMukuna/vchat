@@ -1,6 +1,8 @@
 import { useAuth } from "@/context/AuthContext";
+import { useColorModeValue } from "@chakra-ui/react";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { UserCircleIcon as UserCircleIconSolid } from "@heroicons/react/24/solid";
+import { blueDark, gray } from "@radix-ui/colors";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks } from "./links";
@@ -8,6 +10,9 @@ import { navLinks } from "./links";
 function MobileNav() {
   const { pathname } = useLocation();
   const { currentUserDetails } = useAuth();
+  const navBackground = useColorModeValue(gray.gray2, blueDark.blue1);
+  const navBorder = useColorModeValue(gray.gray5, "rgba(255, 255, 255, 0.08)");
+
   if (!currentUserDetails) return null;
 
   const mobileNavLinks = [
@@ -21,7 +26,13 @@ function MobileNav() {
   ];
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-gray5 bg-gray2 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_20px_rgba(15,23,42,0.08)] dark:border-dark-slate4 dark:bg-dark-blue2 md:hidden">
+    <nav
+      style={{
+        backgroundColor: navBackground,
+        borderColor: navBorder,
+      }}
+      className="fixed inset-x-0 bottom-0 z-50 border-t bg-gray2 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 dark:bg-dark-blue1 md:hidden"
+    >
       <div className="grid grid-cols-4 gap-1">
         {mobileNavLinks.map((link) => {
           const isActive = pathname
