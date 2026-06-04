@@ -11,7 +11,6 @@ function MobileNav() {
   const { pathname } = useLocation();
   const { currentUserDetails } = useAuth();
   const navBackground = useColorModeValue(gray.gray2, blueDark.blue1);
-  const navBorder = useColorModeValue(gray.gray5, blueDark.blue6);
 
   if (!currentUserDetails) return null;
 
@@ -29,9 +28,8 @@ function MobileNav() {
     <nav
       style={{
         backgroundColor: navBackground,
-        borderColor: navBorder,
       }}
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-gray5 bg-gray2 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_20px_rgba(15,23,42,0.08)] dark:border-dark-blue6 dark:bg-dark-blue1 md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 bg-gray2 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_20px_rgba(15,23,42,0.08)] dark:bg-dark-blue1 md:hidden"
     >
       <div className="grid grid-cols-4 gap-1">
         {mobileNavLinks.map((link) => {
