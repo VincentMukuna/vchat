@@ -161,10 +161,10 @@ const Message = forwardRef<any, MessageProps>(
             contentVisibility: "auto",
           }}
           tabIndex={1}
-          className="flex flex-col transition-all"
+          className="min-w-0 flex flex-col transition-all"
         >
           <div
-            className={`relative flex gap-1.5  ${
+            className={`relative flex min-w-0 gap-1.5  ${
               isMine ? "flex-row-reverse" : ""
             } items-end transition-all focus:outline-0  focus:outline-slate-600 
           
@@ -238,7 +238,7 @@ const Message = forwardRef<any, MessageProps>(
                   });
                 }
               }}
-              className={`flex flex-col ${
+              className={`min-w-0 flex flex-col ${
                 isMine ? "items-end" : "items-start"
               } gap-1`}
             >

@@ -29,11 +29,11 @@ function MessageList({}: MessagesProps) {
   return (
     <div
       ref={messageListRef}
-      className="relative grow self-stretch overflow-y-auto overflow-x-hidden"
+      className="relative min-w-0 grow self-stretch overflow-y-auto overflow-x-hidden"
     >
       <div
         id="messages-container"
-        className="flex h-full grow flex-col-reverse self-stretch overflow-x-hidden overflow-y-scroll p-2 pb-4"
+        className="flex h-full min-w-0 grow flex-col-reverse self-stretch overflow-x-hidden overflow-y-scroll p-2 pb-4"
       >
         {messages.length > 0 ? (
           <MessageListContext.Provider

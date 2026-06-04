@@ -26,7 +26,7 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
       <div className="relative">
         <div
           ref={messageRef}
-          className={`pointer-events-none relative flex min-w-[3rem] max-w-[80vw]  select-none flex-col 
+          className={`pointer-events-none relative flex min-w-0 max-w-[min(80vw,100%)] select-none flex-col 
                 gap-1 rounded-3xl px-3 pb-1  pt-2 @container-normal  sm:max-w-[20rem]
                 ${
                   isMine
@@ -52,8 +52,8 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 
                 `}
         >
-          <div className="flex flex-col justify-between text-[0.9rem] leading-relaxed tracking-wide">
-            <pre className=" whitespace-pre-wrap font-sans">
+          <div className="min-w-0 flex flex-col justify-between text-[0.9rem] leading-relaxed tracking-wide">
+            <pre className="whitespace-pre-wrap break-words font-sans [overflow-wrap:anywhere]">
               <Highlight query={search} styles={{ py: "1", bg: "orange.100" }}>
                 {message.body}
               </Highlight>
