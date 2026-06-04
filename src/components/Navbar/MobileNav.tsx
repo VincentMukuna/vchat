@@ -19,30 +19,25 @@ function MobileNav() {
   ];
 
   return (
-    <nav className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 mx-auto max-w-md rounded-3xl border border-white/60 bg-white/70 p-1.5 shadow-[0_18px_50px_rgba(15,23,42,0.24)] backdrop-blur-2xl dark:border-white/10 dark:bg-dark-slate3/70 md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-gray5 bg-gray2 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_20px_rgba(15,23,42,0.08)] dark:border-dark-slate4 dark:bg-dark-blue2 md:hidden">
       <div className="grid grid-cols-4 gap-1">
         {mobileNavLinks.map((link) => {
-          const isActive =
-            pathname === link.value || pathname.startsWith(`${link.value}/`);
+          const isActive = pathname
+            .split("/")
+            .includes(link.value.substring(1));
 
           return (
             <Link
               to={link.value}
               key={link.value}
               aria-current={isActive ? "page" : undefined}
-              className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl px-1 text-xs font-semibold transition-all duration-200 ${
+              className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-md px-1 text-xs font-semibold transition-colors ${
                 isActive
-                  ? "-translate-y-1 bg-white/85 text-indigo11 shadow-[0_10px_28px_rgba(63,81,181,0.24),inset_0_1px_0_rgba(255,255,255,0.85)] ring-1 ring-indigo6/60 dark:bg-dark-slate2/90 dark:text-dark-indigo11 dark:shadow-[0_10px_28px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)] dark:ring-dark-indigo6/70"
-                  : "text-gray11 hover:bg-white/45 hover:text-indigo11 dark:text-gray7 dark:hover:bg-white/10 dark:hover:text-dark-indigo11"
+                  ? "bg-indigo4 text-indigo11 dark:bg-dark-indigo4 dark:text-dark-indigo11"
+                  : "text-gray11 hover:bg-gray4 hover:text-indigo11 dark:text-gray7 dark:hover:bg-dark-slate4 dark:hover:text-dark-indigo11"
               }`}
             >
-              <span
-                className={`transition-transform duration-200 ${
-                  isActive ? "scale-105" : ""
-                }`}
-              >
-                {link.icon}
-              </span>
+              {link.icon}
               <span>{link.title}</span>
             </Link>
           );
