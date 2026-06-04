@@ -136,8 +136,10 @@ const Conversation = memo(
         onClick={(e) => {
           selectConversation(conversation.$id, contactDetails?.$id);
         }}
-        className={`flex cursor-pointer items-start gap-1 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
-          isActive ? "bg-slate-200 dark:bg-dark-blue2" : ""
+        className={`flex cursor-pointer items-start gap-1 transition-all ${
+          isActive
+            ? "bg-slate-200 hover:bg-slate-200 dark:bg-dark-blue3/80 dark:hover:bg-dark-blue3/80"
+            : "hover:bg-slate-100 dark:hover:bg-dark-blue2"
         }`}
       >
         <Avatar
