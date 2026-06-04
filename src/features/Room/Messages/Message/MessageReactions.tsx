@@ -13,17 +13,19 @@ import {
 } from "@/services/groupMessageServices";
 import { ChatMessage } from "@/types/interfaces";
 import { Button, useColorMode } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 interface MessageReactionsProps {
   message: ChatMessage;
   hoverCardShowing: boolean;
+  onVisibilityChange?: (isVisible: boolean) => void;
 }
 
 const MessageReactions = ({
   message,
   hoverCardShowing,
+  onVisibilityChange,
 }: MessageReactionsProps) => {
   const { currentUserDetails } = useAuth();
 
@@ -131,9 +133,15 @@ const MessageReactions = ({
     return false;
   }
 
+  const showReactions = shouldShowReactions();
+
+  useEffect(() => {
+    onVisibilityChange?.(showReactions);
+  }, [onVisibilityChange, showReactions]);
+
   return (
     <Button
-      visibility={shouldShowReactions() ? "visible" : "hidden"}
+      visibility={showReactions ? "visible" : "hidden"}
       onClick={(e) => {
         e.stopPropagation();
         handleLike();

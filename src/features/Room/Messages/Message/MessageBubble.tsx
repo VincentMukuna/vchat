@@ -12,9 +12,10 @@ type MessageBubbleProps = {
   message: ChatMessage;
   prev: ChatMessage | undefined;
   next: ChatMessage | undefined;
+  onReactionVisibilityChange?: (isVisible: boolean) => void;
 };
 const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
-  ({ message, prev, next }, messageRef) => {
+  ({ message, prev, next, onReactionVisibilityChange }, messageRef) => {
     const { currentUserDetails } = useAuth();
     const { search } = useMessagesContext();
     const isMine = message.senderID === currentUserDetails?.$id;
@@ -85,10 +86,13 @@ const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
             </small>
           </div>
         </div>
-        <div className={`absolute -bottom-3 ${isMine ? "-start-4" : "-end-4"}`}>
+        <div
+          className={`absolute -bottom-3 z-20 ${isMine ? "-start-4" : "-end-4"}`}
+        >
           <MessageReactions
             message={message}
             hoverCardShowing={showHoverCard}
+            onVisibilityChange={onReactionVisibilityChange}
           />
         </div>
       </div>
