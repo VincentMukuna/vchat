@@ -18,7 +18,7 @@ import defaultTheme from "tailwindcss/defaultTheme";
  * @type Config
  */
 export default {
-  darkMode: ["class", ".chakra-ui-dark &"],
+  darkMode: ["class", ".chakra-ui-dark"],
 
   important: true,
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
