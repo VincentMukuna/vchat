@@ -8,12 +8,12 @@ import {
   Portal,
   Spinner,
   Textarea,
-  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
-import { slate } from "@radix-ui/colors";
+import { blueDark, gray, indigo } from "@radix-ui/colors";
 import { Models } from "appwrite";
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -64,10 +64,17 @@ const MessageInput = ({}: InputProps) => {
 
   const { selectedChat, recepient } = useChatsContext();
   const { createMessage } = useMessagesContext();
-  if (!selectedChat || !currentUserDetails) return null;
   const [messageBody, setMessageBody] = useState("");
 
-  const { colorMode } = useColorMode();
+  const inputBackground = useColorModeValue("white", blueDark.blue2);
+  const inputBorder = useColorModeValue(gray.gray6, blueDark.blue6);
+  const inputShadow = useColorModeValue(
+    "0 8px 24px rgba(15, 23, 42, 0.08)",
+    "0 10px 28px rgba(0, 0, 0, 0.26)",
+  );
+  const inputText = useColorModeValue(gray.gray12, gray.gray1);
+  const placeholderColor = useColorModeValue(gray.gray10, gray.gray8);
+  const sendColor = useColorModeValue(indigo.indigo10, indigo.indigo8);
   const { isGroup, isPersonal, roomState, dispatch } = useRoomContext();
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
 
@@ -93,6 +100,8 @@ const MessageInput = ({}: InputProps) => {
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
+    if (!selectedChat || !currentUserDetails) return;
+
     setMessageBody("");
     dispatch({ type: RoomActionTypes.EXIT_REPLYING_TO, payload: null });
 
@@ -141,6 +150,8 @@ const MessageInput = ({}: InputProps) => {
     setMessageBody("");
   }, [selectedChat]);
 
+  if (!selectedChat || !currentUserDetails) return null;
+
   return (
     <div className="flex flex-col">
       {roomState.replyingTo && (
@@ -166,9 +177,17 @@ const MessageInput = ({}: InputProps) => {
           />
         </div>
       )}
-      <footer className="mx-4 my-2 flex flex-col items-center justify-start overflow-hidden rounded-3xl bg-gray5 px-2 dark:bg-dark-gray3 dark:text-dark-blue12 ">
+      <footer
+        style={{
+          backgroundColor: inputBackground,
+          borderColor: inputBorder,
+          boxShadow: inputShadow,
+          color: inputText,
+        }}
+        className="mx-3 mb-[calc(0.75rem+env(safe-area-inset-bottom))] mt-2 flex flex-col items-center justify-start overflow-hidden rounded-2xl border bg-white px-2 py-1 dark:bg-dark-blue2 md:mx-4"
+      >
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
-          <div className="flex h-full w-full items-center gap-1 ps-1 ">
+          <div className="flex min-h-11 w-full items-center gap-1 ps-1 ">
             <Popover onClose={() => inputRef.current?.focus?.()} isLazy>
               <PopoverTrigger>
                 <IconButton
@@ -176,6 +195,7 @@ const MessageInput = ({}: InputProps) => {
                   aria-label="emoji"
                   icon={<FaceSmileIcon className="h-4 w-4" />}
                   size={"sm"}
+                  color={inputText}
                   className="hidden sm:inline-flex"
                 />
               </PopoverTrigger>
@@ -204,7 +224,8 @@ const MessageInput = ({}: InputProps) => {
               size={"sm"}
               placeholder="Type a message"
               _placeholder={{
-                color: colorMode === "dark" ? "slate.300" : "gray.700",
+                color: placeholderColor,
+                opacity: 1,
               }}
               value={messageBody}
               onChange={handleChange}
@@ -215,7 +236,14 @@ const MessageInput = ({}: InputProps) => {
                   handleSubmit();
                 }
               }}
-              color={colorMode === "dark" ? slate.slate2 : "black"}
+              color={inputText}
+              fontSize="16px"
+              lineHeight="1.5"
+              minH="36px"
+              py={1.5}
+              sx={{
+                WebkitTextSizeAdjust: "100%",
+              }}
               variant={"unstyled"}
               resize={"none"}
               rows={1}
@@ -224,11 +252,12 @@ const MessageInput = ({}: InputProps) => {
             <IconButton
               variant={"ghost"}
               aria-label="send"
-              icon={<PaperAirplaneIcon className="h-4 w-4 text-indigo-600" />}
+              color={sendColor}
+              icon={<PaperAirplaneIcon className="h-5 w-5" />}
               type="submit"
               isDisabled={!messageBody.trim()}
-              size={"xs"}
-              my={2}
+              size={"sm"}
+              my={1}
             />
           </div>
         </form>
