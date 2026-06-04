@@ -1,5 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { UserCircleIcon as UserCircleIconSolid } from "@heroicons/react/24/solid";
 import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks } from "./links";
@@ -14,6 +15,7 @@ function MobileNav() {
     {
       value: "/profile",
       icon: <UserCircleIcon className="size-6" />,
+      activeIcon: <UserCircleIconSolid className="size-6" />,
       title: "Profile",
     },
   ];
@@ -37,7 +39,7 @@ function MobileNav() {
                   : "text-gray11 hover:bg-gray4 hover:text-indigo11 dark:text-gray7 dark:hover:bg-dark-slate4 dark:hover:text-dark-indigo11"
               }`}
             >
-              {link.icon}
+              {isActive ? link.activeIcon : link.icon}
               <span>{link.title}</span>
             </Link>
           );
