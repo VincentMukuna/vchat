@@ -8,11 +8,12 @@ import {
   ModalOverlay,
   Tooltip,
   useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from "@chakra-ui/react";
 
 import { UserGroupIcon } from "@heroicons/react/24/solid";
-import { indigo, indigoDark } from "@radix-ui/colors";
+import { blueDark, gray, indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { PlusIcon } from "../../components/Icons";
 import { useAuth } from "../../context/AuthContext";
@@ -22,9 +23,14 @@ interface SidebarProps {
 }
 const Sidebar = ({ children }: SidebarProps) => {
   const { currentUserDetails } = useAuth();
+  const sidebarBackground = useColorModeValue(gray.gray2, blueDark.blue1);
+
   if (!currentUserDetails) return;
   return (
-    <aside className="relative max-h-full shrink grow basis-[25rem] overflow-auto border-r bg-gray2 px-2 dark:border-dark-slate3 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[27rem]">
+    <aside
+      style={{ backgroundColor: sidebarBackground }}
+      className="relative max-h-full shrink grow basis-[25rem] overflow-auto border-r bg-gray2 px-2 dark:border-dark-slate3 dark:bg-dark-blue1 dark:text-gray2 md:max-w-[27rem]"
+    >
       {children}
     </aside>
   );
@@ -40,8 +46,11 @@ interface SideBarHeaderProps {
 export function SideBarHeader({ title, className }: SideBarHeaderProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const sidebarBackground = useColorModeValue(gray.gray2, blueDark.blue1);
+
   return (
     <div
+      style={{ backgroundColor: sidebarBackground }}
       className={
         "sticky left-0 right-0 top-0 z-10 flex h-16  items-center bg-gray2 px-4 font-semibold tracking-widest dark:bg-dark-blue1" +
         className
