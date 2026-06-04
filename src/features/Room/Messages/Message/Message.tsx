@@ -59,6 +59,7 @@ const Message = forwardRef<any, MessageProps>(
     const { roomState, dispatch } = useRoomContext();
     const [showHoverCard, setShowHoverCard] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
+    const [showReactions, setShowReactions] = useState(false);
     const isOptimistic = !!message?.optimistic;
     if (!currentUserDetails || !selectedChat) return;
 
@@ -159,9 +160,10 @@ const Message = forwardRef<any, MessageProps>(
           }}
           style={{
             contentVisibility: "auto",
+            zIndex: showReactions ? 1000 - i : 0,
           }}
           tabIndex={1}
-          className="min-w-0 flex flex-col transition-all"
+          className="relative min-w-0 flex flex-col transition-all"
         >
           <div
             className={`relative flex min-w-0 gap-1.5  ${
@@ -250,6 +252,7 @@ const Message = forwardRef<any, MessageProps>(
                 message={message}
                 next={next}
                 prev={prev}
+                onReactionVisibilityChange={setShowReactions}
                 ref={messageRef}
               />
             </div>
