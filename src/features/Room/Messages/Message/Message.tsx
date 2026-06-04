@@ -159,7 +159,7 @@ const Message = forwardRef<any, MessageProps>(
             setShowHoverCard(false);
           }}
           style={{
-            contentVisibility: "auto",
+            contentVisibility: showReactions ? "visible" : "auto",
             zIndex: showReactions ? 1000 - i : 0,
           }}
           tabIndex={1}
