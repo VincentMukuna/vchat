@@ -4,14 +4,22 @@ import Navbar from "../components/Navbar/Navbar";
 
 interface AuthenticatedLayoutProps {
   children: React.ReactNode;
+  hideMobileNav?: boolean;
 }
 
-function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
+function AuthenticatedLayout({
+  children,
+  hideMobileNav = false,
+}: AuthenticatedLayoutProps) {
   return (
-    <div className="fixed inset-0 flex flex-col-reverse pb-[4.5rem] md:flex-row md:pb-0">
+    <div
+      className={`fixed inset-0 flex flex-col-reverse md:flex-row md:pb-0 ${
+        hideMobileNav ? "pb-0" : "pb-[4.5rem]"
+      }`}
+    >
       <Navbar />
       {children}
-      <MobileNav />
+      {!hideMobileNav && <MobileNav />}
     </div>
   );
 }

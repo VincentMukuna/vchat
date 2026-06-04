@@ -13,7 +13,7 @@ function Chats() {
   const roomBackground = useColorModeValue(gray.gray2, blueDark.blue1);
 
   return (
-    <AuthenticatedLayout>
+    <AuthenticatedLayout hideMobileNav={!!selectedChat}>
       <div className={selectedChat ? "hidden md:contents" : "contents"}>
         <Sidebar>
           <SideBarHeader title={"Chats"} className="" />
