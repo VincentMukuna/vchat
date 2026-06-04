@@ -8,12 +8,10 @@ import {
   Portal,
   Spinner,
   Textarea,
-  useColorModeValue,
 } from "@chakra-ui/react";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import { FaceSmileIcon } from "@heroicons/react/24/outline";
 import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
-import { blueDark, gray, indigo } from "@radix-ui/colors";
 import { Models } from "appwrite";
 import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -66,15 +64,6 @@ const MessageInput = ({}: InputProps) => {
   const { createMessage } = useMessagesContext();
   const [messageBody, setMessageBody] = useState("");
 
-  const inputBackground = useColorModeValue("white", blueDark.blue2);
-  const inputBorder = useColorModeValue(gray.gray6, blueDark.blue6);
-  const inputShadow = useColorModeValue(
-    "0 8px 24px rgba(15, 23, 42, 0.08)",
-    "0 10px 28px rgba(0, 0, 0, 0.26)",
-  );
-  const inputText = useColorModeValue(gray.gray12, gray.gray1);
-  const placeholderColor = useColorModeValue(gray.gray10, gray.gray8);
-  const sendColor = useColorModeValue(indigo.indigo10, indigo.indigo8);
   const { isGroup, isPersonal, roomState, dispatch } = useRoomContext();
   const inputRef = useRef<null | HTMLTextAreaElement>(null);
 
@@ -178,13 +167,7 @@ const MessageInput = ({}: InputProps) => {
         </div>
       )}
       <footer
-        style={{
-          backgroundColor: inputBackground,
-          borderColor: inputBorder,
-          boxShadow: inputShadow,
-          color: inputText,
-        }}
-        className="mx-3 mb-[calc(0.75rem+env(safe-area-inset-bottom))] mt-2 flex flex-col items-center justify-start overflow-hidden rounded-2xl border bg-white px-2 py-1 dark:bg-dark-blue2 md:mx-4"
+        className="mx-3 mb-[calc(0.75rem+env(safe-area-inset-bottom))] mt-2 flex flex-col items-center justify-start overflow-hidden rounded-2xl border border-gray5 bg-white px-2 py-1 text-gray12 shadow-[0_8px_24px_rgba(15,23,42,0.08)] dark:border-dark-blue6 dark:bg-dark-blue2 dark:text-gray1 dark:shadow-[0_10px_28px_rgba(0,0,0,0.26)] md:mx-4"
       >
         <form onSubmit={handleSubmit} className="flex w-full self-stretch ">
           <div className="flex min-h-11 w-full items-center gap-1 ps-1 ">
@@ -195,8 +178,7 @@ const MessageInput = ({}: InputProps) => {
                   aria-label="emoji"
                   icon={<FaceSmileIcon className="h-4 w-4" />}
                   size={"sm"}
-                  color={inputText}
-                  className="hidden sm:inline-flex"
+                  className="hidden text-gray12 dark:text-gray1 sm:inline-flex"
                 />
               </PopoverTrigger>
               <Portal>
@@ -224,9 +206,9 @@ const MessageInput = ({}: InputProps) => {
               size={"sm"}
               placeholder="Type a message"
               _placeholder={{
-                color: placeholderColor,
                 opacity: 1,
               }}
+              className="text-gray12 placeholder:text-gray10 dark:text-gray1 dark:placeholder:text-gray8"
               value={messageBody}
               onChange={handleChange}
               onBlur={handleChange}
@@ -236,7 +218,6 @@ const MessageInput = ({}: InputProps) => {
                   handleSubmit();
                 }
               }}
-              color={inputText}
               fontSize="16px"
               lineHeight="1.5"
               minH="36px"
@@ -252,8 +233,9 @@ const MessageInput = ({}: InputProps) => {
             <IconButton
               variant={"ghost"}
               aria-label="send"
-              color={sendColor}
-              icon={<PaperAirplaneIcon className="h-5 w-5" />}
+              icon={
+                <PaperAirplaneIcon className="h-5 w-5 text-indigo10 dark:text-dark-indigo8" />
+              }
               type="submit"
               isDisabled={!messageBody.trim()}
               size={"sm"}
