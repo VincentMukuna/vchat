@@ -1,4 +1,5 @@
 import {
+  Avatar,
   IconButton,
   Modal,
   ModalBody,
@@ -15,6 +16,7 @@ import {
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { blueDark, gray, indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { PlusIcon } from "../../components/Icons";
 import { useAuth } from "../../context/AuthContext";
 import NewGroupForm from "../Groups/NewGroup/NewGroupForm";
@@ -46,6 +48,7 @@ interface SideBarHeaderProps {
 export function SideBarHeader({ title, className }: SideBarHeaderProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode } = useColorMode();
+  const { currentUserDetails } = useAuth();
   const sidebarBackground = useColorModeValue(gray.gray2, blueDark.blue1);
 
   return (
@@ -57,7 +60,13 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
       }
     >
       <span className="relative flex h-full w-full items-center justify-between ">
-        <div className="h-10 w-10 md:hidden" aria-hidden="true" />
+        <Link to="/profile" className="md:hidden" aria-label="Open profile">
+          <Avatar
+            size="sm"
+            src={currentUserDetails?.avatarURL}
+            name={currentUserDetails?.name}
+          />
+        </Link>
 
         <span>{title}</span>
         <div className="flex items-center gap-3">
