@@ -1,4 +1,5 @@
 import React from "react";
+import MobileNav from "../components/Navbar/MobileNav";
 import Navbar from "../components/Navbar/Navbar";
 
 interface AuthenticatedLayoutProps {
@@ -7,9 +8,10 @@ interface AuthenticatedLayoutProps {
 
 function AuthenticatedLayout({ children }: AuthenticatedLayoutProps) {
   return (
-    <div className="fixed inset-0 flex flex-col-reverse md:flex-row">
+    <div className="fixed inset-0 flex flex-col-reverse pb-[4.5rem] md:flex-row md:pb-0">
       <Navbar />
       {children}
+      <MobileNav />
     </div>
   );
 }

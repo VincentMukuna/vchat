@@ -1,128 +1,51 @@
 import { useAuth } from "@/context/AuthContext";
-import {
-  Avatar,
-  Button,
-  Drawer,
-  DrawerBody,
-  DrawerCloseButton,
-  DrawerContent,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerOverlay,
-  IconButton,
-  useColorMode,
-  useDisclosure,
-} from "@chakra-ui/react";
-import {
-  ArrowLeftStartOnRectangleIcon,
-  Bars4Icon,
-} from "@heroicons/react/24/outline";
-import { blueDark, gray } from "@radix-ui/colors";
-import React, { memo } from "react";
+import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { UserCircleIcon as UserCircleIconSolid } from "@heroicons/react/24/solid";
+import { memo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { navLinks } from "./links";
 
 function MobileNav() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const btnRef = React.useRef<HTMLButtonElement>(null);
-  const { colorMode } = useColorMode();
   const { pathname } = useLocation();
-  const { currentUserDetails, logOut } = useAuth();
+  const { currentUserDetails } = useAuth();
   if (!currentUserDetails) return null;
 
-  return (
-    <>
-      <IconButton
-        aria-label="open menu"
-        ref={btnRef}
-        variant={"ghost"}
-        icon={<Bars4Icon className="size-5" />}
-        onClick={onOpen}
-      >
-        Open
-      </IconButton>
-      <Drawer
-        isOpen={isOpen}
-        placement="left"
-        onClose={onClose}
-        finalFocusRef={btnRef}
-        size={"xs"}
-      >
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader
-            bg={colorMode === "dark" ? blueDark.blue2 : gray.gray2}
-          ></DrawerHeader>
-          <DrawerBody
-            bg={colorMode === "dark" ? blueDark.blue2 : gray.gray2}
-            className="flex flex-col items-center text-center"
-          >
-            <div className="space-y-2">
-              <Link to={"/profile"} className="select-none">
-                <Avatar
-                  size={"xl"}
-                  src={currentUserDetails.avatarURL}
-                  name={currentUserDetails.name}
-                />
-              </Link>
-              <div className="relative flex flex-col ">
-                <div className="text-lg font-semibold">
-                  {currentUserDetails.name}
-                </div>
-                <div className=" text-sm italic text-dark-gray5 dark:text-gray6">
-                  {currentUserDetails.about}
-                </div>
-              </div>
-            </div>
+  const mobileNavLinks = [
+    ...navLinks,
+    {
+      value: "/profile",
+      icon: <UserCircleIcon className="size-6" />,
+      activeIcon: <UserCircleIconSolid className="size-6" />,
+      title: "Profile",
+    },
+  ];
 
-            <nav className="my-auto flex flex-col items-center gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  to={link.value}
-                  key={link.value}
-                  className={`
-                  flex items-center gap-3 rounded-lg transition-colors hover:text-indigo-600 dark:hover:text-indigo-500 
-                  ${
-                    pathname.split("/").includes(link.value.substring(1))
-                      ? "text-indigo-500"
-                      : ""
-                  }`}
-                >
-                  {link.icon}
-                  <span className="text-lg font-semibold ">{link.title}</span>
-                </Link>
-              ))}
-            </nav>
+  return (
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-gray5 bg-gray2 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_20px_rgba(15,23,42,0.08)] dark:border-dark-slate4 dark:bg-dark-blue2 md:hidden">
+      <div className="grid grid-cols-4 gap-1">
+        {mobileNavLinks.map((link) => {
+          const isActive = pathname
+            .split("/")
+            .includes(link.value.substring(1));
+
+          return (
             <Link
-              to={"/login"}
-              onClick={() => {
-                logOut();
-              }}
-              className="mt-auto flex transition-all"
+              to={link.value}
+              key={link.value}
+              aria-current={isActive ? "page" : undefined}
+              className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-md px-1 text-xs font-semibold transition-colors ${
+                isActive
+                  ? "bg-indigo4 text-indigo11 dark:bg-dark-indigo4 dark:text-dark-indigo11"
+                  : "text-gray11 hover:bg-gray4 hover:text-indigo11 dark:text-gray7 dark:hover:bg-dark-slate4 dark:hover:text-dark-indigo11"
+              }`}
             >
-              <Button
-                variant={"ghost"}
-                aria-label="log out"
-                size={"lg"}
-                leftIcon={<ArrowLeftStartOnRectangleIcon className="size-6 " />}
-                className=""
-              >
-                Log out
-              </Button>
+              {isActive ? link.activeIcon : link.icon}
+              <span>{link.title}</span>
             </Link>
-          </DrawerBody>
-          <DrawerFooter
-            bg={colorMode === "dark" ? blueDark.blue2 : gray.gray2}
-            className="items-center justify-center"
-          >
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              VChat © {new Date().getFullYear()}
-            </span>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
-    </>
+          );
+        })}
+      </div>
+    </nav>
   );
 }
 

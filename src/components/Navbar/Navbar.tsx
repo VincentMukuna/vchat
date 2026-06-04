@@ -19,6 +19,10 @@ const Navbar = () => {
       <MyProfile />
       <div className="flex w-full flex-col items-center justify-around gap-2 ">
         {navLinks.map((tab, i) => {
+          const isActive = pathname
+            .split("/")
+            .includes(tab.value.substring(1));
+
           return (
             <Tooltip
               key={i}
@@ -36,9 +40,7 @@ const Navbar = () => {
               <Link to={tab.value} className="relative mb-2">
                 <div
                   className={` absolute -left-1 bottom-0  h-full w-1 rounded-full  bg-dark-indigo10 transition-opacity ${
-                    pathname.split("/").includes(tab.value.substring(1))
-                      ? "visible"
-                      : "invisible"
+                    isActive ? "visible" : "invisible"
                   }`}
                 />
                 <IconButton
@@ -47,7 +49,7 @@ const Navbar = () => {
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.98 }}
                   aria-label={tab.title}
-                  icon={tab.icon}
+                  icon={isActive ? tab.activeIcon : tab.icon}
                   size={"sm"}
                   ml={1}
                 />

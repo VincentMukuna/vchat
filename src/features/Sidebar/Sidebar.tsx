@@ -11,7 +11,6 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-import MobileNav from "@/components/Navbar/MobileNav";
 import { UserGroupIcon } from "@heroicons/react/24/solid";
 import { indigo, indigoDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
@@ -49,9 +48,7 @@ export function SideBarHeader({ title, className }: SideBarHeaderProps) {
       }
     >
       <span className="relative flex h-full w-full items-center justify-between ">
-        <div className="visible mt-2 md:invisible">
-          <MobileNav />
-        </div>
+        <div className="h-10 w-10 md:hidden" aria-hidden="true" />
 
         <span>{title}</span>
         <div className="flex items-center gap-3">
