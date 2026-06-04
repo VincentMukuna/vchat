@@ -99,33 +99,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
   const fetchUserDataOnLoad = async () => {
     try {
-      if (!localUser || !localUser?.prefs?.detailsDocID) {
-        let user = await getAccount();
-        setLocalUser(user);
-        let userDetails = await getUserDetails(user);
-        if (user.name === null) {
-          user = await api
-            .provider()
-            .account.updateName(user.email.split("@")[0]!);
-          userDetails = await updateUserDetails(userDetails.$id, {
-            name: user.email.split("@")[0]!,
-          });
-        }
-        setCurrentUser(user);
-        setCurrentUserDetails(userDetails);
-        navigate("/chats");
-      } else {
-        const userDetails = await getUserDetails(localUser, true);
-        setCurrentUser(localUser);
-        setCurrentUserDetails(userDetails);
-        navigate("/chats");
+      let user = await getAccount();
+      let userDetails = await getUserDetails(user);
+
+      if (user.name === null) {
+        user = await api
+          .provider()
+          .account.updateName(user.email.split("@")[0]!);
+        userDetails = await updateUserDetails(userDetails.$id, {
+          name: user.email.split("@")[0]!,
+        });
       }
+
+      setLocalUser(user);
+      setCurrentUser(user);
+      setCurrentUserDetails(userDetails);
+
       if (AUTH_ROUTES.includes(intendedRef.current)) {
         navigate("/");
       } else {
         navigate(intendedRef.current);
       }
     } catch (error: any) {
+      setLocalUser(null);
       navigate("/login");
     } finally {
       setIsLoading(false);
@@ -170,6 +166,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await api.createSession(credentials.email, credentials.password);
       await fetchUserDataOnLoad();
     } catch (error: any) {
+      try {
+        await fetchUserDataOnLoad();
+        return;
+      } catch {}
       toast.error(error.message);
     }
   }

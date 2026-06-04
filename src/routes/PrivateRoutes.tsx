@@ -6,7 +6,7 @@ const PrivateRoutes = () => {
   return currentUserDetails !== null && currentUser !== null ? (
     <Outlet />
   ) : (
-    <Navigate to={"login"} />
+    <Navigate to={"/login"} />
   );
 };
 
