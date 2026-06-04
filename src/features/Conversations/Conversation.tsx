@@ -6,10 +6,11 @@ import {
   AvatarBadge,
   Button,
   Image,
+  useColorMode,
   useStyleConfig,
 } from "@chakra-ui/react";
 import { PhotoIcon, UserIcon, UsersIcon } from "@heroicons/react/20/solid";
-import { greenDark } from "@radix-ui/colors";
+import { blueDark, greenDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import useSWR, { useSWRConfig } from "swr";
 import Blueticks from "../../components/Blueticks";
@@ -36,6 +37,7 @@ const Conversation = memo(
     const { currentUserDetails } = useAuth();
     if (!currentUserDetails) return null;
     const { selectedChat, selectConversation } = useChatsContext();
+    const { colorMode } = useColorMode();
     const [contactDetails, setContactDetails] = useState<
       IUserDetails | undefined
     >();
@@ -117,6 +119,7 @@ const Conversation = memo(
     });
 
     const isActive = selectedChat?.$id === conversation.$id;
+    const isDark = colorMode === "dark";
     const avatarURL = isGroup
       ? conversation.avatarURL
       : contactDetails?.avatarURL;
@@ -128,7 +131,16 @@ const Conversation = memo(
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
         id={conversation.$id}
-        bg={"inherit"}
+        bg={isActive ? (isDark ? blueDark.blue3 : "#e2e8f0") : "inherit"}
+        _hover={{
+          bg: isActive
+            ? isDark
+              ? blueDark.blue3
+              : "#e2e8f0"
+            : isDark
+            ? blueDark.blue2
+            : "#f1f5f9",
+        }}
         shadow={"none"}
         py={3}
         px={2}
@@ -136,9 +148,7 @@ const Conversation = memo(
         onClick={(e) => {
           selectConversation(conversation.$id, contactDetails?.$id);
         }}
-        className={`flex cursor-pointer items-start gap-1 transition-all hover:bg-slate-100 dark:hover:bg-dark-blue2 ${
-          isActive ? "bg-slate-200 dark:bg-dark-blue2" : ""
-        }`}
+        className="flex cursor-pointer items-start gap-1 transition-all"
       >
         <Avatar
           src={avatarURL}
