@@ -42,7 +42,7 @@ function Room() {
       <aside
         className={`hidden ${
           showDetails && "absolute inset-0"
-        } flex shrink-0 basis-40 flex-col items-center border-l pb-4 pt-6 transition-all dark:border-dark-slate4 md:static xl:flex`}
+        } flex w-80 shrink-0 flex-col items-center border-l pb-4 pt-6 transition-all dark:border-dark-slate4 md:static xl:flex`}
       >
         <RoomDetails />
         <RoomDetailsFooter />
