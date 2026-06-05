@@ -14,8 +14,10 @@ import { useEffect } from "react";
 const useUserChatsSubscription = () => {
   const { currentUser, currentUserDetails } = useAuth();
   const { addConversation, deleteConversation } = useChatsContext();
-  if (!currentUser || !currentUserDetails) return null;
+
   useEffect(() => {
+    if (!currentUser || !currentUserDetails) return;
+
     const unsubscribe = api.subscribe<IUserDetails>(
       `databases.${SERVER.DATABASE_ID}.collections.${SERVER.COLLECTION_ID_USERS}.documents.${currentUserDetails.$id}`,
       (response) => {

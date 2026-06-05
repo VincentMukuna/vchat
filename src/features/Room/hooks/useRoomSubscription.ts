@@ -15,14 +15,14 @@ import {
   IUserDetails,
   USER_DETAILS_CHANGE_LOG_REGEXES,
 } from "@/types/interfaces";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useSWROptimistic from "../../../lib/hooks/useSWROptimistic";
 
 const useRoomSubscription = () => {
   const { currentUserDetails } = useAuth();
   const { selectedChat, setSelectedChat, setRecepient, recepient } =
     useChatsContext();
-  const { isGroup, isPersonal, dispatch, roomMessagesKey } = useRoomContext();
+  const { isGroup, isPersonal, roomMessagesKey } = useRoomContext();
   const { update: updateRoomMessages } = useSWROptimistic(roomMessagesKey);
   const { update: updateLastMessage } = useSWROptimistic(
     `conversations/${selectedChat?.$id}/last-message`,
@@ -31,6 +31,19 @@ const useRoomSubscription = () => {
     `details ${selectedChat?.$id}`,
   );
   const { messages } = useMessagesContext();
+  const messagesRef = useRef(messages);
+  const updateRoomMessagesRef = useRef(updateRoomMessages);
+  const updateLastMessageRef = useRef(updateLastMessage);
+  const updateRoomDetailsRef = useRef(updateRoomDetails);
+  const currentUserDetailsIdRef = useRef(currentUserDetails?.$id);
+
+  useEffect(() => {
+    messagesRef.current = messages;
+    updateRoomMessagesRef.current = updateRoomMessages;
+    updateLastMessageRef.current = updateLastMessage;
+    updateRoomDetailsRef.current = updateRoomDetails;
+    currentUserDetailsIdRef.current = currentUserDetails?.$id;
+  });
 
   if (!currentUserDetails) return null;
 
@@ -73,7 +86,7 @@ const useRoomSubscription = () => {
         unsubscribe();
       };
     }
-  }, [recepient]);
+  }, [currentUserDetails?.$id, isGroup, recepient?.$id]);
 
   useEffect(() => {
     if (selectedChat && !isPersonal && currentUserDetails) {
@@ -82,33 +95,32 @@ const useRoomSubscription = () => {
         `databases.${SERVER.DATABASE_ID}.collections.${selectedChat.$collectionId}.documents.${selectedChat.$id}`,
         (response) => {
           if (
-            response.payload.changerID === currentUserDetails.$id ||
+            response.payload.changerID === currentUserDetailsIdRef.current ||
             !response.payload.changeLog
           )
             return;
 
           const changeLog = response.payload.changeLog;
 
-          console.log("response", response);
-
           const handleNewMessage = async (newTextId: string) => {
             const newMessage = isGroup
               ? await getGroupMessage(newTextId)
               : await getChatMessage(newTextId);
-            console.log("newMessage", newMessage);
-            updateRoomMessages(
+            updateRoomMessagesRef.current(
               isGroup
-                ? [newMessage, ...(messages || [])]
-                : [newMessage, ...(messages || [])],
+                ? [newMessage, ...(messagesRef.current || [])]
+                : [newMessage, ...(messagesRef.current || [])],
               { revalidate: false },
             ).then((value: any) => {
-              updateLastMessage((value as DirectMessageDetails[]).at(0));
+              updateLastMessageRef.current(
+                (value as DirectMessageDetails[]).at(0),
+              );
             });
           };
 
           const handleDeleteMessage = (deletedTextId: string) => {
-            updateRoomMessages(
-              messages?.filter((msg) => msg.$id !== deletedTextId),
+            updateRoomMessagesRef.current(
+              messagesRef.current?.filter((msg) => msg.$id !== deletedTextId),
             );
           };
 
@@ -120,8 +132,8 @@ const useRoomSubscription = () => {
               : response.payload.chatMessages.find(
                   (msg: any) => msg.$id === editedTextId,
                 );
-            updateRoomMessages(
-              messages?.map((msg) => {
+            updateRoomMessagesRef.current(
+              messagesRef.current?.map((msg) => {
                 if (msg.$id === editedTextId) {
                   return {
                     ...msg,
@@ -135,10 +147,12 @@ const useRoomSubscription = () => {
           };
 
           const handleReadText = (readTextId: string) => {
-            const readText = messages.find((msg) => msg.$id === readTextId);
+            const readText = messagesRef.current.find(
+              (msg) => msg.$id === readTextId,
+            );
             if (!readText) return;
-            updateRoomMessages(
-              messages.map((msg) => {
+            updateRoomMessagesRef.current(
+              messagesRef.current.map((msg) => {
                 if (msg.$id === readTextId) {
                   return {
                     ...msg,
@@ -153,14 +167,14 @@ const useRoomSubscription = () => {
           };
 
           const handleClearMessages = () => {
-            updateRoomMessages([], { revalidate: false });
-            updateLastMessage(undefined);
+            updateRoomMessagesRef.current([], { revalidate: false });
+            updateLastMessageRef.current(undefined);
           };
 
           const handleLike = (messageId: string) => {
             const newLiker = response.payload.changerID;
-            updateRoomMessages(
-              messages.map((msg) => {
+            updateRoomMessagesRef.current(
+              messagesRef.current.map((msg) => {
                 if (msg.$id === messageId) {
                   return {
                     ...msg,
@@ -177,7 +191,7 @@ const useRoomSubscription = () => {
               { revalidate: false },
             ).then((value: any) => {
               //remove liked suffix
-              updateRoomMessages(
+              updateRoomMessagesRef.current(
                 value.map((msg: any) => {
                   if (msg.$id === messageId + "-liked") {
                     return { ...msg, $id: messageId };
@@ -190,8 +204,8 @@ const useRoomSubscription = () => {
 
           const handleUnlike = (messageId: string) => {
             const newUnliker = response.payload.changerID;
-            updateRoomMessages(
-              messages.map((msg) => {
+            updateRoomMessagesRef.current(
+              messagesRef.current.map((msg) => {
                 if (msg.$id === messageId) {
                   return {
                     ...msg,
@@ -208,7 +222,7 @@ const useRoomSubscription = () => {
               { revalidate: false },
             ).then((value: any) => {
               //remove unliked suffix
-              updateRoomMessages(
+              updateRoomMessagesRef.current(
                 value.map((msg: any) => {
                   if (msg.$id === messageId + "-unliked") {
                     return { ...msg, $id: messageId };
@@ -221,7 +235,7 @@ const useRoomSubscription = () => {
 
           const handleOtherChanges = () => {
             setSelectedChat(response.payload);
-            updateRoomDetails(response.payload);
+            updateRoomDetailsRef.current(response.payload);
           };
 
           const matchers = new Map();
@@ -286,15 +300,11 @@ const useRoomSubscription = () => {
       };
     }
   }, [
-    currentUserDetails,
-    dispatch,
+    currentUserDetails?.$id,
     isGroup,
     isPersonal,
-    messages,
-    selectedChat,
-    updateLastMessage,
-    updateRoomMessages,
-    updateRoomDetails,
+    selectedChat?.$collectionId,
+    selectedChat?.$id,
   ]);
 };
 
