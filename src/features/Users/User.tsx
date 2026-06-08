@@ -1,4 +1,5 @@
-import { Avatar, Card, Image } from "@chakra-ui/react";
+import { Avatar, Card, Image, useColorMode } from "@chakra-ui/react";
+import { blueDark } from "@radix-ui/colors";
 import { motion } from "framer-motion";
 import { ReactNode, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ function User({
   const { currentUserDetails } = useAuth();
 
   const navigate = useNavigate();
+  const { colorMode } = useColorMode();
   if (!currentUserDetails) return null;
 
   return (
@@ -37,7 +39,10 @@ function User({
     >
       <Card
         as={"article"}
-        bg={"inherit"}
+        bg={"transparent"}
+        _hover={{
+          bg: colorMode === "dark" ? blueDark.blue3 : "slate.100",
+        }}
         shadow={"none"}
         direction={"row"}
         py={3}
@@ -58,7 +63,7 @@ function User({
                 );
               }
         }
-        className={`flex w-full cursor-pointer items-center gap-1 transition-all hover:bg-slate-100 focus-visible:outline-none dark:hover:bg-dark-blue3/25`}
+        className="flex w-full cursor-pointer items-center gap-1 transition-all focus-visible:outline-none"
       >
         <UserContext.Provider value={{ user: user }}>
           {children}
