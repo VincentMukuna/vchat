@@ -18,10 +18,7 @@ import { logUserOut } from "@/services/sessionServices";
 import { flushSync } from "react-dom";
 import toast from "react-hot-toast";
 import api from "../services/api";
-import {
-  addUserToGlobalChat,
-  createDetailsDoc,
-} from "../services/registerUserService";
+import { createDetailsDoc } from "../services/registerUserService";
 import {
   getCurrentUserDetails,
   updateUserDetails,
@@ -154,7 +151,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       )) as IUserDetails;
       await api.updatePrefs({ detailsDocID: userDeets.$id });
       toast("Setting you up...");
-      await addUserToGlobalChat(userDeets.$id);
       flushSync(() => {
         setCurrentUserDetails(userDeets);
         setCurrentUser(user);
