@@ -13,7 +13,7 @@ import {
   IUserDetails,
 } from "@/types/interfaces";
 import { Button, CloseButton } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import toast from "react-hot-toast";
 import { useSWRConfig } from "swr";
 import useConversations from "./useConversations";
@@ -25,22 +25,43 @@ const useChatsListSubscription = () => {
     useChatsContext();
   const { mutate, cache } = useSWRConfig();
   const { shouldAlert } = useUserPrefs();
-  const conversationChannels = conversations.map(
-    (c) =>
-      `databases.${c.$databaseId}.collections.${c.$collectionId}.documents.${c.$id}`,
+  const selectedChatRef = useRef(selectedChat);
+  const updateConversationRef = useRef(updateConversation);
+  const selectConversationRef = useRef(selectConversation);
+  const currentUserDetailsIdRef = useRef(currentUserDetails?.$id);
+  const channelKey = useMemo(
+    () =>
+      (conversations || [])
+        .map(
+          (c) =>
+            `databases.${c.$databaseId}.collections.${c.$collectionId}.documents.${c.$id}`,
+        )
+        .sort()
+        .join("|"),
+    [conversations],
   );
+
+  useEffect(() => {
+    selectedChatRef.current = selectedChat;
+    updateConversationRef.current = updateConversation;
+    selectConversationRef.current = selectConversation;
+    currentUserDetailsIdRef.current = currentUserDetails?.$id;
+  });
 
   //subscribe to all conversations
   useEffect(() => {
+    const conversationChannels = channelKey ? channelKey.split("|") : [];
+    if (!currentUserDetails?.$id || conversationChannels.length === 0) return;
+
     return api.subscribe<IConversation>(conversationChannels, (response) => {
       if (
-        response.payload.changerID === currentUserDetails?.$id ||
+        response.payload.changerID === currentUserDetailsIdRef.current ||
         !response.payload.changeLog
       )
         return;
 
       //return early if payload is selected chat
-      if (selectedChat?.$id === response.payload.$id) return;
+      if (selectedChatRef.current?.$id === response.payload.$id) return;
 
       const isGroup =
         response.payload.$collectionId === SERVER.COLLECTION_ID_GROUPS;
@@ -48,7 +69,7 @@ const useChatsListSubscription = () => {
       const conversation = response.payload;
 
       const handleNewMessage = async (newMessageId: string) => {
-        if (selectedChat?.$id === conversation.$id) return;
+        if (selectedChatRef.current?.$id === conversation.$id) return;
         const newMessage = isGroup
           ? await getGroupMessage(newMessageId)
           : await getChatMessage(newMessageId);
@@ -69,7 +90,7 @@ const useChatsListSubscription = () => {
         const unreadCountKey = `conversations/${conversation.$id}/unread`;
         const unreadCount = getUnreadCount(
           conversation,
-          currentUserDetails?.$id!,
+          currentUserDetailsIdRef.current!,
         );
         mutate(unreadCountKey, unreadCount, { revalidate: false });
 
@@ -79,7 +100,7 @@ const useChatsListSubscription = () => {
         });
 
         //update conversation details in cache
-        updateConversation(conversation);
+        updateConversationRef.current(conversation);
 
         //notify user
         toast(
@@ -128,7 +149,7 @@ const useChatsListSubscription = () => {
                   w={"full"}
                   rounded={"md"}
                   onClick={() => {
-                    selectConversation(
+                    selectConversationRef.current(
                       conversation.$id,
                       isGroup ? undefined : sender.$id,
                     );
@@ -155,7 +176,7 @@ const useChatsListSubscription = () => {
 
       matchAndExecute(changeLog, matchers);
     });
-  }, [conversationChannels]);
+  }, [channelKey, currentUserDetails?.$id, mutate, shouldAlert]);
 };
 
 export default useChatsListSubscription;

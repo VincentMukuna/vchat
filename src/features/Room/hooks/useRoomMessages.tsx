@@ -49,6 +49,7 @@ export default function useRoomMessages() {
       onSuccess(data, key, config) {
         const conversation = cache.get("conversations")
           ?.data as IConversation[];
+        if (!conversation) return;
         const newConversations = conversation.map((c) => {
           if (c.$id === selectedChat?.$id) {
             if (isGroup) {
@@ -60,6 +61,9 @@ export default function useRoomMessages() {
         });
         mutate("conversations", newConversations, { revalidate: false });
       },
+      dedupingInterval: 1000 * 60,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 }

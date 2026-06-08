@@ -227,21 +227,30 @@ export async function searchUsers(name: string) {
 
 export async function getConversations(userDetailsID: string) {
   if (!userDetailsID) return [];
-  let conversations: (GroupChatDetails | DirectChatDetails)[] = [];
-  const res = await Promise.allSettled([
-    getUserChats(userDetailsID),
-    getUserGroups(userDetailsID),
-  ]);
+  const userDetails = (await api.getDocument(
+    SERVER.DATABASE_ID,
+    SERVER.COLLECTION_ID_USERS,
+    userDetailsID,
+  )) as IUserDetails;
 
-  conversations = ([] as (DirectChatDetails | GroupChatDetails)[]).concat(
-    ...(res
-      .map((resVal) =>
-        resVal.status === "fulfilled" ? resVal.value : undefined,
-      )
-      .filter((x) => x !== undefined) as (
-      | DirectChatDetails
-      | GroupChatDetails
-    )[][]),
+  const chatIDs = userDetails.chats.map((chat) => chat.$id);
+  let chats: DirectChatDetails[] = [];
+  if (chatIDs.length > 0) {
+    const { documents } = await api.listDocuments(
+      SERVER.DATABASE_ID,
+      SERVER.COLLECTION_ID_CHATS,
+      [
+        Query.equal("$id", [...chatIDs]),
+        Query.orderDesc("$updatedAt"),
+        Query.limit(100),
+      ],
+    );
+    chats = documents as DirectChatDetails[];
+  }
+
+  const conversations = ([] as (DirectChatDetails | GroupChatDetails)[]).concat(
+    chats,
+    userDetails.groups || [],
   );
 
   return sortConversations(conversations);

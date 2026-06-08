@@ -34,6 +34,9 @@ export default function useConversations() {
       onSuccess(data) {
         setCachedChats(data);
       },
+      dedupingInterval: 1000 * 60,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 
